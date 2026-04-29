@@ -100,18 +100,18 @@ const trustItems = [
 function PhoneMockup() {
   return (
     <div className="relative mx-auto w-full max-w-[360px] xl:max-w-[430px]">
-      <div className="absolute inset-x-8 top-8 h-[88%] rounded-[3rem] bg-gold/20 blur-3xl" />
-      <div className="relative rounded-[2.6rem] border border-black/10 bg-ink p-3 shadow-[0_28px_90px_rgba(11,11,11,0.28)]">
-        <div className="rounded-[2rem] bg-white p-4 text-ink xl:p-5">
-          <div className="mx-auto mb-5 h-1.5 w-20 rounded-full bg-black/12" />
-          <div className="rounded-3xl bg-ink p-4 text-white xl:p-5">
+      <div className="absolute inset-x-6 top-8 h-[88%] rounded-[3rem] bg-[#D4AF37]/25 blur-3xl" />
+      <div className="relative rounded-[2.6rem] border border-[#D4AF37]/30 bg-[#064E3B] p-3 shadow-[0_28px_90px_rgba(6,78,59,0.32)]">
+        <div className="rounded-[2rem] bg-[#ECFDF5] p-4 text-[#1F2937] xl:p-5">
+          <div className="mx-auto mb-5 h-1.5 w-20 rounded-full bg-[#064E3B]/14" />
+          <div className="rounded-3xl bg-[#064E3B] p-4 text-white xl:p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gold">Today Score</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">今日能量评分</p>
                 <p className="mt-2 text-6xl font-semibold leading-none xl:text-7xl">89</p>
               </div>
-              <span className="grid size-14 place-items-center rounded-2xl bg-gold/16 text-gold">
-                <Star className="size-7 fill-gold/20" />
+              <span className="grid size-14 place-items-center rounded-2xl bg-[#D4AF37]/18 text-[#D4AF37]">
+                <Star className="size-7 fill-[#D4AF37]/20" />
               </span>
             </div>
             <div className="mt-6 grid grid-cols-3 gap-2">
@@ -122,23 +122,23 @@ function PhoneMockup() {
               ].map(([label, score]) => (
                 <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-3 text-center">
                   <p className="text-xs text-white/52">{label}</p>
-                  <p className="mt-1 text-xl font-semibold text-gold">{score}</p>
+                  <p className="mt-1 text-xl font-semibold text-[#D4AF37]">{score}</p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="mt-4 space-y-3">
-            <div className="ml-auto max-w-[82%] rounded-2xl bg-cloud px-4 py-3 text-sm font-semibold">
+            <div className="ml-auto max-w-[82%] rounded-2xl bg-white px-4 py-3 text-sm font-semibold">
               我适合这个月换工作吗？
             </div>
-            <div className="max-w-[88%] rounded-2xl bg-ink px-4 py-3 text-sm leading-6 text-white">
+            <div className="max-w-[88%] rounded-2xl bg-[#064E3B] px-4 py-3 text-sm leading-6 text-white">
               适合先谈机会，不宜仓促离职。最佳推进期在本月下旬，先整理作品与谈判条件。
             </div>
           </div>
 
-          <div className="mt-5 rounded-2xl border border-gold/30 bg-gold/10 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cinnabar">Action</p>
+          <div className="mt-5 rounded-2xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">今日行动</p>
             <p className="mt-2 text-sm font-semibold leading-6">今日宜：复盘计划、沟通合作、调整办公桌左前方。</p>
           </div>
         </div>
@@ -188,47 +188,103 @@ function ChatPreview() {
   );
 }
 
+function EnergyMap() {
+  return (
+    <section className="bg-[#F7FBF7] px-5 py-24">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative mx-auto grid size-[320px] place-items-center rounded-full bg-white shadow-[0_28px_80px_rgba(6,78,59,0.14)] md:size-[420px]">
+          <div className="absolute inset-7 rounded-full border-[18px] border-[#064E3B]" />
+          <div className="absolute inset-12 rounded-full border-[10px] border-[#D4AF37]" />
+          <div className="absolute left-16 top-16 h-[2px] w-[72%] rotate-[-42deg] bg-[#D4AF37]" />
+          <span className="absolute right-16 top-20 rounded-full bg-[#064E3B] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+            贵人方：东南
+          </span>
+          <span className="absolute bottom-14 left-8 rounded-full bg-[#ECFDF5] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#064E3B]">
+            今日宜：复盘
+          </span>
+          <div className="text-center">
+            <p className="text-7xl font-semibold text-[#064E3B]">89</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6D00]">今日能量分</p>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Energy Map</p>
+          <h2 className="mt-4 max-w-3xl font-serif text-4xl font-semibold leading-tight text-[#064E3B] md:text-6xl">
+            把今日运势变成一张可行动的能量地图
+          </h2>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#1F2937]/68">
+            用户每天打开不只是看一句运势，而是看到评分、方向、宜忌和建议行动，形成每日回访习惯。
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {[
+              ["今日评分", "整体 89，事业推进强于财务冒进"],
+              ["幸运方位", "东南方适合沟通、会谈和新合作"],
+              ["今日宜忌", "宜复盘整理，忌冲动投资与急签合同"],
+              ["行动建议", "先确认资源，再推进关键决定"]
+            ].map(([title, desc]) => (
+              <div key={title} className="rounded-2xl border border-[#D4AF37]/25 bg-white p-5 shadow-sm">
+                <CheckCircle2 className="size-5 text-[#D4AF37]" />
+                <h3 className="mt-4 text-lg font-semibold text-[#064E3B]">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#1F2937]/62">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/dashboard"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#8A6D00] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#6F5700]"
+          >
+            生成我的今日能量图 <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function HomePage() {
   return (
     <AppShell>
       <main className="overflow-hidden bg-white">
-        <section className="relative px-5 py-20 md:py-24">
+        <section className="emerald-hero relative px-5 py-20 md:py-24">
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -right-24 top-10 size-[620px] rounded-full border border-gold/40 opacity-[0.05]" />
-            <div className="absolute -right-6 top-28 size-[460px] rounded-full border border-gold/40 opacity-[0.05]" />
-            <div className="absolute right-20 top-48 size-[300px] rounded-full border border-gold/40 opacity-[0.05]" />
-            <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(110deg,rgba(201,162,74,0.10),transparent_42%),radial-gradient(circle_at_88%_20%,rgba(185,28,28,0.10),transparent_34%)]" />
+            <div className="absolute -right-24 top-10 size-[620px] rounded-full border border-[#D4AF37]/40 opacity-[0.12]" />
+            <div className="absolute -right-6 top-28 size-[460px] rounded-full border border-[#D4AF37]/40 opacity-[0.12]" />
+            <div className="absolute right-20 top-48 size-[300px] rounded-full border border-[#D4AF37]/40 opacity-[0.12]" />
+            <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(110deg,rgba(236,253,245,0.52),transparent_46%)]" />
           </div>
           <div className="relative mx-auto grid min-h-[680px] max-w-7xl items-center gap-10 md:grid-cols-[1fr_360px] xl:grid-cols-[1.05fr_0.95fr] xl:gap-14">
             <div>
-              <StatusPill>AI 命理决策系统 · Free Beta</StatusPill>
-              <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-6xl xl:text-8xl">
-                Your Personal AI Feng Shui Master
+              <span className="inline-flex rounded-full bg-[#D4AF37]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6D00]">
+                千年命理 · 现代 AI
+              </span>
+              <h1 className="mt-6 max-w-4xl font-serif text-5xl font-semibold leading-[1.02] text-[#064E3B] md:text-6xl xl:text-8xl">
+                AI 风水师，帮你看清方向
               </h1>
-              <p className="mt-6 max-w-3xl text-2xl font-semibold leading-9 text-ink md:text-3xl">
-                AI 命理决策系统，帮你看清人生方向
+              <p className="mt-6 max-w-3xl text-2xl font-semibold leading-9 text-[#1F2937] md:text-3xl">
+                结合 AI、八字、五行与风水逻辑，为你的事业、财运、感情与每日决策提供清晰建议。
               </p>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl">
-                从每日运势、事业选择，到财富机会与人生决策，用 AI + 千年命理，为你提供清晰答案。
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#1F2937]/68 md:text-xl">
+                每天先看运势，再问 AI 风水师。把不确定的问题，转成趋势、风险和下一步行动。
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded bg-cinnabar px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(185,28,28,0.22)] transition hover:-translate-y-0.5 hover:bg-[#991B1B]"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#064E3B] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(6,78,59,0.24)] transition hover:-translate-y-0.5 hover:bg-[#053D2F]"
                 >
                   免费获取今日运势 <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded border border-black/12 bg-white px-6 py-4 text-sm font-semibold text-ink shadow-sm transition hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-soft"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/55 bg-white/72 px-6 py-4 text-sm font-semibold text-[#064E3B] shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:shadow-soft"
                 >
                   立即体验 AI 风水师
                 </Link>
               </div>
               <div className="mt-9 grid max-w-xl gap-3 sm:grid-cols-3">
                 {["今日评分", "AI 对话", "深度报告"].map((item) => (
-                  <div key={item} className="flex items-center gap-2 rounded border border-gold/30 bg-white/80 px-3 py-3 text-sm font-semibold text-ink shadow-sm">
-                    <BadgeCheck className="size-4 shrink-0 text-gold" />
+                  <div key={item} className="flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/80 px-4 py-3 text-sm font-semibold text-[#064E3B] shadow-sm backdrop-blur">
+                    <BadgeCheck className="size-4 shrink-0 text-[#D4AF37]" />
                     {item}
                   </div>
                 ))}
@@ -238,11 +294,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="bg-cloud px-5 py-20">
+        <section className="bg-[#ECFDF5] px-5 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cinnabar">Why Now</p>
-              <h2 className="mt-3 text-4xl font-semibold leading-tight text-ink md:text-6xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Why Now</p>
+              <h2 className="mt-3 font-serif text-4xl font-semibold leading-tight text-[#064E3B] md:text-6xl">
                 为什么越来越多人开始用 AI 看运势？
               </h2>
             </div>
@@ -252,54 +308,54 @@ export default function HomePage() {
                 return (
                   <article
                     key={pain.title}
-                    className="group flex flex-col gap-5 rounded border border-black/8 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-soft sm:flex-row sm:items-center"
+                    className="group flex flex-col gap-5 rounded-3xl border border-[#D4AF37]/20 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/55 hover:shadow-soft sm:flex-row sm:items-center"
                   >
-                    <span className="grid size-16 shrink-0 place-items-center rounded bg-cinnabar/10 text-cinnabar ring-1 ring-gold/30">
+                    <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-[#064E3B]/8 text-[#064E3B] ring-1 ring-[#D4AF37]/30">
                       <Icon className="size-7" />
                     </span>
                     <div>
-                      <h3 className="text-2xl font-semibold text-ink">{pain.title}</h3>
-                      <p className="mt-2 leading-7 text-ink/62">{pain.desc}</p>
+                      <h3 className="text-2xl font-semibold text-[#064E3B]">{pain.title}</h3>
+                      <p className="mt-2 leading-7 text-[#1F2937]/62">{pain.desc}</p>
                     </div>
                   </article>
                 );
               })}
             </div>
-            <p className="mt-12 max-w-5xl text-4xl font-semibold leading-tight text-ink md:text-6xl">
-              你缺的不是努力，而是<span className="text-cinnabar">正确的时间与方向</span>
+            <p className="mt-12 max-w-5xl font-serif text-4xl font-semibold leading-tight text-[#064E3B] md:text-6xl">
+              你缺的不是努力，而是<span className="text-[#8A6D00]">正确的时间与方向</span>
             </p>
           </div>
         </section>
 
-        <section className="grid-paper border-y border-black/10 px-5 py-20">
+        <section className="grid-paper border-y border-[#064E3B]/10 px-5 py-20">
           <div className="mx-auto max-w-7xl">
             <SectionHeader
-              eyebrow="Core Benefits"
+              eyebrow="Modern Feng Shui Method"
               title="把复杂命理，变成你看得懂的下一步"
-              desc="主体验不是一堆功能，而是一套能回答问题、判断时机、给出行动建议的 AI 决策系统。"
+              desc="主体验不是一堆功能，而是一套能回答问题、判断时机、给出行动建议的 AI 风水方法。"
             />
             <div className="mt-10 grid gap-5 lg:grid-cols-[1.12fr_0.88fr]">
-              <article className="relative overflow-hidden rounded border border-gold/30 bg-ink p-8 text-white shadow-[0_24px_80px_rgba(11,11,11,0.28)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(201,162,74,0.18),transparent_30%),linear-gradient(135deg,rgba(185,28,28,0.18),transparent_45%)]" />
+              <article className="relative overflow-hidden rounded-3xl border border-[#D4AF37]/30 bg-[#064E3B] p-8 text-white shadow-[0_24px_80px_rgba(6,78,59,0.28)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(212,175,55,0.20),transparent_30%),linear-gradient(135deg,rgba(236,253,245,0.10),transparent_45%)]" />
                 <div className="relative">
-                  <span className="grid size-16 place-items-center rounded bg-gold/12 text-gold ring-1 ring-gold/30">
+                  <span className="grid size-16 place-items-center rounded-2xl bg-[#D4AF37]/12 text-[#D4AF37] ring-1 ring-[#D4AF37]/30">
                     <Bot className="size-8" />
                   </span>
-                  <h3 className="mt-8 text-4xl font-semibold md:text-6xl">AI 风水师</h3>
+                  <h3 className="mt-8 font-serif text-4xl font-semibold md:text-6xl">AI 命理分析</h3>
                   <p className="mt-5 max-w-2xl text-lg leading-8 text-white/70">
                     24/7 AI 命理师，随时为你分析事业、财运、感情、风险与最佳行动时间。
                   </p>
                   <div className="mt-8 grid gap-3 sm:grid-cols-2">
                     {["事业决策分析", "财运趋势判断", "感情关系解析", "风险提醒", "最佳行动时间建议"].map((point) => (
                       <p key={point} className="flex items-center gap-2 rounded bg-white/8 px-3 py-3 text-sm text-white/82">
-                        <CheckCircle2 className="size-4 shrink-0 text-gold" />
+                        <CheckCircle2 className="size-4 shrink-0 text-[#D4AF37]" />
                         {point}
                       </p>
                     ))}
                   </div>
                   <Link
                     href="/dashboard"
-                    className="mt-8 inline-flex items-center gap-2 rounded bg-cinnabar px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#991B1B]"
+                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-[#064E3B] transition hover:bg-[#E3C65A]"
                   >
                     立即问 AI <ArrowRight className="size-4" />
                   </Link>
@@ -312,20 +368,20 @@ export default function HomePage() {
                   return (
                     <article
                       key={feature.title}
-                      className="rounded border border-black/8 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-soft"
+                      className="rounded-3xl border border-[#D4AF37]/20 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/55 hover:shadow-soft"
                     >
                       <div className="flex items-start gap-4">
-                        <span className="grid size-12 shrink-0 place-items-center rounded bg-gold/12 text-gold ring-1 ring-gold/25">
+                        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#ECFDF5] text-[#064E3B] ring-1 ring-[#D4AF37]/25">
                           <Icon className="size-6" />
                         </span>
                         <div>
-                          <h3 className="text-2xl font-semibold text-ink">{feature.title}</h3>
-                          <p className="mt-2 leading-7 text-ink/62">{feature.desc}</p>
+                          <h3 className="text-2xl font-semibold text-[#064E3B]">{feature.title}</h3>
+                          <p className="mt-2 leading-7 text-[#1F2937]/62">{feature.desc}</p>
                         </div>
                       </div>
                       <div className="mt-5 flex flex-wrap gap-2">
                         {feature.points.map((point) => (
-                          <span key={point} className="rounded bg-cloud px-3 py-2 text-xs font-semibold text-ink/70">
+                          <span key={point} className="rounded-full bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#064E3B]/75">
                             {point}
                           </span>
                         ))}
@@ -338,21 +394,23 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="relative bg-ink px-5 py-24 text-white">
-          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(185,28,28,0.24),transparent_42%),radial-gradient(circle_at_78%_35%,rgba(201,162,74,0.18),transparent_30%)]" />
+        <EnergyMap />
+
+        <section className="relative bg-[#064E3B] px-5 py-24 text-white">
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(212,175,55,0.20),transparent_42%),radial-gradient(circle_at_78%_35%,rgba(236,253,245,0.14),transparent_30%)]" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.82fr_1.18fr]">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-gold">Immersive Chat</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">Immersive Chat</p>
+              <h2 className="mt-4 font-serif text-4xl font-semibold leading-tight md:text-6xl">
                 24/7 AI风水师，随时为你解答
               </h2>
               <p className="mt-5 text-lg leading-8 text-white/68">
                 不需要等预约。把问题说出来，系统会结合你的基础资料、问题类型与当前时间，输出趋势、风险和行动建议。
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <span className="rounded bg-white/10 px-4 py-2 text-sm text-white/78">八字基础</span>
-                <span className="rounded bg-white/10 px-4 py-2 text-sm text-white/78">五行趋势</span>
-                <span className="rounded bg-white/10 px-4 py-2 text-sm text-white/78">行动时间</span>
+                <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-white/78">八字基础</span>
+                <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-white/78">五行趋势</span>
+                <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-white/78">行动时间</span>
               </div>
             </div>
             <ChatPreview />
@@ -363,10 +421,10 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl">
             <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cinnabar">Real Questions</p>
-                <h2 className="mt-3 text-4xl font-semibold text-ink md:text-6xl">不知道问什么？从这里开始</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Real Questions</p>
+                <h2 className="mt-3 font-serif text-4xl font-semibold text-[#064E3B] md:text-6xl">不知道问什么？从这里开始</h2>
               </div>
-              <p className="max-w-xl text-lg leading-8 text-ink/62">
+              <p className="max-w-xl text-lg leading-8 text-[#1F2937]/62">
                 每个问题都可以直接进入 AI 风水师，让用户更快开始第一次互动。
               </p>
             </div>
@@ -375,20 +433,20 @@ export default function HomePage() {
                 <Link
                   key={scenario}
                   href="/dashboard"
-                  className="group flex items-center justify-between rounded border border-black/10 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-gold/60 hover:bg-gold/10 hover:shadow-soft"
+                  className="group flex items-center justify-between rounded-2xl border border-[#D4AF37]/20 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:bg-[#ECFDF5] hover:shadow-soft"
                 >
-                  <span className="flex items-center gap-3 text-lg font-semibold text-ink">
-                    <MessageCircleQuestion className="size-5 shrink-0 text-cinnabar" />
+                  <span className="flex items-center gap-3 text-lg font-semibold text-[#064E3B]">
+                    <MessageCircleQuestion className="size-5 shrink-0 text-[#8A6D00]" />
                     {scenario}
                   </span>
-                  <ArrowRight className="size-4 text-ink/32 transition group-hover:translate-x-1 group-hover:text-cinnabar" />
+                  <ArrowRight className="size-4 text-[#064E3B]/32 transition group-hover:translate-x-1 group-hover:text-[#8A6D00]" />
                 </Link>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-cloud px-5 py-20">
+        <section className="bg-[#ECFDF5] px-5 py-20">
           <div className="mx-auto max-w-7xl">
             <SectionHeader
               eyebrow="Membership"
@@ -403,25 +461,25 @@ export default function HomePage() {
                   <article
                     key={tier.name}
                     className={[
-                      "rounded border p-7 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft",
-                      isFeatured ? "border-gold bg-white shadow-[0_24px_70px_rgba(201,162,74,0.18)] lg:-mt-6 lg:mb-6" : "",
-                      isDark ? "border-ink bg-ink text-white" : "border-black/10 bg-white text-ink"
+                      "rounded-3xl border p-7 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft",
+                      isFeatured ? "border-[#D4AF37] bg-white shadow-[0_24px_70px_rgba(212,175,55,0.18)] lg:-mt-6 lg:mb-6" : "",
+                      isDark ? "border-[#064E3B] bg-[#064E3B] text-white" : "border-[#D4AF37]/20 bg-white text-[#1F2937]"
                     ].join(" ")}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className={isDark ? "text-sm font-semibold uppercase tracking-[0.16em] text-gold" : "text-sm font-semibold uppercase tracking-[0.16em] text-cinnabar"}>
+                        <p className={isDark ? "text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]" : "text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]"}>
                           {tier.name}
                         </p>
                         <h3 className="mt-3 text-4xl font-semibold">{tier.price}</h3>
                       </div>
-                      <Gem className={isDark ? "size-8 text-gold" : "size-8 text-gold"} />
+                      <Gem className="size-8 text-[#D4AF37]" />
                     </div>
-                    <p className={isDark ? "mt-4 leading-7 text-white/62" : "mt-4 leading-7 text-ink/62"}>{tier.desc}</p>
+                    <p className={isDark ? "mt-4 leading-7 text-white/62" : "mt-4 leading-7 text-[#1F2937]/62"}>{tier.desc}</p>
                     <ul className="mt-6 space-y-3">
                       {tier.includes.map((item) => (
-                        <li key={item} className={isDark ? "flex gap-2 text-sm text-white/78" : "flex gap-2 text-sm text-ink/72"}>
-                          <CheckCircle2 className={isDark ? "mt-0.5 size-4 shrink-0 text-gold" : "mt-0.5 size-4 shrink-0 text-cinnabar"} />
+                        <li key={item} className={isDark ? "flex gap-2 text-sm text-white/78" : "flex gap-2 text-sm text-[#1F2937]/72"}>
+                          <CheckCircle2 className={isDark ? "mt-0.5 size-4 shrink-0 text-[#D4AF37]" : "mt-0.5 size-4 shrink-0 text-[#064E3B]"} />
                           {item}
                         </li>
                       ))}
@@ -429,8 +487,8 @@ export default function HomePage() {
                     <Link
                       href="/dashboard"
                       className={[
-                        "mt-7 inline-flex w-full items-center justify-center gap-2 rounded px-5 py-3 text-sm font-semibold transition",
-                        isDark ? "bg-cinnabar text-white hover:bg-[#991B1B]" : isFeatured ? "bg-cinnabar text-white hover:bg-[#991B1B]" : "border border-black/12 bg-white text-ink hover:border-gold/60"
+                        "mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition",
+                        isDark ? "bg-[#D4AF37] text-[#064E3B] hover:bg-[#E3C65A]" : isFeatured ? "bg-[#064E3B] text-white hover:bg-[#053D2F]" : "border border-[#D4AF37]/35 bg-white text-[#064E3B] hover:border-[#D4AF37]"
                       ].join(" ")}
                     >
                       开始体验 <ArrowRight className="size-4" />
@@ -442,7 +500,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="border-y border-black/10 bg-white px-5 py-20">
+        <section className="garden-quote px-5 py-28 text-center text-white">
+          <div className="mx-auto max-w-4xl">
+            <p className="font-serif text-3xl font-semibold italic leading-tight md:text-5xl">
+              你的空间，是你状态的延伸。方向对了，行动才会更稳。
+            </p>
+            <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
+              AI Feng Shui Master
+            </p>
+          </div>
+        </section>
+
+        <section className="border-y border-[#064E3B]/10 bg-white px-5 py-20">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <SectionHeader
               eyebrow="Beyond Reading"
@@ -457,10 +526,10 @@ export default function HomePage() {
               ].map(([Icon, title, desc]) => {
                 const TypedIcon = Icon as typeof Sparkles;
                 return (
-                  <article key={title as string} className="rounded border border-gold/20 bg-rice p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft">
-                    <TypedIcon className="size-6 text-gold" />
-                    <h3 className="mt-4 text-lg font-semibold">{title as string}</h3>
-                    <p className="mt-2 text-sm leading-6 text-ink/58">{desc as string}</p>
+                  <article key={title as string} className="rounded-3xl border border-[#D4AF37]/20 bg-rice p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft">
+                    <TypedIcon className="size-6 text-[#D4AF37]" />
+                    <h3 className="mt-4 text-lg font-semibold text-[#064E3B]">{title as string}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[#1F2937]/58">{desc as string}</p>
                   </article>
                 );
               })}
@@ -477,10 +546,10 @@ export default function HomePage() {
             />
             <div className="mt-10 grid gap-4 md:grid-cols-4">
               {trustItems.map(([title, desc]) => (
-                <article key={title} className="rounded border border-black/10 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-soft">
-                  <ShieldCheck className="size-6 text-gold" />
-                  <h3 className="mt-4 font-semibold">{title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-ink/58">{desc}</p>
+                <article key={title} className="rounded-3xl border border-[#D4AF37]/20 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/55 hover:shadow-soft">
+                  <ShieldCheck className="size-6 text-[#D4AF37]" />
+                  <h3 className="mt-4 font-semibold text-[#064E3B]">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#1F2937]/58">{desc}</p>
                 </article>
               ))}
             </div>
@@ -488,17 +557,17 @@ export default function HomePage() {
         </section>
 
         <section className="px-5 pb-20">
-          <div className="relative mx-auto max-w-7xl overflow-hidden rounded bg-ink px-6 py-20 text-center text-white shadow-[0_28px_90px_rgba(11,11,11,0.28)] md:px-12">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(185,28,28,0.46),transparent_42%),radial-gradient(circle_at_70%_35%,rgba(185,28,28,0.34),transparent_34%)]" />
+          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-[#064E3B] px-6 py-20 text-center text-white shadow-[0_28px_90px_rgba(6,78,59,0.28)] md:px-12">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(212,175,55,0.30),transparent_42%),radial-gradient(circle_at_70%_35%,rgba(236,253,245,0.18),transparent_34%)]" />
             <div className="relative">
-              <TrendingUp className="mx-auto size-10 text-gold" />
-              <h2 className="mt-5 text-5xl font-semibold leading-tight md:text-7xl">你的命运，不应该靠运气</h2>
+              <TrendingUp className="mx-auto size-10 text-[#D4AF37]" />
+              <h2 className="mt-5 font-serif text-5xl font-semibold leading-tight md:text-7xl">今天，先看清你的方向</h2>
               <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/68">
-                现在开始，用 AI 看清方向。
+                从今日运势开始，让 AI 风水师帮你把问题变成更清晰的行动。
               </p>
               <Link
                 href="/dashboard"
-                className="mt-8 inline-flex items-center gap-2 rounded bg-cinnabar px-8 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(185,28,28,0.35)] transition hover:-translate-y-0.5 hover:bg-[#991B1B]"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#D4AF37] px-8 py-4 text-sm font-semibold text-[#064E3B] shadow-[0_18px_40px_rgba(212,175,55,0.28)] transition hover:-translate-y-0.5 hover:bg-[#E3C65A]"
               >
                 立即获取你的今日运势 <ArrowRight className="size-4" />
               </Link>
