@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Bot, Loader2, Send } from "lucide-react";
+import { BookOpenCheck, Bot, FileText, Loader2, Send, ShoppingBag, Sparkles } from "lucide-react";
 
 type Message = {
   role: "user" | "assistant" | "system";
@@ -30,6 +30,27 @@ const quickPrompts = [
   "我适合这个月换工作吗？",
   "最近财运要注意什么？",
   "这个人适合我吗？"
+];
+
+const nextStepActions = [
+  {
+    title: "生成深度报告",
+    desc: "把这次分析保存成完整报告",
+    icon: FileText,
+    prompt: "请根据刚才的问题，帮我整理成一份完整深度报告的大纲。"
+  },
+  {
+    title: "推荐开运方案",
+    desc: "查看适合的产品与布局建议",
+    icon: ShoppingBag,
+    prompt: "请根据我的情况，推荐适合的开运产品、摆放方向和使用场景。"
+  },
+  {
+    title: "学习相关课程",
+    desc: "把建议变成可学习的方法",
+    icon: BookOpenCheck,
+    prompt: "我想学习如何自己判断类似问题，应该从哪类课程开始？"
+  }
 ];
 
 export function FengshuiChat() {
@@ -107,7 +128,7 @@ export function FengshuiChat() {
           <p className="text-sm text-ink/55">AI 风水师聊天</p>
           <h2 className="mt-1 text-2xl font-semibold">决策前先问 AI</h2>
         </div>
-        <Bot className="size-8 text-cinnabar" />
+        <Bot className="size-8 text-[#064E3B]" />
       </div>
 
       <div className="mt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-soft">
@@ -116,7 +137,7 @@ export function FengshuiChat() {
             key={prompt}
             type="button"
             onClick={() => setInput(prompt)}
-            className="shrink-0 rounded border border-black/10 bg-cloud px-3 py-2 text-xs font-medium text-ink/68 transition hover:border-cinnabar hover:text-cinnabar"
+            className="shrink-0 rounded border border-black/10 bg-cloud px-3 py-2 text-xs font-medium text-ink/68 transition hover:border-[#D4AF37] hover:text-[#064E3B]"
           >
             {prompt}
           </button>
@@ -140,7 +161,7 @@ export function FengshuiChat() {
               key={`${message.role}-${index}`}
               className={
                 isAssistant
-                  ? "ml-auto max-w-[88%] rounded bg-ink p-4 text-white"
+                  ? "ml-auto max-w-[88%] rounded bg-[#102019] p-4 text-white"
                   : "max-w-[82%] rounded border border-black/10 bg-cloud p-4"
               }
             >
@@ -151,7 +172,7 @@ export function FengshuiChat() {
           );
         })}
         {isLoading ? (
-          <div className="ml-auto max-w-[88%] rounded bg-ink p-4 text-sm text-white">
+          <div className="ml-auto max-w-[88%] rounded bg-[#102019] p-4 text-sm text-white">
             <div className="flex items-center gap-2">
               <Loader2 className="size-4 animate-spin" />
               {loadingSteps[loadingStep]}
@@ -168,15 +189,40 @@ export function FengshuiChat() {
         ) : null}
       </div>
 
+      <div className="mt-5 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="size-4 text-[#B08919]" />
+          <p className="text-sm font-semibold text-[#064E3B]">AI 回答后的下一步</p>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          {nextStepActions.map((action) => {
+            const Icon = action.icon;
+
+            return (
+              <button
+                key={action.title}
+                type="button"
+                onClick={() => setInput(action.prompt)}
+                className="rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-sm"
+              >
+                <Icon className="size-4 text-[#064E3B]" />
+                <p className="mt-2 text-sm font-semibold">{action.title}</p>
+                <p className="mt-1 text-xs leading-5 text-ink/55">{action.desc}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="mt-5 flex gap-2">
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          className="min-w-0 flex-1 rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-cinnabar"
+          className="min-w-0 flex-1 rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#064E3B]"
           placeholder="输入你的问题，例如：我适合换工作吗？"
         />
         <button
-          className="grid size-11 shrink-0 place-items-center rounded bg-ink text-white disabled:cursor-not-allowed disabled:opacity-55"
+          className="grid size-11 shrink-0 place-items-center rounded bg-[#064E3B] text-white disabled:cursor-not-allowed disabled:opacity-55"
           type="submit"
           aria-label="发送"
           disabled={isLoading}
