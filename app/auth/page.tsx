@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { ArrowRight, BadgeCheck, Loader2, LogIn } from "lucide-react";
+import { BadgeCheck, CalendarDays, Compass, Loader2, LogIn, Sparkles, SunMedium } from "lucide-react";
 import { AppShell } from "@/components/shell";
 import { demoMemberProfile } from "@/lib/member-profile";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -102,22 +102,52 @@ export default function AuthPage() {
       <main className="bg-[#ECFDF5] px-5 py-12">
         <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[2rem] bg-[#102019] p-8 text-white shadow-soft">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">Supabase Auth</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight">会员注册必须先建立命理档案</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">DAILY ALMANAC</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight">每日大运程</h1>
             <p className="mt-5 text-sm leading-7 text-white/65">
-              姓名、生日、出生时辰、性别与 Email 会成为 AI 风水师、每日运势和报告中心的基础分析资料。
+              结合通胜宜忌、五行节气、方位能量与个人命理资料，生成今日吉时、吉方与行动建议。
             </p>
-            <div className="mt-8 grid gap-3">
-              {["Auth 登录状态", "profiles 会员资料表", "后续点数扣减与报告保存"].map((item) => (
-                <div key={item} className="flex items-center gap-2 rounded border border-white/10 bg-white/8 p-3 text-sm">
-                  <BadgeCheck className="size-4 text-[#D4AF37]" />
+
+            <div className="mt-8 rounded-3xl border border-[#D4AF37]/25 bg-white/8 p-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">今日总览</p>
+                  <p className="mt-2 text-2xl font-semibold">稳中有进，宜先定后动</p>
+                </div>
+                <span className="grid size-14 place-items-center rounded-2xl bg-[#D4AF37]/15 text-[#D4AF37]">
+                  <SunMedium className="size-7" />
+                </span>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {[
+                  { label: "吉时", value: "辰时 7-9｜申时 15-17", icon: CalendarDays },
+                  { label: "吉方", value: "东南纳财｜西北利贵人", icon: Compass },
+                  { label: "今日宜", value: "签约、整理账目、拜访客户", icon: BadgeCheck },
+                  { label: "今日忌", value: "冲动投资、口舌争辩、夜间决策", icon: Sparkles }
+                ].map(({ label, value, icon: Icon }) => (
+                  <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[#D4AF37]">
+                      <Icon className="size-4" />
+                      {label}
+                    </div>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-white/86">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3">
+              {[
+                "事业：先复盘资源，再推进新合作。",
+                "财运：偏财勿急，正财适合稳步跟进。",
+                "感情：少判断，多倾听，关系更容易回温。"
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2 rounded border border-white/10 bg-white/8 p-3 text-sm leading-6 text-white/78">
+                  <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#D4AF37]" />
                   {item}
                 </div>
               ))}
             </div>
-            <Link href="/dashboard" className="mt-8 inline-flex items-center gap-2 rounded bg-[#D4AF37] px-5 py-3 text-sm font-semibold text-[#062F25]">
-              先看会员中心 <ArrowRight className="size-4" />
-            </Link>
           </div>
 
           <form onSubmit={handleSubmit} className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
