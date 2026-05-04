@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Archive,
@@ -3098,12 +3099,14 @@ function CourseModule() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("tactical");
   const [pointBalance, setPointBalance] = useState(2680);
   const [pointsLoaded, setPointsLoaded] = useState(false);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(demoMemberProfile);
   const [profileSource, setProfileSource] = useState<"supabase" | "demo" | "loading">("loading");
+  const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const accountStats = dashboardStats.map((stat) =>
@@ -3127,6 +3130,8 @@ export default function DashboardPage() {
         if (mounted) {
           setMemberProfile(demoMemberProfile);
           setProfileSource("demo");
+          setAuthStatus("unauthenticated");
+          router.replace("/auth");
         }
         return;
       }
@@ -3139,6 +3144,8 @@ export default function DashboardPage() {
         if (mounted) {
           setMemberProfile(demoMemberProfile);
           setProfileSource("demo");
+          setAuthStatus("unauthenticated");
+          router.replace("/auth");
         }
         return;
       }
@@ -3159,6 +3166,7 @@ export default function DashboardPage() {
           });
           setProfileSource("demo");
         }
+        setAuthStatus("authenticated");
       }
     }
 
@@ -3167,7 +3175,7 @@ export default function DashboardPage() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (pointsLoaded) {
@@ -3186,6 +3194,20 @@ export default function DashboardPage() {
 
   function earnPoints(amount: number) {
     setPointBalance((current) => current + amount);
+  }
+
+  if (authStatus !== "authenticated") {
+    return (
+      <AppShell>
+        <main className="px-5 py-16">
+          <div className="mx-auto max-w-3xl rounded border border-[#D4AF37]/35 bg-white p-8 text-center shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Member Access</p>
+            <h1 className="mt-3 text-3xl font-semibold text-[#064E3B]">正在确认会员登录状态</h1>
+            <p className="mt-3 text-ink/62">如果尚未登录，系统会自动带你回到登录页面。</p>
+          </div>
+        </main>
+      </AppShell>
+    );
   }
 
   return (

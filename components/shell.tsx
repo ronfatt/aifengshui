@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
 import { navItems } from "@/lib/data";
@@ -9,30 +9,41 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
 
     if (!supabase) {
       setIsLoggedIn(false);
+      setAuthChecked(true);
       return;
     }
 
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(Boolean(data.session));
+      setAuthChecked(true);
     });
 
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session));
+      setAuthChecked(true);
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (authChecked && !isLoggedIn && pathname.startsWith("/dashboard")) {
+      router.replace("/auth");
+    }
+  }, [authChecked, isLoggedIn, pathname, router]);
 
   async function handleSignOut() {
     const supabase = createBrowserSupabaseClient();
@@ -62,10 +73,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <nav className="flex items-center gap-1 rounded-full border border-[#064E3B]/10 bg-white/70 p-1">
             {navItems.filter((item) => item.href !== "/auth").map((item) => {
               const Icon = item.icon;
+              const href = !isLoggedIn && item.href.startsWith("/dashboard") ? "/auth" : item.href;
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={href}
                   className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#ECFDF5] hover:text-[#064E3B]"
                 >
                   <Icon className="size-4" />
