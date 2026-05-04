@@ -299,9 +299,11 @@ export const adminModules = [
 ];
 
 export const navItems = [
-  { href: "/", label: "官网", icon: LayoutDashboard },
-  { href: "/dashboard", label: "会员端", icon: ShieldCheck },
-  { href: "/admin", label: "后台", icon: BriefcaseBusiness }
+  { href: "/", label: "首页", icon: LayoutDashboard },
+  { href: "/dashboard", label: "AI测算", icon: Bot },
+  { href: "/#master", label: "大师咨询", icon: Award },
+  { href: "/#business", label: "创业平台", icon: Network },
+  { href: "/auth", label: "登录", icon: ShieldCheck }
 ];
 
 export const orderKpis = [
