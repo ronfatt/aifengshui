@@ -1,7 +1,51 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
 import { navItems } from "@/lib/data";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      setIsLoggedIn(false);
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(Boolean(data.session));
+    });
+
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(Boolean(session));
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+
+    setIsLoggedIn(false);
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <div className="min-h-screen bg-rice text-ink">
       <header className="sticky top-0 z-30 border-b border-[#064E3B]/10 bg-rice/95 shadow-sm backdrop-blur">
@@ -16,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <nav className="flex items-center gap-1 rounded-full border border-[#064E3B]/10 bg-white/70 p-1">
-            {navItems.map((item) => {
+            {navItems.filter((item) => item.href !== "/auth").map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -29,6 +73,32 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+            {isLoggedIn ? (
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#FEF2F2] hover:text-[#B91C1C]"
+              >
+                <LogOut className="size-4" />
+                <span className="hidden sm:inline">登出</span>
+              </button>
+            ) : (
+              navItems
+                .filter((item) => item.href === "/auth")
+                .map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#ECFDF5] hover:text-[#064E3B]"
+                    >
+                      <Icon className="size-4" />
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </Link>
+                  );
+                })
+            )}
           </nav>
         </div>
       </header>
