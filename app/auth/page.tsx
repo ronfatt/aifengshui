@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { ArrowRight, BadgeCheck, Loader2, LogIn } from "lucide-react";
 import { AppShell } from "@/components/shell";
@@ -9,6 +10,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export default function AuthPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("register");
   const [email, setEmail] = useState(demoMemberProfile.email);
   const [password, setPassword] = useState("testing12345");
@@ -41,7 +43,8 @@ export default function AuthPage() {
           throw error;
         }
 
-        setMessage("登录成功，可以进入会员中心。");
+        setMessage("登录成功，正在进入会员中心。");
+        router.push("/dashboard");
         return;
       }
 
@@ -85,7 +88,8 @@ export default function AuthPage() {
         }
       }
 
-      setMessage("注册成功，会员基础资料已保存。若 Supabase 开启邮箱验证，请先验证邮箱。");
+      setMessage("注册成功，会员基础资料已保存，正在进入会员中心。");
+      router.push("/dashboard");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "操作失败，请稍后再试。");
     } finally {
