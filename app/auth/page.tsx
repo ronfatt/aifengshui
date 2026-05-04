@@ -27,7 +27,7 @@ export default function AuthPage() {
     const supabase = createBrowserSupabaseClient();
 
     if (!supabase) {
-      setMessage("Supabase 尚未配置。请先在 .env.local 填入 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_ANON_KEY。");
+      setMessage("Supabase 尚未配置。请在部署平台加入 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY，或 NEXT_PUBLIC_SUPABASE_ANON_KEY，然后重新部署。");
       return;
     }
 
@@ -135,7 +135,7 @@ export default function AuthPage() {
 
             {!isSupabaseConfigured ? (
               <div className="mt-5 rounded border border-[#D4AF37]/40 bg-[#D4AF37]/10 p-4 text-sm leading-6 text-ink/70">
-                Supabase 环境变量还没填。页面已就绪，填入 keys 后即可注册登录。
+                Supabase 线上环境变量还没填。请在部署平台加入 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY，然后重新部署。
               </div>
             ) : null}
 
@@ -199,4 +199,3 @@ export default function AuthPage() {
     </AppShell>
   );
 }
-
