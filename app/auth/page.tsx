@@ -102,16 +102,16 @@ export default function AuthPage() {
       <main className="bg-[#ECFDF5] px-5 py-12">
         <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[2rem] bg-[#102019] p-8 text-white shadow-soft">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">DAILY ALMANAC</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight">每日大运程</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">PUBLIC ALMANAC</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight">大众每日通胜</h1>
             <p className="mt-5 text-sm leading-7 text-white/65">
-              结合通胜宜忌、五行节气、方位能量与个人命理资料，生成今日吉时、吉方与行动建议。
+              这是公开版今日参考，结合通胜宜忌、五行节气与方位能量，提供大众可用的吉时、吉方与行动提醒。
             </p>
 
             <div className="mt-8 rounded-3xl border border-[#D4AF37]/25 bg-white/8 p-5">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">今日总览</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">大众今日总览</p>
                   <p className="mt-2 text-2xl font-semibold">稳中有进，宜先定后动</p>
                 </div>
                 <span className="grid size-14 place-items-center rounded-2xl bg-[#D4AF37]/15 text-[#D4AF37]">
@@ -137,6 +137,9 @@ export default function AuthPage() {
             </div>
 
             <div className="mt-5 grid gap-3">
+              <div className="rounded border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-3 text-sm font-semibold leading-6 text-[#F8E7A7]">
+                登录后可生成个人专属运程：会结合生日、出生时辰、性别与会员命理档案。
+              </div>
               {[
                 "事业：先复盘资源，再推进新合作。",
                 "财运：偏财勿急，正财适合稳步跟进。",
