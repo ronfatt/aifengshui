@@ -58,6 +58,15 @@ const packages = [
   ["创业合作", "适合想进入AI风水命理服务市场的人。", "申请合作", "合作制", ["平台系统", "AI工具", "合作支持"]]
 ] as const;
 
+const peopleImages = {
+  advisor: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=82",
+  consultation: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=82",
+  founder: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=320&q=80",
+  clientA: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80",
+  clientB: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&q=80",
+  clientC: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=320&q=80"
+} as const;
+
 function SectionIntro({
   eyebrow,
   title,
@@ -158,6 +167,27 @@ function HeroPhoneMockup() {
   );
 }
 
+function HumanTrustRow() {
+  return (
+    <div className="mt-7 flex flex-wrap items-center gap-4">
+      <div className="flex -space-x-3">
+        {[peopleImages.clientA, peopleImages.founder, peopleImages.clientB, peopleImages.clientC].map((src, index) => (
+          <img
+            key={src}
+            src={src}
+            alt={`用户头像 ${index + 1}`}
+            className="size-12 rounded-full border-2 border-white object-cover shadow-sm"
+          />
+        ))}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-[#064E3B]">真实咨询场景，更像一位随身顾问</p>
+        <p className="mt-1 text-sm text-[#333333]/60">适合个人测算、企业决策与顾问型创业使用</p>
+      </div>
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-[#ECFDF5] px-5 py-20 md:py-24">
@@ -196,6 +226,7 @@ function HeroSection() {
               </div>
             ))}
           </div>
+          <HumanTrustRow />
         </div>
         <HeroPhoneMockup />
       </div>
@@ -226,11 +257,20 @@ function CoreSolutionSection() {
   return (
     <section className="bg-white px-5 py-20">
       <div className="mx-auto max-w-7xl">
-        <SectionIntro
-          eyebrow="AI + MASTER METHOD"
-          title="AI提升效率，大师决定深度"
-          desc="AI 负责快速分析与整理方向，易玺大师负责判断关键节点、风险与真正可执行的策略。"
-        />
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+          <SectionIntro
+            eyebrow="AI + MASTER METHOD"
+            title="AI提升效率，大师决定深度"
+            desc="AI 负责快速分析与整理方向，易玺大师负责判断关键节点、风险与真正可执行的策略。"
+          />
+          <div className="overflow-hidden rounded-[2rem] border border-[#064E3B]/10 bg-[#F7F7F7] shadow-sm">
+            <img
+              src={peopleImages.consultation}
+              alt="AI 风水命理咨询场景"
+              className="h-72 w-full object-cover"
+            />
+          </div>
+        </div>
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {methodCards.map(([title, desc, Icon]) => (
             <IconCard key={title} icon={Icon} title={title} desc={desc} />
@@ -275,13 +315,17 @@ function MasterSection() {
           <div className="absolute right-8 top-8 rounded-full bg-[#D4AF37]/15 px-4 py-2 text-xs font-semibold text-[#8A6D00]">
             MASTER PROFILE
           </div>
-          <div className="grid min-h-[520px] place-items-center rounded-[1.5rem] bg-white">
-            <div className="text-center">
-              <div className="mx-auto grid size-40 place-items-center rounded-full bg-[#064E3B] text-5xl font-semibold text-[#D4AF37] shadow-xl">
-                易
-              </div>
-              <p className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-[#8A6D00]">Photo Reserved</p>
-              <p className="mt-2 text-[#333333]/55">人物照片 / 品牌形象区域</p>
+          <div className="relative min-h-[520px] overflow-hidden rounded-[1.5rem] bg-white">
+            <img
+              src={peopleImages.advisor}
+              alt="易玺大师顾问形象示意"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,rgba(6,78,59,0.88))]" />
+            <div className="absolute inset-x-6 bottom-6 rounded-3xl border border-white/20 bg-white/12 p-5 text-white backdrop-blur">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">Master Consultation</p>
+              <p className="mt-2 text-2xl font-semibold">真人顾问形象区</p>
+              <p className="mt-2 text-sm leading-6 text-white/72">之后可替换为易玺大师本人照片或品牌形象照。</p>
             </div>
           </div>
         </div>
@@ -329,6 +373,29 @@ function BusinessSection() {
           {businessAdvantages.map(([title, desc, Icon]) => (
             <IconCard key={title} icon={Icon} title={title} desc={desc} dark />
           ))}
+        </div>
+        <div className="mt-8 overflow-hidden rounded-[2rem] border border-white/10 bg-white/8 shadow-[0_26px_80px_rgba(0,0,0,0.25)]">
+          <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
+            <img
+              src={peopleImages.consultation}
+              alt="AI 风水创业平台咨询团队"
+              className="h-72 w-full object-cover lg:h-full"
+            />
+            <div className="p-8 lg:p-10">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">REAL SERVICE FLOW</p>
+              <h3 className="mt-3 text-3xl font-semibold leading-tight">从线上测算，到真人咨询，再到产品成交</h3>
+              <p className="mt-4 text-sm leading-7 text-white/64">
+                平台不是只有页面和报告，而是把顾问、客户、内容、课程与代理服务串成可落地的服务流程。
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["客户接待", "报告交付", "咨询预约", "创业转化"].map((item) => (
+                  <span key={item} className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-white/82">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
