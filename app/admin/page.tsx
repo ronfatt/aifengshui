@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import {
   AlertTriangle,
   Award,
@@ -53,6 +53,7 @@ import {
   withdrawalRequests
 } from "@/lib/data";
 import { AppShell, MetricCard, StatusPill } from "@/components/shell";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const moduleTabs = [
   {
@@ -178,6 +179,9 @@ type AdminUserRecord = {
   gender: string;
   team: string;
   aiUsage: string;
+  referralCode: string;
+  sponsorCode: string;
+  referralSource: string;
 };
 
 const userSeed: AdminUserRecord[] = [
@@ -192,7 +196,10 @@ const userSeed: AdminUserRecord[] = [
     birth: "1980-06-14 17:30",
     gender: "男",
     team: "46 人",
-    aiUsage: "12 次 / 今日"
+    aiUsage: "12 次 / 今日",
+    referralCode: "YIXI-RON01",
+    sponsorCode: "HQ001",
+    referralSource: "organic_hq"
   },
   {
     id: "USR-1002",
@@ -205,7 +212,10 @@ const userSeed: AdminUserRecord[] = [
     birth: "1991-09-22 09:15",
     gender: "女",
     team: "18 人",
-    aiUsage: "8 次 / 今日"
+    aiUsage: "8 次 / 今日",
+    referralCode: "YIXI-MAY01",
+    sponsorCode: "YIXI-RON01",
+    referralSource: "member_referral"
   },
   {
     id: "USR-1003",
@@ -218,7 +228,10 @@ const userSeed: AdminUserRecord[] = [
     birth: "1988-03-02 13:00",
     gender: "男",
     team: "2 人",
-    aiUsage: "1 次 / 今日"
+    aiUsage: "1 次 / 今日",
+    referralCode: "YIXI-LIM01",
+    sponsorCode: "HQ001",
+    referralSource: "invalid_ref_fallback"
   }
 ];
 
@@ -358,10 +371,115 @@ function SectionFrame({
 function UsersModule() {
   const [users, setUsers] = useState<AdminUserRecord[]>(userSeed);
   const [selectedId, setSelectedId] = useState(userSeed[0].id);
+  const [saveMessage, setSaveMessage] = useState("点数保存后会同步到会员中心。");
+  const [isSavingUser, setIsSavingUser] = useState(false);
   const selectedUser = users.find((user) => user.id === selectedId) ?? users[0];
+
+  async function getAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+    const {
+      data: { session }
+    } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+    return session?.access_token || "";
+  }
 
   function updateSelectedUser(patch: Partial<AdminUserRecord>) {
     setUsers((current) => current.map((user) => (user.id === selectedUser.id ? { ...user, ...patch } : user)));
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    const emails = userSeed.map((user) => user.email).join(",");
+
+    async function loadSupabaseCredits() {
+      try {
+        const token = await getAccessToken();
+        const response = await fetch(`/api/admin/credits?emails=${encodeURIComponent(emails)}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined
+        });
+        const data = (await response.json()) as {
+          profiles?: {
+            email: string;
+            credit_balance: number;
+            membership_tier: "free" | "tactical" | "strategic";
+            full_name: string;
+            phone: string | null;
+            gender: string;
+            birth_date: string;
+            birth_time: string | null;
+            referral_code?: string;
+            sponsor_code?: string;
+            referral_source?: string;
+          }[];
+        };
+
+        if (!mounted || !data.profiles?.length) return;
+
+        setUsers((current) =>
+          current.map((user) => {
+            const profile = data.profiles?.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
+            if (!profile) return user;
+            return {
+              ...user,
+              name: profile.full_name || user.name,
+              phone: profile.phone || user.phone,
+              gender: profile.gender || user.gender,
+              birth: `${profile.birth_date}${profile.birth_time ? ` ${profile.birth_time}` : ""}`,
+              tier: profile.membership_tier === "strategic" ? "高阶战略版" : profile.membership_tier === "tactical" ? "进阶会员版" : "Free",
+              points: profile.credit_balance,
+              referralCode: profile.referral_code || user.referralCode,
+              sponsorCode: profile.sponsor_code || "HQ001",
+              referralSource: profile.referral_source || "organic_hq"
+            };
+          })
+        );
+      } catch {
+        if (mounted) {
+          setSaveMessage("目前读取不到真实点数资料，请确认你使用管理员账号登录。");
+        }
+      }
+    }
+
+    loadSupabaseCredits();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  async function saveSelectedUserCredits() {
+    setIsSavingUser(true);
+      setSaveMessage("正在保存点数...");
+
+    try {
+      const response = await fetch("/api/admin/credits", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getAccessToken()}`
+        },
+        body: JSON.stringify({
+          email: selectedUser.email,
+          creditBalance: selectedUser.points,
+          source: "admin_user_module",
+          description: `Admin 后台调整 ${selectedUser.name} 点数`
+        })
+      });
+      const data = (await response.json()) as { error?: string; profile?: { credit_balance: number } };
+
+      if (!response.ok) {
+        throw new Error(data.error || "点数保存失败。");
+      }
+
+      if (data.profile) {
+        updateSelectedUser({ points: data.profile.credit_balance });
+      }
+      setSaveMessage(`已保存：${selectedUser.email} 当前 ${data.profile?.credit_balance ?? selectedUser.points} 点。`);
+    } catch (error) {
+      setSaveMessage(error instanceof Error ? error.message : "点数保存失败。");
+    } finally {
+      setIsSavingUser(false);
+    }
   }
 
   return (
@@ -422,7 +540,10 @@ function UsersModule() {
               ["生日时辰", selectedUser.birth],
               ["性别", selectedUser.gender],
               ["团队结构", selectedUser.team],
-              ["AI 使用", selectedUser.aiUsage]
+              ["AI 使用", selectedUser.aiUsage],
+              ["推荐码", selectedUser.referralCode],
+              ["上级 Sponsor", selectedUser.sponsorCode],
+              ["推荐来源", selectedUser.referralSource === "member_referral" ? "会员推荐" : selectedUser.referralSource === "organic_hq" ? "总部自然流量" : "无效推荐码归属 HQ001"]
             ].map(([label, value]) => (
               <div key={label} className="rounded bg-[#F5FAFA] p-4">
                 <p className="text-xs text-ink/45">{label}</p>
@@ -449,10 +570,16 @@ function UsersModule() {
                 className="mt-2 w-full bg-transparent text-xl font-semibold text-[#063F4A] outline-none"
               />
             </label>
-            <button className="rounded bg-[#063F4A] px-4 py-3 font-semibold text-white">
-              保存会员资料
+            <button
+              type="button"
+              onClick={saveSelectedUserCredits}
+              disabled={isSavingUser}
+              className="rounded bg-[#063F4A] px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSavingUser ? "保存中..." : "保存点数"}
             </button>
           </div>
+          <p className="mt-4 rounded bg-[#F5FAFA] px-4 py-3 text-sm text-ink/58">{saveMessage}</p>
         </div>
       </div>
     </SectionFrame>
@@ -1596,7 +1723,7 @@ function SystemModule() {
               <h3 className="text-xl font-semibold">后台功能地图</h3>
               <p className="mt-2 text-sm text-ink/55">点击上方模块查看日常经营细节。</p>
             </div>
-            <StatusPill>MVP 管理范围</StatusPill>
+            <StatusPill>管理范围</StatusPill>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {adminModules.map((module) => {

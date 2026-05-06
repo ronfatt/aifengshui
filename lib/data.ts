@@ -300,9 +300,9 @@ export const adminModules = [
 
 export const navItems = [
   { href: "/", label: "首页", icon: LayoutDashboard },
-  { href: "/dashboard", label: "AI测算", icon: Bot },
   { href: "/#master", label: "大师咨询", icon: Award },
   { href: "/#business", label: "创业平台", icon: Network },
+  { href: "/dashboard", label: "会员中心", icon: Bot },
   { href: "/auth", label: "登录", icon: ShieldCheck }
 ];
 
@@ -476,7 +476,7 @@ export const paymentReconciliation = [
 export const costCenter = [
   { category: "OpenAI / Gemini API", amount: "RM7,860", pct: "1.28% of net revenue" },
   { category: "Vercel Hosting", amount: "RM1,420", pct: "0.23% of net revenue" },
-  { category: "Supabase Database", amount: "RM860", pct: "0.14% of net revenue" },
+  { category: "Database & Storage", amount: "RM860", pct: "0.14% of net revenue" },
   { category: "Storage / File", amount: "RM200", pct: "0.03% of net revenue" },
   { category: "Payment Gateway Fees", amount: "RM8,940", pct: "1.46% of net revenue" },
   { category: "Product COGS", amount: "RM54,220", pct: "55.0% product revenue" },

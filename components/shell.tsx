@@ -12,6 +12,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "ronfatt@gmail.com")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  const isAdmin = Boolean(userEmail && adminEmails.includes(userEmail.toLowerCase()));
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
@@ -24,6 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(Boolean(data.session));
+      setUserEmail(data.session?.user.email || "");
       setAuthChecked(true);
     });
 
@@ -31,6 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session));
+      setUserEmail(session?.user.email || "");
       setAuthChecked(true);
     });
 
@@ -43,7 +51,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (authChecked && !isLoggedIn && pathname.startsWith("/dashboard")) {
       router.replace("/auth");
     }
-  }, [authChecked, isLoggedIn, pathname, router]);
+
+    if (authChecked && pathname.startsWith("/admin") && (!isLoggedIn || !isAdmin)) {
+      router.replace(isLoggedIn ? "/dashboard" : "/auth");
+    }
+  }, [authChecked, isAdmin, isLoggedIn, pathname, router]);
 
   async function handleSignOut() {
     const supabase = createBrowserSupabaseClient();
@@ -53,6 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
 
     setIsLoggedIn(false);
+    setUserEmail("");
     router.push("/");
     router.refresh();
   }

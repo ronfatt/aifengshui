@@ -24,6 +24,15 @@ export type ReportRow = {
   created_at: string;
 };
 
+export type CreditTransactionRow = {
+  id: string;
+  user_id: string;
+  amount: number;
+  source: string;
+  description: string | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -45,6 +54,15 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<ReportRow, "id" | "user_id" | "created_at">>;
+        Relationships: [];
+      };
+      credit_transactions: {
+        Row: CreditTransactionRow;
+        Insert: Omit<CreditTransactionRow, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<Omit<CreditTransactionRow, "id" | "user_id" | "created_at">>;
         Relationships: [];
       };
     };

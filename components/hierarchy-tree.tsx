@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -14,6 +14,7 @@ import {
   UsersRound
 } from "lucide-react";
 import { downlineSummary, downlineTree, type DownlineMember } from "@/lib/data";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const levelLabels = {
   0: "本人",
@@ -139,11 +140,84 @@ function MemberNode({
   );
 }
 
+type ReferralSummary = {
+  label: string;
+  value: string;
+  helper: string;
+};
+
+type CommissionLedger = {
+  id: string;
+  date: string;
+  from: string;
+  level: 1 | 2 | 3;
+  source: string;
+  amount: string;
+  status: string;
+};
+
 export function HierarchyTree() {
-  const allMembers = useMemo(() => flattenTree(downlineTree), []);
-  const [selectedMember, setSelectedMember] = useState<DownlineMember>(downlineTree);
-  const [expandedIds, setExpandedIds] = useState(() => new Set(["u-root", "u-101", "u-102"]));
+  const [tree, setTree] = useState<DownlineMember>(downlineTree);
+  const [summary, setSummary] = useState<ReferralSummary[]>(downlineSummary);
+  const [commissions, setCommissions] = useState<CommissionLedger[]>([]);
+  const [referralCode, setReferralCode] = useState(downlineTree.code);
+  const [loadState, setLoadState] = useState("正在读取真实推荐关系...");
+  const allMembers = useMemo(() => flattenTree(tree), [tree]);
+  const [selectedMember, setSelectedMember] = useState<DownlineMember>(tree);
+  const [expandedIds, setExpandedIds] = useState(() => new Set([downlineTree.id]));
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadReferralTree() {
+      const supabase = createBrowserSupabaseClient();
+      const {
+        data: { session }
+      } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+
+      if (!session?.access_token) {
+        if (mounted) setLoadState("请先登录后查看真实推荐团队。");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/referrals", {
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        });
+        const data = (await response.json()) as {
+          tree?: DownlineMember;
+          summary?: ReferralSummary[];
+          commissions?: CommissionLedger[];
+          referral?: { referralCode?: string };
+          error?: string;
+        };
+
+        if (!mounted) return;
+
+        if (!response.ok || !data.tree) {
+          setLoadState(data.error || "推荐关系暂时无法读取。");
+          return;
+        }
+
+        setTree(data.tree);
+        setSelectedMember(data.tree);
+        setExpandedIds(new Set([data.tree.id, ...(data.tree.children || []).map((child) => child.id)]));
+        setSummary(data.summary || []);
+        setCommissions(data.commissions || []);
+        setReferralCode(data.referral?.referralCode || data.tree.code);
+        setLoadState("已同步真实推荐关系。");
+      } catch {
+        if (mounted) setLoadState("推荐关系暂时无法读取。");
+      }
+    }
+
+    loadReferralTree();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filteredMembers = allMembers.filter((member) => {
     const keyword = query.trim().toLowerCase();
@@ -153,6 +227,17 @@ export function HierarchyTree() {
 
     return `${member.name} ${member.code} ${member.level} ${member.status}`.toLowerCase().includes(keyword);
   });
+
+  const inviteLink = typeof window === "undefined" ? `/auth?ref=${referralCode}` : `${window.location.origin}/auth?ref=${referralCode}`;
+
+  function copyInviteLink() {
+    navigator.clipboard?.writeText(inviteLink);
+  }
+
+  function shareWhatsApp() {
+    const text = encodeURIComponent(`我在使用 AI Feng Shui Master，你可以用我的推荐链接注册，完成资料后双方各得 30 点：${inviteLink}`);
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  }
 
   function handleToggle(id: string) {
     setExpandedIds((current) => {
@@ -176,21 +261,22 @@ export function HierarchyTree() {
           </div>
           <h2 className="mt-2 text-2xl font-semibold">我的下线团队</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
-            查看三层推荐关系、会员等级、销售额、点数和预估佣金。MVP 先展示三层，后台可继续扩展为团队业绩看板。
+            查看三层推荐关系、会员等级、销售额、点数和预估佣金，方便你跟进团队成长与服务转化。
           </p>
+          <p className="mt-2 text-sm font-semibold text-[#063F4A]">{loadState}</p>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 rounded border border-black/10 px-3 py-2 text-sm font-semibold">
+          <button type="button" onClick={copyInviteLink} className="flex items-center gap-2 rounded border border-black/10 px-3 py-2 text-sm font-semibold">
             <Copy className="size-4" /> 推荐码
           </button>
-          <button className="flex items-center gap-2 rounded bg-[#063F4A] px-3 py-2 text-sm font-semibold text-white">
-            <Share2 className="size-4" /> 分享
+          <button type="button" onClick={shareWhatsApp} className="flex items-center gap-2 rounded bg-[#063F4A] px-3 py-2 text-sm font-semibold text-white">
+            <Share2 className="size-4" /> WhatsApp
           </button>
         </div>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {downlineSummary.map((item) => (
+        {summary.map((item) => (
           <div key={item.label} className="rounded border border-black/10 bg-rice p-4">
             <p className="text-sm text-ink/55">{item.label}</p>
             <p className="mt-2 text-2xl font-semibold">{item.value}</p>
@@ -210,7 +296,7 @@ export function HierarchyTree() {
           </div>
           <ul className="space-y-2">
             <MemberNode
-              member={downlineTree}
+              member={tree}
               selectedId={selectedMember.id}
               expandedIds={expandedIds}
               onSelect={setSelectedMember}
@@ -281,12 +367,34 @@ export function HierarchyTree() {
             </div>
           </div>
 
+          <div className="rounded border border-black/10 bg-white p-4">
+            <h3 className="font-semibold">佣金 / 奖励流水</h3>
+            <div className="mt-3 max-h-64 overflow-y-auto scrollbar-soft">
+              {commissions.length ? (
+                commissions.map((record) => (
+                  <div key={record.id} className="grid gap-2 border-t border-black/10 py-3 text-sm first:border-t-0 sm:grid-cols-[1fr_0.75fr_0.55fr]">
+                    <div>
+                      <p className="font-semibold">{record.from}</p>
+                      <p className="mt-0.5 text-xs text-ink/45">{record.date} · 第{record.level}代 · {record.source}</p>
+                    </div>
+                    <p className="font-semibold text-[#063F4A]">{record.amount}</p>
+                    <p className="text-xs text-ink/50">{record.status}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded border border-dashed border-black/15 bg-rice p-4 text-sm leading-6 text-ink/55">
+                  暂无下线佣金。分享推荐链接后，新会员注册奖励和订单佣金会显示在这里。
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 rounded border border-black/10 px-3 py-3 text-sm font-semibold">
+            <button type="button" onClick={copyInviteLink} className="flex items-center justify-center gap-2 rounded border border-black/10 px-3 py-3 text-sm font-semibold">
               <Link2 className="size-4" /> 复制链接
             </button>
-            <button className="flex items-center justify-center gap-2 rounded border border-black/10 px-3 py-3 text-sm font-semibold">
-              <Share2 className="size-4" /> 生成海报
+            <button type="button" onClick={shareWhatsApp} className="flex items-center justify-center gap-2 rounded border border-black/10 px-3 py-3 text-sm font-semibold">
+              <Share2 className="size-4" /> WhatsApp
             </button>
           </div>
         </div>

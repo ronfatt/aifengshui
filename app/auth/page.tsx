@@ -2,25 +2,29 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { BadgeCheck, CalendarDays, Compass, Loader2, LogIn, Sparkles, SunMedium } from "lucide-react";
 import { AppShell } from "@/components/shell";
-import { demoMemberProfile } from "@/lib/member-profile";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export default function AuthPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("register");
-  const [email, setEmail] = useState(demoMemberProfile.email);
-  const [password, setPassword] = useState("testing12345");
-  const [name, setName] = useState(demoMemberProfile.name);
-  const [birthDate, setBirthDate] = useState(demoMemberProfile.birthDate);
-  const [birthTime, setBirthTime] = useState(demoMemberProfile.birthTime);
-  const [gender, setGender] = useState(demoMemberProfile.gender);
-  const [phone, setPhone] = useState(demoMemberProfile.phone);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [birthTime, setBirthTime] = useState("");
+  const [gender, setGender] = useState("男");
+  const [phone, setPhone] = useState("");
+  const [referralCode, setReferralCode] = useState("HQ001");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    setReferralCode(ref?.trim().toUpperCase() || "HQ001");
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,7 +33,7 @@ export default function AuthPage() {
     const supabase = createBrowserSupabaseClient();
 
     if (!supabase) {
-      setMessage("Supabase 尚未配置。请在部署平台加入 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY，或 NEXT_PUBLIC_SUPABASE_ANON_KEY，然后重新部署。");
+      setMessage("会员系统暂时维护中，请稍后再试。");
       return;
     }
 
@@ -78,7 +82,8 @@ export default function AuthPage() {
             gender,
             email,
             phone,
-            region: demoMemberProfile.region
+            region: "Malaysia / Kuala Lumpur",
+            referralCode
           })
         });
         const profileData = (await profileResponse.json()) as { error?: string };
@@ -91,7 +96,12 @@ export default function AuthPage() {
       setMessage("注册成功，会员基础资料已保存，正在进入会员中心。");
       router.push("/dashboard");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "操作失败，请稍后再试。");
+      const rawMessage = error instanceof Error ? error.message : "";
+      const friendlyMessage =
+        rawMessage.toLowerCase().includes("supabase") || rawMessage.toLowerCase().includes("fetch")
+          ? "会员系统暂时维护中，请稍后再试。"
+          : rawMessage || "操作失败，请稍后再试。";
+      setMessage(friendlyMessage);
     } finally {
       setIsLoading(false);
     }
@@ -170,12 +180,6 @@ export default function AuthPage() {
               ))}
             </div>
 
-            {!isSupabaseConfigured ? (
-              <div className="mt-5 rounded border border-[#C79A54]/40 bg-[#C79A54]/10 p-4 text-sm leading-6 text-ink/70">
-                Supabase 线上环境变量还没填。请在部署平台加入 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY，然后重新部署。
-              </div>
-            ) : null}
-
             <div className="mt-6 grid gap-4">
               {mode === "register" ? (
                 <>
@@ -207,6 +211,16 @@ export default function AuthPage() {
                       <input value={phone} onChange={(event) => setPhone(event.target.value)} className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]" />
                     </label>
                   </div>
+                  <label className="grid gap-2 text-sm font-semibold">
+                    推荐码
+                    <input
+                      value={referralCode}
+                      onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
+                      className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]"
+                      placeholder="没有推荐码则默认 HQ001"
+                    />
+                    <span className="text-xs font-normal text-ink/45">没有推荐码的新会员会归属平台总部账号 HQ001。</span>
+                  </label>
                 </>
               ) : null}
 

@@ -56,6 +56,7 @@ type DashboardModule =
   | "ai"
   | "divination"
   | "sigil"
+  | "invite"
   | "wallet"
   | "shop"
   | "courses"
@@ -123,6 +124,13 @@ const modules: {
     desc: "意图图形化",
     metric: "88 点",
     icon: Sparkles
+  },
+  {
+    id: "invite",
+    title: "邀请好友",
+    desc: "推荐码 + 奖励",
+    metric: "+30 点",
+    icon: Share2
   },
   {
     id: "wallet",
@@ -244,6 +252,13 @@ const todayActionCards: {
     module: "sigil",
     icon: Sparkles,
     tone: "red"
+  },
+  {
+    title: "邀请好友注册",
+    desc: "双方各得 30 点",
+    module: "invite",
+    icon: Share2,
+    tone: "green"
   }
 ];
 
@@ -578,7 +593,6 @@ const reportContent: Record<string, Omit<SavedReport, "id" | "createdAt" | "tag"
 };
 
 const reportStorageKey = "ai-fengshui-saved-reports";
-const pointsStorageKey = "ai-fengshui-demo-points";
 const sigilStorageKey = "ai-fengshui-sigil-vault";
 const sigilCost = 88;
 const divinationStorageKey = "ai-fengshui-jiuyun-divinations";
@@ -1419,58 +1433,6 @@ function MembershipPlanPanel({
         })}
       </div>
     </section>
-  );
-}
-
-function TierTestSwitcher({
-  currentTier,
-  onChangeTier
-}: {
-  currentTier: MembershipTier;
-  onChangeTier: (tier: MembershipTier) => void;
-}) {
-  const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
-
-  return (
-    <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Test Mode</p>
-          <h2 className="mt-1 text-lg font-semibold">快速切换会员版本</h2>
-          <p className="mt-1 text-sm text-ink/58">当前：{activeTier.positioning}</p>
-        </div>
-        <div className="grid w-full gap-2 sm:w-auto sm:min-w-[560px] sm:grid-cols-3">
-          {membershipTiers.map((tier) => {
-            const active = tier.id === currentTier;
-            const Icon = tier.id === "free" ? LockKeyhole : tier.id === "tactical" ? Sparkles : Trophy;
-
-            return (
-              <button
-                key={tier.id}
-                type="button"
-                onClick={() => onChangeTier(tier.id)}
-                className={`rounded border p-3 text-left transition ${
-                  active
-                    ? "border-[#C79A54] bg-[#063F4A] text-white shadow-soft"
-                    : "border-black/10 bg-white text-ink hover:border-[#C79A54]/55"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className={`grid size-8 place-items-center rounded ${active ? "bg-white/12 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"}`}>
-                    <Icon className="size-4" />
-                  </span>
-                  <span className={`rounded px-2 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"}`}>
-                    {tier.price}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm font-semibold">{tier.id === "free" ? "Free" : tier.id === "tactical" ? "进阶版" : "高阶版"}</p>
-                <p className={`mt-1 text-xs ${active ? "text-white/58" : "text-ink/45"}`}>{tier.positioning}</p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -2563,10 +2525,21 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
   );
 }
 
-function WalletAndReports({ currentTier, memberProfile }: { currentTier: MembershipTier; memberProfile: MemberProfile }) {
+function WalletAndReports({
+  currentTier,
+  memberProfile,
+  points,
+  onSpendPoints
+}: {
+  currentTier: MembershipTier;
+  memberProfile: MemberProfile;
+  points: number;
+  onSpendPoints: (amount: number, source?: string, description?: string) => boolean;
+}) {
   const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<SavedReport | null>(null);
   const [isFullReportOpen, setIsFullReportOpen] = useState(false);
+  const [reportMessage, setReportMessage] = useState("生成后的报告会自动保存，之后可随时找回。");
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const strategicReportTitles = new Set(["流年报告", "开业择日报告", "公司风水初步分析报告"]);
 
@@ -2586,12 +2559,81 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
     }
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadCloudReports() {
+      const supabase = createBrowserSupabaseClient();
+      if (!supabase) return;
+
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (!mounted || !data?.length) return;
+
+      const cloudReports: SavedReport[] = data.map((report) => ({
+        id: report.id,
+        title: report.title,
+        tag: report.tag,
+        points: report.points,
+        createdAt: new Date(report.created_at).toLocaleString("zh-CN", { hour12: false }),
+        summary: report.summary,
+        sections: report.sections
+      }));
+      setSavedReports(cloudReports);
+      setSelectedReport(cloudReports[0] || null);
+      setReportMessage("已读取你的云端报告档案。");
+    }
+
+    loadCloudReports();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   function isReportLocked(report: (typeof reportTypes)[number]) {
     return currentTier === "free" || (currentTier === "tactical" && strategicReportTitles.has(report.title));
   }
 
+  async function saveReportToCloud(report: SavedReport) {
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return;
+
+    const {
+      data: { user }
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    await supabase.from("reports").insert({
+      id: report.id,
+      user_id: user.id,
+      title: report.title,
+      tag: report.tag,
+      points: report.points,
+      summary: report.summary,
+      sections: report.sections
+    });
+  }
+
   function handleOpenReport(report: (typeof reportTypes)[number]) {
     if (isReportLocked(report)) {
+      return;
+    }
+
+    if (points < report.points || !onSpendPoints(report.points, "report_generation", `生成${report.title}`)) {
+      setReportMessage("点数不足，请先充值点数后再生成报告。");
       return;
     }
 
@@ -2600,7 +2642,9 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
     setSavedReports(nextReports);
     setSelectedReport(generated);
     setIsFullReportOpen(true);
+    setReportMessage(`${report.title} 已生成，并正在保存到云端档案。`);
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage(`${report.title} 已保存，之后可以在报告档案找回。`));
   }
 
   function handleSelectSaved(report: SavedReport) {
@@ -2621,7 +2665,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
         </div>
         <div className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
           <p className="text-sm text-ink/55">当前可用点数</p>
-          <p className="mt-2 text-4xl font-semibold text-[#063F4A]">2,680</p>
+          <p className="mt-2 text-4xl font-semibold text-[#063F4A]">{points.toLocaleString("en-US")}</p>
           <p className="mt-2 text-sm text-ink/55">点数只用于平台功能，不可提现。</p>
         </div>
         <div className="mt-4">
@@ -2643,7 +2687,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
               {activeTier.name} 当前可用：{currentTier === "free" ? "报告摘要预览" : currentTier === "tactical" ? "财运、事业、感情、合盘等战术报告" : "全部报告与流月/流年战略分析"}。
             </p>
           </div>
-          <StatusPill>可生成 2 份 PDF</StatusPill>
+          <StatusPill>云端保存</StatusPill>
         </div>
 
         <div className="mt-6 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
@@ -2785,11 +2829,108 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
               </div>
             )}
           </div>
+          <p className="mt-3 rounded bg-[#F5FAFA] px-4 py-3 text-sm text-ink/58">{reportMessage}</p>
         </div>
       </div>
       {selectedReport && isFullReportOpen ? (
         <FullReportView report={selectedReport} memberProfile={memberProfile} onClose={() => setIsFullReportOpen(false)} />
       ) : null}
+    </section>
+  );
+}
+
+function InviteFriendsModule({
+  referralCode,
+  sponsorCode,
+  referralSource
+}: {
+  referralCode: string;
+  sponsorCode: string;
+  referralSource: string;
+}) {
+  const inviteLink = typeof window === "undefined" ? `/auth?ref=${referralCode}` : `${window.location.origin}/auth?ref=${referralCode}`;
+  const sourceLabel = referralSource === "member_referral" ? "会员推荐" : "总部自然流量";
+
+  function copyInviteLink() {
+    navigator.clipboard?.writeText(inviteLink);
+  }
+
+  function shareWhatsApp() {
+    const text = encodeURIComponent(`我在使用 AI Feng Shui Master，你可以用我的推荐链接注册，完成资料后双方各得 30 点：${inviteLink}`);
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  }
+
+  function downloadReferralPoster() {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+      <rect width="1080" height="1350" fill="#F5FAFA"/>
+      <rect x="70" y="70" width="940" height="1210" rx="46" fill="#063F4A"/>
+      <circle cx="860" cy="230" r="150" fill="#1495A0" opacity="0.18"/>
+      <circle cx="190" cy="1120" r="190" fill="#C79A54" opacity="0.16"/>
+      <text x="120" y="170" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#C79A54" letter-spacing="8">AI FENG SHUI MASTER</text>
+      <text x="120" y="300" font-family="Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF">邀请你免费测算</text>
+      <text x="120" y="385" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#E8D4A8">注册完成资料，双方各得 30 点</text>
+      <rect x="120" y="475" width="840" height="250" rx="32" fill="#FFFFFF" opacity="0.96"/>
+      <text x="170" y="565" font-family="Arial, sans-serif" font-size="30" fill="#6C8790">专属推荐码</text>
+      <text x="170" y="650" font-family="Arial, sans-serif" font-size="66" font-weight="800" fill="#063F4A" letter-spacing="6">${referralCode}</text>
+      <rect x="120" y="780" width="840" height="240" rx="32" fill="#FFFFFF" opacity="0.1" stroke="#C79A54" stroke-width="3"/>
+      <text x="170" y="860" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF">扫码 / 输入链接注册</text>
+      <text x="170" y="935" font-family="Arial, sans-serif" font-size="30" fill="#E8D4A8">${inviteLink}</text>
+      <text x="120" y="1155" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#FFFFFF">AI 给你速度，大师给你深度</text>
+      <text x="120" y="1215" font-family="Arial, sans-serif" font-size="26" fill="#DDEFF2">命理分析仅供参考，行动决定结果。</text>
+    </svg>`;
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `referral-poster-${referralCode}.svg`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Referral Center</p>
+        <h2 className="mt-3 text-3xl font-semibold">邀请好友注册</h2>
+        <p className="mt-3 text-sm leading-7 text-white/68">
+          分享你的专属推荐链接，好友完成注册后，你和好友各获得 30 点。推荐关系用于后续团队、奖励和订单归属。
+        </p>
+        <div className="mt-6 rounded border border-white/10 bg-white/8 p-4">
+          <p className="text-xs text-white/48">我的推荐码</p>
+          <p className="mt-2 text-3xl font-semibold tracking-[0.12em] text-[#C79A54]">{referralCode}</p>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <button type="button" onClick={copyInviteLink} className="rounded bg-[#C79A54] px-4 py-3 font-semibold text-[#063F4A]">
+            复制推荐链接
+          </button>
+          <button type="button" onClick={shareWhatsApp} className="rounded border border-white/15 px-4 py-3 font-semibold text-white">
+            WhatsApp 分享
+          </button>
+          <button type="button" onClick={downloadReferralPoster} className="rounded border border-white/15 px-4 py-3 font-semibold text-white sm:col-span-2">
+            下载推荐海报
+          </button>
+        </div>
+      </div>
+
+      <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
+        <h3 className="text-2xl font-semibold text-[#063F4A]">推荐归属</h3>
+        <div className="mt-5 grid gap-3">
+          {[
+            ["推荐链接", inviteLink],
+            ["我的上级", sponsorCode || "HQ001"],
+            ["注册来源", sourceLabel],
+            ["默认规则", "没有推荐码的新用户自动归属 HQ001"]
+          ].map(([label, value]) => (
+            <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <p className="text-xs text-ink/45">{label}</p>
+              <p className="mt-2 break-all font-semibold text-[#063F4A]">{value}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4 text-sm leading-6 text-ink/65">
+          推荐关系注册后锁定，若用户没有推荐码，系统会归属总部账号 HQ001，避免随机分配造成佣金争议。
+        </div>
+      </div>
     </section>
   );
 }
@@ -3541,22 +3682,16 @@ export default function DashboardPage() {
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("tactical");
   const [pointBalance, setPointBalance] = useState(2680);
-  const [pointsLoaded, setPointsLoaded] = useState(false);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(demoMemberProfile);
-  const [profileSource, setProfileSource] = useState<"supabase" | "demo" | "loading">("loading");
+  const [referralCode, setReferralCode] = useState("HQ001");
+  const [sponsorCode, setSponsorCode] = useState("HQ001");
+  const [referralSource, setReferralSource] = useState("organic_hq");
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const accountStats = dashboardStats.map((stat) =>
     stat.label === "当前点数" ? { ...stat, value: pointBalance.toLocaleString("en-US") } : stat
   );
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem(pointsStorageKey);
-    const parsed = stored ? Number(stored) : 2680;
-    setPointBalance(Number.isFinite(parsed) && parsed >= 0 ? parsed : 2680);
-    setPointsLoaded(true);
-  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -3567,7 +3702,6 @@ export default function DashboardPage() {
       if (!supabase) {
         if (mounted) {
           setMemberProfile(demoMemberProfile);
-          setProfileSource("demo");
           setAuthStatus("unauthenticated");
           router.replace("/auth");
         }
@@ -3581,7 +3715,6 @@ export default function DashboardPage() {
       if (!user) {
         if (mounted) {
           setMemberProfile(demoMemberProfile);
-          setProfileSource("demo");
           setAuthStatus("unauthenticated");
           router.replace("/auth");
         }
@@ -3589,20 +3722,25 @@ export default function DashboardPage() {
       }
 
       const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      const metadata = user.user_metadata || {};
 
       if (mounted) {
         if (profile) {
           setMemberProfile(profileRowToMemberProfile(profile));
           setCurrentTier(profile.membership_tier);
           setPointBalance(profile.credit_balance);
-          setProfileSource("supabase");
+          setReferralCode((metadata.referral_code as string | undefined) || `YIXI-${user.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`);
+          setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
+          setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
         } else {
           setMemberProfile({
             ...demoMemberProfile,
             email: user.email || demoMemberProfile.email,
             name: user.user_metadata?.full_name || demoMemberProfile.name
           });
-          setProfileSource("demo");
+          setReferralCode((metadata.referral_code as string | undefined) || "HQ001");
+          setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
+          setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
         }
         setAuthStatus("authenticated");
       }
@@ -3615,23 +3753,37 @@ export default function DashboardPage() {
     };
   }, [router]);
 
-  useEffect(() => {
-    if (pointsLoaded) {
-      window.localStorage.setItem(pointsStorageKey, String(pointBalance));
-    }
-  }, [pointBalance, pointsLoaded]);
+  function syncCreditDelta(delta: number, source: string, description: string) {
+    const supabase = createBrowserSupabaseClient();
 
-  function spendPoints(amount: number) {
+    supabase?.auth.getSession().then(({ data }) => {
+      const token = data.session?.access_token;
+      if (!token) return;
+
+      fetch("/api/credits", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ delta, source, description })
+      }).catch(() => undefined);
+    });
+  }
+
+  function spendPoints(amount: number, source = "member_usage", description = "会员端功能消耗") {
     if (pointBalance < amount) {
       return false;
     }
 
     setPointBalance((current) => current - amount);
+    syncCreditDelta(-amount, source, description);
     return true;
   }
 
-  function earnPoints(amount: number) {
+  function earnPoints(amount: number, source = "member_reward", description = "会员端奖励点数") {
     setPointBalance((current) => current + amount);
+    syncCreditDelta(amount, source, description);
   }
 
   if (authStatus !== "authenticated") {
@@ -3660,9 +3812,7 @@ export default function DashboardPage() {
                 <WalletCards className="size-5 text-[#063F4A]" />
                 <h2 className="text-lg font-semibold">账户快照</h2>
               </div>
-              <StatusPill>
-                {profileSource === "loading" ? "读取会员资料中" : profileSource === "supabase" ? "Supabase 会员资料" : "Demo 资料"}
-              </StatusPill>
+              <StatusPill>会员资料</StatusPill>
               <button className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#052F38]">
                 充值点数 <CreditCard className="size-4" />
               </button>
@@ -3672,7 +3822,6 @@ export default function DashboardPage() {
                 <MetricCard key={stat.label} {...stat} />
               ))}
             </div>
-            <TierTestSwitcher currentTier={currentTier} onChangeTier={setCurrentTier} />
           </section>
 
           <MembershipPlanPanel currentTier={currentTier} onChangeTier={setCurrentTier} />
@@ -3720,7 +3869,12 @@ export default function DashboardPage() {
             {activeModule === "sigil" ? (
               <SigilModule points={pointBalance} onSpendPoints={spendPoints} />
             ) : null}
-            {activeModule === "wallet" ? <WalletAndReports currentTier={currentTier} memberProfile={memberProfile} /> : null}
+            {activeModule === "invite" ? (
+              <InviteFriendsModule referralCode={referralCode} sponsorCode={sponsorCode} referralSource={referralSource} />
+            ) : null}
+            {activeModule === "wallet" ? (
+              <WalletAndReports currentTier={currentTier} memberProfile={memberProfile} points={pointBalance} onSpendPoints={spendPoints} />
+            ) : null}
             {activeModule === "shop" ? <ProductModule /> : null}
             {activeModule === "courses" ? <CourseModule /> : null}
             {activeModule === "team" ? <HierarchyTree /> : null}
