@@ -93,6 +93,96 @@ const orderTabs = ["All", "Product Orders", "Course Orders", "Credit Top-up", "S
 type OrderTab = (typeof orderTabs)[number];
 type OrderRecord = (typeof orders)[number];
 type InventoryProduct = (typeof inventoryProducts)[number];
+const adminCompletionChecks = [
+  {
+    module: "用户管理",
+    status: "未做",
+    progress: 15,
+    priority: "高",
+    done: "功能地图已列出字段范围。",
+    missing: "缺用户列表、会员资料编辑、点数调整、冻结账号、AI 使用记录、团队结构查询。"
+  },
+  {
+    module: "点数管理",
+    status: "未做",
+    progress: 10,
+    priority: "高",
+    done: "会员端有本地点数钱包展示。",
+    missing: "缺后台充值套餐、赠送规则、有效期、扣点规则、点数流水审核。"
+  },
+  {
+    module: "AI 功能管理",
+    status: "未做",
+    progress: 20,
+    priority: "高",
+    done: "已有 OpenAI API 路由、聊天 Prompt 与等级逻辑雏形。",
+    missing: "缺后台 Prompt 模板 CRUD、敏感词、免责声明、报告模板、功能扣点配置。"
+  },
+  {
+    module: "Finance 财务",
+    status: "部分完成",
+    progress: 75,
+    priority: "高",
+    done: "收入、交易、AI 成本、利润、佣金、提现、报表导出区已排版。",
+    missing: "还没接真实支付网关、Supabase 交易表、实际审核动作和导出文件。"
+  },
+  {
+    module: "产品管理",
+    status: "部分完成",
+    progress: 65,
+    priority: "中",
+    done: "Stock Keeper 里可新增和编辑产品，包含图片、库存、成本和售价。",
+    missing: "缺分类管理、上下架、会员折扣、赠点、推荐佣金、前台商城同步。"
+  },
+  {
+    module: "Stock Keeper",
+    status: "部分完成",
+    progress: 70,
+    priority: "中",
+    done: "库存清单、新增编辑、低库存状态、库存流水和利润报表已做 demo。",
+    missing: "缺真实库存表、订单 Paid 自动扣库存、盘点调整记录和图片上传。"
+  },
+  {
+    module: "课程管理",
+    status: "未做",
+    progress: 10,
+    priority: "中",
+    done: "会员端有课程推荐和详情页。",
+    missing: "缺后台课程新增、视频上传、报名名单、签到、证书、名额管理。"
+  },
+  {
+    module: "订单管理",
+    status: "部分完成",
+    progress: 70,
+    priority: "高",
+    done: "订单 KPI、Pipeline、异常提醒、筛选、订单详情和履约检查已排版。",
+    missing: "缺真实订单表、状态更新动作、退款处理、自动履约与通知。"
+  },
+  {
+    module: "分润系统",
+    status: "部分完成",
+    progress: 45,
+    priority: "高",
+    done: "三层 20/10/5 规则、会员端团队树、Finance 佣金记录 demo 已有。",
+    missing: "缺按订单自动生成佣金、Pending/Approved/Paid 操作、退款追回、提现结算。"
+  },
+  {
+    module: "代理配套",
+    status: "未做",
+    progress: 20,
+    priority: "中",
+    done: "功能地图和套餐概念已有。",
+    missing: "缺 8888/16888/38888 包配置、权益开通、礼包、课程包、服务包管理。"
+  },
+  {
+    module: "支付审核",
+    status: "未做",
+    progress: 15,
+    priority: "高",
+    done: "订单和 Finance 里有支付/对账展示。",
+    missing: "缺 Stripe/FPX/本地网关 webhook、银行转账凭证上传、人工审核和自动开通。"
+  }
+] as const;
 type ProductDraft = {
   sku: string;
   product: string;
@@ -155,6 +245,12 @@ function statusTone(status: string) {
 
 function StatusBadge({ status }: { status: string }) {
   return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusTone(status)}`}>{status}</span>;
+}
+
+function completionTone(status: string) {
+  if (status === "部分完成") return "bg-[#C79A54]/15 text-[#063F4A]";
+  if (status === "已完成") return "bg-[#DDEFF2] text-[#063F4A]";
+  return "bg-black/5 text-ink/55";
 }
 
 function ModuleCard({
@@ -1065,6 +1161,55 @@ function SystemModule() {
                 </article>
               );
             })}
+          </div>
+        </div>
+
+        <div className="mt-5 rounded border border-black/10 bg-white p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-xl font-semibold">功能完成度监测</h3>
+              <p className="mt-2 text-sm text-ink/55">对照功能地图，标记哪些只是 demo、哪些还没接真实数据和操作。</p>
+            </div>
+            <StatusPill>
+              {adminCompletionChecks.filter((item) => item.status === "部分完成").length} 部分完成 · {adminCompletionChecks.filter((item) => item.status === "未做").length} 未做
+            </StatusPill>
+          </div>
+          <div className="mt-5 overflow-x-auto scrollbar-soft">
+            <table className="min-w-[980px] w-full text-left text-sm">
+              <thead className="text-xs uppercase tracking-[0.12em] text-ink/45">
+                <tr className="border-b border-black/10">
+                  <th className="py-3 pr-3">模块</th>
+                  <th className="px-3 py-3">状态</th>
+                  <th className="px-3 py-3">完成度</th>
+                  <th className="px-3 py-3">优先级</th>
+                  <th className="px-3 py-3">已具备</th>
+                  <th className="py-3 pl-3">还缺</th>
+                </tr>
+              </thead>
+              <tbody>
+                {adminCompletionChecks.map((item) => (
+                  <tr key={item.module} className="border-b border-black/10 align-top last:border-b-0">
+                    <td className="py-4 pr-3 font-semibold text-[#063F4A]">{item.module}</td>
+                    <td className="px-3 py-4">
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${completionTone(item.status)}`}>{item.status}</span>
+                    </td>
+                    <td className="px-3 py-4">
+                      <div className="flex min-w-32 items-center gap-2">
+                        <span className="h-2 flex-1 rounded-full bg-[#F5FAFA]">
+                          <span className="block h-full rounded-full bg-[#1495A0]" style={{ width: `${item.progress}%` }} />
+                        </span>
+                        <span className="w-9 text-xs font-semibold text-ink/55">{item.progress}%</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-4">
+                      <span className={item.priority === "高" ? "font-semibold text-[#1495A0]" : "text-ink/55"}>{item.priority}</span>
+                    </td>
+                    <td className="px-3 py-4 text-ink/62">{item.done}</td>
+                    <td className="py-4 pl-3 text-ink/62">{item.missing}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
