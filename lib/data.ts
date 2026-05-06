@@ -235,7 +235,7 @@ export const closeLoop = [
 export const dashboardStats = [
   { label: "当前点数", value: "2,680", change: "+800 课程赠送", icon: WalletCards },
   { label: "今日 AI 次数", value: "12", change: "Plus 剩余额度充足", icon: Bot },
-  { label: "推荐收益", value: "RM1,248", change: "三层团队 46 人", icon: Network },
+  { label: "推荐收益", value: "RM3,191.55", change: "三层团队 46 人", icon: Network },
   { label: "待完成报告", value: "3", change: "2 份可生成 PDF", icon: ClipboardList }
 ];
 
@@ -676,7 +676,7 @@ export const downlineTree: DownlineMember = {
   status: "活跃",
   joinedAt: "2026-01-06",
   sales: "RM12,860",
-  commission: "RM1,248",
+  commission: "RM3,191.55",
   points: "2,680",
   children: [
     {
@@ -688,7 +688,7 @@ export const downlineTree: DownlineMember = {
       status: "活跃",
       joinedAt: "2026-02-12",
       sales: "RM5,388",
-      commission: "RM638",
+      commission: "RM1,077.60",
       points: "1,420",
       children: [
         {
@@ -700,7 +700,7 @@ export const downlineTree: DownlineMember = {
           status: "活跃",
           joinedAt: "2026-03-02",
           sales: "RM1,288",
-          commission: "RM129",
+          commission: "RM128.80",
           points: "820",
           children: [
             {
@@ -712,7 +712,7 @@ export const downlineTree: DownlineMember = {
               status: "跟进中",
               joinedAt: "2026-03-28",
               sales: "RM399",
-              commission: "RM20",
+              commission: "RM19.95",
               points: "120"
             }
           ]
@@ -726,7 +726,7 @@ export const downlineTree: DownlineMember = {
           status: "跟进中",
           joinedAt: "2026-03-10",
           sales: "RM188",
-          commission: "RM19",
+          commission: "RM18.80",
           points: "60"
         }
       ]
@@ -740,7 +740,7 @@ export const downlineTree: DownlineMember = {
       status: "活跃",
       joinedAt: "2026-02-18",
       sales: "RM8,888",
-      commission: "RM1,066",
+      commission: "RM1,777.60",
       points: "5,900",
       children: [
         {
@@ -752,7 +752,7 @@ export const downlineTree: DownlineMember = {
           status: "活跃",
           joinedAt: "2026-03-22",
           sales: "RM1,688",
-          commission: "RM169",
+          commission: "RM168.80",
           points: "1,260"
         }
       ]
@@ -776,5 +776,5 @@ export const downlineSummary = [
   { label: "直属下线", value: "3", helper: "第一代 20%" },
   { label: "团队总人数", value: "7", helper: "含二代、三代" },
   { label: "团队销售", value: "RM17,839", helper: "本月累计" },
-  { label: "预计佣金", value: "RM1,872", helper: "待结算 RM624" }
+  { label: "预计佣金", value: "RM3,191.55", helper: "按 20% / 10% / 5%" }
 ];
