@@ -59,7 +59,7 @@ const packages = [
 ] as const;
 
 const peopleImages = {
-  advisor: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=82",
+  advisor: "/images/master-yixi.jpg",
   consultation: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=82",
   founder: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=320&q=80",
   clientA: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80",
@@ -318,14 +318,14 @@ function MasterSection() {
           <div className="relative min-h-[520px] overflow-hidden rounded-[1.5rem] bg-white">
             <img
               src={peopleImages.advisor}
-              alt="易玺大师顾问形象示意"
+              alt="易玺大师"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,rgba(6,63,74,0.88))]" />
             <div className="absolute inset-x-6 bottom-6 rounded-3xl border border-white/20 bg-white/12 p-5 text-white backdrop-blur">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Master Consultation</p>
-              <p className="mt-2 text-2xl font-semibold">真人顾问形象区</p>
-              <p className="mt-2 text-sm leading-6 text-white/72">之后可替换为易玺大师本人照片或品牌形象照。</p>
+              <p className="mt-2 text-2xl font-semibold">易玺大师</p>
+              <p className="mt-2 text-sm leading-6 text-white/72">实战派风水命理顾问，结合命理、风水与现实决策给出行动判断。</p>
             </div>
           </div>
         </div>
