@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0B0B0B",
-        jade: "#B91C1C",
-        cinnabar: "#B91C1C",
-        gold: "#C9A24A",
-        cloud: "#F7F7F7",
-        rice: "#FFFFFF"
+        ink: "#102F38",
+        jade: "#1495A0",
+        cinnabar: "#1495A0",
+        gold: "#C79A54",
+        cloud: "#DDEFF2",
+        rice: "#F5FAFA"
       },
       boxShadow: {
-        soft: "0 18px 60px rgba(11, 11, 11, 0.12)"
+        soft: "0 18px 60px rgba(16, 47, 56, 0.12)"
       }
     },
   },

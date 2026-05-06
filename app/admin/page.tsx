@@ -174,14 +174,14 @@ function ModuleCard({
       onClick={onClick}
       className={[
         "group rounded border p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft",
-        active ? "border-[#D4AF37] bg-[#064E3B] text-white" : "border-black/10 bg-white text-ink hover:border-[#D4AF37]/60"
+        active ? "border-[#C79A54] bg-[#063F4A] text-white" : "border-black/10 bg-white text-ink hover:border-[#C79A54]/60"
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-4">
-        <span className={active ? "grid size-11 place-items-center rounded bg-white/10 text-[#D4AF37]" : "grid size-11 place-items-center rounded bg-[#ECFDF5] text-[#064E3B]"}>
+        <span className={active ? "grid size-11 place-items-center rounded bg-white/10 text-[#C79A54]" : "grid size-11 place-items-center rounded bg-[#DDEFF2] text-[#063F4A]"}>
           <Icon className="size-5" />
         </span>
-        <ChevronRight className={active ? "size-5 text-[#D4AF37]" : "size-5 text-ink/30 transition group-hover:translate-x-1 group-hover:text-[#064E3B]"} />
+        <ChevronRight className={active ? "size-5 text-[#C79A54]" : "size-5 text-ink/30 transition group-hover:translate-x-1 group-hover:text-[#063F4A]"} />
       </div>
       <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] opacity-60">{module.stat}</p>
       <h3 className="mt-2 text-xl font-semibold">{module.title}</h3>
@@ -207,8 +207,8 @@ function SectionFrame({
     <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">{eyebrow}</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#064E3B]">{title}</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">{eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">{title}</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/58">{desc}</p>
         </div>
         {action}
@@ -227,7 +227,7 @@ function FinanceModule() {
       title="专业财务经营中心"
       desc="不只是记录收入，而是做收入分析、支付对账、成本控制、AI 毛利、佣金风险和提现审核。"
       action={
-        <button className="inline-flex items-center gap-2 rounded-full border border-[#064E3B]/15 bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#064E3B]">
+        <button className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
           <Download className="size-4" />
           Export finance pack
         </button>
@@ -235,18 +235,18 @@ function FinanceModule() {
     >
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
         {financeExecutiveKpis.map((item) => (
-          <article key={item.label} className="rounded border border-[#D4AF37]/20 bg-[#ECFDF5] p-4">
+          <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-4">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{item.value}</p>
-            <p className="mt-3 text-xs leading-5 text-[#8A6D00]">{item.note}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-3 text-xs leading-5 text-[#C79A54]">{item.note}</p>
           </article>
         ))}
       </div>
 
-      <div className="mt-5 rounded border border-black/10 bg-[#F7F7F7] p-4">
+      <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-semibold text-[#064E3B]">Finance Details</h3>
+            <h3 className="text-lg font-semibold text-[#063F4A]">Finance Details</h3>
             <p className="mt-1 text-sm text-ink/55">点击一个财务模块查看明细，其他内容会收起来。</p>
           </div>
           <p className="text-sm text-ink/55">当前：{financeTabs.find((tab) => tab.id === activeFinanceTab)?.title}</p>
@@ -262,10 +262,10 @@ function FinanceModule() {
                 onClick={() => setActiveFinanceTab(tab.id)}
                 className={[
                   "rounded border p-3 text-left transition hover:-translate-y-0.5",
-                  active ? "border-[#D4AF37] bg-[#064E3B] text-white shadow-sm" : "border-black/10 bg-white text-ink hover:border-[#D4AF37]/60"
+                  active ? "border-[#C79A54] bg-[#063F4A] text-white shadow-sm" : "border-black/10 bg-white text-ink hover:border-[#C79A54]/60"
                 ].join(" ")}
               >
-                <Icon className={active ? "size-5 text-[#D4AF37]" : "size-5 text-[#064E3B]"} />
+                <Icon className={active ? "size-5 text-[#C79A54]" : "size-5 text-[#063F4A]"} />
                 <p className="mt-3 text-sm font-semibold">{tab.title}</p>
                 <p className={active ? "mt-1 text-xs leading-5 text-white/62" : "mt-1 text-xs leading-5 text-ink/50"}>{tab.desc}</p>
               </button>
@@ -278,15 +278,15 @@ function FinanceModule() {
       <div className="mt-5 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded border border-black/10 bg-rice p-5">
           <div className="flex items-center gap-3">
-            <CircleDollarSign className="size-5 text-[#D4AF37]" />
+            <CircleDollarSign className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Revenue Analytics</h3>
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {financeRevenue.map((item) => (
               <article key={item.label} className="rounded bg-white p-4">
                 <p className="text-sm text-ink/58">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{item.value}</p>
-                <p className="mt-2 text-xs text-[#8A6D00]">{item.note}</p>
+                <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+                <p className="mt-2 text-xs text-[#C79A54]">{item.note}</p>
               </article>
             ))}
           </div>
@@ -295,10 +295,10 @@ function FinanceModule() {
               <div key={item.source}>
                 <div className="flex justify-between gap-4 text-sm">
                   <span className="font-medium text-ink/72">{item.source}</span>
-                  <span className="font-semibold text-[#064E3B]">{item.amount}</span>
+                  <span className="font-semibold text-[#063F4A]">{item.amount}</span>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/5">
-                  <div className="h-full rounded-full bg-[#D4AF37]" style={{ width: item.pct }} />
+                  <div className="h-full rounded-full bg-[#C79A54]" style={{ width: item.pct }} />
                 </div>
                 <p className="mt-1 text-xs text-ink/45">{item.pct}</p>
               </div>
@@ -309,7 +309,7 @@ function FinanceModule() {
         <div className="rounded border border-black/10 bg-rice p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <TrendingUp className="size-5 text-[#D4AF37]" />
+              <TrendingUp className="size-5 text-[#C79A54]" />
               <h3 className="text-xl font-semibold">Profit Dashboard</h3>
             </div>
             <StatusPill>Revenue - Cost = Net Profit</StatusPill>
@@ -318,11 +318,11 @@ function FinanceModule() {
             {profitSummary.map((item) => (
               <article key={item.label} className="rounded bg-white p-4">
                 <p className="text-sm text-ink/55">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{item.value}</p>
+                <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
               </article>
             ))}
           </div>
-          <div className="mt-5 rounded bg-[#064E3B] p-4 text-white">
+          <div className="mt-5 rounded bg-[#063F4A] p-4 text-white">
             <p className="text-sm text-white/62">真实利润逻辑</p>
             <p className="mt-2 text-sm leading-6">每次 AI 请求按用户、功能、模型与 token 用量记录成本，再汇总每日和每月 AI 成本。</p>
           </div>
@@ -334,7 +334,7 @@ function FinanceModule() {
       <div className="mt-5 rounded border border-black/10 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Banknote className="size-5 text-[#D4AF37]" />
+            <Banknote className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Payment Reconciliation 对账中心</h3>
           </div>
           <StatusPill>Order amount vs Gateway settlement</StatusPill>
@@ -353,9 +353,9 @@ function FinanceModule() {
                 <tr key={row.gateway}>
                   <td className="px-3 py-3 font-semibold">{row.gateway}</td>
                   <td className="px-3 py-3">{row.orders}</td>
-                  <td className="px-3 py-3 text-[#064E3B]">{row.received}</td>
+                  <td className="px-3 py-3 text-[#063F4A]">{row.received}</td>
                   <td className="px-3 py-3">{row.fee}</td>
-                  <td className="px-3 py-3 font-semibold text-[#064E3B]">{row.net}</td>
+                  <td className="px-3 py-3 font-semibold text-[#063F4A]">{row.net}</td>
                   <td className="px-3 py-3 text-ink/58">{row.settlement}</td>
                   <td className="px-3 py-3"><StatusBadge status={row.status} /></td>
                 </tr>
@@ -372,7 +372,7 @@ function FinanceModule() {
       {activeFinanceTab === "cost" ? (
       <div className="mt-5 rounded border border-black/10 bg-white p-5">
         <div className="flex items-center gap-3">
-          <CircleDollarSign className="size-5 text-[#D4AF37]" />
+          <CircleDollarSign className="size-5 text-[#C79A54]" />
           <h3 className="text-xl font-semibold">Cost Center 成本中心</h3>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
@@ -382,7 +382,7 @@ function FinanceModule() {
                 <p className="font-semibold">{item.category}</p>
                 <p className="mt-1 text-xs text-ink/50">{item.pct}</p>
               </div>
-              <p className="font-semibold text-[#064E3B]">{item.amount}</p>
+              <p className="font-semibold text-[#063F4A]">{item.amount}</p>
             </div>
           ))}
         </div>
@@ -393,7 +393,7 @@ function FinanceModule() {
       <div className="mt-5 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <Bot className="size-5 text-[#D4AF37]" />
+            <Bot className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">AI Cost Intelligence</h3>
           </div>
           <div className="mt-5 overflow-x-auto">
@@ -411,7 +411,7 @@ function FinanceModule() {
                     <td className="px-3 py-3 font-semibold">{row.feature}</td>
                     <td className="px-3 py-3">{row.revenue}</td>
                     <td className="px-3 py-3">{row.cost}</td>
-                    <td className="px-3 py-3 font-semibold text-[#064E3B]">{row.margin}</td>
+                    <td className="px-3 py-3 font-semibold text-[#063F4A]">{row.margin}</td>
                     <td className="px-3 py-3 text-ink/58">{row.costPerReq}</td>
                   </tr>
                 ))}
@@ -422,7 +422,7 @@ function FinanceModule() {
 
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <Bot className="size-5 text-[#D4AF37]" />
+            <Bot className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">AI 使用成本追踪</h3>
           </div>
           <div className="mt-5 grid gap-3">
@@ -434,7 +434,7 @@ function FinanceModule() {
                     <p className="text-sm text-ink/55">{record.requests} requests · Avg {record.avgCost}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-[#064E3B]">{record.daily}</p>
+                    <p className="font-semibold text-[#063F4A]">{record.daily}</p>
                     <p className="text-xs text-ink/50">Daily cost</p>
                   </div>
                 </div>
@@ -449,7 +449,7 @@ function FinanceModule() {
       <div className="mt-5 grid gap-5 xl:grid-cols-2">
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="size-5 text-[#D4AF37]" />
+            <CheckCircle2 className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Withdrawal Risk Review</h3>
           </div>
           <div className="mt-5 grid gap-3">
@@ -468,10 +468,10 @@ function FinanceModule() {
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <HandCoins className="size-5 text-[#D4AF37]" />
+              <HandCoins className="size-5 text-[#C79A54]" />
               <h3 className="text-xl font-semibold">Commission & Payout Control</h3>
             </div>
-            <button className="rounded-full bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white">Manual approval</button>
+            <button className="rounded-full bg-[#063F4A] px-4 py-2 text-xs font-semibold text-white">Manual approval</button>
           </div>
           <div className="mt-5 space-y-3">
             {commissionRecords.map((record) => (
@@ -481,7 +481,7 @@ function FinanceModule() {
                   <p className="text-sm text-ink/55">{record.id} · {record.source}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-[#064E3B]">{record.amount}</p>
+                  <p className="font-semibold text-[#063F4A]">{record.amount}</p>
                   <span className="mt-2 inline-flex"><StatusBadge status={record.status} /></span>
                 </div>
               </div>
@@ -491,7 +491,7 @@ function FinanceModule() {
 
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="size-5 text-[#D4AF37]" />
+            <CheckCircle2 className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">提现申请</h3>
           </div>
           <div className="mt-5 space-y-3">
@@ -502,7 +502,7 @@ function FinanceModule() {
                   <p className="text-sm text-ink/55">{request.id} · {request.method}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-[#064E3B]">{request.amount}</p>
+                  <p className="font-semibold text-[#063F4A]">{request.amount}</p>
                   <span className="mt-2 inline-flex"><StatusBadge status={request.status} /></span>
                 </div>
               </div>
@@ -516,7 +516,7 @@ function FinanceModule() {
       <div className="mt-5 rounded border border-black/10 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Download className="size-5 text-[#D4AF37]" />
+            <Download className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Finance Reports Export Center</h3>
           </div>
           <StatusPill>CSV / Excel / PDF</StatusPill>
@@ -526,10 +526,10 @@ function FinanceModule() {
             <article key={report.name} className="rounded border border-black/10 bg-rice p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-[#064E3B]">{report.name}</p>
+                  <p className="font-semibold text-[#063F4A]">{report.name}</p>
                   <p className="mt-2 text-sm leading-6 text-ink/58">{report.desc}</p>
                 </div>
-                <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#064E3B]">{report.format}</span>
+                <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A]">{report.format}</span>
               </div>
             </article>
           ))}
@@ -540,7 +540,7 @@ function FinanceModule() {
       {activeFinanceTab === "reconciliation" ? (
       <div className="mt-5 rounded border border-black/10 bg-white p-5">
         <div className="flex items-center gap-3">
-          <Banknote className="size-5 text-[#D4AF37]" />
+          <Banknote className="size-5 text-[#C79A54]" />
           <h3 className="text-xl font-semibold">交易记录</h3>
         </div>
         <div className="mt-5 overflow-x-auto">
@@ -557,7 +557,7 @@ function FinanceModule() {
                 <tr key={record.orderId}>
                   <td className="px-3 py-3 font-semibold">{record.userId}</td>
                   <td className="px-3 py-3">{record.orderId}</td>
-                  <td className="px-3 py-3 font-semibold text-[#064E3B]">{record.amount}</td>
+                  <td className="px-3 py-3 font-semibold text-[#063F4A]">{record.amount}</td>
                   <td className="px-3 py-3">{record.method}</td>
                   <td className="px-3 py-3"><StatusBadge status={record.status} /></td>
                   <td className="px-3 py-3 text-ink/58">{record.timestamp}</td>
@@ -650,7 +650,7 @@ function StockModule({
           <button
             type="button"
             onClick={showAddProduct ? closeProductForm : openNewProductForm}
-            className="inline-flex items-center gap-2 rounded-full bg-[#064E3B] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#053D2F]"
+            className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#052F38]"
           >
             <Plus className="size-4" />
             {showAddProduct ? "关闭表单" : "新增产品"}
@@ -659,15 +659,15 @@ function StockModule({
       }
     >
       {showAddProduct ? (
-        <form onSubmit={submitProduct} className="mb-5 rounded border border-[#D4AF37]/25 bg-[#ECFDF5] p-5">
+        <form onSubmit={submitProduct} className="mb-5 rounded border border-[#C79A54]/25 bg-[#DDEFF2] p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h3 className="text-xl font-semibold text-[#064E3B]">{editingSku ? "编辑库存产品" : "新增库存产品"}</h3>
+              <h3 className="text-xl font-semibold text-[#063F4A]">{editingSku ? "编辑库存产品" : "新增库存产品"}</h3>
               <p className="mt-1 text-sm text-ink/58">
                 {editingSku ? "修改现有产品资料后会即时更新当前库存表。" : "填写产品资料后会先加入当前库存表。之后接数据库时，这里会保存到 products / inventory 表。"}
               </p>
             </div>
-            <ImageIcon className="size-6 text-[#D4AF37]" />
+            <ImageIcon className="size-6 text-[#C79A54]" />
           </div>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -687,7 +687,7 @@ function StockModule({
                   value={draft[field as keyof ProductDraft]}
                   onChange={(event) => updateDraft(field as keyof ProductDraft, event.target.value)}
                   placeholder={placeholder}
-                  className="mt-2 w-full rounded border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#D4AF37]"
+                  className="mt-2 w-full rounded border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#C79A54]"
                 />
               </label>
             ))}
@@ -700,12 +700,12 @@ function StockModule({
               onChange={(event) => updateDraft("description", event.target.value)}
               placeholder="写清楚产品用途、适合人群、搭配运势/报告的卖点。"
               rows={3}
-              className="mt-2 w-full rounded border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#D4AF37]"
+              className="mt-2 w-full rounded border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#C79A54]"
             />
           </label>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <button type="submit" className="rounded-full bg-[#064E3B] px-5 py-2.5 text-sm font-semibold text-white">
+            <button type="submit" className="rounded-full bg-[#063F4A] px-5 py-2.5 text-sm font-semibold text-white">
               {editingSku ? "保存修改" : "保存产品"}
             </button>
             <button
@@ -721,10 +721,10 @@ function StockModule({
 
       <div className="grid gap-3 md:grid-cols-3">
         {inventoryReports.map((item) => (
-          <article key={item.label} className="rounded border border-[#D4AF37]/20 bg-[#ECFDF5] p-5">
+          <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-5">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{item.value}</p>
-            <p className="mt-3 text-sm text-[#8A6D00]">{item.note}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-3 text-sm text-[#C79A54]">{item.note}</p>
           </article>
         ))}
       </div>
@@ -732,7 +732,7 @@ function StockModule({
       <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <Warehouse className="size-5 text-[#D4AF37]" />
+            <Warehouse className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">产品库存</h3>
           </div>
           <div className="mt-5 overflow-x-auto">
@@ -758,7 +758,7 @@ function StockModule({
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 py-3 font-semibold text-[#064E3B]">{product.stock}</td>
+                    <td className="px-3 py-3 font-semibold text-[#063F4A]">{product.stock}</td>
                     <td className="px-3 py-3">{product.cost}</td>
                     <td className="px-3 py-3">{product.price}</td>
                     <td className="px-3 py-3">{product.threshold}</td>
@@ -767,7 +767,7 @@ function StockModule({
                       <button
                         type="button"
                         onClick={() => openEditProductForm(product)}
-                        className="rounded-full border border-[#064E3B]/15 bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#064E3B]"
+                        className="rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-3 py-1.5 text-xs font-semibold text-[#063F4A]"
                       >
                         Edit
                       </button>
@@ -781,7 +781,7 @@ function StockModule({
 
         <div className="rounded border border-black/10 bg-rice p-5">
           <div className="flex items-center gap-3">
-            <PackageCheck className="size-5 text-[#D4AF37]" />
+            <PackageCheck className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">库存流水</h3>
           </div>
           <div className="mt-5 space-y-3">
@@ -792,7 +792,7 @@ function StockModule({
                     <p className="font-semibold">{movement.type}</p>
                     <p className="mt-1 text-sm text-ink/55">{movement.sku} · {movement.reason}</p>
                   </div>
-                  <p className="font-semibold text-[#064E3B]">{movement.qty}</p>
+                  <p className="font-semibold text-[#063F4A]">{movement.qty}</p>
                 </div>
                 <p className="mt-3 text-xs text-ink/45">{movement.id} · {movement.timestamp}</p>
               </article>
@@ -803,13 +803,13 @@ function StockModule({
 
       <div className="mt-5 rounded border border-black/10 bg-white p-5">
         <div className="flex items-center gap-3">
-          <TrendingUp className="size-5 text-[#D4AF37]" />
+          <TrendingUp className="size-5 text-[#C79A54]" />
           <h3 className="text-xl font-semibold">产品利润追踪</h3>
         </div>
         <div className="mt-5 grid gap-3 lg:grid-cols-3">
           {productProfitRows.map((row) => (
             <article key={row.product} className="rounded border border-black/10 p-4">
-              <p className="font-semibold text-[#064E3B]">{row.product}</p>
+              <p className="font-semibold text-[#063F4A]">{row.product}</p>
               <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                 {[
                   ["Sold", row.sold],
@@ -817,9 +817,9 @@ function StockModule({
                   ["Profit", row.profit],
                   ["Margin", row.margin]
                 ].map(([label, value]) => (
-                  <div key={label} className={label === "Margin" ? "rounded bg-[#ECFDF5] p-3" : "rounded bg-cloud p-3"}>
+                  <div key={label} className={label === "Margin" ? "rounded bg-[#DDEFF2] p-3" : "rounded bg-cloud p-3"}>
                     <p className="text-ink/50">{label}</p>
-                    <p className={label === "Margin" ? "mt-1 font-semibold text-[#064E3B]" : "mt-1 font-semibold"}>{value}</p>
+                    <p className={label === "Margin" ? "mt-1 font-semibold text-[#063F4A]" : "mt-1 font-semibold"}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -846,10 +846,10 @@ function OrdersModule() {
     >
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
         {orderKpis.map((item) => (
-          <article key={item.label} className="rounded border border-[#D4AF37]/20 bg-[#ECFDF5] p-4">
+          <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-4">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{item.value}</p>
-            <p className="mt-2 text-xs text-[#8A6D00]">{item.note}</p>
+            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-2 text-xs text-[#C79A54]">{item.note}</p>
           </article>
         ))}
       </div>
@@ -857,7 +857,7 @@ function OrdersModule() {
       <div className="mt-5 rounded border border-black/10 bg-rice p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-xl font-semibold text-[#064E3B]">订单状态 Pipeline</h3>
+            <h3 className="text-xl font-semibold text-[#063F4A]">订单状态 Pipeline</h3>
             <p className="mt-1 text-sm text-ink/55">快速看订单卡在哪个阶段。</p>
           </div>
           <StatusPill>Pending → Paid → Processing → Completed</StatusPill>
@@ -866,7 +866,7 @@ function OrdersModule() {
           {orderPipeline.map((item) => (
             <article key={item.status} className="rounded border border-black/10 bg-white p-4">
               <p className="text-sm text-ink/55">{item.status}</p>
-              <p className="mt-2 text-3xl font-semibold text-[#064E3B]">{item.count}</p>
+              <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{item.count}</p>
             </article>
           ))}
         </div>
@@ -875,7 +875,7 @@ function OrdersModule() {
       <div className="mt-5 grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="size-5 text-[#D4AF37]" />
+            <AlertTriangle className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">异常订单提醒</h3>
           </div>
           <div className="mt-5 space-y-3">
@@ -911,7 +911,7 @@ function OrdersModule() {
                   }}
                   className={[
                     "rounded-full px-3 py-1.5 text-xs font-semibold transition",
-                    activeOrderTab === tab ? "bg-[#064E3B] text-white" : "border border-black/10 bg-white text-ink/65 hover:border-[#D4AF37]"
+                    activeOrderTab === tab ? "bg-[#063F4A] text-white" : "border border-black/10 bg-white text-ink/65 hover:border-[#C79A54]"
                   ].join(" ")}
                 >
                   {tab}
@@ -931,14 +931,14 @@ function OrdersModule() {
               </thead>
               <tbody className="divide-y divide-black/10">
                 {filteredOrders.map((order) => (
-                  <tr key={order.id} className={selectedOrder?.id === order.id ? "bg-[#ECFDF5]" : ""}>
+                  <tr key={order.id} className={selectedOrder?.id === order.id ? "bg-[#DDEFF2]" : ""}>
                     <td className="px-3 py-3 font-semibold">{order.id}</td>
                     <td className="px-3 py-3">
                       <p className="font-semibold">{order.customer}</p>
                       <p className="text-xs text-ink/45">{order.userId}</p>
                     </td>
                     <td className="px-3 py-3">{order.type}</td>
-                    <td className="px-3 py-3 font-semibold text-[#064E3B]">{order.amount}</td>
+                    <td className="px-3 py-3 font-semibold text-[#063F4A]">{order.amount}</td>
                     <td className="px-3 py-3">
                       <p>{order.paymentMethod}</p>
                       <span className="mt-1 inline-flex"><StatusBadge status={order.paymentStatus} /></span>
@@ -951,7 +951,7 @@ function OrdersModule() {
                       <button
                         type="button"
                         onClick={() => setSelectedOrderId(order.id)}
-                        className="rounded-full border border-[#064E3B]/15 bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#064E3B]"
+                        className="rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-3 py-1.5 text-xs font-semibold text-[#063F4A]"
                       >
                         View
                       </button>
@@ -969,8 +969,8 @@ function OrdersModule() {
           <div className="rounded border border-black/10 bg-white p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Selected Order</p>
-                <h3 className="mt-2 text-2xl font-semibold text-[#064E3B]">{selectedOrder.id}</h3>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Selected Order</p>
+                <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">{selectedOrder.id}</h3>
                 <p className="mt-2 text-sm text-ink/58">{selectedOrder.customer} · {selectedOrder.userId}</p>
               </div>
               <StatusBadge status={selectedOrder.status} />
@@ -1004,13 +1004,13 @@ function OrdersModule() {
 
           <div className="rounded border border-black/10 bg-rice p-5">
             <div className="flex items-center gap-3">
-              <PackageCheck className="size-5 text-[#D4AF37]" />
+              <PackageCheck className="size-5 text-[#C79A54]" />
               <h3 className="text-xl font-semibold">自动化执行结果</h3>
             </div>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {selectedOrder.automation.map((item) => (
                 <div key={item} className="flex items-center gap-3 rounded border border-black/10 bg-white p-3">
-                  <CheckCircle2 className="size-4 shrink-0 text-[#064E3B]" />
+                  <CheckCircle2 className="size-4 shrink-0 text-[#063F4A]" />
                   <span className="text-sm font-medium">{item}</span>
                 </div>
               ))}
@@ -1028,8 +1028,8 @@ function OrdersModule() {
         </div>
       ) : null}
 
-      <div className="mt-5 rounded border border-[#D4AF37]/25 bg-[#ECFDF5] p-4">
-        <p className="font-semibold text-[#064E3B]">订单模块专业重点</p>
+      <div className="mt-5 rounded border border-[#C79A54]/25 bg-[#DDEFF2] p-4">
+        <p className="font-semibold text-[#063F4A]">订单模块专业重点</p>
         <p className="mt-2 text-sm leading-6 text-ink/62">
           订单 Paid 后必须检查：会员升级、点数发放、课程开通、库存扣减、佣金生成、团队业绩更新、通知发送。异常订单要自动进入提醒队列。
         </p>
@@ -1059,7 +1059,7 @@ function SystemModule() {
               const Icon = module.icon;
               return (
                 <article key={module.title} className="rounded border border-black/10 bg-rice p-4">
-                  <Icon className="size-5 text-[#064E3B]" />
+                  <Icon className="size-5 text-[#063F4A]" />
                   <h4 className="mt-3 font-semibold">{module.title}</h4>
                   <p className="mt-2 text-sm leading-6 text-ink/58">{module.desc}</p>
                 </article>
@@ -1069,9 +1069,9 @@ function SystemModule() {
         </div>
 
         <div className="space-y-5">
-          <div className="rounded border border-black/10 bg-[#064E3B] p-5 text-white">
+          <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="mt-1 size-5 shrink-0 text-[#D4AF37]" />
+              <AlertTriangle className="mt-1 size-5 shrink-0 text-[#C79A54]" />
               <div>
                 <h3 className="text-xl font-semibold">AI 与合规控制</h3>
                 <p className="mt-2 text-sm leading-6 text-white/68">
@@ -1083,7 +1083,7 @@ function SystemModule() {
 
           <div className="rounded border border-black/10 bg-white p-5">
             <div className="flex items-start gap-3">
-              <ShieldCheck className="mt-1 size-5 shrink-0 text-[#D4AF37]" />
+              <ShieldCheck className="mt-1 size-5 shrink-0 text-[#C79A54]" />
               <div>
                 <h3 className="text-xl font-semibold">三层分润规则</h3>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center">
@@ -1094,7 +1094,7 @@ function SystemModule() {
                   ].map(([level, pct]) => (
                     <div key={level} className="rounded bg-cloud p-4">
                       <p className="text-sm text-ink/55">{level}</p>
-                      <p className="mt-2 text-2xl font-semibold text-[#064E3B]">{pct}</p>
+                      <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{pct}</p>
                     </div>
                   ))}
                 </div>
@@ -1122,7 +1122,7 @@ export default function AdminPage() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <StatusPill>老板后台 · Admin Console</StatusPill>
-                <h1 className="mt-4 text-3xl font-semibold text-[#064E3B] md:text-5xl">平台运营总览</h1>
+                <h1 className="mt-4 text-3xl font-semibold text-[#063F4A] md:text-5xl">平台运营总览</h1>
                 <p className="mt-3 max-w-3xl text-ink/65">
                   后台改成模块式管理：先看经营总览，再点击 Finance、Stock Keeper、Orders 或 System 查看对应细节。
                 </p>
@@ -1131,7 +1131,7 @@ export default function AdminPage() {
                 <button className="grid size-11 place-items-center rounded-full border border-black/10" aria-label="搜索">
                   <Search className="size-5" />
                 </button>
-                <button className="grid size-11 place-items-center rounded-full bg-[#064E3B] text-white" aria-label="设置">
+                <button className="grid size-11 place-items-center rounded-full bg-[#063F4A] text-white" aria-label="设置">
                   <Settings2 className="size-5" />
                 </button>
               </div>
@@ -1143,11 +1143,11 @@ export default function AdminPage() {
             </div>
           </section>
 
-          <section className="mt-6 rounded border border-black/10 bg-[#F7F7F7] p-5 shadow-sm">
+          <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Module Switcher</p>
-                <h2 className="mt-2 text-2xl font-semibold text-[#064E3B]">选择一个模块查看细节</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Module Switcher</p>
+                <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">选择一个模块查看细节</h2>
               </div>
               <p className="text-sm text-ink/55">当前：{moduleTabs.find((module) => module.id === activeModule)?.title}</p>
             </div>

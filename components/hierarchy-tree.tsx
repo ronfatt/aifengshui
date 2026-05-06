@@ -47,7 +47,7 @@ function statusClass(status: DownlineMember["status"]) {
 
 function levelClass(level: DownlineMember["level"]) {
   if (level === "Master") {
-    return "border-[#B91C1C]/30 bg-[#B91C1C]/10 text-[#B91C1C]";
+    return "border-[#1495A0]/30 bg-[#1495A0]/10 text-[#1495A0]";
   }
 
   if (level === "Pro") {
@@ -88,7 +88,7 @@ function MemberNode({
           type="button"
           onClick={() => onSelect(member)}
           className={`min-w-0 flex-1 rounded border p-3 text-left transition ${
-            isSelected ? "border-[#D4AF37] bg-cloud shadow-sm" : "border-black/10 bg-white hover:bg-cloud"
+            isSelected ? "border-[#C79A54] bg-cloud shadow-sm" : "border-black/10 bg-white hover:bg-cloud"
           }`}
         >
           <div className="flex min-w-0 items-center gap-3">
@@ -171,8 +171,8 @@ export function HierarchyTree() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Network className="size-5 text-[#064E3B]" />
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Hierarchy Tree</p>
+            <Network className="size-5 text-[#063F4A]" />
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Hierarchy Tree</p>
           </div>
           <h2 className="mt-2 text-2xl font-semibold">我的下线团队</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
@@ -183,7 +183,7 @@ export function HierarchyTree() {
           <button className="flex items-center gap-2 rounded border border-black/10 px-3 py-2 text-sm font-semibold">
             <Copy className="size-4" /> 推荐码
           </button>
-          <button className="flex items-center gap-2 rounded bg-[#064E3B] px-3 py-2 text-sm font-semibold text-white">
+          <button className="flex items-center gap-2 rounded bg-[#063F4A] px-3 py-2 text-sm font-semibold text-white">
             <Share2 className="size-4" /> 分享
           </button>
         </div>
@@ -194,7 +194,7 @@ export function HierarchyTree() {
           <div key={item.label} className="rounded border border-black/10 bg-rice p-4">
             <p className="text-sm text-ink/55">{item.label}</p>
             <p className="mt-2 text-2xl font-semibold">{item.value}</p>
-            <p className="mt-1 text-xs text-[#064E3B]">{item.helper}</p>
+            <p className="mt-1 text-xs text-[#063F4A]">{item.helper}</p>
           </div>
         ))}
       </div>
@@ -220,7 +220,7 @@ export function HierarchyTree() {
         </div>
 
         <div className="grid gap-4">
-          <div className="rounded border border-black/10 bg-[#102019] p-5 text-white">
+          <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-white/55">当前查看</p>
@@ -275,7 +275,7 @@ export function HierarchyTree() {
                       </span>
                     </span>
                   </span>
-                  <span className="shrink-0 text-sm font-semibold text-[#064E3B]">{member.commission}</span>
+                  <span className="shrink-0 text-sm font-semibold text-[#063F4A]">{member.commission}</span>
                 </button>
               ))}
             </div>

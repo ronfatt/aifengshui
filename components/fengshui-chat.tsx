@@ -205,29 +205,29 @@ export function FengshuiChat({
           <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
             <span
               className={`rounded px-2 py-1 font-semibold ${
-                openAIStatus?.configured ? "bg-[#ECFDF5] text-[#064E3B]" : "bg-[#FEF2F2] text-[#B91C1C]"
+                openAIStatus?.configured ? "bg-[#DDEFF2] text-[#063F4A]" : "bg-[#E8D4A8] text-[#1495A0]"
               }`}
             >
               {openAIStatus?.configured ? "OpenAI 已连接" : "OpenAI 未连接"}
             </span>
-            <span className="rounded bg-[#F7F7F7] px-2 py-1 text-ink/55">
+            <span className="rounded bg-[#F5FAFA] px-2 py-1 text-ink/55">
               Model: {openAIStatus?.model || "检查中"}
             </span>
-            <span className="rounded bg-[#D4AF37]/15 px-2 py-1 font-semibold text-[#064E3B]">
+            <span className="rounded bg-[#C79A54]/15 px-2 py-1 font-semibold text-[#063F4A]">
               {tierName}
             </span>
           </div>
         </div>
-        <Bot className="size-8 text-[#064E3B]" />
+        <Bot className="size-8 text-[#063F4A]" />
       </div>
 
-      <div className={`mt-4 rounded border p-4 ${tier === "strategic" ? "border-[#D4AF37]/45 bg-[#102019] text-white" : "border-[#D4AF37]/35 bg-[#D4AF37]/10"}`}>
+      <div className={`mt-4 rounded border p-4 ${tier === "strategic" ? "border-[#C79A54]/45 bg-[#063F4A] text-white" : "border-[#C79A54]/35 bg-[#C79A54]/10"}`}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className={`text-sm font-semibold ${tier === "strategic" ? "text-[#D4AF37]" : "text-[#064E3B]"}`}>{tierCopy.title}</p>
+            <p className={`text-sm font-semibold ${tier === "strategic" ? "text-[#C79A54]" : "text-[#063F4A]"}`}>{tierCopy.title}</p>
             <p className={`mt-2 text-sm leading-6 ${tier === "strategic" ? "text-white/70" : "text-ink/62"}`}>{tierCopy.desc}</p>
           </div>
-          <span className={`rounded px-2.5 py-1 text-xs font-semibold ${tier === "strategic" ? "bg-[#D4AF37] text-[#062F25]" : "bg-white text-[#064E3B]"}`}>
+          <span className={`rounded px-2.5 py-1 text-xs font-semibold ${tier === "strategic" ? "bg-[#C79A54] text-[#063F4A]" : "bg-white text-[#063F4A]"}`}>
             {aiMode}
           </span>
         </div>
@@ -245,7 +245,7 @@ export function FengshuiChat({
             key={prompt}
             type="button"
             onClick={() => setInput(prompt)}
-            className="shrink-0 rounded border border-black/10 bg-cloud px-3 py-2 text-xs font-medium text-ink/68 transition hover:border-[#D4AF37] hover:text-[#064E3B]"
+            className="shrink-0 rounded border border-black/10 bg-cloud px-3 py-2 text-xs font-medium text-ink/68 transition hover:border-[#C79A54] hover:text-[#063F4A]"
           >
             {prompt}
           </button>
@@ -269,7 +269,7 @@ export function FengshuiChat({
               key={`${message.role}-${index}`}
               className={
                 isAssistant
-                  ? "ml-auto max-w-[88%] rounded bg-[#102019] p-4 text-white"
+                  ? "ml-auto max-w-[88%] rounded bg-[#063F4A] p-4 text-white"
                   : "max-w-[82%] rounded border border-black/10 bg-cloud p-4"
               }
             >
@@ -280,7 +280,7 @@ export function FengshuiChat({
           );
         })}
         {isLoading ? (
-          <div className="ml-auto max-w-[88%] rounded bg-[#102019] p-4 text-sm text-white">
+          <div className="ml-auto max-w-[88%] rounded bg-[#063F4A] p-4 text-sm text-white">
             <div className="flex items-center gap-2">
               <Loader2 className="size-4 animate-spin" />
               {loadingSteps[loadingStep]}
@@ -297,10 +297,10 @@ export function FengshuiChat({
         ) : null}
       </div>
 
-      <div className="mt-5 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
+      <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
         <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-[#B08919]" />
-          <p className="text-sm font-semibold text-[#064E3B]">AI 回答后的下一步</p>
+          <Sparkles className="size-4 text-[#C79A54]" />
+          <p className="text-sm font-semibold text-[#063F4A]">AI 回答后的下一步</p>
         </div>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {nextStepActions.map((action) => {
@@ -311,9 +311,9 @@ export function FengshuiChat({
                 key={action.title}
                 type="button"
                 onClick={() => setInput(action.prompt)}
-                className="rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-sm"
+                className="rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
               >
-                <Icon className="size-4 text-[#064E3B]" />
+                <Icon className="size-4 text-[#063F4A]" />
                 <p className="mt-2 text-sm font-semibold">{action.title}</p>
                 <p className="mt-1 text-xs leading-5 text-ink/55">{action.desc}</p>
               </button>
@@ -326,11 +326,11 @@ export function FengshuiChat({
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          className="min-w-0 flex-1 rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#064E3B]"
+          className="min-w-0 flex-1 rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
           placeholder={isFree ? "Free 模式：问一个简短问题，例如今天适合谈合作吗？" : "输入你的问题，例如：我适合换工作吗？"}
         />
         <button
-          className="grid size-11 shrink-0 place-items-center rounded bg-[#064E3B] text-white disabled:cursor-not-allowed disabled:opacity-55"
+          className="grid size-11 shrink-0 place-items-center rounded bg-[#063F4A] text-white disabled:cursor-not-allowed disabled:opacity-55"
           type="submit"
           aria-label="发送"
           disabled={isLoading}

@@ -64,7 +64,7 @@ export default async function CourseDetailPage({ params }: CoursePageProps) {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <button className="inline-flex items-center gap-2 rounded bg-cinnabar px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#991B1B]">
+                <button className="inline-flex items-center gap-2 rounded bg-cinnabar px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]">
                   <CreditCard className="size-4" /> 立即报名
                 </button>
                 <button className="inline-flex items-center gap-2 rounded border border-black/10 px-5 py-3 text-sm font-semibold text-ink transition hover:bg-cloud">

@@ -1052,8 +1052,8 @@ function createSigilArtifact(intent: string): SigilArtifact {
 
 function downloadSigil(artifact: SigilArtifact) {
   const nodeDots = [artifact.dots[0], artifact.dots[artifact.dots.length - 1]].filter(Boolean);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="240" height="240" fill="#ffffff"/><circle cx="120" cy="120" r="94" fill="none" stroke="#C9A24A" stroke-opacity=".8" stroke-width="2.6"/><circle cx="120" cy="120" r="64" fill="none" stroke="#C9A24A" stroke-opacity=".28" stroke-width="2.2"/><path d="${artifact.ornamentPath || ""}" fill="none" stroke="#C9A24A" stroke-opacity=".88" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="${artifact.path}" fill="none" stroke="#C9A24A" stroke-opacity=".98" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#goldGlow)"/>${nodeDots
-    .map((dot) => `<circle cx="${dot.x}" cy="${dot.y}" r="8.5" fill="#ffffff" stroke="#C9A24A" stroke-width="2.6"/>`)
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="240" height="240" fill="#ffffff"/><circle cx="120" cy="120" r="94" fill="none" stroke="#C79A54" stroke-opacity=".8" stroke-width="2.6"/><circle cx="120" cy="120" r="64" fill="none" stroke="#C79A54" stroke-opacity=".28" stroke-width="2.2"/><path d="${artifact.ornamentPath || ""}" fill="none" stroke="#C79A54" stroke-opacity=".88" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="${artifact.path}" fill="none" stroke="#C79A54" stroke-opacity=".98" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#goldGlow)"/>${nodeDots
+    .map((dot) => `<circle cx="${dot.x}" cy="${dot.y}" r="8.5" fill="#ffffff" stroke="#C79A54" stroke-width="2.6"/>`)
     .join("")}</svg>`;
   const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -1083,21 +1083,21 @@ function ModuleCard({
       onClick={onClick}
       className={`group rounded border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-soft ${
         active
-          ? "border-[#D4AF37]/70 bg-[#064E3B] text-white shadow-soft"
-          : "border-black/10 bg-white text-ink hover:border-[#D4AF37]/45"
+          ? "border-[#C79A54]/70 bg-[#063F4A] text-white shadow-soft"
+          : "border-black/10 bg-white text-ink hover:border-[#C79A54]/45"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <span
           className={`grid size-9 place-items-center rounded ${
-            active ? "bg-white/12 text-[#D4AF37]" : "bg-[#ECFDF5] text-[#064E3B]"
+            active ? "bg-white/12 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"
           }`}
         >
           <Icon className="size-5" />
         </span>
         <span
           className={`rounded px-2.5 py-1 text-xs font-semibold ${
-            active ? "bg-[#D4AF37] text-[#062F25]" : "bg-[#F7F7F7] text-ink/55"
+            active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"
           }`}
         >
           {module.metric}
@@ -1105,7 +1105,7 @@ function ModuleCard({
       </div>
       <h3 className="mt-4 font-semibold">{module.title}</h3>
       <p className={`mt-1 text-xs ${active ? "text-white/62" : "text-ink/48"}`}>{module.desc}</p>
-      <div className={`mt-3 flex items-center gap-1 text-xs font-semibold ${active ? "text-[#D4AF37]" : "text-[#064E3B]"}`}>
+      <div className={`mt-3 flex items-center gap-1 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>
         打开 <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
       </div>
     </button>
@@ -1117,10 +1117,10 @@ function ScoreRing({ score, label, desc }: { score: number; label: string; desc:
     <div className="grid place-items-center">
       <div
         className="grid size-36 place-items-center rounded-full shadow-soft"
-        style={{ background: `conic-gradient(#D4AF37 ${score * 3.6}deg, #ECFDF5 0deg)` }}
+        style={{ background: `conic-gradient(#C79A54 ${score * 3.6}deg, #DDEFF2 0deg)` }}
       >
         <div className="grid size-28 place-items-center rounded-full bg-white text-center">
-          <span className="text-4xl font-semibold text-[#064E3B]">{score}</span>
+          <span className="text-4xl font-semibold text-[#063F4A]">{score}</span>
           <span className="-mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink/45">{label}</span>
         </div>
       </div>
@@ -1141,8 +1141,8 @@ function TodayActionCenter({
   return (
     <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
       <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr_0.85fr]">
-        <div className="rounded bg-[#F7F7F7] p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Today</p>
+        <div className="rounded bg-[#F5FAFA] p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Today</p>
           <h1 className="mt-2 text-3xl font-semibold md:text-4xl">今日行动中心</h1>
           <p className="mt-3 text-sm leading-6 text-ink/58">先看分数，再决定行动。减少选择压力。</p>
           <div className="mt-5">
@@ -1150,24 +1150,24 @@ function TodayActionCenter({
           </div>
         </div>
 
-        <div className="grid gap-4 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-5 sm:grid-cols-[160px_1fr]">
+        <div className="grid gap-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-5 sm:grid-cols-[160px_1fr]">
           <ScoreRing score={89} label="Score" desc="稳中有进" />
           <div className="grid gap-3">
             {todayActionCards.map((action) => {
               const Icon = action.icon;
               const toneClass =
                 action.tone === "gold"
-                  ? "bg-[#D4AF37]/15 text-[#8A6A10]"
+                  ? "bg-[#C79A54]/15 text-[#C79A54]"
                   : action.tone === "green"
-                    ? "bg-[#ECFDF5] text-[#064E3B]"
-                    : "bg-[#FEF2F2] text-[#B91C1C]";
+                    ? "bg-[#DDEFF2] text-[#063F4A]"
+                    : "bg-[#E8D4A8] text-[#1495A0]";
 
               return (
                 <button
                   key={action.title}
                   type="button"
                   onClick={() => onOpenModule(action.module)}
-                  className="group flex items-center gap-3 rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#D4AF37]/55 hover:shadow-sm"
+                  className="group flex items-center gap-3 rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/55 hover:shadow-sm"
                 >
                   <span className={`grid size-10 shrink-0 place-items-center rounded ${toneClass}`}>
                     <Icon className="size-5" />
@@ -1183,24 +1183,24 @@ function TodayActionCenter({
           </div>
         </div>
 
-        <div className="rounded bg-[#102019] p-5 text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">Quick Read</p>
+        <div className="rounded bg-[#063F4A] p-5 text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Read</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {fortuneScores.map(([label, score]) => (
               <div key={label} className="rounded bg-white/8 p-3">
                 <p className="text-xs text-white/45">{label}</p>
-                <p className="mt-1 text-2xl font-semibold text-[#D4AF37]">{score}</p>
+                <p className="mt-1 text-2xl font-semibold text-[#C79A54]">{score}</p>
               </div>
             ))}
             <div className="rounded bg-white/8 p-3">
               <p className="text-xs text-white/45">贵人方</p>
-              <p className="mt-1 text-xl font-semibold text-[#D4AF37]">东南</p>
+              <p className="mt-1 text-xl font-semibold text-[#C79A54]">东南</p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => onOpenModule("ai")}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded bg-[#D4AF37] px-4 py-3 text-sm font-semibold text-[#062F25]"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A]"
           >
             问 AI 风水师 <Bot className="size-4" />
           </button>
@@ -1223,7 +1223,7 @@ function MembershipPlanPanel({
     <section className="mt-6 rounded border border-black/10 bg-white p-5 shadow-sm">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Membership Engine</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Membership Engine</p>
           <h2 className="mt-2 text-2xl font-semibold">三级会员权限与 AI 算力</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/58">
             Free 负责高频打卡，RM39.90 开始启用紫微斗数 + 梅花易数双引擎，RM69.90 提供流月/流年与商业战略顾问。
@@ -1243,16 +1243,16 @@ function MembershipPlanPanel({
               onClick={() => onChangeTier(tier.id)}
               className={`rounded border p-5 text-left transition hover:-translate-y-0.5 hover:shadow-soft ${
                 active
-                  ? "border-[#D4AF37] bg-[#102019] text-white"
-                  : "border-black/10 bg-rice text-ink hover:border-[#D4AF37]/55"
+                  ? "border-[#C79A54] bg-[#063F4A] text-white"
+                  : "border-black/10 bg-rice text-ink hover:border-[#C79A54]/55"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className={`text-sm font-semibold ${active ? "text-[#D4AF37]" : "text-[#064E3B]"}`}>{tier.positioning}</p>
+                  <p className={`text-sm font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>{tier.positioning}</p>
                   <h3 className="mt-2 text-xl font-semibold">{tier.name}</h3>
                 </div>
-                <span className={`rounded px-2.5 py-1 text-sm font-semibold ${active ? "bg-[#D4AF37] text-[#062F25]" : "bg-white text-[#064E3B]"}`}>
+                <span className={`rounded px-2.5 py-1 text-sm font-semibold ${active ? "bg-[#C79A54] text-[#063F4A]" : "bg-white text-[#063F4A]"}`}>
                   {tier.price}
                 </span>
               </div>
@@ -1264,7 +1264,7 @@ function MembershipPlanPanel({
               <div className="mt-4 grid gap-2">
                 {tier.features.map((feature) => (
                   <div key={feature} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={`size-4 ${active ? "text-[#D4AF37]" : "text-[#064E3B]"}`} />
+                    <CheckCircle2 className={`size-4 ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`} />
                     <span>{feature}</span>
                   </div>
                 ))}
@@ -1293,10 +1293,10 @@ function TierTestSwitcher({
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
 
   return (
-    <div className="mt-5 rounded border border-[#D4AF37]/35 bg-[#F7F7F7] p-4">
+    <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Test Mode</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Test Mode</p>
           <h2 className="mt-1 text-lg font-semibold">快速切换会员版本</h2>
           <p className="mt-1 text-sm text-ink/58">当前：{activeTier.positioning}</p>
         </div>
@@ -1312,15 +1312,15 @@ function TierTestSwitcher({
                 onClick={() => onChangeTier(tier.id)}
                 className={`rounded border p-3 text-left transition ${
                   active
-                    ? "border-[#D4AF37] bg-[#102019] text-white shadow-soft"
-                    : "border-black/10 bg-white text-ink hover:border-[#D4AF37]/55"
+                    ? "border-[#C79A54] bg-[#063F4A] text-white shadow-soft"
+                    : "border-black/10 bg-white text-ink hover:border-[#C79A54]/55"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className={`grid size-8 place-items-center rounded ${active ? "bg-white/12 text-[#D4AF37]" : "bg-[#ECFDF5] text-[#064E3B]"}`}>
+                  <span className={`grid size-8 place-items-center rounded ${active ? "bg-white/12 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"}`}>
                     <Icon className="size-4" />
                   </span>
-                  <span className={`rounded px-2 py-1 text-xs font-semibold ${active ? "bg-[#D4AF37] text-[#062F25]" : "bg-[#F7F7F7] text-ink/55"}`}>
+                  <span className={`rounded px-2 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"}`}>
                     {tier.price}
                   </span>
                 </div>
@@ -1345,7 +1345,7 @@ function OnboardingPanel({ onOpenModule }: { onOpenModule: (module: DashboardMod
 
   return (
     <section className="mt-6 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-      <div className="rounded border border-black/10 bg-[#102019] p-5 text-white shadow-soft">
+      <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/55">New Member Path</p>
@@ -1354,13 +1354,13 @@ function OnboardingPanel({ onOpenModule }: { onOpenModule: (module: DashboardMod
               让新会员知道先做什么，避免进入 Dashboard 后不知道怎么开始。
             </p>
           </div>
-          <span className="rounded bg-[#D4AF37] px-3 py-1 text-sm font-semibold text-[#062F25]">
+          <span className="rounded bg-[#C79A54] px-3 py-1 text-sm font-semibold text-[#063F4A]">
             {completedSteps.size} / {onboardingSteps.length}
           </span>
         </div>
         <div className="mt-5 h-2 rounded-full bg-white/12">
           <div
-            className="h-2 rounded-full bg-[#D4AF37]"
+            className="h-2 rounded-full bg-[#C79A54]"
             style={{ width: `${(completedSteps.size / onboardingSteps.length) * 100}%` }}
           />
         </div>
@@ -1378,18 +1378,18 @@ function OnboardingPanel({ onOpenModule }: { onOpenModule: (module: DashboardMod
                 type="button"
                 onClick={() => handleStep(step, index)}
                 className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
-                  isDone ? "border-[#064E3B]/25 bg-[#ECFDF5]" : "border-black/10 bg-rice"
+                  isDone ? "border-[#063F4A]/25 bg-[#DDEFF2]" : "border-black/10 bg-rice"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className={`grid size-8 place-items-center rounded ${isDone ? "bg-[#064E3B] text-white" : "bg-white text-ink/45"}`}>
+                  <span className={`grid size-8 place-items-center rounded ${isDone ? "bg-[#063F4A] text-white" : "bg-white text-ink/45"}`}>
                     <CheckCircle2 className="size-4" />
                   </span>
-                  <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#064E3B]">Step {index + 1}</span>
+                  <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">Step {index + 1}</span>
                 </div>
                 <h3 className="mt-4 font-semibold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-ink/58">{step.desc}</p>
-                <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-[#064E3B]">
+                <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-[#063F4A]">
                   {step.action} <ChevronRight className="size-4" />
                 </div>
               </button>
@@ -1407,7 +1407,7 @@ function TodayRecommendedActions({ onOpenModule }: { onOpenModule: (module: Dash
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="size-5 text-[#B08919]" />
+            <Sparkles className="size-5 text-[#C79A54]" />
             <h2 className="text-xl font-semibold">今日推荐行动</h2>
           </div>
           <p className="mt-2 text-sm leading-6 text-ink/58">
@@ -1425,17 +1425,17 @@ function TodayRecommendedActions({ onOpenModule }: { onOpenModule: (module: Dash
               key={action.title}
               type="button"
               onClick={() => onOpenModule(action.module)}
-              className="group rounded border border-black/10 bg-rice p-4 text-left transition hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-sm"
+              className="group rounded border border-black/10 bg-rice p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
             >
               <div className="flex items-start justify-between gap-3">
-                <span className="grid size-10 place-items-center rounded bg-[#ECFDF5] text-[#064E3B]">
+                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] text-[#063F4A]">
                   <Icon className="size-5" />
                 </span>
-                <span className="rounded bg-[#D4AF37]/15 px-2 py-1 text-xs font-semibold text-[#064E3B]">{action.tag}</span>
+                <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{action.tag}</span>
               </div>
               <h3 className="mt-4 font-semibold">{action.title}</h3>
               <p className="mt-2 text-sm leading-6 text-ink/58">{action.desc}</p>
-              <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-[#064E3B]">
+              <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-[#063F4A]">
                 立即查看 <ChevronRight className="size-4 transition group-hover:translate-x-0.5" />
               </div>
             </button>
@@ -1455,14 +1455,14 @@ function MoodCheckInPanel({ onOpenModule }: { onOpenModule: (module: DashboardMo
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <HeartPulse className="size-5 text-[#B08919]" />
+              <HeartPulse className="size-5 text-[#C79A54]" />
               <h2 className="text-xl font-semibold">今日状态打卡</h2>
             </div>
             <p className="mt-2 text-sm leading-6 text-ink/58">
               用户每天记录状态，系统就能推荐更贴近当下的 AI 问题、报告和开运任务。
             </p>
           </div>
-          <span className="rounded bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#064E3B]">
+          <span className="rounded bg-[#DDEFF2] px-3 py-1 text-sm font-semibold text-[#063F4A]">
             已打卡
           </span>
         </div>
@@ -1477,10 +1477,10 @@ function MoodCheckInPanel({ onOpenModule }: { onOpenModule: (module: DashboardMo
                 type="button"
                 onClick={() => setSelectedMood(mood)}
                 className={`rounded border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
-                  active ? "border-[#D4AF37] bg-[#D4AF37]/10" : "border-black/10 bg-rice"
+                  active ? "border-[#C79A54] bg-[#C79A54]/10" : "border-black/10 bg-rice"
                 }`}
               >
-                <p className="text-xl font-semibold text-[#064E3B]">{mood.label}</p>
+                <p className="text-xl font-semibold text-[#063F4A]">{mood.label}</p>
                 <p className="mt-1 text-xs leading-5 text-ink/55">{mood.desc}</p>
               </button>
             );
@@ -1488,19 +1488,19 @@ function MoodCheckInPanel({ onOpenModule }: { onOpenModule: (module: DashboardMo
         </div>
       </div>
 
-      <div className="rounded border border-black/10 bg-[#102019] p-5 text-white shadow-soft">
+      <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/55">基于状态推荐</p>
             <h3 className="mt-2 text-2xl font-semibold">从“{selectedMood.label}”开始问 AI</h3>
             <p className="mt-3 text-sm leading-6 text-white/70">{selectedMood.prompt}</p>
           </div>
-          <Bot className="size-8 text-[#D4AF37]" />
+          <Bot className="size-8 text-[#C79A54]" />
         </div>
         <button
           type="button"
           onClick={() => onOpenModule("ai")}
-          className="mt-5 inline-flex items-center gap-2 rounded bg-[#D4AF37] px-4 py-3 text-sm font-semibold text-[#062F25]"
+          className="mt-5 inline-flex items-center gap-2 rounded bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A]"
         >
           带着这个问题去问 AI <ChevronRight className="size-4" />
         </button>
@@ -1540,7 +1540,7 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
 
   return (
     <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-      <div className="rounded border border-black/10 bg-[#102019] p-6 text-white shadow-soft">
+      <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-white/58">AI 紫微矩阵 · 今日运势</p>
@@ -1549,20 +1549,20 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
               {memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender}
             </p>
           </div>
-          <CalendarDays className="size-9 text-[#D4AF37]" />
+          <CalendarDays className="size-9 text-[#C79A54]" />
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-[150px_1fr]">
-          <div className="rounded border border-[#D4AF37]/35 bg-[#D4AF37]/12 p-4">
+          <div className="rounded border border-[#C79A54]/35 bg-[#C79A54]/12 p-4">
             <p className="text-xs text-white/55">今日评分</p>
             <div className="mt-2 flex items-end gap-2">
-              <span className="text-5xl font-semibold leading-none text-[#D4AF37]">89</span>
+              <span className="text-5xl font-semibold leading-none text-[#C79A54]">89</span>
               <span className="pb-1 text-sm text-white/52">/100</span>
             </div>
             <p className="mt-3 text-xs text-white/62">适合推进合作与整理计划</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4 sm:hidden">
             <p className="text-xs text-white/55">Free 星级</p>
-            <p className="mt-2 text-2xl text-[#D4AF37]">★★★★★</p>
+            <p className="mt-2 text-2xl text-[#C79A54]">★★★★★</p>
             <p className="mt-2 text-xs text-white/58">一句话宜忌：宜谈合作，忌冲动承诺。</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4">
@@ -1571,10 +1571,10 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
                 <div key={label}>
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span className="font-semibold text-white">{label}</span>
-                    <span className="text-[#D4AF37]">{score}/100</span>
+                    <span className="text-[#C79A54]">{score}/100</span>
                   </div>
                   <div className="mt-2 h-2 rounded-full bg-white/12">
-                    <div className="h-2 rounded-full bg-[#D4AF37]" style={{ width: `${score}%` }} />
+                    <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${score}%` }} />
                   </div>
                   <p className="mt-1 text-xs text-white/52">{note}</p>
                 </div>
@@ -1592,36 +1592,36 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           <div className="rounded bg-white/8 p-3">
-            <Palette className="size-4 text-[#D4AF37]" />
+            <Palette className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
-              <span className="size-4 rounded-full bg-[#1B8A6B]" />
+              <span className="size-4 rounded-full bg-[#1495A0]" />
               <p className="text-sm">幸运色：青绿</p>
             </div>
           </div>
           <div className="rounded bg-white/8 p-3">
-            <TrendingUp className="size-4 text-[#D4AF37]" />
+            <TrendingUp className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
-              <span className="grid size-6 place-items-center rounded-full border border-[#D4AF37]/45 text-[10px] text-[#D4AF37]">SE</span>
+              <span className="grid size-6 place-items-center rounded-full border border-[#C79A54]/45 text-[10px] text-[#C79A54]">SE</span>
               <p className="text-sm">贵人方：东南</p>
             </div>
           </div>
           <div className="rounded bg-white/8 p-3">
-            <Flame className="size-4 text-[#D4AF37]" />
+            <Flame className="size-4 text-[#C79A54]" />
             <p className="mt-2 text-sm">今日宜：复盘</p>
           </div>
         </div>
 
-        <div className="mt-6 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
+        <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-[#D4AF37]">底层算法</p>
+              <p className="text-sm font-semibold text-[#C79A54]">底层算法</p>
               <p className="mt-1 text-sm text-white/65">紫微矩阵 + 飞星四化 + 梅花体用 + LLM 解读</p>
             </div>
           <button
             type="button"
               onClick={generateDailyFortune}
               disabled={isLoadingFortune || !canUseAiReading}
-              className="rounded bg-[#D4AF37] px-4 py-2 text-sm font-semibold text-[#062F25] disabled:opacity-60"
+              className="rounded bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A] disabled:opacity-60"
             >
               {currentTier === "free" ? "升级解锁 AI 解读" : isLoadingFortune ? "AI 生成中..." : "AI 生成今日解读"}
             </button>
@@ -1643,7 +1643,7 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Ziwei Matrix</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Ziwei Matrix</p>
               <h3 className="mt-2 text-xl font-semibold">今日评分来源</h3>
             </div>
             <StatusPill>飞星四化</StatusPill>
@@ -1657,7 +1657,7 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
               <div key={palace} className="rounded border border-black/10 bg-rice p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-semibold">{palace}</p>
-                  <span className="rounded bg-[#D4AF37]/15 px-2 py-1 text-xs font-semibold text-[#064E3B]">{score}</span>
+                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{score}</span>
                 </div>
                 <p className="mt-1 text-sm text-ink/65">{signal}</p>
                 <p className="mt-1 text-xs leading-5 text-ink/48">{note}</p>
@@ -1672,13 +1672,13 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
               <p className="text-sm text-ink/55">连续签到</p>
               <p className="mt-2 text-4xl font-semibold">7 天</p>
             </div>
-            <span className="grid size-11 place-items-center rounded bg-[#D4AF37]/15 text-[#B08919]">
+            <span className="grid size-11 place-items-center rounded bg-[#C79A54]/15 text-[#C79A54]">
               <Sparkles className="size-5" />
             </span>
           </div>
           <div className="mt-5 grid grid-cols-7 gap-1">
             {["一", "二", "三", "四", "五", "六", "日"].map((day) => (
-              <div key={day} className="grid aspect-square place-items-center rounded bg-[#064E3B] text-xs font-semibold text-white">
+              <div key={day} className="grid aspect-square place-items-center rounded bg-[#063F4A] text-xs font-semibold text-white">
                 {day}
               </div>
             ))}
@@ -1689,16 +1689,16 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">今日开运任务</h2>
-            <span className="rounded bg-[#F7F7F7] px-2.5 py-1 text-xs font-medium text-ink/58">3 / 3</span>
+            <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs font-medium text-ink/58">3 / 3</span>
           </div>
           <div className="grid gap-3">
             {dailyRituals.map((item) => (
-              <div key={item.title} className="flex gap-3 rounded border border-black/10 bg-[#F7F7F7] p-3">
-                <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-[#064E3B]" />
+              <div key={item.title} className="flex gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3">
+                <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-[#063F4A]" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
                     <p className="font-semibold">{item.title}</p>
-                    <span className="shrink-0 rounded bg-white px-2 py-1 text-xs text-[#064E3B]">{item.reward}</span>
+                    <span className="shrink-0 rounded bg-white px-2 py-1 text-xs text-[#063F4A]">{item.reward}</span>
                   </div>
                   <p className="mt-1 text-sm leading-6 text-ink/58">{item.desc}</p>
                 </div>
@@ -1710,14 +1710,14 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">最近洞察</h2>
-            <span className="rounded bg-[#F7F7F7] px-2.5 py-1 text-xs font-medium text-ink/58">AI 总结</span>
+            <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs font-medium text-ink/58">AI 总结</span>
           </div>
           <div className="grid gap-3">
             {recentInsights.map((item) => (
               <div key={item.title} className="rounded border border-black/10 p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-semibold">{item.title}</p>
-                  <span className="rounded bg-[#D4AF37]/15 px-2 py-1 text-xs text-ink">{item.tag}</span>
+                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs text-ink">{item.tag}</span>
                 </div>
                 <p className="mt-2 text-sm leading-6 text-ink/58">{item.desc}</p>
               </div>
@@ -1737,7 +1737,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Fortune Calendar</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Fortune Calendar</p>
             <h2 className="mt-2 text-2xl font-semibold">14 天运势日历</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
               让用户每天回来查看分数、宜忌与行动窗口。后续接数据库后，可记录真实每日趋势。
@@ -1753,10 +1753,10 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
               type="button"
               className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
                 item.tone === "gold"
-                  ? "border-[#D4AF37]/45 bg-[#D4AF37]/10"
+                  ? "border-[#C79A54]/45 bg-[#C79A54]/10"
                   : item.tone === "green"
-                    ? "border-[#064E3B]/15 bg-[#ECFDF5]"
-                    : "border-black/10 bg-[#F7F7F7]"
+                    ? "border-[#063F4A]/15 bg-[#DDEFF2]"
+                    : "border-black/10 bg-[#F5FAFA]"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
@@ -1764,11 +1764,11 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
                 <span className="text-xs text-ink/50">{item.date}</span>
               </div>
               <div className="mt-4 flex items-end gap-1">
-                <span className="text-3xl font-semibold text-[#064E3B]">{item.score}</span>
+                <span className="text-3xl font-semibold text-[#063F4A]">{item.score}</span>
                 <span className="pb-1 text-xs text-ink/45">/100</span>
               </div>
               <div className="mt-3 h-2 rounded-full bg-white">
-                <div className="h-2 rounded-full bg-[#D4AF37]" style={{ width: `${item.score}%` }} />
+                <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${item.score}%` }} />
               </div>
               <p className="mt-3 text-sm font-semibold text-ink/72">{item.tag}</p>
             </button>
@@ -1777,8 +1777,8 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
       </div>
 
       <div className="grid gap-5">
-        <div className="rounded border border-black/10 bg-[#102019] p-5 text-white shadow-soft">
-          <CalendarDays className="size-8 text-[#D4AF37]" />
+        <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
+          <CalendarDays className="size-8 text-[#C79A54]" />
           <h3 className="mt-4 text-2xl font-semibold">最佳行动窗口</h3>
           <div className="mt-5 grid gap-3">
             {[
@@ -1787,7 +1787,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
               ["05/11", "贵人日，适合主动联系关键人物"]
             ].map(([date, text]) => (
               <div key={date} className="rounded border border-white/12 bg-white/8 p-3">
-                <p className="text-sm font-semibold text-[#D4AF37]">{date}</p>
+                <p className="text-sm font-semibold text-[#C79A54]">{date}</p>
                 <p className="mt-1 text-sm leading-6 text-white/70">{text}</p>
               </div>
             ))}
@@ -1799,10 +1799,10 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
           <p className="mt-3 text-sm leading-6 text-ink/60">
             明天会刷新事业与财运评分。连续查看 7 天后，可解锁一份“周趋势总结”。
           </p>
-          <div className="mt-4 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
-            <p className="text-sm font-semibold text-[#064E3B]">连续查看进度</p>
+          <div className="mt-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
+            <p className="text-sm font-semibold text-[#063F4A]">连续查看进度</p>
             <div className="mt-3 h-2 rounded-full bg-white">
-              <div className="h-2 w-[72%] rounded-full bg-[#064E3B]" />
+              <div className="h-2 w-[72%] rounded-full bg-[#063F4A]" />
             </div>
             <p className="mt-2 text-xs text-ink/55">5 / 7 天，差 2 天解锁周总结</p>
           </div>
@@ -1814,7 +1814,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
               <h3 className="text-xl font-semibold">周趋势总结</h3>
               <p className="mt-2 text-sm leading-6 text-ink/58">连续查看 7 天后自动解锁，形成长期留存闭环。</p>
             </div>
-            <LockKeyhole className="size-7 text-[#B08919]" />
+            <LockKeyhole className="size-7 text-[#C79A54]" />
           </div>
           <div className="mt-4 grid gap-3">
             {[
@@ -1828,7 +1828,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
               </div>
             ))}
           </div>
-          <button className="mt-4 w-full rounded bg-[#064E3B] px-4 py-3 text-sm font-semibold text-white">
+          <button className="mt-4 w-full rounded bg-[#063F4A] px-4 py-3 text-sm font-semibold text-white">
             再查看 2 天解锁
           </button>
         </div>
@@ -1841,10 +1841,10 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
                 高阶战略版读取本命格局、流年大环境、流月动态与当前问题，输出商业策略。
               </p>
             </div>
-            {canSeeStrategicCycle ? <Sparkles className="size-7 text-[#B08919]" /> : <LockKeyhole className="size-7 text-[#B08919]" />}
+            {canSeeStrategicCycle ? <Sparkles className="size-7 text-[#C79A54]" /> : <LockKeyhole className="size-7 text-[#C79A54]" />}
           </div>
-          <div className={`mt-4 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4 ${canSeeStrategicCycle ? "" : "opacity-65"}`}>
-            <p className="text-sm font-semibold text-[#064E3B]">
+          <div className={`mt-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4 ${canSeeStrategicCycle ? "" : "opacity-65"}`}>
+            <p className="text-sm font-semibold text-[#063F4A]">
               {canSeeStrategicCycle ? "本月建议：防御型扩张" : "RM69.90 解锁"}
             </p>
             <p className={`mt-2 text-sm leading-6 text-ink/62 ${canSeeStrategicCycle ? "" : "blur-[2px]"}`}>
@@ -1860,7 +1860,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
 function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile }) {
   return (
     <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-      <div className="rounded border border-black/10 bg-[#102019] p-6 text-white shadow-soft">
+      <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/55">Personal Destiny Profile</p>
@@ -1869,7 +1869,7 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
               会员注册后必须填写基础资料。今日运势、AI 风水师和报告中心都会读取这份档案来做命理分析。
             </p>
           </div>
-          <UserRound className="size-9 text-[#D4AF37]" />
+          <UserRound className="size-9 text-[#C79A54]" />
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
@@ -1890,8 +1890,8 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
           ))}
         </div>
 
-        <div className="mt-6 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
-          <p className="text-sm font-semibold text-[#D4AF37]">专属建议</p>
+        <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
+          <p className="text-sm font-semibold text-[#C79A54]">专属建议</p>
           <p className="mt-2 text-sm leading-6 text-white/70">
             今年适合先建立稳定现金流和清晰合作边界，再逐步扩大项目规模。每次重大决策前，建议先做择时与风险复盘。
           </p>
@@ -1915,12 +1915,12 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
                   <p className="font-semibold">{element} · {score}/100</p>
                   <p className="mt-1 text-sm text-ink/55">{note}</p>
                 </div>
-                <span className="grid size-10 place-items-center rounded bg-[#ECFDF5] font-semibold text-[#064E3B]">
+                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] font-semibold text-[#063F4A]">
                   {element}
                 </span>
               </div>
               <div className="mt-3 h-2 rounded-full bg-white">
-                <div className="h-2 rounded-full bg-[#064E3B]" style={{ width: `${score}%` }} />
+                <div className="h-2 rounded-full bg-[#063F4A]" style={{ width: `${score}%` }} />
               </div>
             </div>
           ))}
@@ -1928,13 +1928,13 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {destinyKeywords.map((keyword) => (
-            <div key={keyword} className="rounded border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-3 text-sm font-semibold text-[#064E3B]">
+            <div key={keyword} className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-3 text-sm font-semibold text-[#063F4A]">
               {keyword}
             </div>
           ))}
         </div>
 
-        <div className="mt-5 rounded border border-black/10 bg-[#F7F7F7] p-4">
+        <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center justify-between gap-3">
             <h4 className="font-semibold">十二宫数据桶</h4>
             <span className="rounded bg-white px-2 py-1 text-xs text-ink/55">MVP 预览</span>
@@ -1948,7 +1948,7 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
               "交友宫",
               "福德宫"
             ].map((palace) => (
-              <div key={palace} className="rounded bg-white p-3 text-sm font-semibold text-[#064E3B]">
+              <div key={palace} className="rounded bg-white p-3 text-sm font-semibold text-[#063F4A]">
                 {palace}
               </div>
             ))}
@@ -1983,13 +1983,13 @@ function GrowthPlaybookModule() {
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Daily Growth Loop</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Daily Growth Loop</p>
             <h2 className="mt-2 text-2xl font-semibold">每日任务与奖励</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
               让用户每天有事可做、有奖励可拿、有理由回来。现在先做前端交互，后续接点数系统。
             </p>
           </div>
-          <span className="rounded bg-[#D4AF37] px-3 py-1 text-sm font-semibold text-[#062F25]">
+          <span className="rounded bg-[#C79A54] px-3 py-1 text-sm font-semibold text-[#063F4A]">
             {completedCount} / {growthTasks.length}
           </span>
         </div>
@@ -2004,16 +2004,16 @@ function GrowthPlaybookModule() {
                 type="button"
                 onClick={() => toggleTask(index)}
                 className={`flex gap-3 rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
-                  isDone ? "border-[#064E3B]/25 bg-[#ECFDF5]" : "border-black/10 bg-rice"
+                  isDone ? "border-[#063F4A]/25 bg-[#DDEFF2]" : "border-black/10 bg-rice"
                 }`}
               >
-                <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded ${isDone ? "bg-[#064E3B] text-white" : "bg-white text-ink/45"}`}>
+                <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded ${isDone ? "bg-[#063F4A] text-white" : "bg-white text-ink/45"}`}>
                   <CheckCircle2 className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-3">
                     <span className="font-semibold">{task.title}</span>
-                    <span className="shrink-0 rounded bg-white px-2 py-1 text-xs font-semibold text-[#064E3B]">{task.reward}</span>
+                    <span className="shrink-0 rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">{task.reward}</span>
                   </span>
                   <span className="mt-1 block text-sm leading-6 text-ink/58">{task.desc}</span>
                 </span>
@@ -2022,36 +2022,36 @@ function GrowthPlaybookModule() {
           })}
         </div>
 
-        <div className="mt-6 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
+        <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="font-semibold text-[#064E3B]">距离 Pro 升级</p>
+            <p className="font-semibold text-[#063F4A]">距离 Pro 升级</p>
             <span className="text-sm font-semibold">72%</span>
           </div>
           <div className="mt-3 h-2 rounded-full bg-white">
-            <div className="h-2 w-[72%] rounded-full bg-[#064E3B]" />
+            <div className="h-2 w-[72%] rounded-full bg-[#063F4A]" />
           </div>
           <p className="mt-2 text-sm text-ink/58">还差 320 点消费、1 份报告或 3 次分享。</p>
         </div>
       </div>
 
       <div className="grid gap-5">
-        <div className="rounded border border-black/10 bg-[#102019] p-5 text-white shadow-soft">
+        <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-sm text-white/55">今日分享卡</p>
               <h3 className="mt-1 text-2xl font-semibold">我的事业评分 91</h3>
             </div>
-            <Share2 className="size-8 text-[#D4AF37]" />
+            <Share2 className="size-8 text-[#C79A54]" />
           </div>
-          <div className="mt-6 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-5 text-center">
+          <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-5 text-center">
             <p className="text-sm text-white/60">今日运势</p>
-            <p className="mt-2 text-6xl font-semibold text-[#D4AF37]">89</p>
+            <p className="mt-2 text-6xl font-semibold text-[#C79A54]">89</p>
             <p className="mt-3 text-xl font-semibold">稳中有进，先整理后扩张</p>
             <p className="mt-4 text-sm leading-6 text-white/65">幸运色：青绿 · 贵人方：东南 · 今日宜：复盘</p>
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded bg-white/8 p-3">
             <p className="text-sm text-white/70">推荐码：FENG-LIM88</p>
-            <button className="rounded bg-[#D4AF37] px-3 py-2 text-sm font-semibold text-[#062F25]">
+            <button className="rounded bg-[#C79A54] px-3 py-2 text-sm font-semibold text-[#063F4A]">
               预览海报
             </button>
           </div>
@@ -2059,13 +2059,13 @@ function GrowthPlaybookModule() {
 
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="flex items-center gap-2">
-            <Gift className="size-5 text-[#B08919]" />
+            <Gift className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">成就徽章</h3>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {achievementBadges.map(([badge, status]) => (
               <div key={badge} className="rounded border border-black/10 bg-rice p-3">
-                <Trophy className="size-4 text-[#B08919]" />
+                <Trophy className="size-4 text-[#C79A54]" />
                 <p className="mt-2 text-sm font-semibold">{badge}</p>
                 <p className="mt-1 text-xs text-ink/50">{status}</p>
               </div>
@@ -2084,8 +2084,8 @@ function FavoritesVaultModule() {
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-      <div className="rounded border border-black/10 bg-[#102019] p-5 text-white shadow-soft">
-        <BookmarkCheck className="size-9 text-[#D4AF37]" />
+      <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
+        <BookmarkCheck className="size-9 text-[#C79A54]" />
         <h2 className="mt-4 text-3xl font-semibold">我的收藏夹</h2>
         <p className="mt-3 text-sm leading-6 text-white/68">
           把 AI 回复、报告、运势日历、产品、课程和行动建议集中保存，形成用户自己的命理决策库。
@@ -2121,7 +2121,7 @@ function FavoritesVaultModule() {
               type="button"
               onClick={() => setActiveType(type)}
               className={`shrink-0 rounded px-3 py-2 text-sm font-semibold ${
-                activeType === type ? "bg-[#064E3B] text-white" : "border border-black/10 bg-rice text-ink/60"
+                activeType === type ? "bg-[#063F4A] text-white" : "border border-black/10 bg-rice text-ink/60"
               }`}
             >
               {type}
@@ -2133,12 +2133,12 @@ function FavoritesVaultModule() {
           {filteredItems.map((item) => (
             <div key={`${item.type}-${item.title}`} className="rounded border border-black/10 bg-rice p-4 transition hover:-translate-y-0.5 hover:shadow-sm">
               <div className="flex items-start justify-between gap-3">
-                <span className="rounded bg-[#D4AF37]/15 px-2 py-1 text-xs font-semibold text-[#064E3B]">{item.type}</span>
-                <BookmarkCheck className="size-4 text-[#B08919]" />
+                <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.type}</span>
+                <BookmarkCheck className="size-4 text-[#C79A54]" />
               </div>
               <h4 className="mt-4 font-semibold">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-ink/58">{item.desc}</p>
-              <button className="mt-4 text-sm font-semibold text-[#064E3B]">打开查看</button>
+              <button className="mt-4 text-sm font-semibold text-[#063F4A]">打开查看</button>
             </div>
           ))}
         </div>
@@ -2194,16 +2194,16 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="mb-5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Coins className="size-5 text-[#B08919]" />
+            <Coins className="size-5 text-[#C79A54]" />
             <h2 className="text-xl font-semibold">点数钱包</h2>
           </div>
-          <button className="rounded bg-[#B91C1C] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#991B1B]">
+          <button className="rounded bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F7F88]">
             充值点数
           </button>
         </div>
-        <div className="rounded border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
+        <div className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
           <p className="text-sm text-ink/55">当前可用点数</p>
-          <p className="mt-2 text-4xl font-semibold text-[#064E3B]">2,680</p>
+          <p className="mt-2 text-4xl font-semibold text-[#063F4A]">2,680</p>
           <p className="mt-2 text-sm text-ink/55">点数只用于平台功能，不可提现。</p>
         </div>
         <div className="mt-4">
@@ -2219,7 +2219,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">AI Report Center</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">AI Report Center</p>
             <h2 className="mt-2 text-2xl font-semibold">报告中心</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
               {activeTier.name} 当前可用：{currentTier === "free" ? "报告摘要预览" : currentTier === "tactical" ? "财运、事业、感情、合盘等战术报告" : "全部报告与流月/流年战略分析"}。
@@ -2242,12 +2242,12 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                     disabled={locked}
                     className={`group rounded border p-4 text-left transition ${
                       locked
-                        ? "cursor-not-allowed border-black/10 bg-[#F7F7F7] opacity-72"
-                        : "border-black/10 bg-rice hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-sm"
+                        ? "cursor-not-allowed border-black/10 bg-[#F5FAFA] opacity-72"
+                        : "border-black/10 bg-rice hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      {locked ? <LockKeyhole className="size-5 text-[#B08919]" /> : <FileText className="size-5 text-[#064E3B]" />}
+                      {locked ? <LockKeyhole className="size-5 text-[#C79A54]" /> : <FileText className="size-5 text-[#063F4A]" />}
                       <span className="rounded bg-white px-2 py-1 text-xs text-ink/60">
                         {locked ? (currentTier === "free" ? "升级解锁" : "战略版") : report.tag}
                       </span>
@@ -2256,7 +2256,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                     <p className="mt-2 text-sm text-ink/55">
                       {locked ? (currentTier === "free" ? "Free 仅可预览每日摘要" : "RM69.90 解锁流月/流年战略") : `消耗 ${report.points} 点`}
                     </p>
-                    <div className={`mt-4 flex items-center gap-1 text-xs font-semibold ${locked ? "text-ink/38" : "text-[#064E3B]"}`}>
+                    <div className={`mt-4 flex items-center gap-1 text-xs font-semibold ${locked ? "text-ink/38" : "text-[#063F4A]"}`}>
                       {locked ? "当前等级不可生成" : "生成并查看报告"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
                     </div>
                   </button>
@@ -2264,10 +2264,10 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
               })}
             </div>
 
-            <div className="mt-5 rounded border border-black/10 bg-[#F7F7F7] p-4">
+            <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <Archive className="size-4 text-[#064E3B]" />
+                  <Archive className="size-4 text-[#063F4A]" />
                   <h3 className="font-semibold">我的报告档案</h3>
                 </div>
                 <span className="rounded bg-white px-2.5 py-1 text-xs text-ink/55">{savedReports.length} 份</span>
@@ -2280,7 +2280,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                       type="button"
                       onClick={() => handleSelectSaved(report)}
                       className={`flex w-full items-center justify-between gap-3 border-t border-black/10 py-3 text-left first:border-t-0 ${
-                        selectedReport?.id === report.id ? "text-[#064E3B]" : "text-ink"
+                        selectedReport?.id === report.id ? "text-[#063F4A]" : "text-ink"
                       }`}
                     >
                       <span className="min-w-0">
@@ -2304,7 +2304,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
               <div>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Saved Report</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Saved Report</p>
                     <h3 className="mt-2 text-2xl font-semibold">{selectedReport.title}</h3>
                     <p className="mt-2 text-sm text-ink/55">
                       分析对象：{memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender}
@@ -2314,14 +2314,14 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                   <button
                     type="button"
                     onClick={() => downloadReport(selectedReport, memberProfile)}
-                    className="inline-flex items-center gap-2 rounded bg-[#064E3B] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#053C2F]"
+                    className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#052F38]"
                   >
                     <Download className="size-4" /> 下载报告
                   </button>
                 </div>
 
-                <div className="mt-5 rounded border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
-                  <p className="text-sm font-semibold text-[#064E3B]">报告摘要</p>
+                <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
+                  <p className="text-sm font-semibold text-[#063F4A]">报告摘要</p>
                   <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReport.summary}</p>
                 </div>
 
@@ -2334,14 +2334,14 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                   ))}
                 </div>
 
-                <p className="mt-5 rounded bg-[#F7F7F7] p-3 text-xs leading-5 text-ink/50">
+                <p className="mt-5 rounded bg-[#F5FAFA] p-3 text-xs leading-5 text-ink/50">
                   免责声明：本报告为 AI 命理与风水辅助建议，仅供参考，不构成投资、医疗、法律或重大人生决策的唯一依据。
                 </p>
               </div>
             ) : (
-              <div className="grid min-h-[440px] place-items-center rounded border border-dashed border-black/15 bg-[#F7F7F7] p-8 text-center">
+              <div className="grid min-h-[440px] place-items-center rounded border border-dashed border-black/15 bg-[#F5FAFA] p-8 text-center">
                 <div>
-                  <FileText className="mx-auto size-10 text-[#064E3B]" />
+                  <FileText className="mx-auto size-10 text-[#063F4A]" />
                   <h3 className="mt-4 text-xl font-semibold">选择一个报告开始生成</h3>
                   <p className="mt-2 max-w-md text-sm leading-6 text-ink/55">
                     点击左侧报告类型后，这里会显示完整报告内容，并自动保存到“我的报告档案”。
@@ -2370,19 +2370,19 @@ function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
           </feMerge>
         </filter>
         <radialGradient id={`gold-aura-${artifact.id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#C9A24A" stopOpacity="0.13" />
-          <stop offset="72%" stopColor="#C9A24A" stopOpacity="0.04" />
+          <stop offset="0%" stopColor="#C79A54" stopOpacity="0.13" />
+          <stop offset="72%" stopColor="#C79A54" stopOpacity="0.04" />
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </radialGradient>
       </defs>
       <rect width="240" height="240" fill="#ffffff" />
       <rect width="240" height="240" fill={`url(#gold-aura-${artifact.id})`} />
-      <circle cx="120" cy="120" r="94" fill="none" stroke="#C9A24A" strokeOpacity="0.8" strokeWidth="2.6" />
-      <circle cx="120" cy="120" r="64" fill="none" stroke="#C9A24A" strokeOpacity="0.28" strokeWidth="2.2" />
+      <circle cx="120" cy="120" r="94" fill="none" stroke="#C79A54" strokeOpacity="0.8" strokeWidth="2.6" />
+      <circle cx="120" cy="120" r="64" fill="none" stroke="#C79A54" strokeOpacity="0.28" strokeWidth="2.2" />
       <path
         d={artifact.ornamentPath || ""}
         fill="none"
-        stroke="#C9A24A"
+        stroke="#C79A54"
         strokeOpacity="0.88"
         strokeWidth="2.6"
         strokeLinecap="round"
@@ -2391,7 +2391,7 @@ function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
       <path
         d={artifact.path}
         fill="none"
-        stroke="#C9A24A"
+        stroke="#C79A54"
         strokeOpacity="0.98"
         strokeWidth="2.6"
         strokeLinecap="round"
@@ -2405,7 +2405,7 @@ function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
           cy={dot.y}
           r="8.5"
           fill="#ffffff"
-          stroke="#C9A24A"
+          stroke="#C79A54"
           strokeWidth="2.6"
         />
       ))}
@@ -2469,7 +2469,7 @@ function SigilModule({
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Sigil Studio</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Sigil Studio</p>
             <h2 className="mt-2 text-2xl font-semibold">符印生成器</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
               输入一个正向意图，系统会生成一枚专属金色符印。
@@ -2486,12 +2486,12 @@ function SigilModule({
             id="sigil-intent"
             value={intent}
             onChange={(event) => setIntent(event.target.value)}
-            className="mt-2 min-h-28 w-full rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#064E3B]"
+            className="mt-2 min-h-28 w-full rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
             placeholder="例如：I AM EARNING STEADY MONEY EVERY WEEK"
           />
           <div
             className={`mt-3 rounded border p-3 text-sm ${
-              intentGuidance.ok ? "border-[#064E3B]/20 bg-[#ECFDF5] text-[#064E3B]" : "border-[#D4AF37]/45 bg-[#D4AF37]/10 text-ink/65"
+              intentGuidance.ok ? "border-[#063F4A]/20 bg-[#DDEFF2] text-[#063F4A]" : "border-[#C79A54]/45 bg-[#C79A54]/10 text-ink/65"
             }`}
           >
             <p className="font-semibold">{intentGuidance.ok ? "意图检查通过" : "意图需要改写"}</p>
@@ -2500,7 +2500,7 @@ function SigilModule({
               <button
                 type="button"
                 onClick={() => setIntent(intentGuidance.suggestion)}
-                className="mt-2 rounded bg-white px-3 py-1.5 text-xs font-semibold text-[#064E3B]"
+                className="mt-2 rounded bg-white px-3 py-1.5 text-xs font-semibold text-[#063F4A]"
               >
                 使用建议句：{intentGuidance.suggestion}
               </button>
@@ -2508,22 +2508,22 @@ function SigilModule({
           </div>
         </div>
 
-        {error ? <p className="mt-3 rounded bg-[#FEF2F2] p-3 text-sm text-[#B91C1C]">{error}</p> : null}
+        {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#1495A0]">{error}</p> : null}
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={handleGenerateSigil}
-            className="inline-flex items-center gap-2 rounded bg-[#B91C1C] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#991B1B]"
+            className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
           >
             消耗 {sigilCost} 点生成符印 <Sparkles className="size-4" />
           </button>
           <span className="text-sm text-ink/55">当前点数：{points.toLocaleString("en-US")} 点</span>
         </div>
 
-        <div className="mt-6 rounded border border-black/10 bg-[#F7F7F7] p-4">
+        <div className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center gap-2">
-            <Archive className="size-4 text-[#064E3B]" />
+            <Archive className="size-4 text-[#063F4A]" />
             <h3 className="font-semibold">符印档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
@@ -2534,7 +2534,7 @@ function SigilModule({
                   type="button"
                   onClick={() => setSelectedArtifact(artifact)}
                   className={`flex items-center justify-between gap-3 rounded border p-3 text-left ${
-                    selectedArtifact?.id === artifact.id ? "border-[#D4AF37] bg-white" : "border-black/10 bg-white/70"
+                    selectedArtifact?.id === artifact.id ? "border-[#C79A54] bg-white" : "border-black/10 bg-white/70"
                   }`}
                 >
                   <span>
@@ -2553,7 +2553,7 @@ function SigilModule({
         </div>
       </div>
 
-      <div className="rounded border border-[#C9A24A]/30 bg-white p-5 text-ink shadow-sm">
+      <div className="rounded border border-[#C79A54]/30 bg-white p-5 text-ink shadow-sm">
         {selectedArtifact ? (
           <div>
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -2564,18 +2564,18 @@ function SigilModule({
               <button
                 type="button"
                 onClick={() => downloadSigil(selectedArtifact)}
-                className="inline-flex items-center gap-2 rounded bg-[#C9A24A] px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                className="inline-flex items-center gap-2 rounded bg-[#C79A54] px-4 py-2 text-sm font-semibold text-white shadow-sm"
               >
                 <Download className="size-4" /> 下载 SVG
               </button>
             </div>
 
-            <div className="mx-auto mt-6 aspect-square max-w-sm overflow-hidden rounded border border-[#C9A24A]/30 bg-white shadow-sm">
+            <div className="mx-auto mt-6 aspect-square max-w-sm overflow-hidden rounded border border-[#C79A54]/30 bg-white shadow-sm">
               <SigilPreview artifact={selectedArtifact} />
             </div>
 
-            <div className="mt-5 rounded border border-[#C9A24A]/30 bg-[#C9A24A]/10 p-4">
-              <p className="text-sm font-semibold text-[#8A6A10]">激活建议</p>
+            <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
+              <p className="text-sm font-semibold text-[#C79A54]">激活建议</p>
               <p className="mt-2 text-sm leading-6 text-ink/70">
                 进入专注或冥想状态后凝视符印 30-60 秒。完成后不要反复追问原始意图，让符号从显意识退场，把它当作行动提醒的视觉锚点。
               </p>
@@ -2591,9 +2591,9 @@ function SigilModule({
               <h3 className="mt-2 text-2xl font-semibold">等待生成符印</h3>
               <p className="mt-2 text-sm leading-6 text-ink/55">输入意图并消耗点数后，这里会显示你的专属金色符印。</p>
             </div>
-            <div className="grid min-h-[460px] place-items-center rounded border border-dashed border-[#C9A24A]/40 bg-[#C9A24A]/5 p-8 text-center">
+            <div className="grid min-h-[460px] place-items-center rounded border border-dashed border-[#C79A54]/40 bg-[#C79A54]/5 p-8 text-center">
               <div>
-                <Sparkles className="mx-auto size-12 text-[#C9A24A]" />
+                <Sparkles className="mx-auto size-12 text-[#C79A54]" />
                 <p className="mt-4 text-sm leading-6 text-ink/55">符印将在生成后显示。</p>
               </div>
             </div>
@@ -2706,7 +2706,7 @@ function DivinationModule({
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Jiu Yun Oracle</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Jiu Yun Oracle</p>
               <h2 className="mt-2 text-2xl font-semibold">九运智慧问卦</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-ink/58">
                 随机报出 3 个数字，系统结合当前时辰起卦，输出局势、变化、结果与五行通关行动。
@@ -2722,7 +2722,7 @@ function DivinationModule({
                 <input
                   value={value}
                   onChange={(event) => updateNumber(index, event.target.value)}
-                  className="mt-2 h-14 w-full rounded border border-black/10 bg-rice text-center text-2xl font-semibold text-[#064E3B] outline-none focus:border-[#D4AF37]"
+                  className="mt-2 h-14 w-full rounded border border-black/10 bg-rice text-center text-2xl font-semibold text-[#063F4A] outline-none focus:border-[#C79A54]"
                   inputMode="numeric"
                   placeholder={`${index + 1}`}
                 />
@@ -2734,19 +2734,19 @@ function DivinationModule({
             <button
               type="button"
               onClick={handleGenerateReading}
-              className="inline-flex items-center gap-2 rounded bg-[#B91C1C] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#991B1B]"
+              className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
             >
               消耗 {divinationCost} 点开始问卦 <Flame className="size-4" />
             </button>
             <span className="text-sm text-ink/55">当前点数：{points.toLocaleString("en-US")} 点</span>
           </div>
 
-          {error ? <p className="mt-3 rounded bg-[#FEF2F2] p-3 text-sm text-[#B91C1C]">{error}</p> : null}
+          {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#1495A0]">{error}</p> : null}
         </div>
 
-        <div className="rounded border border-black/10 bg-[#F7F7F7] p-4 shadow-sm">
+        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <Archive className="size-4 text-[#064E3B]" />
+            <Archive className="size-4 text-[#063F4A]" />
             <h3 className="font-semibold">问卦档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
@@ -2757,12 +2757,12 @@ function DivinationModule({
                   type="button"
                   onClick={() => setSelectedReading(reading)}
                   className={`rounded border p-3 text-left transition ${
-                    selectedReading?.id === reading.id ? "border-[#D4AF37] bg-white" : "border-black/10 bg-white/70"
+                    selectedReading?.id === reading.id ? "border-[#C79A54] bg-white" : "border-black/10 bg-white/70"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-semibold">{reading.originalHexagram}</span>
-                    <span className="rounded bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#064E3B]">{reading.score}</span>
+                    <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.score}</span>
                   </div>
                   <p className="mt-1 text-xs text-ink/45">{reading.createdAt} · {reading.hourBranch}时 · 动爻 {reading.movingLine}</p>
                 </button>
@@ -2775,15 +2775,15 @@ function DivinationModule({
           </div>
         </div>
 
-        <div className="rounded border border-[#D4AF37]/30 bg-white p-4 shadow-sm">
+        <div className="rounded border border-[#C79A54]/30 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <Coins className="size-4 text-[#B08919]" />
+            <Coins className="size-4 text-[#C79A54]" />
             <h3 className="font-semibold">福报积分兑换</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {divinationExchangeRewards.map(([cost, reward]) => (
               <div key={reward} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-rice p-3">
-                <span className="text-sm font-semibold text-[#064E3B]">{cost}</span>
+                <span className="text-sm font-semibold text-[#063F4A]">{cost}</span>
                 <span className="text-sm text-ink/60">{reward}</span>
               </div>
             ))}
@@ -2791,27 +2791,27 @@ function DivinationModule({
           <button
             type="button"
             onClick={() => onOpenModule("wallet")}
-            className="mt-3 w-full rounded bg-[#064E3B] px-4 py-2.5 text-sm font-semibold text-white"
+            className="mt-3 w-full rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
           >
             去报告中心兑换
           </button>
         </div>
       </div>
 
-      <div className="rounded border border-[#D4AF37]/30 bg-white p-5 shadow-sm">
+      <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
         {selectedReading ? (
           <div>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Panoramic Decision</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Panoramic Decision</p>
                 <h3 className="mt-2 text-2xl font-semibold">三数起卦结果</h3>
                 <p className="mt-2 text-sm text-ink/55">
                   数字 {selectedReading.numbers.join(" / ")} · {selectedReading.hourBranch}时 · 动爻 {selectedReading.movingLine}
                 </p>
               </div>
-              <div className="rounded bg-[#102019] px-4 py-3 text-right text-white">
+              <div className="rounded bg-[#063F4A] px-4 py-3 text-right text-white">
                 <p className="text-xs text-white/48">今日决策指数</p>
-                <p className="text-3xl font-semibold text-[#D4AF37]">{selectedReading.score}</p>
+                <p className="text-3xl font-semibold text-[#C79A54]">{selectedReading.score}</p>
               </div>
             </div>
 
@@ -2824,7 +2824,7 @@ function DivinationModule({
               ].map(([label, value]) => (
                 <div key={label} className="rounded border border-black/10 bg-rice p-4">
                   <p className="text-xs text-ink/45">{label}</p>
-                  <p className="mt-2 font-semibold text-[#064E3B]">{value}</p>
+                  <p className="mt-2 font-semibold text-[#063F4A]">{value}</p>
                 </div>
               ))}
             </div>
@@ -2842,18 +2842,18 @@ function DivinationModule({
               ))}
             </div>
 
-            <div className="mt-5 rounded border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-4">
+            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="size-5 text-[#B08919]" />
-                <p className="font-semibold text-[#8A6A10]">今日战略心法</p>
+                <Sparkles className="size-5 text-[#C79A54]" />
+                <p className="font-semibold text-[#C79A54]">今日战略心法</p>
               </div>
               <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReading.mindset}</p>
             </div>
 
-            <div className="mt-5 rounded bg-[#102019] p-5 text-white">
+            <div className="mt-5 rounded bg-[#063F4A] p-5 text-white">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-[#D4AF37]">五行通关闭环</p>
+                  <p className="text-sm font-semibold text-[#C79A54]">五行通关闭环</p>
                   <h4 className="mt-2 text-2xl font-semibold">需用「{selectedReading.passElement}」通关</h4>
                 </div>
                 <StatusPill>天时 · 地利 · 物用 · 人和</StatusPill>
@@ -2874,27 +2874,27 @@ function DivinationModule({
               <div className="mt-4 rounded bg-white/8 p-4">
                 <p className="text-xs text-white/42">动态行为</p>
                 <p className="mt-2 text-sm leading-6 text-white/78">{selectedReading.actionPlan.action}</p>
-                <p className="mt-3 rounded bg-[#D4AF37]/15 px-3 py-2 text-sm font-semibold text-[#D4AF37]">
+                <p className="mt-3 rounded bg-[#C79A54]/15 px-3 py-2 text-sm font-semibold text-[#C79A54]">
                   {selectedReading.actionPlan.mantra}
                 </p>
               </div>
             </div>
 
             <div className="mt-5 grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
-              <div className="rounded border border-[#D4AF37]/35 bg-[#F7F7F7] p-4">
+              <div className="rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Share Card</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Share Card</p>
                     <h4 className="mt-1 font-semibold">九运开运分享图预览</h4>
                   </div>
-                  <Share2 className="size-5 text-[#B08919]" />
+                  <Share2 className="size-5 text-[#C79A54]" />
                 </div>
-                <div className="mt-4 overflow-hidden rounded border border-[#D4AF37]/35 bg-white shadow-sm">
-                  <div className="bg-[#102019] p-5 text-white">
-                    <p className="text-xs text-[#D4AF37]">AI Feng Shui Master</p>
+                <div className="mt-4 overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
+                  <div className="bg-[#063F4A] p-5 text-white">
+                    <p className="text-xs text-[#C79A54]">AI Feng Shui Master</p>
                     <div className="mt-4 flex items-center justify-between">
                       <div>
-                        <p className="text-4xl font-semibold text-[#D4AF37]">{selectedReading.score}</p>
+                        <p className="text-4xl font-semibold text-[#C79A54]">{selectedReading.score}</p>
                         <p className="text-xs text-white/52">今日决策指数</p>
                       </div>
                       <div className="text-right">
@@ -2908,10 +2908,10 @@ function DivinationModule({
                   </div>
                   <div className="grid grid-cols-[1fr_auto] items-center gap-3 p-4">
                     <div>
-                      <p className="text-xs font-semibold text-[#064E3B]">#{selectedReading.passElement}通关 #九运智慧 #易玺老师</p>
+                      <p className="text-xs font-semibold text-[#063F4A]">#{selectedReading.passElement}通关 #九运智慧 #易玺老师</p>
                       <p className="mt-1 text-xs text-ink/45">分享后回传截图，可获得福报点数。</p>
                     </div>
-                    <div className="grid size-14 place-items-center rounded bg-[#F7F7F7] text-[10px] font-semibold text-ink/45">
+                    <div className="grid size-14 place-items-center rounded bg-[#F5FAFA] text-[10px] font-semibold text-ink/45">
                       QR
                     </div>
                   </div>
@@ -2921,7 +2921,7 @@ function DivinationModule({
               <div className="rounded border border-black/10 bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#064E3B]">Commerce Loop</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Commerce Loop</p>
                     <h4 className="mt-1 font-semibold">通关物件推荐</h4>
                   </div>
                   <StatusPill>{selectedReading.passElement}元素</StatusPill>
@@ -2932,16 +2932,16 @@ function DivinationModule({
                       key={product.title}
                       type="button"
                       onClick={() => onOpenModule("shop")}
-                      className="group rounded border border-black/10 bg-rice p-3 text-left transition hover:-translate-y-0.5 hover:border-[#D4AF37]/50 hover:shadow-sm"
+                      className="group rounded border border-black/10 bg-rice p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/50 hover:shadow-sm"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="font-semibold">{product.title}</p>
                           <p className="mt-1 text-sm leading-6 text-ink/55">{product.desc}</p>
                         </div>
-                        <span className="rounded bg-white px-2 py-1 text-sm font-semibold text-[#064E3B]">{product.price}</span>
+                        <span className="rounded bg-white px-2 py-1 text-sm font-semibold text-[#063F4A]">{product.price}</span>
                       </div>
-                      <p className="mt-3 text-xs font-semibold text-[#064E3B]">去商城查看</p>
+                      <p className="mt-3 text-xs font-semibold text-[#063F4A]">去商城查看</p>
                     </button>
                   ))}
                 </div>
@@ -2951,19 +2951,19 @@ function DivinationModule({
             <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_0.8fr]">
               <div className="rounded border border-black/10 bg-rice p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="size-5 text-[#064E3B]" />
+                  <CheckCircle2 className="size-5 text-[#063F4A]" />
                   <h4 className="font-semibold">开运日记打卡</h4>
                 </div>
                 <textarea
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
-                  className="mt-3 min-h-24 w-full rounded border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-[#064E3B]"
+                  className="mt-3 min-h-24 w-full rounded border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
                   placeholder="完成布局后写下感应，例如：今天谈合作更顺，思路比较清楚。"
                 />
                 <button
                   type="button"
                   onClick={handleCheckIn}
-                  className="mt-3 inline-flex items-center gap-2 rounded bg-[#064E3B] px-4 py-2.5 text-sm font-semibold text-white"
+                  className="mt-3 inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
                 >
                   提交打卡并获得积分 <Coins className="size-4" />
                 </button>
@@ -2971,7 +2971,7 @@ function DivinationModule({
 
               <div className="rounded border border-black/10 bg-white p-4">
                 <div className="flex items-center gap-2">
-                  <Share2 className="size-5 text-[#B08919]" />
+                  <Share2 className="size-5 text-[#C79A54]" />
                   <h4 className="font-semibold">社交见证闭环</h4>
                 </div>
                 <div className="mt-3 grid gap-2 text-sm text-ink/60">
@@ -2991,7 +2991,7 @@ function DivinationModule({
                     <div key={checkIn.id} className="rounded border border-black/10 bg-rice p-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-semibold">{checkIn.readingTitle}</p>
-                        <span className="rounded bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#064E3B]">
+                        <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">
                           +{checkIn.reward} 点 · {checkIn.status}
                         </span>
                       </div>
@@ -3003,9 +3003,9 @@ function DivinationModule({
             ) : null}
           </div>
         ) : (
-          <div className="grid min-h-[620px] place-items-center rounded border border-dashed border-[#D4AF37]/45 bg-[#D4AF37]/5 p-8 text-center">
+          <div className="grid min-h-[620px] place-items-center rounded border border-dashed border-[#C79A54]/45 bg-[#C79A54]/5 p-8 text-center">
             <div>
-              <Flame className="mx-auto size-12 text-[#B08919]" />
+              <Flame className="mx-auto size-12 text-[#C79A54]" />
               <h3 className="mt-4 text-2xl font-semibold">等待三数起卦</h3>
               <p className="mt-2 max-w-md text-sm leading-6 text-ink/55">
                 输入 3 个随机数字后，系统会自动结合当前时辰生成九运智慧决策建议。
@@ -3023,7 +3023,7 @@ function ProductModule() {
     <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <ShoppingBag className="size-5 text-[#064E3B]" />
+          <ShoppingBag className="size-5 text-[#063F4A]" />
           <h2 className="text-xl font-semibold">产品商城</h2>
         </div>
         <p className="text-sm text-ink/55">点击产品图可进入完整介绍，购买可赠送点数。</p>
@@ -3041,13 +3041,13 @@ function ProductModule() {
               className="h-36 w-full object-cover transition duration-300 group-hover:scale-105"
             />
             <div className="p-4">
-              <p className="text-xs font-medium text-[#B91C1C]">{product.category}</p>
+              <p className="text-xs font-medium text-[#1495A0]">{product.category}</p>
               <h3 className="mt-2 min-h-10 font-semibold leading-5">{product.name}</h3>
               <div className="mt-3 flex items-center justify-between gap-2 text-sm">
-                <span className="font-semibold text-[#064E3B]">{product.price}</span>
-                <span className="rounded bg-[#F7F7F7] px-2 py-1 text-xs text-ink/58">{product.points}</span>
+                <span className="font-semibold text-[#063F4A]">{product.price}</span>
+                <span className="rounded bg-[#F5FAFA] px-2 py-1 text-xs text-ink/58">{product.points}</span>
               </div>
-              <p className="mt-3 text-xs font-semibold text-ink/50 transition group-hover:text-[#064E3B]">
+              <p className="mt-3 text-xs font-semibold text-ink/50 transition group-hover:text-[#063F4A]">
                 查看完整介绍
               </p>
             </div>
@@ -3063,7 +3063,7 @@ function CourseModule() {
     <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <BookOpenCheck className="size-5 text-[#B91C1C]" />
+          <BookOpenCheck className="size-5 text-[#1495A0]" />
           <h2 className="text-xl font-semibold">课程推荐</h2>
         </div>
         <p className="text-sm text-ink/55">从入门、直播到导师认证，完成课程也可获赠点数。</p>
@@ -3081,13 +3081,13 @@ function CourseModule() {
               className="h-36 w-full object-cover transition duration-300 group-hover:scale-105"
             />
             <div className="p-4">
-              <p className="text-xs font-medium text-[#B91C1C]">{course.category}</p>
+              <p className="text-xs font-medium text-[#1495A0]">{course.category}</p>
               <h3 className="mt-2 min-h-10 font-semibold leading-5">{course.name}</h3>
               <div className="mt-3 flex items-center justify-between gap-2 text-sm">
-                <span className="font-semibold text-[#064E3B]">{course.price}</span>
-                <span className="rounded bg-[#F7F7F7] px-2 py-1 text-xs text-ink/58">{course.reward}</span>
+                <span className="font-semibold text-[#063F4A]">{course.price}</span>
+                <span className="rounded bg-[#F5FAFA] px-2 py-1 text-xs text-ink/58">{course.reward}</span>
               </div>
-              <p className="mt-3 text-xs font-semibold text-ink/50 transition group-hover:text-[#064E3B]">
+              <p className="mt-3 text-xs font-semibold text-ink/50 transition group-hover:text-[#063F4A]">
                 查看课程详情
               </p>
             </div>
@@ -3200,9 +3200,9 @@ export default function DashboardPage() {
     return (
       <AppShell>
         <main className="px-5 py-16">
-          <div className="mx-auto max-w-3xl rounded border border-[#D4AF37]/35 bg-white p-8 text-center shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8A6D00]">Member Access</p>
-            <h1 className="mt-3 text-3xl font-semibold text-[#064E3B]">正在确认会员登录状态</h1>
+          <div className="mx-auto max-w-3xl rounded border border-[#C79A54]/35 bg-white p-8 text-center shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Member Access</p>
+            <h1 className="mt-3 text-3xl font-semibold text-[#063F4A]">正在确认会员登录状态</h1>
             <p className="mt-3 text-ink/62">如果尚未登录，系统会自动带你回到登录页面。</p>
           </div>
         </main>
@@ -3219,13 +3219,13 @@ export default function DashboardPage() {
           <section className="mt-6 rounded border border-black/10 bg-white p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <WalletCards className="size-5 text-[#064E3B]" />
+                <WalletCards className="size-5 text-[#063F4A]" />
                 <h2 className="text-lg font-semibold">账户快照</h2>
               </div>
               <StatusPill>
                 {profileSource === "loading" ? "读取会员资料中" : profileSource === "supabase" ? "Supabase 会员资料" : "Demo 资料"}
               </StatusPill>
-              <button className="inline-flex items-center gap-2 rounded bg-[#064E3B] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#053C2F]">
+              <button className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#052F38]">
                 充值点数 <CreditCard className="size-4" />
               </button>
             </div>
@@ -3242,10 +3242,10 @@ export default function DashboardPage() {
           <TodayRecommendedActions onOpenModule={setActiveModule} />
           <MoodCheckInPanel onOpenModule={setActiveModule} />
 
-          <section className="mt-6 rounded border border-black/10 bg-[#F7F7F7] p-4 shadow-sm">
+          <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
               <div className="flex items-center gap-2">
-                <LayoutGrid className="size-5 text-[#064E3B]" />
+                <LayoutGrid className="size-5 text-[#063F4A]" />
                 <h2 className="text-xl font-semibold">功能模块</h2>
               </div>
               <p className="text-sm text-ink/55">当前打开：{active.title}</p>
