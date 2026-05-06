@@ -3,7 +3,9 @@
 import { type FormEvent, useState } from "react";
 import {
   AlertTriangle,
+  Award,
   Banknote,
+  BookOpenCheck,
   Bot,
   CheckCircle2,
   ChevronRight,
@@ -11,13 +13,18 @@ import {
   Download,
   HandCoins,
   ImageIcon,
+  Landmark,
   LayoutGrid,
   PackageCheck,
   Plus,
+  Save,
   Search,
   Settings2,
   ShieldCheck,
+  Sparkles,
   TrendingUp,
+  UsersRound,
+  WalletCards,
   Warehouse
 } from "lucide-react";
 import {
@@ -49,6 +56,27 @@ import { AppShell, MetricCard, StatusPill } from "@/components/shell";
 
 const moduleTabs = [
   {
+    id: "users",
+    title: "用户管理",
+    desc: "会员资料、等级、点数、冻结、团队",
+    icon: UsersRound,
+    stat: "3 users"
+  },
+  {
+    id: "credits",
+    title: "点数管理",
+    desc: "充值套餐、赠送规则、扣点规则",
+    icon: WalletCards,
+    stat: "4 packs"
+  },
+  {
+    id: "ai",
+    title: "AI 控制",
+    desc: "Prompt、扣点、权限、敏感词",
+    icon: Sparkles,
+    stat: "6 funcs"
+  },
+  {
     id: "finance",
     title: "Finance",
     desc: "收入、成本、利润、佣金、提现",
@@ -63,11 +91,32 @@ const moduleTabs = [
     stat: "4 SKU"
   },
   {
+    id: "courses",
+    title: "课程管理",
+    desc: "课程、价格、报名、签到、证书",
+    icon: BookOpenCheck,
+    stat: "3 courses"
+  },
+  {
     id: "orders",
     title: "Orders",
     desc: "订单状态、支付审核、履约跟踪",
     icon: Banknote,
     stat: "4 orders"
+  },
+  {
+    id: "agents",
+    title: "代理配套",
+    desc: "8888/16888/38888 产品包管理",
+    icon: Award,
+    stat: "3 packs"
+  },
+  {
+    id: "payments",
+    title: "支付审核",
+    desc: "银行转账、网关对账、人工审核",
+    icon: Landmark,
+    stat: "5 reviews"
   },
   {
     id: "system",
@@ -93,96 +142,6 @@ const orderTabs = ["All", "Product Orders", "Course Orders", "Credit Top-up", "S
 type OrderTab = (typeof orderTabs)[number];
 type OrderRecord = (typeof orders)[number];
 type InventoryProduct = (typeof inventoryProducts)[number];
-const adminCompletionChecks = [
-  {
-    module: "用户管理",
-    status: "未做",
-    progress: 15,
-    priority: "高",
-    done: "功能地图已列出字段范围。",
-    missing: "缺用户列表、会员资料编辑、点数调整、冻结账号、AI 使用记录、团队结构查询。"
-  },
-  {
-    module: "点数管理",
-    status: "未做",
-    progress: 10,
-    priority: "高",
-    done: "会员端有本地点数钱包展示。",
-    missing: "缺后台充值套餐、赠送规则、有效期、扣点规则、点数流水审核。"
-  },
-  {
-    module: "AI 功能管理",
-    status: "未做",
-    progress: 20,
-    priority: "高",
-    done: "已有 OpenAI API 路由、聊天 Prompt 与等级逻辑雏形。",
-    missing: "缺后台 Prompt 模板 CRUD、敏感词、免责声明、报告模板、功能扣点配置。"
-  },
-  {
-    module: "Finance 财务",
-    status: "部分完成",
-    progress: 75,
-    priority: "高",
-    done: "收入、交易、AI 成本、利润、佣金、提现、报表导出区已排版。",
-    missing: "还没接真实支付网关、Supabase 交易表、实际审核动作和导出文件。"
-  },
-  {
-    module: "产品管理",
-    status: "部分完成",
-    progress: 65,
-    priority: "中",
-    done: "Stock Keeper 里可新增和编辑产品，包含图片、库存、成本和售价。",
-    missing: "缺分类管理、上下架、会员折扣、赠点、推荐佣金、前台商城同步。"
-  },
-  {
-    module: "Stock Keeper",
-    status: "部分完成",
-    progress: 70,
-    priority: "中",
-    done: "库存清单、新增编辑、低库存状态、库存流水和利润报表已做 demo。",
-    missing: "缺真实库存表、订单 Paid 自动扣库存、盘点调整记录和图片上传。"
-  },
-  {
-    module: "课程管理",
-    status: "未做",
-    progress: 10,
-    priority: "中",
-    done: "会员端有课程推荐和详情页。",
-    missing: "缺后台课程新增、视频上传、报名名单、签到、证书、名额管理。"
-  },
-  {
-    module: "订单管理",
-    status: "部分完成",
-    progress: 70,
-    priority: "高",
-    done: "订单 KPI、Pipeline、异常提醒、筛选、订单详情和履约检查已排版。",
-    missing: "缺真实订单表、状态更新动作、退款处理、自动履约与通知。"
-  },
-  {
-    module: "分润系统",
-    status: "部分完成",
-    progress: 45,
-    priority: "高",
-    done: "三层 20/10/5 规则、会员端团队树、Finance 佣金记录 demo 已有。",
-    missing: "缺按订单自动生成佣金、Pending/Approved/Paid 操作、退款追回、提现结算。"
-  },
-  {
-    module: "代理配套",
-    status: "未做",
-    progress: 20,
-    priority: "中",
-    done: "功能地图和套餐概念已有。",
-    missing: "缺 8888/16888/38888 包配置、权益开通、礼包、课程包、服务包管理。"
-  },
-  {
-    module: "支付审核",
-    status: "未做",
-    progress: 15,
-    priority: "高",
-    done: "订单和 Finance 里有支付/对账展示。",
-    missing: "缺 Stripe/FPX/本地网关 webhook、银行转账凭证上传、人工审核和自动开通。"
-  }
-] as const;
 type ProductDraft = {
   sku: string;
   product: string;
@@ -207,6 +166,94 @@ const emptyProductDraft: ProductDraft = {
   threshold: ""
 };
 
+type AdminUserRecord = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  tier: string;
+  status: "Active" | "Frozen";
+  points: number;
+  birth: string;
+  gender: string;
+  team: string;
+  aiUsage: string;
+};
+
+const userSeed: AdminUserRecord[] = [
+  {
+    id: "USR-1001",
+    name: "冯家奇",
+    email: "ronfatt@gmail.com",
+    phone: "0111313131",
+    tier: "进阶会员版",
+    status: "Active",
+    points: 860,
+    birth: "1980-06-14 17:30",
+    gender: "男",
+    team: "46 人",
+    aiUsage: "12 次 / 今日"
+  },
+  {
+    id: "USR-1002",
+    name: "陈美玲",
+    email: "may@example.com",
+    phone: "0129988776",
+    tier: "高阶战略版",
+    status: "Active",
+    points: 1680,
+    birth: "1991-09-22 09:15",
+    gender: "女",
+    team: "18 人",
+    aiUsage: "8 次 / 今日"
+  },
+  {
+    id: "USR-1003",
+    name: "Lim Wei",
+    email: "lim@example.com",
+    phone: "0162233445",
+    tier: "Free",
+    status: "Frozen",
+    points: 35,
+    birth: "1988-03-02 13:00",
+    gender: "男",
+    team: "2 人",
+    aiUsage: "1 次 / 今日"
+  }
+];
+
+const creditPackageSeed = [
+  { name: "入门补充包", price: "RM30", points: 300, bonus: 0, status: "Active" },
+  { name: "报告生成包", price: "RM88", points: 900, bonus: 80, status: "Active" },
+  { name: "顾问高频包", price: "RM188", points: 2100, bonus: 300, status: "Active" }
+];
+
+const aiFeatureSeed = [
+  { name: "普通 AI 问答", points: 1, tier: "Free+", status: "Enabled" },
+  { name: "紫微 + 梅花深度分析", points: 12, tier: "进阶会员版", status: "Enabled" },
+  { name: "三数起卦决策", points: 36, tier: "进阶会员版", status: "Enabled" },
+  { name: "生成完整 PDF 报告", points: 120, tier: "高阶战略版", status: "Enabled" },
+  { name: "生成意图符印", points: 88, tier: "进阶会员版", status: "Enabled" }
+];
+
+const courseSeed = [
+  { id: "CRS-001", title: "八字基础入门课", type: "线上课程", price: "RM399", seats: 120, enrolled: 68, status: "Published", points: 200 },
+  { id: "CRS-002", title: "家居风水实战营", type: "直播课", price: "RM1,288", seats: 60, enrolled: 42, status: "Published", points: 800 },
+  { id: "CRS-003", title: "高阶导师认证班", type: "线下课程", price: "RM8,888", seats: 24, enrolled: 11, status: "Draft", points: 5000 }
+];
+
+const agentPackageSeed = [
+  { name: "8888 创业启动包", price: "RM8,888", points: 8888, tier: "AI Pro", commission: "20% / 10% / 5%", status: "Active" },
+  { name: "16888 事业合伙人", price: "RM16,888", points: 18888, tier: "AI Master", commission: "25% / 10% / 5%", status: "Active" },
+  { name: "38888 区域导师", price: "RM38,888", points: 48888, tier: "Regional", commission: "30% / 12% / 6%", status: "Draft" }
+];
+
+const paymentReviewSeed = [
+  { id: "PAY-9201", user: "冯家奇", order: "ORD-2038", amount: "RM188", method: "Bank Transfer", status: "Pending Review", proof: "receipt-2038.jpg" },
+  { id: "PAY-9202", user: "陈美玲", order: "ORD-2041", amount: "RM1,288", method: "FPX", status: "Matched", proof: "gateway-fpx" },
+  { id: "PAY-9203", user: "Lim Wei", order: "ORD-2044", amount: "RM39.90", method: "Stripe", status: "Matched", proof: "stripe-session" }
+];
+
 function formatRM(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "RM0";
@@ -220,7 +267,7 @@ function inventoryStatus(stock: number, threshold: number) {
 }
 
 function statusTone(status: string) {
-  if (["Paid", "Completed", "Approved", "In stock"].includes(status)) {
+  if (["Paid", "Completed", "Approved", "In stock", "Active", "Published"].includes(status)) {
     return "bg-emerald-50 text-emerald-700";
   }
 
@@ -232,7 +279,7 @@ function statusTone(status: string) {
     return "bg-amber-50 text-amber-700";
   }
 
-  if (["Out of stock", "Mismatch", "Flagged", "Deduction failed", "High"].includes(status)) {
+  if (["Out of stock", "Mismatch", "Flagged", "Deduction failed", "High", "Frozen", "Rejected"].includes(status)) {
     return "bg-red-50 text-red-700";
   }
 
@@ -245,12 +292,6 @@ function statusTone(status: string) {
 
 function StatusBadge({ status }: { status: string }) {
   return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusTone(status)}`}>{status}</span>;
-}
-
-function completionTone(status: string) {
-  if (status === "部分完成") return "bg-[#C79A54]/15 text-[#063F4A]";
-  if (status === "已完成") return "bg-[#DDEFF2] text-[#063F4A]";
-  return "bg-black/5 text-ink/55";
 }
 
 function ModuleCard({
@@ -311,6 +352,216 @@ function SectionFrame({
       </div>
       <div className="mt-5">{children}</div>
     </section>
+  );
+}
+
+function UsersModule() {
+  const [users, setUsers] = useState<AdminUserRecord[]>(userSeed);
+  const [selectedId, setSelectedId] = useState(userSeed[0].id);
+  const selectedUser = users.find((user) => user.id === selectedId) ?? users[0];
+
+  function updateSelectedUser(patch: Partial<AdminUserRecord>) {
+    setUsers((current) => current.map((user) => (user.id === selectedUser.id ? { ...user, ...patch } : user)));
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="User Operations"
+      title="用户管理"
+      desc="查看会员资料、生日时辰、等级、点数余额、团队和 AI 使用记录，并可直接调整会员状态。"
+      action={<StatusPill>{users.length} 位会员</StatusPill>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+          <div className="flex items-center gap-3">
+            <Search className="size-5 text-[#063F4A]" />
+            <input className="w-full bg-transparent text-sm outline-none" placeholder="搜索姓名 / Email / User ID" />
+          </div>
+          <div className="mt-4 space-y-3">
+            {users.map((user) => (
+              <button
+                key={user.id}
+                type="button"
+                onClick={() => setSelectedId(user.id)}
+                className={[
+                  "w-full rounded border p-4 text-left transition",
+                  selectedUser.id === user.id ? "border-[#C79A54] bg-[#063F4A] text-white" : "border-black/10 bg-white hover:border-[#C79A54]/60"
+                ].join(" ")}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold">{user.name}</p>
+                    <p className={selectedUser.id === user.id ? "mt-1 text-xs text-white/62" : "mt-1 text-xs text-ink/50"}>{user.email}</p>
+                  </div>
+                  <StatusBadge status={user.status} />
+                </div>
+                <p className={selectedUser.id === user.id ? "mt-3 text-sm text-[#C79A54]" : "mt-3 text-sm text-[#063F4A]"}>{user.tier} · {user.points} 点</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-white p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{selectedUser.id}</p>
+              <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">{selectedUser.name}</h3>
+              <p className="mt-1 text-sm text-ink/55">{selectedUser.email} · {selectedUser.phone}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => updateSelectedUser({ status: selectedUser.status === "Active" ? "Frozen" : "Active" })}
+              className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-[#063F4A]"
+            >
+              {selectedUser.status === "Active" ? "冻结账号" : "恢复账号"}
+            </button>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {[
+              ["生日时辰", selectedUser.birth],
+              ["性别", selectedUser.gender],
+              ["团队结构", selectedUser.team],
+              ["AI 使用", selectedUser.aiUsage]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded bg-[#F5FAFA] p-4">
+                <p className="text-xs text-ink/45">{label}</p>
+                <p className="mt-1 font-semibold text-[#063F4A]">{value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <label className="rounded border border-black/10 p-3">
+              <span className="text-xs text-ink/45">会员等级</span>
+              <select value={selectedUser.tier} onChange={(event) => updateSelectedUser({ tier: event.target.value })} className="mt-2 w-full bg-transparent font-semibold outline-none">
+                {["Free", "进阶会员版", "高阶战略版", "8888 创业启动包", "16888 事业合伙人", "38888 区域导师"].map((tier) => (
+                  <option key={tier}>{tier}</option>
+                ))}
+              </select>
+            </label>
+            <label className="rounded border border-black/10 p-3">
+              <span className="text-xs text-ink/45">点数余额</span>
+              <input
+                type="number"
+                value={selectedUser.points}
+                onChange={(event) => updateSelectedUser({ points: Number(event.target.value) })}
+                className="mt-2 w-full bg-transparent text-xl font-semibold text-[#063F4A] outline-none"
+              />
+            </label>
+            <button className="rounded bg-[#063F4A] px-4 py-3 font-semibold text-white">
+              保存会员资料
+            </button>
+          </div>
+        </div>
+      </div>
+    </SectionFrame>
+  );
+}
+
+function CreditsModule() {
+  const [packages, setPackages] = useState(creditPackageSeed);
+  const [draft, setDraft] = useState({ name: "", price: "", points: "", bonus: "" });
+
+  function addPackage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!draft.name.trim()) return;
+    setPackages((current) => [
+      ...current,
+      { name: draft.name, price: formatRM(draft.price), points: Number(draft.points) || 0, bonus: Number(draft.bonus) || 0, status: "Active" }
+    ]);
+    setDraft({ name: "", price: "", points: "", bonus: "" });
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="Credit Wallet Control"
+      title="点数管理"
+      desc="配置充值套餐、注册奖励、推荐奖励、产品/课程赠点和功能扣点规则。点数只用于平台功能，不能提现。"
+      action={<StatusPill>Wallet rules</StatusPill>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[1fr_0.85fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">充值套餐</h3>
+          <div className="mt-4 space-y-3">
+            {packages.map((item, index) => (
+              <div key={`${item.name}-${index}`} className="grid gap-3 rounded border border-black/10 p-4 md:grid-cols-[1fr_0.8fr_0.8fr_0.6fr]">
+                <input value={item.name} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="font-semibold outline-none" />
+                <input value={item.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className="text-[#063F4A] outline-none" />
+                <input type="number" value={item.points} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, points: Number(event.target.value) } : row))} className="outline-none" />
+                <StatusBadge status={item.status} />
+              </div>
+            ))}
+          </div>
+          <form onSubmit={addPackage} className="mt-5 grid gap-3 rounded bg-[#F5FAFA] p-4 md:grid-cols-5">
+            <input value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="套餐名" className="rounded border border-black/10 px-3 py-2 outline-none md:col-span-2" />
+            <input value={draft.price} onChange={(event) => setDraft({ ...draft, price: event.target.value })} placeholder="价格" className="rounded border border-black/10 px-3 py-2 outline-none" />
+            <input value={draft.points} onChange={(event) => setDraft({ ...draft, points: event.target.value })} placeholder="点数" className="rounded border border-black/10 px-3 py-2 outline-none" />
+            <button className="rounded bg-[#1495A0] px-4 py-2 font-semibold text-white">新增</button>
+          </form>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            ["注册奖励", "新会员完成资料后赠 80 点"],
+            ["每日赠送", "Free 每日 3 点，Plus 每日 12 点"],
+            ["推荐奖励", "直接推荐注册赠 30 点，成交再按订单规则发放"],
+            ["点数有效期", "充值点数 365 天，赠送点数 90 天"],
+            ["扣点失败", "余额不足时引导充值，不执行 AI 请求"]
+          ].map(([title, desc]) => (
+            <div key={title} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+              <p className="font-semibold text-[#063F4A]">{title}</p>
+              <p className="mt-1 text-sm text-ink/58">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </SectionFrame>
+  );
+}
+
+function AiControlModule() {
+  const [features, setFeatures] = useState(aiFeatureSeed);
+  const [prompt, setPrompt] = useState("你是易玺老师的 AI 风水师助理。先用结构化命理数据判断，再用温和、实战、可执行的口吻输出建议。禁止制造恐惧，必须加入免责声明与行动建议。");
+  const [sensitiveWords, setSensitiveWords] = useState("保证发财、百分百改命、医疗诊断、投资承诺");
+
+  return (
+    <SectionFrame
+      eyebrow="AI Function Control"
+      title="AI 功能管理"
+      desc="集中管理每个 AI 功能的扣点、等级权限、Prompt 模板、敏感词和免责声明。"
+      action={<button className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><Save className="size-4" />保存配置</button>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">功能扣点与权限</h3>
+          <div className="mt-4 space-y-3">
+            {features.map((feature, index) => (
+              <div key={feature.name} className="grid gap-3 rounded border border-black/10 p-4 md:grid-cols-[1.2fr_0.5fr_0.8fr_0.6fr]">
+                <input value={feature.name} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="font-semibold outline-none" />
+                <input type="number" value={feature.points} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, points: Number(event.target.value) } : row))} className="text-[#063F4A] outline-none" />
+                <input value={feature.tier} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, tier: event.target.value } : row))} className="outline-none" />
+                <StatusBadge status={feature.status} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <label className="block rounded border border-black/10 bg-[#F5FAFA] p-4">
+            <span className="font-semibold text-[#063F4A]">核心 Prompt 模板</span>
+            <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={7} className="mt-3 w-full rounded border border-black/10 bg-white p-3 text-sm leading-6 outline-none" />
+          </label>
+          <label className="block rounded border border-black/10 bg-white p-4">
+            <span className="font-semibold text-[#063F4A]">敏感词 / 高风险承诺</span>
+            <textarea value={sensitiveWords} onChange={(event) => setSensitiveWords(event.target.value)} rows={3} className="mt-3 w-full rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm leading-6 outline-none" />
+          </label>
+          <div className="rounded border border-[#C79A54]/25 bg-[#DDEFF2] p-4 text-sm leading-6 text-ink/65">
+            所有报告与聊天输出固定加入：命理分析仅作参考，不替代法律、医疗、投资、心理或财务专业意见。
+          </div>
+        </div>
+      </div>
+    </SectionFrame>
   );
 }
 
@@ -1134,6 +1385,203 @@ function OrdersModule() {
   );
 }
 
+function CoursesModule() {
+  const [courses, setCourses] = useState(courseSeed);
+  const [draft, setDraft] = useState({ title: "", type: "线上课程", price: "", seats: "", points: "" });
+
+  function addCourse(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!draft.title.trim()) return;
+    setCourses((current) => [
+      ...current,
+      {
+        id: `CRS-${String(current.length + 1).padStart(3, "0")}`,
+        title: draft.title,
+        type: draft.type,
+        price: formatRM(draft.price),
+        seats: Number(draft.seats) || 0,
+        enrolled: 0,
+        status: "Draft",
+        points: Number(draft.points) || 0
+      }
+    ]);
+    setDraft({ title: "", type: "线上课程", price: "", seats: "", points: "" });
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="Course Commerce"
+      title="课程管理"
+      desc="新增和编辑线上课、直播课、线下课与导师班，管理价格、名额、赠点、报名、签到和证书状态。"
+      action={<button className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><BookOpenCheck className="size-4" />课程中心</button>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">课程列表</h3>
+          <div className="mt-4 space-y-3">
+            {courses.map((course, index) => (
+              <article key={course.id} className="rounded border border-black/10 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{course.id} · {course.type}</p>
+                    <input value={course.title} onChange={(event) => setCourses((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, title: event.target.value } : row))} className="mt-2 w-full text-lg font-semibold text-[#063F4A] outline-none" />
+                  </div>
+                  <StatusBadge status={course.status} />
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                  <label className="rounded bg-[#F5FAFA] p-3 text-sm">
+                    <span className="text-ink/45">价格</span>
+                    <input value={course.price} onChange={(event) => setCourses((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className="mt-1 w-full bg-transparent font-semibold outline-none" />
+                  </label>
+                  <label className="rounded bg-[#F5FAFA] p-3 text-sm">
+                    <span className="text-ink/45">名额</span>
+                    <input type="number" value={course.seats} onChange={(event) => setCourses((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, seats: Number(event.target.value) } : row))} className="mt-1 w-full bg-transparent font-semibold outline-none" />
+                  </label>
+                  <div className="rounded bg-[#F5FAFA] p-3 text-sm">
+                    <span className="text-ink/45">报名</span>
+                    <p className="mt-1 font-semibold">{course.enrolled} 人</p>
+                  </div>
+                  <label className="rounded bg-[#F5FAFA] p-3 text-sm">
+                    <span className="text-ink/45">赠点</span>
+                    <input type="number" value={course.points} onChange={(event) => setCourses((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, points: Number(event.target.value) } : row))} className="mt-1 w-full bg-transparent font-semibold outline-none" />
+                  </label>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {["报名名单", "签到管理", "证书生成", "上传视频"].map((label) => (
+                    <button key={label} className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-[#063F4A]">{label}</button>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <form onSubmit={addCourse} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">新增课程</h3>
+          <div className="mt-4 space-y-3">
+            <input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="课程名称" className="w-full rounded border border-black/10 px-3 py-3 outline-none" />
+            <select value={draft.type} onChange={(event) => setDraft({ ...draft, type: event.target.value })} className="w-full rounded border border-black/10 px-3 py-3 outline-none">
+              {["线上课程", "短训训练", "直播课", "商业课程", "线下课程", "高阶导师班"].map((type) => <option key={type}>{type}</option>)}
+            </select>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <input value={draft.price} onChange={(event) => setDraft({ ...draft, price: event.target.value })} placeholder="价格" className="rounded border border-black/10 px-3 py-3 outline-none" />
+              <input value={draft.seats} onChange={(event) => setDraft({ ...draft, seats: event.target.value })} placeholder="名额" className="rounded border border-black/10 px-3 py-3 outline-none" />
+              <input value={draft.points} onChange={(event) => setDraft({ ...draft, points: event.target.value })} placeholder="赠点" className="rounded border border-black/10 px-3 py-3 outline-none" />
+            </div>
+            <button className="w-full rounded bg-[#1495A0] px-4 py-3 font-semibold text-white">新增课程</button>
+          </div>
+        </form>
+      </div>
+    </SectionFrame>
+  );
+}
+
+function AgentPackagesModule() {
+  const [packages, setPackages] = useState(agentPackageSeed);
+
+  return (
+    <SectionFrame
+      eyebrow="Partner Package Control"
+      title="代理配套管理"
+      desc="把 8888 / 16888 / 38888 包装成产品包、课程包、服务包，不包装成“买资格赚钱”。"
+      action={<StatusPill>产品包 · 课程包 · 服务包</StatusPill>}
+    >
+      <div className="grid gap-4 lg:grid-cols-3">
+        {packages.map((pack, index) => (
+          <article key={pack.name} className={pack.name.includes("16888") ? "rounded border border-[#C79A54] bg-[#063F4A] p-5 text-white shadow-sm" : "rounded border border-black/10 bg-white p-5"}>
+            <div className="flex items-start justify-between gap-3">
+              <Award className={pack.name.includes("16888") ? "size-6 text-[#C79A54]" : "size-6 text-[#063F4A]"} />
+              <StatusBadge status={pack.status} />
+            </div>
+            <input value={pack.name} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="mt-5 w-full bg-transparent text-xl font-semibold outline-none" />
+            <input value={pack.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className={pack.name.includes("16888") ? "mt-3 w-full bg-transparent text-3xl font-semibold text-[#C79A54] outline-none" : "mt-3 w-full bg-transparent text-3xl font-semibold text-[#063F4A] outline-none"} />
+            <div className={pack.name.includes("16888") ? "mt-5 space-y-3 text-sm text-white/68" : "mt-5 space-y-3 text-sm text-ink/60"}>
+              <p>AI 权限：{pack.tier}</p>
+              <p>包含点数：{pack.points.toLocaleString()} 点</p>
+              <p>推荐分润：{pack.commission}</p>
+              <p>包含：产品礼包、课程权限、专属海报、团队看板</p>
+            </div>
+            <div className="mt-5 flex gap-2">
+              <button className={pack.name.includes("16888") ? "rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]" : "rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"}>保存</button>
+              <button
+                type="button"
+                onClick={() => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, status: row.status === "Active" ? "Draft" : "Active" } : row))}
+                className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold"
+              >
+                {pack.status === "Active" ? "下架" : "上架"}
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </SectionFrame>
+  );
+}
+
+function PaymentsModule() {
+  const [reviews, setReviews] = useState(paymentReviewSeed);
+
+  function updateStatus(id: string, status: string) {
+    setReviews((current) => current.map((review) => (review.id === id ? { ...review, status } : review)));
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="Payment Review Desk"
+      title="支付审核"
+      desc="处理手动银行转账、网关对账差异和付款后自动开通动作。审核通过后应触发升级会员、发放点数、开通课程、生成佣金。"
+      action={<StatusPill>{reviews.filter((item) => item.status === "Pending Review").length} 待审核</StatusPill>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">付款审核队列</h3>
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <thead className="bg-[#F5FAFA] text-ink/55">
+                <tr>
+                  {["Payment ID", "User", "Order", "Amount", "Method", "Status", "Action"].map((head) => (
+                    <th key={head} className="px-3 py-3 font-medium">{head}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/10">
+                {reviews.map((review) => (
+                  <tr key={review.id}>
+                    <td className="px-3 py-3 font-semibold text-[#063F4A]">{review.id}</td>
+                    <td className="px-3 py-3">{review.user}</td>
+                    <td className="px-3 py-3">{review.order}</td>
+                    <td className="px-3 py-3 font-semibold">{review.amount}</td>
+                    <td className="px-3 py-3">{review.method}</td>
+                    <td className="px-3 py-3"><StatusBadge status={review.status} /></td>
+                    <td className="px-3 py-3">
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => updateStatus(review.id, "Approved")} className="rounded-full bg-[#1495A0] px-3 py-1.5 text-xs font-semibold text-white">Approve</button>
+                        <button type="button" onClick={() => updateStatus(review.id, "Rejected")} className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">Reject</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">审核通过后自动执行</h3>
+          <div className="mt-4 space-y-3">
+            {["升级会员", "发放点数", "开通课程 / 报告", "生成三层佣金", "更新团队业绩", "发送收据通知"].map((item) => (
+              <div key={item} className="flex items-center gap-3 rounded bg-white p-3">
+                <CheckCircle2 className="size-4 text-[#1495A0]" />
+                <span className="text-sm font-semibold">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </SectionFrame>
+  );
+}
+
 function SystemModule() {
   return (
     <SectionFrame
@@ -1161,55 +1609,6 @@ function SystemModule() {
                 </article>
               );
             })}
-          </div>
-        </div>
-
-        <div className="mt-5 rounded border border-black/10 bg-white p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 className="text-xl font-semibold">功能完成度监测</h3>
-              <p className="mt-2 text-sm text-ink/55">对照功能地图，标记哪些只是 demo、哪些还没接真实数据和操作。</p>
-            </div>
-            <StatusPill>
-              {adminCompletionChecks.filter((item) => item.status === "部分完成").length} 部分完成 · {adminCompletionChecks.filter((item) => item.status === "未做").length} 未做
-            </StatusPill>
-          </div>
-          <div className="mt-5 overflow-x-auto scrollbar-soft">
-            <table className="min-w-[980px] w-full text-left text-sm">
-              <thead className="text-xs uppercase tracking-[0.12em] text-ink/45">
-                <tr className="border-b border-black/10">
-                  <th className="py-3 pr-3">模块</th>
-                  <th className="px-3 py-3">状态</th>
-                  <th className="px-3 py-3">完成度</th>
-                  <th className="px-3 py-3">优先级</th>
-                  <th className="px-3 py-3">已具备</th>
-                  <th className="py-3 pl-3">还缺</th>
-                </tr>
-              </thead>
-              <tbody>
-                {adminCompletionChecks.map((item) => (
-                  <tr key={item.module} className="border-b border-black/10 align-top last:border-b-0">
-                    <td className="py-4 pr-3 font-semibold text-[#063F4A]">{item.module}</td>
-                    <td className="px-3 py-4">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${completionTone(item.status)}`}>{item.status}</span>
-                    </td>
-                    <td className="px-3 py-4">
-                      <div className="flex min-w-32 items-center gap-2">
-                        <span className="h-2 flex-1 rounded-full bg-[#F5FAFA]">
-                          <span className="block h-full rounded-full bg-[#1495A0]" style={{ width: `${item.progress}%` }} />
-                        </span>
-                        <span className="w-9 text-xs font-semibold text-ink/55">{item.progress}%</span>
-                      </div>
-                    </td>
-                    <td className="px-3 py-4">
-                      <span className={item.priority === "高" ? "font-semibold text-[#1495A0]" : "text-ink/55"}>{item.priority}</span>
-                    </td>
-                    <td className="px-3 py-4 text-ink/62">{item.done}</td>
-                    <td className="py-4 pl-3 text-ink/62">{item.missing}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
 
@@ -1256,7 +1655,7 @@ function SystemModule() {
 }
 
 export default function AdminPage() {
-  const [activeModule, setActiveModule] = useState<ActiveModule>("finance");
+  const [activeModule, setActiveModule] = useState<ActiveModule>("users");
   const [inventoryList, setInventoryList] = useState<InventoryProduct[]>(inventoryProducts);
 
   return (
@@ -1269,7 +1668,7 @@ export default function AdminPage() {
                 <StatusPill>老板后台 · Admin Console</StatusPill>
                 <h1 className="mt-4 text-3xl font-semibold text-[#063F4A] md:text-5xl">平台运营总览</h1>
                 <p className="mt-3 max-w-3xl text-ink/65">
-                  后台改成模块式管理：先看经营总览，再点击 Finance、Stock Keeper、Orders 或 System 查看对应细节。
+                  后台改成模块式管理：用户、点数、AI、财务、库存、课程、订单、代理配套和支付审核都可以分开操作。
                 </p>
               </div>
               <div className="flex gap-2">
@@ -1296,7 +1695,7 @@ export default function AdminPage() {
               </div>
               <p className="text-sm text-ink/55">当前：{moduleTabs.find((module) => module.id === activeModule)?.title}</p>
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
               {moduleTabs.map((module) => (
                 <ModuleCard
                   key={module.id}
@@ -1309,6 +1708,9 @@ export default function AdminPage() {
           </section>
 
           <div className="mt-6">
+            {activeModule === "users" ? <UsersModule /> : null}
+            {activeModule === "credits" ? <CreditsModule /> : null}
+            {activeModule === "ai" ? <AiControlModule /> : null}
             {activeModule === "finance" ? <FinanceModule /> : null}
             {activeModule === "stock" ? (
               <StockModule
@@ -1321,7 +1723,10 @@ export default function AdminPage() {
                 }
               />
             ) : null}
+            {activeModule === "courses" ? <CoursesModule /> : null}
             {activeModule === "orders" ? <OrdersModule /> : null}
+            {activeModule === "agents" ? <AgentPackagesModule /> : null}
+            {activeModule === "payments" ? <PaymentsModule /> : null}
             {activeModule === "system" ? <SystemModule /> : null}
           </div>
         </div>
