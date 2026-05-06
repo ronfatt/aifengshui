@@ -29,7 +29,8 @@ import {
   TrendingUp,
   Trophy,
   UserRound,
-  WalletCards
+  WalletCards,
+  X
 } from "lucide-react";
 import {
   dailyRituals,
@@ -612,6 +613,69 @@ function downloadReport(report: SavedReport, memberProfile: MemberProfile) {
   const link = document.createElement("a");
   link.href = url;
   link.download = `${report.title}-${report.createdAt.replace(/[/:\\s]/g, "-")}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function reportTemplateType(report: SavedReport) {
+  if (report.title.includes("流年") || report.title.includes("事业")) {
+    return "紫微斗数";
+  }
+
+  if (report.title.includes("开业") || report.title.includes("择日")) {
+    return "梅花易数";
+  }
+
+  return "八字命理";
+}
+
+function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
+  const template = reportTemplateType(report);
+  const lines = [
+    report.summary,
+    ...report.sections.map((section) => `${section.title}：${section.content}`)
+  ].join(" ").slice(0, 260);
+  const safe = (value: string) =>
+    value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1680" viewBox="0 0 1200 1680">
+  <rect width="1200" height="1680" fill="#F5FAFA"/>
+  <rect x="36" y="36" width="1128" height="1608" fill="#fffaf0" stroke="#C79A54" stroke-width="4"/>
+  <rect x="72" y="72" width="1056" height="220" fill="#F5FAFA" stroke="#C79A54" stroke-width="2"/>
+  <text x="600" y="150" text-anchor="middle" font-size="54" font-weight="700" fill="#063F4A">${safe(report.title)} 完整报告</text>
+  <text x="600" y="210" text-anchor="middle" font-size="28" fill="#C79A54">${safe(template)} · AI Feng Shui Master</text>
+  <text x="96" y="350" font-size="30" font-weight="700" fill="#102F38">分析对象：${safe(memberProfile.name)}</text>
+  <text x="96" y="396" font-size="24" fill="#102F38">生日：${safe(memberProfile.birthDate)}　时辰：${safe(memberProfile.birthTimeLabel)}　性别：${safe(memberProfile.gender)}</text>
+  <text x="96" y="442" font-size="24" fill="#102F38">生成时间：${safe(report.createdAt)}　消耗点数：${report.points}</text>
+  <rect x="96" y="500" width="420" height="420" fill="#fff" stroke="#C79A54" stroke-width="2"/>
+  <text x="306" y="570" text-anchor="middle" font-size="34" font-weight="700" fill="#063F4A">${safe(template)}盘</text>
+  <circle cx="306" cy="715" r="116" fill="none" stroke="#C79A54" stroke-width="8"/>
+  <circle cx="306" cy="715" r="62" fill="none" stroke="#063F4A" stroke-width="4"/>
+  <text x="306" y="728" text-anchor="middle" font-size="54" font-weight="700" fill="#C79A54">82</text>
+  <text x="306" y="800" text-anchor="middle" font-size="22" fill="#102F38">综合评分</text>
+  <rect x="560" y="500" width="544" height="420" fill="#fff" stroke="#C79A54" stroke-width="2"/>
+  <text x="592" y="565" font-size="32" font-weight="700" fill="#063F4A">核心摘要</text>
+  <foreignObject x="592" y="600" width="480" height="250"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:24px;line-height:1.65;color:#102F38;font-family:Arial,'Microsoft YaHei',sans-serif;">${safe(lines)}</div></foreignObject>
+  ${report.sections
+    .map((section, index) => {
+      const y = 980 + index * 180;
+      return `<rect x="96" y="${y}" width="1008" height="140" rx="12" fill="#F5FAFA" stroke="#C79A54" stroke-width="1.5"/>
+  <text x="124" y="${y + 46}" font-size="28" font-weight="700" fill="#063F4A">${safe(section.title)}</text>
+  <foreignObject x="124" y="${y + 62}" width="940" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:22px;line-height:1.5;color:#102F38;font-family:Arial,'Microsoft YaHei',sans-serif;">${safe(section.content)}</div></foreignObject>`;
+    })
+    .join("")}
+  <text x="600" y="1602" text-anchor="middle" font-size="20" fill="#6C8790">本报告为 AI 命理与风水辅助建议，仅供参考。</text>
+</svg>`;
+  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${report.title}-${report.createdAt.replace(/[/:\\s]/g, "-")}.svg`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -2147,9 +2211,249 @@ function FavoritesVaultModule() {
   );
 }
 
+function BaziReportPanel({ report, memberProfile }: { report: SavedReport; memberProfile: MemberProfile }) {
+  const pillars = [
+    ["年柱", "庚", "申", "食神 / 偏财"],
+    ["月柱", "壬", "午", "正印 / 劫财"],
+    ["日柱", "戊", "戌", "日主 / 比肩"],
+    ["时柱", "辛", "酉", "伤官 / 金旺"]
+  ];
+  const elements = [["金", 30], ["木", 0], ["水", 15], ["火", 20], ["土", 25]] as const;
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+        <h4 className="font-semibold text-[#063F4A]">一、八字排盘</h4>
+        <div className="mt-3 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/25 text-center">
+          {pillars.map(([label, sky, branch, god]) => (
+            <div key={label} className="border-r border-[#C79A54]/20 last:border-r-0">
+              <p className="bg-[#F5FAFA] py-2 text-sm font-semibold">{label}</p>
+              <p className="py-3 text-4xl font-semibold text-[#C79A54]">{sky}</p>
+              <p className="py-3 text-4xl font-semibold text-[#063F4A]">{branch}</p>
+              <p className="min-h-14 border-t border-[#C79A54]/20 px-2 py-2 text-xs leading-5 text-ink/62">{god}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-center text-sm font-semibold text-[#063F4A]">
+          日主：戊土 · {memberProfile.name} · {memberProfile.birthDate}
+        </p>
+      </div>
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+        <h4 className="font-semibold text-[#063F4A]">二、五行强弱分析</h4>
+        <div className="mt-4 grid gap-3">
+          {elements.map(([element, value]) => (
+            <div key={element} className="grid grid-cols-[36px_1fr_42px] items-center gap-3 text-sm">
+              <span className="font-semibold">{element}</span>
+              <span className="h-3 rounded-full bg-[#DDEFF2]">
+                <span className="block h-full rounded-full bg-[#C79A54]" style={{ width: `${Math.max(value, 4)}%` }} />
+              </span>
+              <span className="text-right text-ink/55">{value}%</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+          <p className="text-sm font-semibold text-[#063F4A]">喜用神</p>
+          <p className="mt-2 text-sm leading-6 text-ink/65">喜用以木、水为调候，忌火土过旺。适合先疏通结构，再谈扩张。</p>
+        </div>
+      </div>
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
+        <h4 className="font-semibold text-[#063F4A]">三、命局分析</h4>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {report.sections.map((section) => (
+            <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
+              <p className="font-semibold">{section.title}</p>
+              <p className="mt-2 text-sm leading-6 text-ink/65">{section.content}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
+        <h4 className="font-semibold text-[#063F4A]">四、综合评分与开运建议</h4>
+        <div className="mt-4 grid gap-4 md:grid-cols-[220px_1fr]">
+          <div className="grid place-items-center rounded border border-[#C79A54]/25 bg-[#C79A54]/10 p-5 text-center">
+            <p className="text-6xl font-semibold text-[#1495A0]">82</p>
+            <p className="mt-2 text-sm font-semibold text-ink/58">命理综合评分</p>
+          </div>
+          <div className="text-sm leading-7 text-ink/68">
+            <p>建议颜色：绿色、蓝色、金色。适合方位：东方、北方。</p>
+            <p className="mt-2">行动建议：先做资源盘点，再推进重要谈判。报告重点：{report.summary}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ZiweiReportPanel({ report }: { report: SavedReport }) {
+  const palaces = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "仆役宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
+  const stars = ["紫微 左辅", "贪狼 陀罗", "太阴 文曲", "天府 天钺", "武曲 七杀", "巨门 天刑"];
+  const years = ["2026", "2027", "2028", "2029", "2030", "2031"];
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+        <h4 className="font-semibold text-[#063F4A]">一、紫微命盘十二宫</h4>
+        <div className="mt-3 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/25">
+          {palaces.map((palace, index) => (
+            <div key={palace} className="min-h-28 border-b border-r border-[#C79A54]/20 p-3 text-sm">
+              <p className="font-semibold text-[#063F4A]">{palace}</p>
+              <p className="mt-2 text-base font-semibold text-[#C79A54]">{stars[index % stars.length]}</p>
+              <p className="mt-2 text-xs text-ink/50">{index * 10 + 3}~{index * 10 + 12}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-3">
+        <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+          <h4 className="font-semibold text-[#063F4A]">二、命盘格局分析</h4>
+          <p className="mt-3 text-sm leading-6 text-ink/65">{report.summary}</p>
+        </div>
+        {report.sections.map((section) => (
+          <div key={section.title} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+            <p className="font-semibold">{section.title}</p>
+            <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
+        <h4 className="font-semibold text-[#063F4A]">三、大限与流年趋势</h4>
+        <div className="mt-3 grid gap-2 md:grid-cols-6">
+          {years.map((year, index) => (
+            <div key={year} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+              <p className="font-semibold text-[#063F4A]">{year}</p>
+              <p className="mt-2 text-xs leading-5 text-ink/58">{index % 2 ? "稳步提升，适合整合资源。" : "先守后攻，避免急进。"}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MeihuaReportPanel({ report }: { report: SavedReport }) {
+  const hexagrams = [
+    ["本卦", "天地否", "当前阻力较大，宜守不宜攻。"],
+    ["互卦", "风地观", "过程中要观察人心与局势细节。"],
+    ["变卦", "地山谦", "最终以谦和、稳进、借势为上。"]
+  ];
+  const lineRows = [0, 1, 0, 0, 1, 1];
+
+  return (
+    <div className="grid gap-4 xl:grid-cols-3">
+      {hexagrams.map(([label, name, desc], index) => (
+        <div key={label} className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+          <h4 className="font-semibold text-[#063F4A]">{label}：{name}</h4>
+          <div className="my-5 grid justify-center gap-3">
+            {lineRows.map((broken, lineIndex) => (
+              <div key={`${label}-${lineIndex}`} className="flex justify-center gap-3">
+                {broken ? (
+                  <>
+                    <span className="h-2 w-14 rounded bg-[#102F38]" />
+                    <span className="h-2 w-14 rounded bg-[#102F38]" />
+                  </>
+                ) : (
+                  <span className="h-2 w-32 rounded bg-[#102F38]" />
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm leading-6 text-ink/62">{desc}</p>
+          {index === 0 ? <p className="mt-3 text-sm font-semibold text-[#C79A54]">动爻：上六</p> : null}
+        </div>
+      ))}
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
+        <h4 className="font-semibold text-[#063F4A]">四、动爻解读与趋势</h4>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {report.sections.map((section) => (
+            <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
+              <p className="font-semibold">{section.title}</p>
+              <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
+        <h4 className="font-semibold text-[#063F4A]">五、吉凶方位与颜色</h4>
+        <div className="mt-4 grid gap-3 text-sm">
+          {[["吉方", "东南、北方"], ["吉色", "青色、蓝色、金色"], ["宜", "复盘、沟通、择时推进"], ["忌", "冲动签约、夜间决策"]].map(([label, value]) => (
+            <p key={label} className="flex justify-between gap-3 rounded bg-[#F5FAFA] px-3 py-2">
+              <span className="text-ink/52">{label}</span>
+              <span className="font-semibold">{value}</span>
+            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FullReportView({ report, memberProfile, onClose }: { report: SavedReport; memberProfile: MemberProfile; onClose: () => void }) {
+  const template = reportTemplateType(report);
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 backdrop-blur-sm md:p-6">
+      <div className="mx-auto max-w-7xl">
+        <div className="sticky top-3 z-10 mb-3 flex flex-wrap items-center justify-between gap-3 rounded border border-white/10 bg-[#063F4A] p-3 text-white shadow-soft">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Paid Report Preview</p>
+            <h3 className="mt-1 text-xl font-semibold">{report.title} · {template}</h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => window.print()} className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">打印 / 存 PDF</button>
+            <button type="button" onClick={() => downloadReportSvg(report, memberProfile)} className="rounded bg-[#C79A54] px-3 py-2 text-sm font-semibold text-[#063F4A]">下载 SVG</button>
+            <button type="button" onClick={onClose} className="grid size-10 place-items-center rounded bg-white/10" aria-label="关闭报告">
+              <X className="size-5" />
+            </button>
+          </div>
+        </div>
+
+        <article className="rounded border-4 border-[#C79A54] bg-[#fffaf0] p-5 text-[#102F38] shadow-2xl md:p-8">
+          <header className="grid gap-5 border-b-2 border-[#C79A54]/45 pb-5 md:grid-cols-[0.75fr_1.1fr_0.8fr] md:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#C79A54]">AI Feng Shui Master</p>
+              <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{memberProfile.name}</h1>
+            </div>
+            <div className="text-sm leading-7">
+              <h2 className="text-center text-4xl font-semibold tracking-[0.12em] text-[#063F4A]">{report.title} 完整报告</h2>
+              <div className="mt-4 grid gap-1 rounded border border-[#C79A54]/25 bg-white/70 p-4">
+                <p>公历：{memberProfile.birthDate}　{memberProfile.birthTimeLabel}</p>
+                <p>性别：{memberProfile.gender}　地区：{memberProfile.region}</p>
+                <p>Email：{memberProfile.email}</p>
+                <p>生成时间：{report.createdAt}　消耗：{report.points} 点</p>
+              </div>
+            </div>
+            <div className="rounded border border-[#C79A54]/25 bg-white/70 p-4 text-sm leading-6">
+              <p className="font-semibold text-[#063F4A]">命理格言</p>
+              <p className="mt-2 text-ink/65">命由天定，运由己造。知命而乐，修身而行，趋吉避凶，福慧双修。</p>
+            </div>
+          </header>
+
+          <div className="mt-5">
+            {template === "八字命理" ? <BaziReportPanel report={report} memberProfile={memberProfile} /> : null}
+            {template === "紫微斗数" ? <ZiweiReportPanel report={report} /> : null}
+            {template === "梅花易数" ? <MeihuaReportPanel report={report} /> : null}
+          </div>
+
+          <footer className="mt-5 border-t border-[#C79A54]/35 pt-4 text-center text-xs leading-5 text-ink/50">
+            注：本报告基于传统命理学理与 AI 辅助分析，仅供参考。人生运势受多种因素影响，命运掌握在自己手中。
+          </footer>
+        </article>
+      </div>
+    </div>
+  );
+}
+
 function WalletAndReports({ currentTier, memberProfile }: { currentTier: MembershipTier; memberProfile: MemberProfile }) {
   const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<SavedReport | null>(null);
+  const [isFullReportOpen, setIsFullReportOpen] = useState(false);
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const strategicReportTitles = new Set(["流年报告", "开业择日报告", "公司风水初步分析报告"]);
 
@@ -2182,6 +2486,7 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
     const nextReports = [generated, ...savedReports].slice(0, 12);
     setSavedReports(nextReports);
     setSelectedReport(generated);
+    setIsFullReportOpen(true);
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
   }
 
@@ -2316,7 +2621,24 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
                     onClick={() => downloadReport(selectedReport, memberProfile)}
                     className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#052F38]"
                   >
-                    <Download className="size-4" /> 下载报告
+                    <Download className="size-4" /> 下载 TXT
+                  </button>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsFullReportOpen(true)}
+                    className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
+                  >
+                    <Eye className="size-4" /> 打开完整报告
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => downloadReportSvg(selectedReport, memberProfile)}
+                    className="inline-flex items-center gap-2 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 px-4 py-2 text-sm font-semibold text-[#063F4A]"
+                  >
+                    <Download className="size-4" /> 下载 SVG
                   </button>
                 </div>
 
@@ -2352,6 +2674,9 @@ function WalletAndReports({ currentTier, memberProfile }: { currentTier: Members
           </div>
         </div>
       </div>
+      {selectedReport && isFullReportOpen ? (
+        <FullReportView report={selectedReport} memberProfile={memberProfile} onClose={() => setIsFullReportOpen(false)} />
+      ) : null}
     </section>
   );
 }
