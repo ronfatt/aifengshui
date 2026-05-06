@@ -279,6 +279,81 @@ const fiveElementProfile = [
   ["水", 71, "洞察不错，适合复盘与研究"]
 ] as const;
 
+const palaceExplanations = [
+  {
+    name: "命宫",
+    meaning: "代表一个人的核心性格、人生主轴、行动方式和整体气质。",
+    good: "好状态：方向感清楚，做事有主见，遇事能稳住自己。",
+    caution: "需注意：容易固执或自我消耗，重大选择前要先确认长期目标。"
+  },
+  {
+    name: "兄弟宫",
+    meaning: "代表手足、同辈、伙伴关系，也看资源互助与竞争关系。",
+    good: "好状态：容易获得同辈支持，合作中有人补位。",
+    caution: "需注意：界线不清会带来人情压力，钱与责任要说清楚。"
+  },
+  {
+    name: "夫妻宫",
+    meaning: "代表伴侣关系、亲密互动、婚姻观与长期相处模式。",
+    good: "好状态：沟通顺、愿意互相成就，适合谈未来规划。",
+    caution: "需注意：情绪化判断会放大误会，先听清楚再回应。"
+  },
+  {
+    name: "子女宫",
+    meaning: "代表子女、作品、创意成果，也看表达与传承能力。",
+    good: "好状态：创意活跃，适合推出内容、课程或作品。",
+    caution: "需注意：想法太多会分散执行，先完成一个再扩张。"
+  },
+  {
+    name: "财帛宫",
+    meaning: "代表赚钱模式、现金流、理财习惯与财富承载力。",
+    good: "好状态：收入稳定，适合整理现金流、定价和预算。",
+    caution: "需注意：偏财诱惑或冲动投资，先看风险再看回报。"
+  },
+  {
+    name: "疾厄宫",
+    meaning: "代表身体状态、压力来源、情绪消耗和作息节奏。",
+    good: "好状态：精力恢复快，适合建立规律运动和休息。",
+    caution: "需注意：长期熬夜、焦虑和过劳会影响判断力。"
+  },
+  {
+    name: "迁移宫",
+    meaning: "代表外出发展、异地机会、市场曝光和对外表现。",
+    good: "好状态：适合出差、见客户、开拓新圈层。",
+    caution: "需注意：外部机会多但变数也多，合约细节要确认。"
+  },
+  {
+    name: "交友宫",
+    meaning: "代表朋友、客户、粉丝、团队与人脉质量。",
+    good: "好状态：贵人、人脉和客户机会较明显。",
+    caution: "需注意：小人、口舌或团队拖延，合作前先看价值观。"
+  },
+  {
+    name: "官禄宫",
+    meaning: "代表事业方向、职位发展、专业能力和社会成就。",
+    good: "好状态：适合提案、升职、创业规划和商业布局。",
+    caution: "需注意：目标太散会影响成果，先定一个主战场。"
+  },
+  {
+    name: "田宅宫",
+    meaning: "代表家宅、办公室、不动产、空间气场和安全感。",
+    good: "好状态：适合整理空间、布局办公位或规划资产。",
+    caution: "需注意：杂乱、暗角和动线不顺会影响专注与财气。"
+  },
+  {
+    name: "福德宫",
+    meaning: "代表内在福气、精神状态、享受能力和长期幸福感。",
+    good: "好状态：心态稳定，能用更高视角看问题。",
+    caution: "需注意：想太多或长期紧绷，需主动留白与休息。"
+  },
+  {
+    name: "父母宫",
+    meaning: "代表长辈、贵人、制度资源、证照文件与保护力。",
+    good: "好状态：容易获得长辈、上司或制度层面的支持。",
+    caution: "需注意：文件、合约、流程不可马虎，避免口头承诺。"
+  }
+] as const;
+
 const destinyKeywords = ["稳中扩张", "合作机会", "现金流优先", "先整理后放大"];
 
 const growthTasks = [
@@ -1922,6 +1997,8 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
 }
 
 function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile }) {
+  const [selectedPalace, setSelectedPalace] = useState<(typeof palaceExplanations)[number] | null>(null);
+
   return (
     <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
@@ -2001,20 +2078,19 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
         <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center justify-between gap-3">
             <h4 className="font-semibold">十二宫数据桶</h4>
-            <span className="rounded bg-white px-2 py-1 text-xs text-ink/55">MVP 预览</span>
+            <span className="rounded bg-white px-2 py-1 text-xs text-ink/55">点击看解释</span>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {[
-              "命宫",
-              "财帛宫",
-              "官禄宫",
-              "夫妻宫",
-              "交友宫",
-              "福德宫"
-            ].map((palace) => (
-              <div key={palace} className="rounded bg-white p-3 text-sm font-semibold text-[#063F4A]">
-                {palace}
-              </div>
+            {palaceExplanations.map((palace) => (
+              <button
+                key={palace.name}
+                type="button"
+                onClick={() => setSelectedPalace(palace)}
+                className="rounded bg-white p-3 text-left text-sm font-semibold text-[#063F4A] transition hover:-translate-y-0.5 hover:border-[#C79A54]/45 hover:bg-[#C79A54]/10 hover:shadow-sm"
+              >
+                {palace.name}
+                <span className="mt-1 block text-xs font-normal text-ink/45">点击查看</span>
+              </button>
             ))}
           </div>
           <p className="mt-3 text-xs leading-5 text-ink/52">
@@ -2022,6 +2098,43 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
           </p>
         </div>
       </div>
+      {selectedPalace ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-[#0A0A0A]/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl rounded border border-[#C79A54]/35 bg-white p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Ziwei Palace</p>
+                <h3 className="mt-2 text-3xl font-semibold text-[#063F4A]">{selectedPalace.name}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedPalace(null)}
+                className="grid size-10 place-items-center rounded bg-[#F5FAFA] text-ink/58"
+                aria-label="关闭宫位解释"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <div className="mt-5 grid gap-3">
+              <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                <p className="text-sm font-semibold text-[#063F4A]">代表什么</p>
+                <p className="mt-2 text-sm leading-6 text-ink/68">{selectedPalace.meaning}</p>
+              </div>
+              <div className="rounded border border-[#1495A0]/20 bg-[#DDEFF2] p-4">
+                <p className="text-sm font-semibold text-[#063F4A]">好状态</p>
+                <p className="mt-2 text-sm leading-6 text-ink/68">{selectedPalace.good}</p>
+              </div>
+              <div className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
+                <p className="text-sm font-semibold text-[#063F4A]">需要注意</p>
+                <p className="mt-2 text-sm leading-6 text-ink/68">{selectedPalace.caution}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-5 text-ink/45">
+              简易解释用于帮助会员理解宫位含义。完整判断仍需结合主星、辅星、四化、流年与当前问题。
+            </p>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
