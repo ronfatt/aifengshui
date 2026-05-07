@@ -2850,6 +2850,8 @@ function InviteFriendsModule({
 }) {
   const inviteLink = typeof window === "undefined" ? `/auth?ref=${referralCode}` : `${window.location.origin}/auth?ref=${referralCode}`;
   const sourceLabel = referralSource === "member_referral" ? "会员推荐" : "总部自然流量";
+  const [posterStatus, setPosterStatus] = useState("");
+  const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
 
   function copyInviteLink() {
     navigator.clipboard?.writeText(inviteLink);
@@ -2887,6 +2889,55 @@ function InviteFriendsModule({
     URL.revokeObjectURL(url);
   }
 
+  async function generateAiReferralPoster() {
+    setIsGeneratingPoster(true);
+    setPosterStatus("AI 正在生成推荐海报...");
+
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const {
+        data: { session }
+      } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+
+      if (!session?.access_token) {
+        setPosterStatus("请先登录会员账号，再生成 AI 推荐海报。");
+        return;
+      }
+
+      const response = await fetch("/api/referrals/poster", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+      const data = (await response.json()) as {
+        error?: string;
+        posterSvg?: string;
+        fileName?: string;
+        mode?: "ai" | "fallback";
+        message?: string;
+      };
+
+      if (!response.ok || !data.posterSvg) {
+        setPosterStatus(data.error || "AI 推荐海报生成失败，请稍后再试。");
+        return;
+      }
+
+      const blob = new Blob([data.posterSvg], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = data.fileName || `ai-referral-poster-${referralCode}.svg`;
+      link.click();
+      URL.revokeObjectURL(url);
+      setPosterStatus(data.message || (data.mode === "ai" ? "AI 推荐海报已生成。" : "已生成标准推荐海报。"));
+    } catch (error) {
+      setPosterStatus(error instanceof Error ? error.message : "AI 推荐海报生成失败，请稍后再试。");
+    } finally {
+      setIsGeneratingPoster(false);
+    }
+  }
+
   return (
     <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
@@ -2906,10 +2957,14 @@ function InviteFriendsModule({
           <button type="button" onClick={shareWhatsApp} className="rounded border border-white/15 px-4 py-3 font-semibold text-white">
             WhatsApp 分享
           </button>
-          <button type="button" onClick={downloadReferralPoster} className="rounded border border-white/15 px-4 py-3 font-semibold text-white sm:col-span-2">
-            下载推荐海报
+          <button type="button" onClick={generateAiReferralPoster} disabled={isGeneratingPoster} className="rounded border border-[#C79A54]/70 px-4 py-3 font-semibold text-[#E8D4A8] disabled:cursor-not-allowed disabled:opacity-60">
+            {isGeneratingPoster ? "生成中..." : "生成 AI 海报"}
+          </button>
+          <button type="button" onClick={downloadReferralPoster} className="rounded border border-white/15 px-4 py-3 font-semibold text-white">
+            标准海报
           </button>
         </div>
+        {posterStatus ? <p className="mt-3 rounded bg-white/8 px-3 py-2 text-xs leading-5 text-white/62">{posterStatus}</p> : null}
       </div>
 
       <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
