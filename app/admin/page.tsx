@@ -57,6 +57,13 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const moduleTabs = [
   {
+    id: "ceo",
+    title: "CEO 总览",
+    desc: "现金、异常、风控、待办",
+    icon: ShieldCheck,
+    stat: "Live"
+  },
+  {
     id: "users",
     title: "用户管理",
     desc: "会员资料、等级、点数、冻结、团队",
@@ -288,6 +295,28 @@ const poolTiers = [
   { packageName: "8888 创业启动包", share: 15, label: "创业启动包池" }
 ];
 
+const ceoCashSnapshot = [
+  { label: "今日实收现金", value: "RM38,420", note: "已入账 / 不含待审转账" },
+  { label: "本月销售额", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
+  { label: "AI 成本", value: "RM4,280", note: "本月 OpenAI / Gemini 估算" },
+  { label: "Pool Share 总池", value: "RM30,624", note: "待月结审批" }
+] as const;
+
+const ceoRiskQueue = [
+  { title: "银行转账待审核", count: "5", module: "payments", priority: "High", desc: "审核前不发放点数、不触发佣金。" },
+  { title: "退款后佣金追回", count: "3", module: "orders", priority: "High", desc: "需要 clawback，避免多发佣金。" },
+  { title: "低库存 SKU", count: "2", module: "stock", priority: "Medium", desc: "影响产品商城成交与发货体验。" },
+  { title: "Pool Share 待审批", count: "1", module: "pool", priority: "Medium", desc: "月结前需锁定净业绩口径。" }
+] as const;
+
+const ceoOperatingChecklist = [
+  { title: "确认今日收款与订单差异", module: "finance" },
+  { title: "处理支付审核与异常订单", module: "payments" },
+  { title: "检查 AI 成本和报告生成失败", module: "ai" },
+  { title: "审批佣金 / Pool Share 前先看退款", module: "pool" },
+  { title: "查看创业配套成交和团队归属", module: "agents" }
+] as const;
+
 function formatRM(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "RM0";
@@ -394,6 +423,135 @@ function SectionFrame({
       </div>
       <div className="mt-5">{children}</div>
     </section>
+  );
+}
+
+function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModule) => void }) {
+  return (
+    <div className="grid gap-5">
+      <SectionFrame
+        eyebrow="Executive Command"
+        title="CEO 经营总览"
+        desc="老板每天先看现金、异常、风控和待审批事项，再进入对应模块处理。"
+        action={<StatusPill>今日必看</StatusPill>}
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {ceoCashSnapshot.map((item) => (
+            <article key={item.label} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+              <p className="text-sm text-ink/50">{item.label}</p>
+              <p className="mt-3 text-3xl font-semibold text-[#063F4A]">{item.value}</p>
+              <p className="mt-2 text-xs leading-5 text-ink/55">{item.note}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded border border-black/10 bg-white p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-xl font-semibold text-[#063F4A]">经营异常队列</h3>
+                <p className="mt-1 text-sm text-ink/55">这里优先处理会影响现金、佣金和履约的事项。</p>
+              </div>
+              <AlertTriangle className="size-6 text-[#C79A54]" />
+            </div>
+            <div className="mt-4 grid gap-3">
+              {ceoRiskQueue.map((item) => (
+                <button
+                  key={item.title}
+                  type="button"
+                  onClick={() => onOpenModule(item.module as ActiveModule)}
+                  className="grid gap-3 rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm sm:grid-cols-[auto_1fr_auto]"
+                >
+                  <span className="grid size-10 place-items-center rounded bg-white text-xl font-semibold text-[#063F4A]">{item.count}</span>
+                  <span>
+                    <span className="block font-semibold text-ink">{item.title}</span>
+                    <span className="mt-1 block text-sm leading-5 text-ink/55">{item.desc}</span>
+                  </span>
+                  <StatusBadge status={item.priority} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Daily Control</p>
+                <h3 className="mt-2 text-2xl font-semibold">今日管理动作</h3>
+              </div>
+              <ShieldCheck className="size-7 text-[#C79A54]" />
+            </div>
+            <div className="mt-5 grid gap-3">
+              {ceoOperatingChecklist.map((item, index) => (
+                <button
+                  key={item.title}
+                  type="button"
+                  onClick={() => onOpenModule(item.module as ActiveModule)}
+                  className="flex items-center gap-3 rounded border border-white/10 bg-white/8 p-3 text-left transition hover:border-[#C79A54]/60 hover:bg-white/12"
+                >
+                  <span className="grid size-8 shrink-0 place-items-center rounded bg-[#C79A54] text-sm font-semibold text-[#063F4A]">{index + 1}</span>
+                  <span className="text-sm font-semibold leading-5 text-white/88">{item.title}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </SectionFrame>
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Revenue Mix</p>
+          <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">收入结构</h3>
+          <div className="mt-4 grid gap-3">
+            {revenueBreakdown.slice(0, 5).map((item) => (
+              <div key={item.source} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
+                <div className="flex items-center justify-between gap-3 text-sm">
+                  <span className="font-semibold">{item.source}</span>
+                  <span className="text-[#063F4A]">{item.amount}</span>
+                </div>
+                <div className="mt-2 h-2 rounded-full bg-white">
+                  <div className="h-2 rounded-full bg-[#1495A0]" style={{ width: item.pct }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Order Health</p>
+          <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">订单健康度</h3>
+          <div className="mt-4 grid gap-3">
+            {orderKpis.slice(0, 5).map((item) => (
+              <div key={item.label} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3">
+                <span>
+                  <span className="block text-sm font-semibold">{item.label}</span>
+                  <span className="text-xs text-ink/50">{item.note}</span>
+                </span>
+                <span className="font-semibold text-[#063F4A]">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Approval</p>
+          <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">待审批事项</h3>
+          <div className="mt-4 grid gap-3">
+            {[
+              ["佣金待批", "RM18,420", "finance"],
+              ["提现待批", "7 requests", "finance"],
+              ["Pool Share", "RM30,624", "pool"],
+              ["手动转账", "5 payments", "payments"]
+            ].map(([label, value, module]) => (
+              <button key={label} type="button" onClick={() => onOpenModule(module as ActiveModule)} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3 text-left transition hover:border-[#C79A54]/60">
+                <span className="text-sm font-semibold">{label}</span>
+                <span className="text-sm font-semibold text-[#063F4A]">{value}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }
 
@@ -2017,7 +2175,7 @@ function SystemModule() {
 }
 
 export default function AdminPage() {
-  const [activeModule, setActiveModule] = useState<ActiveModule>("users");
+  const [activeModule, setActiveModule] = useState<ActiveModule>("ceo");
   const [inventoryList, setInventoryList] = useState<InventoryProduct[]>(inventoryProducts);
 
   return (
@@ -2028,9 +2186,9 @@ export default function AdminPage() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <StatusPill>老板后台 · Admin Console</StatusPill>
-                <h1 className="mt-4 text-3xl font-semibold text-[#063F4A] md:text-5xl">平台运营总览</h1>
+                <h1 className="mt-4 text-3xl font-semibold text-[#063F4A] md:text-5xl">公司经营控制台</h1>
                 <p className="mt-3 max-w-3xl text-ink/65">
-                  后台改成模块式管理：用户、点数、AI、财务、库存、课程、订单、代理配套和支付审核都可以分开操作。
+                  先看现金、异常、审批和经营风险，再进入用户、财务、库存、订单、代理与 Pool Share 模块处理。
                 </p>
               </div>
               <div className="flex gap-2">
@@ -2070,6 +2228,7 @@ export default function AdminPage() {
           </section>
 
           <div className="mt-6">
+            {activeModule === "ceo" ? <CeoOverviewModule onOpenModule={setActiveModule} /> : null}
             {activeModule === "users" ? <UsersModule /> : null}
             {activeModule === "credits" ? <CreditsModule /> : null}
             {activeModule === "ai" ? <AiControlModule /> : null}

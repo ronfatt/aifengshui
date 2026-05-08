@@ -57,6 +57,7 @@ type DashboardModule =
   | "divination"
   | "sigil"
   | "invite"
+  | "partner"
   | "wallet"
   | "shop"
   | "courses"
@@ -131,6 +132,13 @@ const modules: {
     desc: "推荐码 + 奖励",
     metric: "+30 点",
     icon: Share2
+  },
+  {
+    id: "partner",
+    title: "创业中心",
+    desc: "团队转化 + Pool",
+    metric: "52 人",
+    icon: Trophy
   },
   {
     id: "wallet",
@@ -259,6 +267,13 @@ const todayActionCards: {
     module: "invite",
     icon: Share2,
     tone: "green"
+  },
+  {
+    title: "查看创业中心",
+    desc: "团队 + Pool Share",
+    module: "partner",
+    icon: Trophy,
+    tone: "gold"
   }
 ];
 
@@ -491,6 +506,35 @@ const favoriteItems = [
   { type: "行动", title: "每周五财务复盘", desc: "固定整理现金流、应收款与预算。" },
   { type: "分享卡", title: "今日事业评分 91", desc: "可用于社群分享与推荐转化。" },
   { type: "洞察", title: "先整理后扩张", desc: "本周适合先做清单，再谈资源。" }
+] as const;
+
+const partnerMetrics = [
+  ["Free 线索", "126", "43 位本周活跃"],
+  ["创业配套", "52", "31 / 15 / 6"],
+  ["本月新增", "18", "+12 Free / +6 配套"],
+  ["Pool Share", "RM30,624", "本月总分享金额"]
+] as const;
+
+const partnerPackageMix = [
+  ["8888 创业启动包", 31, "引导完成首 10 位 Free 邀请"],
+  ["16888 事业合伙人", 15, "检查 Pool 资格与培训出席"],
+  ["38888 区域导师", 6, "安排区域课程与导师带教"]
+] as const;
+
+const partnerLeadSegments = [
+  ["Free 新人未完成资料", "38 人", "发送生日资料提醒"],
+  ["Free 已连续打卡 7 天", "24 人", "推荐 AI 深度报告"],
+  ["已生成报告未咨询", "12 人", "邀约大师咨询"],
+  ["8888 已招 5 人以上", "9 人", "引导升级 16888"],
+  ["16888 活跃合伙人", "5 人", "安排 Pool 规则说明"],
+  ["38888 区域代理", "1 人", "确认区域课程计划"]
+] as const;
+
+const partnerFollowUps = [
+  "联系 21 位 Free 会员完成命理资料",
+  "跟进 8 位报告用户转大师咨询",
+  "本周举办一场创业说明会",
+  "复核 3 位合伙人的推荐归属与佣金状态"
 ] as const;
 
 type SavedReport = {
@@ -2990,6 +3034,165 @@ function InviteFriendsModule({
   );
 }
 
+function PartnerCommandCenter({
+  referralCode,
+  onOpenModule
+}: {
+  referralCode: string;
+  onOpenModule: (module: DashboardModule) => void;
+}) {
+  const totalPartnerMembers = partnerPackageMix.reduce((sum, [, count]) => sum + count, 0);
+
+  return (
+    <section className="grid gap-5">
+      <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Partner Command</p>
+              <h2 className="mt-3 text-3xl font-semibold">创业会员经营中心</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
+                适合已经开始带团队的创业配套会员，每天看转化、跟进、Pool Share 与团队健康度。
+              </p>
+            </div>
+            <span className="rounded bg-white/10 px-3 py-1 text-sm font-semibold text-[#E8D4A8]">推荐码 {referralCode}</span>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {partnerMetrics.map(([label, value, change]) => (
+              <div key={label} className="rounded border border-white/10 bg-white/8 p-4">
+                <p className="text-xs text-white/45">{label}</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+                <p className="mt-2 text-xs text-[#E8D4A8]">{change}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-[#E8D4A8]">团队规模模拟</p>
+                <p className="mt-1 text-sm text-white/60">当前视角：已招收 {totalPartnerMembers} 位创业配套 + 126 位 Free 会员。</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onOpenModule("invite")}
+                className="rounded bg-[#C79A54] px-4 py-2.5 text-sm font-semibold text-[#063F4A]"
+              >
+                继续邀请
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Pool Share</p>
+              <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">业绩共享池总金额</h3>
+            </div>
+            <StatusPill>合资格</StatusPill>
+          </div>
+          <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-6">
+            <p className="text-sm text-ink/50">本月总分享金额</p>
+            <p className="mt-3 text-5xl font-semibold tracking-tight text-[#063F4A]">RM30,624</p>
+            <p className="mt-3 text-sm text-ink/55">状态：待月结确认</p>
+          </div>
+          <p className="mt-4 rounded bg-[#C79A54]/10 p-3 text-xs leading-5 text-ink/58">
+            此金额为本月 Pool Share 总池，实际分配以公司月结、退款扣回与后台审批为准。
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-2xl font-semibold text-[#063F4A]">创业配套分布</h3>
+            <StatusPill>52 位</StatusPill>
+          </div>
+          <div className="mt-5 grid gap-3">
+            {partnerPackageMix.map(([name, count, action]) => {
+              const percentage = Math.round((count / totalPartnerMembers) * 100);
+
+              return (
+                <div key={name} className="rounded border border-black/10 bg-rice p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-[#063F4A]">{name}</p>
+                      <p className="mt-1 text-sm text-ink/55">{action}</p>
+                    </div>
+                    <span className="text-2xl font-semibold text-[#C79A54]">{count}</span>
+                  </div>
+                  <div className="mt-3 h-2 rounded-full bg-white">
+                    <div className="h-2 rounded-full bg-[#1495A0]" style={{ width: `${percentage}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-2xl font-semibold text-[#063F4A]">今日跟进任务</h3>
+            <button
+              type="button"
+              onClick={() => onOpenModule("team")}
+              className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              查看团队树 <ChevronRight className="size-4" />
+            </button>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {partnerFollowUps.map((task, index) => (
+              <button key={task} type="button" className="rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm">
+                <div className="flex items-start gap-3">
+                  <span className="grid size-8 shrink-0 place-items-center rounded bg-[#DDEFF2] text-sm font-semibold text-[#063F4A]">{index + 1}</span>
+                  <p className="text-sm font-semibold leading-6 text-ink">{task}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Conversion Board</p>
+            <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">团队分层与下一步动作</h3>
+          </div>
+          <StatusPill>优先跟进</StatusPill>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {partnerLeadSegments.map(([segment, count, action]) => (
+            <div key={segment} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold text-[#063F4A]">{segment}</p>
+                  <p className="mt-2 text-sm text-ink/55">{action}</p>
+                </div>
+                <span className="rounded bg-white px-2.5 py-1 text-sm font-semibold text-[#063F4A]">{count}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          <button type="button" onClick={() => onOpenModule("invite")} className="rounded bg-[#C79A54] px-4 py-3 font-semibold text-[#063F4A]">
+            分享推荐链接
+          </button>
+          <button type="button" onClick={() => onOpenModule("team")} className="rounded border border-[#063F4A]/20 px-4 py-3 font-semibold text-[#063F4A]">
+            查看推荐团队
+          </button>
+          <button type="button" className="rounded border border-[#C79A54]/40 bg-[#C79A54]/10 px-4 py-3 font-semibold text-[#063F4A]">
+            生成跟进名单
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
   const nodeDots = [artifact.dots[0], artifact.dots[artifact.dots.length - 1]].filter(Boolean);
 
@@ -3958,6 +4161,9 @@ export default function DashboardPage() {
             ) : null}
             {activeModule === "invite" ? (
               <InviteFriendsModule referralCode={referralCode} sponsorCode={sponsorCode} referralSource={referralSource} />
+            ) : null}
+            {activeModule === "partner" ? (
+              <PartnerCommandCenter referralCode={referralCode} onOpenModule={openModule} />
             ) : null}
             {activeModule === "wallet" ? (
               <WalletAndReports currentTier={currentTier} memberProfile={memberProfile} points={pointBalance} onSpendPoints={spendPoints} />
