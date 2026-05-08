@@ -190,11 +190,26 @@ export default function AuthPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="grid gap-2 text-sm font-semibold">
                       生日日期
-                      <input type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]" required />
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={birthDate}
+                        onChange={(event) => setBirthDate(event.target.value)}
+                        placeholder="YYYY-MM-DD，例如 1980-06-14"
+                        className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]"
+                        required
+                      />
                     </label>
                     <label className="grid gap-2 text-sm font-semibold">
                       出生时辰
-                      <input type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]" />
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={birthTime}
+                        onChange={(event) => setBirthTime(event.target.value)}
+                        placeholder="HH:mm，例如 17:30，可留空"
+                        className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]"
+                      />
                     </label>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">

@@ -85,6 +85,13 @@ const moduleTabs = [
     stat: "RM612,480"
   },
   {
+    id: "pool",
+    title: "Pool Share",
+    desc: "5% 业绩奖励池、审批、发放、审计",
+    icon: HandCoins,
+    stat: "5% pool"
+  },
+  {
     id: "stock",
     title: "Stock Keeper",
     desc: "SKU、库存流水、低库存、产品利润",
@@ -256,9 +263,9 @@ const courseSeed = [
 ];
 
 const agentPackageSeed = [
-  { name: "8888 创业启动包", price: "RM8,888", points: 8888, tier: "AI Pro", commission: "20% / 10% / 5%", status: "Active" },
-  { name: "16888 事业合伙人", price: "RM16,888", points: 18888, tier: "AI Master", commission: "25% / 10% / 5%", status: "Active" },
-  { name: "38888 区域导师", price: "RM38,888", points: 48888, tier: "Regional", commission: "30% / 12% / 6%", status: "Draft" }
+  { name: "8888 创业启动包", price: "RM8,888", points: 8888, tier: "AI Pro", commission: "20% / 10% / 5%", poolShare: "15% 池", status: "Active" },
+  { name: "16888 事业合伙人", price: "RM16,888", points: 18888, tier: "AI Master", commission: "25% / 10% / 5%", poolShare: "35% 池", status: "Active" },
+  { name: "38888 区域导师", price: "RM38,888", points: 48888, tier: "Regional", commission: "30% / 12% / 6%", poolShare: "50% 池", status: "Draft" }
 ];
 
 const paymentReviewSeed = [
@@ -267,10 +274,32 @@ const paymentReviewSeed = [
   { id: "PAY-9203", user: "Lim Wei", order: "ORD-2044", amount: "RM39.90", method: "Stripe", status: "Matched", proof: "stripe-session" }
 ];
 
+const poolParticipantSeed = [
+  { id: "P-38888-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "38888 区域导师", status: "Eligible", joinedAt: "2026-04-01", activity: "已完成认证 · 有团队成交" },
+  { id: "P-16888-001", name: "陈美玲", email: "may@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-04-10", activity: "已完成认证 · 活跃推广" },
+  { id: "P-16888-002", name: "Tan Wei", email: "tan@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-04-18", activity: "已完成认证 · 有效订单" },
+  { id: "P-8888-001", name: "Lim Wei", email: "lim@example.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-04-05", activity: "基础培训完成" },
+  { id: "P-8888-002", name: "Joanne Lee", email: "joanne@example.com", packageName: "8888 创业启动包", status: "Hold", joinedAt: "2026-04-20", activity: "待完成合规推广确认" }
+];
+
+const poolTiers = [
+  { packageName: "38888 区域导师", share: 50, label: "区域导师池" },
+  { packageName: "16888 事业合伙人", share: 35, label: "事业合伙人池" },
+  { packageName: "8888 创业启动包", share: 15, label: "创业启动包池" }
+];
+
 function formatRM(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return "RM0";
   return trimmed.toUpperCase().startsWith("RM") ? trimmed : `RM${trimmed}`;
+}
+
+function parseMoney(value: string) {
+  return Number(value.replace(/[^\d.]/g, "")) || 0;
+}
+
+function formatMoney(value: number) {
+  return `RM${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function inventoryStatus(stock: number, threshold: number) {
@@ -280,7 +309,7 @@ function inventoryStatus(stock: number, threshold: number) {
 }
 
 function statusTone(status: string) {
-  if (["Paid", "Completed", "Approved", "In stock", "Active", "Published"].includes(status)) {
+  if (["Paid", "Completed", "Approved", "In stock", "Active", "Published", "Eligible", "Locked"].includes(status)) {
     return "bg-emerald-50 text-emerald-700";
   }
 
@@ -288,7 +317,7 @@ function statusTone(status: string) {
     return "bg-emerald-50 text-emerald-700";
   }
 
-  if (["Pending", "Pending Review", "Processing", "Low stock", "Generating report", "On hold", "Hold", "Reserved", "Packing"].includes(status)) {
+  if (["Pending", "Pending Review", "Processing", "Low stock", "Generating report", "On hold", "Hold", "Reserved", "Packing", "Calculated"].includes(status)) {
     return "bg-amber-50 text-amber-700";
   }
 
@@ -1047,6 +1076,211 @@ function FinanceModule() {
   );
 }
 
+function PartnerPoolModule() {
+  const [grossRevenue, setGrossRevenue] = useState("612480");
+  const [refunds, setRefunds] = useState("18420");
+  const [gatewayFees, setGatewayFees] = useState("7420");
+  const [excludedRevenue, setExcludedRevenue] = useState("12880");
+  const [poolRate, setPoolRate] = useState("5");
+  const [participants, setParticipants] = useState(poolParticipantSeed);
+  const [poolStatus, setPoolStatus] = useState("Pending");
+  const [auditLogs, setAuditLogs] = useState([
+    "2026-05-07 10:00 Draft pool created by Finance Admin",
+    "2026-05-07 10:05 Eligible revenue basis set to net collected revenue"
+  ]);
+
+  const eligibleRevenue = Math.max(0, parseMoney(grossRevenue) - parseMoney(refunds) - parseMoney(gatewayFees) - parseMoney(excludedRevenue));
+  const poolTotal = eligibleRevenue * ((Number(poolRate) || 0) / 100);
+  const eligibleParticipants = participants.filter((participant) => participant.status === "Eligible");
+
+  function allocationFor(packageName: string, share: number) {
+    const members = eligibleParticipants.filter((participant) => participant.packageName === packageName);
+    const tierPool = poolTotal * (share / 100);
+    return {
+      members,
+      tierPool,
+      perMember: members.length ? tierPool / members.length : 0
+    };
+  }
+
+  function updateParticipantStatus(id: string, status: string) {
+    setParticipants((current) => current.map((participant) => (participant.id === id ? { ...participant, status } : participant)));
+    setAuditLogs((current) => [`${new Date().toLocaleString("sv-SE")} ${id} status changed to ${status}`, ...current]);
+  }
+
+  function approvePool() {
+    setPoolStatus("Approved");
+    setAuditLogs((current) => [`${new Date().toLocaleString("sv-SE")} Pool approved at ${formatMoney(poolTotal)}`, ...current]);
+  }
+
+  function markPoolPaid() {
+    setPoolStatus("Paid");
+    setAuditLogs((current) => [`${new Date().toLocaleString("sv-SE")} Pool payout marked as paid`, ...current]);
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="Partner Performance Pool"
+      title="创业配套业绩奖励池"
+      desc="每月从合资格净业绩拨出 5% 进入奖励池，再按 38888 / 16888 / 8888 三个配套池 50% / 35% / 15% 分配。"
+      action={<StatusBadge status={poolStatus} />}
+    >
+      <div className="rounded border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+        上市友好规则：这是渠道销售激励，不是投资分红；不承诺固定回报；以实收净业绩、活跃资格、退款追回和财务审批为准。
+      </div>
+
+      <div className="mt-5 grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-xl font-semibold text-[#063F4A]">Pool 计算设置</h3>
+              <p className="mt-1 text-sm text-ink/55">建议用合资格净业绩，避免退款和手续费造成现金流风险。</p>
+            </div>
+            <Landmark className="size-6 text-[#C79A54]" />
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {[
+              ["公司总业绩", grossRevenue, setGrossRevenue],
+              ["退款 / Chargeback", refunds, setRefunds],
+              ["网关手续费", gatewayFees, setGatewayFees],
+              ["排除项目", excludedRevenue, setExcludedRevenue],
+              ["Pool 比例 %", poolRate, setPoolRate]
+            ].map(([label, value, setter]) => (
+              <label key={label as string} className="rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm">
+                <span className="text-ink/45">{label as string}</span>
+                <input
+                  value={value as string}
+                  onChange={(event) => (setter as (next: string) => void)(event.target.value)}
+                  className="mt-1 w-full bg-transparent text-xl font-semibold text-[#063F4A] outline-none"
+                />
+              </label>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {[
+              ["合资格净业绩", formatMoney(eligibleRevenue)],
+              ["Pool 总额", formatMoney(poolTotal)],
+              ["合资格人数", `${eligibleParticipants.length} 人`]
+            ].map(([label, value]) => (
+              <article key={label} className="rounded bg-[#063F4A] p-4 text-white">
+                <p className="text-sm text-white/58">{label}</p>
+                <p className="mt-2 text-2xl font-semibold text-[#C79A54]">{value}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button type="button" onClick={() => setPoolStatus("Calculated")} className="rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
+              重新计算
+            </button>
+            <button type="button" onClick={approvePool} className="rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white">
+              财务批准
+            </button>
+            <button type="button" onClick={markPoolPaid} className="rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]">
+              标记已发放
+            </button>
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-[#F5FAFA] p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">三大配套池分配</h3>
+          <div className="mt-5 grid gap-3 lg:grid-cols-3">
+            {poolTiers.map((tier) => {
+              const allocation = allocationFor(tier.packageName, tier.share);
+              return (
+                <article key={tier.packageName} className={tier.share === 50 ? "rounded border border-[#C79A54] bg-[#063F4A] p-4 text-white" : "rounded border border-black/10 bg-white p-4"}>
+                  <p className={tier.share === 50 ? "text-sm text-[#C79A54]" : "text-sm text-ink/50"}>{tier.label}</p>
+                  <p className="mt-2 text-3xl font-semibold">{tier.share}%</p>
+                  <div className={tier.share === 50 ? "mt-4 space-y-2 text-sm text-white/70" : "mt-4 space-y-2 text-sm text-ink/58"}>
+                    <p>池金额：{formatMoney(allocation.tierPool)}</p>
+                    <p>合资格人数：{allocation.members.length}</p>
+                    <p>每人预估：{allocation.members.length ? formatMoney(allocation.perMember) : "无人参与，金额保留"}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="mt-5 overflow-x-auto rounded border border-black/10 bg-white">
+            <table className="w-full min-w-[760px] text-left text-sm">
+              <thead className="bg-cloud text-ink/55">
+                <tr>
+                  {["Partner", "Package", "Status", "Activity", "Estimated payout", "Action"].map((head) => (
+                    <th key={head} className="px-3 py-3 font-medium">{head}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/10">
+                {participants.map((participant) => {
+                  const tier = poolTiers.find((item) => item.packageName === participant.packageName);
+                  const allocation = tier ? allocationFor(tier.packageName, tier.share) : { perMember: 0 };
+                  return (
+                    <tr key={participant.id}>
+                      <td className="px-3 py-3">
+                        <p className="font-semibold">{participant.name}</p>
+                        <p className="text-xs text-ink/45">{participant.email}</p>
+                      </td>
+                      <td className="px-3 py-3">{participant.packageName}</td>
+                      <td className="px-3 py-3"><StatusBadge status={participant.status} /></td>
+                      <td className="px-3 py-3 text-ink/58">{participant.activity}</td>
+                      <td className="px-3 py-3 font-semibold text-[#063F4A]">{participant.status === "Eligible" ? formatMoney(allocation.perMember) : "RM0.00"}</td>
+                      <td className="px-3 py-3">
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => updateParticipantStatus(participant.id, "Eligible")} className="rounded-full bg-[#1495A0] px-3 py-1.5 text-xs font-semibold text-white">
+                            Eligible
+                          </button>
+                          <button type="button" onClick={() => updateParticipantStatus(participant.id, "Hold")} className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+                            Hold
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_0.85fr]">
+        <div className="rounded border border-black/10 bg-white p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">上市审计控制清单</h3>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ["Revenue basis", "只采用合资格实收净业绩，不含未收款、退款、内部转账。"],
+              ["No guaranteed return", "所有会员端文案禁止写固定收益、保本、投资回报。"],
+              ["Clawback", "退款、违规推广、坏账可在下月奖励中追回或冻结。"],
+              ["Approval trail", "计算、批准、付款必须保留审批人、时间、金额和备注。"],
+              ["Tax support", "付款前收集税务资料，导出 partner incentive 报表。"],
+              ["Period lock", "每月结算后锁账，修改必须走 adjustment 记录。"]
+            ].map(([title, desc]) => (
+              <div key={title} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                <p className="font-semibold">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-ink/58">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-white p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-xl font-semibold text-[#063F4A]">Audit Log</h3>
+            <button className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold text-[#063F4A]">Export</button>
+          </div>
+          <div className="mt-4 space-y-2">
+            {auditLogs.map((log) => (
+              <p key={log} className="rounded bg-cloud px-3 py-2 text-sm text-ink/62">{log}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </SectionFrame>
+  );
+}
+
 function StockModule({
   products,
   onSaveProduct
@@ -1626,6 +1860,7 @@ function AgentPackagesModule() {
               <p>AI 权限：{pack.tier}</p>
               <p>包含点数：{pack.points.toLocaleString()} 点</p>
               <p>推荐分润：{pack.commission}</p>
+              <p>业绩奖励池：{pack.poolShare}</p>
               <p>包含：产品礼包、课程权限、专属海报、团队看板</p>
             </div>
             <div className="mt-5 flex gap-2">
@@ -1839,6 +2074,7 @@ export default function AdminPage() {
             {activeModule === "credits" ? <CreditsModule /> : null}
             {activeModule === "ai" ? <AiControlModule /> : null}
             {activeModule === "finance" ? <FinanceModule /> : null}
+            {activeModule === "pool" ? <PartnerPoolModule /> : null}
             {activeModule === "stock" ? (
               <StockModule
                 products={inventoryList}

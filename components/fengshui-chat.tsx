@@ -22,6 +22,9 @@ type FengshuiChatProps = {
   tierName?: string;
   aiMode?: string;
   profile?: MemberProfile;
+  points?: number;
+  onSpendPoints?: (amount: number, source?: string, description?: string) => boolean;
+  onRefundPoints?: (amount: number, source?: string, description?: string) => void;
 };
 
 const initialMessages: Message[] = [
@@ -93,7 +96,10 @@ export function FengshuiChat({
   tier = "tactical",
   tierName = "进阶会员版",
   aiMode = "战术行动指南",
-  profile = demoMemberProfile
+  profile = demoMemberProfile,
+  points = 0,
+  onSpendPoints,
+  onRefundPoints
 }: FengshuiChatProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
@@ -102,6 +108,7 @@ export function FengshuiChat({
   const [openAIStatus, setOpenAIStatus] = useState<OpenAIStatus | null>(null);
   const tierCopy = tierModeCopy[tier];
   const isFree = tier === "free";
+  const chatCost = tier === "strategic" ? 8 : tier === "tactical" ? 5 : 1;
 
   useEffect(() => {
     if (!isLoading) {
@@ -156,6 +163,11 @@ export function FengshuiChat({
       return;
     }
 
+    if (onSpendPoints && !onSpendPoints(chatCost, "ai_chat", `AI 风水师聊天：${message.slice(0, 36)}`)) {
+      setMessages((current) => [...current, { role: "system", content: `点数不足，本次 AI 问答需要 ${chatCost} 点。请先充值或邀请好友获得奖励点数。` }]);
+      return;
+    }
+
     setMessages((current) => [...current, { role: "user", content: message }]);
     setInput("");
     setIsLoading(true);
@@ -169,7 +181,7 @@ export function FengshuiChat({
         body: JSON.stringify({
           message,
           memberLevel: tierName,
-          points: 2680,
+          points: Math.max(0, points - chatCost),
           profile
         })
       });
@@ -185,6 +197,7 @@ export function FengshuiChat({
         { role: "assistant", content: data.answer || "暂时无法生成回复，请稍后再试。" }
       ]);
     } catch (error) {
+      onRefundPoints?.(chatCost, "ai_chat_refund", "AI 风水师回应失败自动退点");
       const message = error instanceof Error ? error.message : "AI 风水师暂时无法回应。";
       setMessages((current) => [...current, { role: "system", content: message }]);
     } finally {
@@ -213,10 +226,13 @@ export function FengshuiChat({
             <span className="rounded bg-[#F5FAFA] px-2 py-1 text-ink/55">
               Model: {openAIStatus?.model || "检查中"}
             </span>
-            <span className="rounded bg-[#C79A54]/15 px-2 py-1 font-semibold text-[#063F4A]">
-              {tierName}
-            </span>
-          </div>
+          <span className="rounded bg-[#C79A54]/15 px-2 py-1 font-semibold text-[#063F4A]">
+            {tierName}
+          </span>
+          <span className="rounded bg-[#F5FAFA] px-2 py-1 text-ink/55">
+            本次 {chatCost} 点 · 余额 {points.toLocaleString("en-US")} 点
+          </span>
+        </div>
         </div>
         <Bot className="size-8 text-[#063F4A]" />
       </div>

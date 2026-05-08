@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Archive,
   BookmarkCheck,
@@ -3734,6 +3734,7 @@ function CourseModule() {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const moduleContentRef = useRef<HTMLElement | null>(null);
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("tactical");
   const [pointBalance, setPointBalance] = useState(2680);
@@ -3744,9 +3745,25 @@ export default function DashboardPage() {
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
-  const accountStats = dashboardStats.map((stat) =>
-    stat.label === "当前点数" ? { ...stat, value: pointBalance.toLocaleString("en-US") } : stat
-  );
+  const accountStats = dashboardStats.map((stat) => {
+    if (stat.label === "当前点数") {
+      return { ...stat, value: pointBalance.toLocaleString("en-US"), change: pointBalance <= 30 ? "注册奖励已到账" : stat.change };
+    }
+
+    if (stat.label === "今日 AI 次数") {
+      return currentTier === "free" ? { ...stat, value: "0 / 3", change: "Free 每日基础额度" } : stat;
+    }
+
+    if (stat.label === "推荐收益") {
+      return currentTier === "free" ? { ...stat, value: "RM0", change: "邀请好友后开始累积" } : stat;
+    }
+
+    if (stat.label === "待完成报告") {
+      return currentTier === "free" ? { ...stat, value: "0", change: "生成报告需点数解锁" } : stat;
+    }
+
+    return stat;
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -3841,6 +3858,13 @@ export default function DashboardPage() {
     syncCreditDelta(amount, source, description);
   }
 
+  function openModule(module: DashboardModule) {
+    setActiveModule(module);
+    window.setTimeout(() => {
+      moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  }
+
   if (authStatus !== "authenticated") {
     return (
       <AppShell>
@@ -3859,7 +3883,7 @@ export default function DashboardPage() {
     <AppShell>
       <main className="px-5 py-8">
         <div className="mx-auto max-w-7xl">
-          <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} onOpenModule={setActiveModule} />
+          <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} onOpenModule={openModule} />
 
           <section className="mt-6 rounded border border-black/10 bg-white p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -3880,9 +3904,9 @@ export default function DashboardPage() {
           </section>
 
           <MembershipPlanPanel currentTier={currentTier} onChangeTier={setCurrentTier} />
-          <OnboardingPanel onOpenModule={setActiveModule} />
-          <TodayRecommendedActions onOpenModule={setActiveModule} />
-          <MoodCheckInPanel onOpenModule={setActiveModule} />
+          <OnboardingPanel onOpenModule={openModule} />
+          <TodayRecommendedActions onOpenModule={openModule} />
+          <MoodCheckInPanel onOpenModule={openModule} />
 
           <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
@@ -3898,27 +3922,35 @@ export default function DashboardPage() {
                   key={module.id}
                   module={module}
                   active={module.id === activeModule}
-                  onClick={() => setActiveModule(module.id)}
+                  onClick={() => openModule(module.id)}
                 />
               ))}
             </div>
           </section>
 
-          <section className="mt-6">
+          <section ref={moduleContentRef} className="scroll-mt-28 mt-6">
             {activeModule === "fortune" ? <TodayFortune currentTier={currentTier} memberProfile={memberProfile} /> : null}
             {activeModule === "calendar" ? <FortuneCalendarModule currentTier={currentTier} /> : null}
             {activeModule === "profile" ? <DestinyProfileModule memberProfile={memberProfile} /> : null}
             {activeModule === "growth" ? <GrowthPlaybookModule /> : null}
             {activeModule === "vault" ? <FavoritesVaultModule /> : null}
             {activeModule === "ai" ? (
-              <FengshuiChat tier={currentTier} tierName={currentPlan.name} aiMode={currentPlan.positioning} profile={memberProfile} />
+              <FengshuiChat
+                tier={currentTier}
+                tierName={currentPlan.name}
+                aiMode={currentPlan.positioning}
+                profile={memberProfile}
+                points={pointBalance}
+                onSpendPoints={spendPoints}
+                onRefundPoints={earnPoints}
+              />
             ) : null}
             {activeModule === "divination" ? (
               <DivinationModule
                 points={pointBalance}
                 onSpendPoints={spendPoints}
                 onEarnPoints={earnPoints}
-                onOpenModule={setActiveModule}
+                onOpenModule={openModule}
               />
             ) : null}
             {activeModule === "sigil" ? (
