@@ -64,3 +64,26 @@ select {
   background: rgba(16, 47, 56, 0.2);
   border-radius: 99px;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .report-print-area,
+  .report-print-area * {
+    visibility: visible;
+  }
+
+  .report-print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

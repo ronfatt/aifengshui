@@ -8,6 +8,7 @@ export type ProfileRow = {
   phone: string | null;
   region: string | null;
   membership_tier: "free" | "tactical" | "strategic";
+  partner_package?: "none" | "startup_8888" | "partner_16888" | "regional_38888";
   credit_balance: number;
   created_at: string;
   updated_at: string;
@@ -31,6 +32,75 @@ export type CreditTransactionRow = {
   source: string;
   description: string | null;
   created_at: string;
+};
+
+export type AccountingAccountRow = {
+  id: string;
+  code: string;
+  name: string;
+  type: "asset" | "liability" | "equity" | "revenue" | "expense";
+  normal_balance: "debit" | "credit";
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AccountingJournalRow = {
+  id: string;
+  journal_no: string;
+  source_module: string;
+  source_id: string | null;
+  period: string;
+  journal_date: string;
+  description: string;
+  status: "draft" | "posted" | "void";
+  total_debit: number;
+  total_credit: number;
+  created_by: string | null;
+  approved_by: string | null;
+  posted_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AccountingJournalLineRow = {
+  id: string;
+  journal_id: string;
+  line_no: number;
+  account_code: string;
+  account_name: string;
+  debit: number;
+  credit: number;
+  memo: string | null;
+  entity_type: string | null;
+  entity_id: string | null;
+  created_at: string;
+};
+
+export type AccountingAuditLogRow = {
+  id: string;
+  actor_id: string | null;
+  actor_email: string | null;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  before_data: Record<string, unknown> | null;
+  after_data: Record<string, unknown> | null;
+  created_at: string;
+};
+
+export type AccountingSyncBatchRow = {
+  id: string;
+  provider: string;
+  period: string;
+  status: "draft" | "exported" | "synced" | "failed";
+  exported_by: string | null;
+  file_name: string | null;
+  row_count: number;
+  error_message: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Database = {
@@ -63,6 +133,86 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<CreditTransactionRow, "id" | "user_id" | "created_at">>;
+        Relationships: [];
+      };
+      accounting_accounts: {
+        Row: AccountingAccountRow;
+        Insert: Omit<AccountingAccountRow, "id" | "created_at" | "updated_at" | "is_active"> & {
+          id?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<AccountingAccountRow, "id" | "created_at" | "updated_at">> & {
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      accounting_journals: {
+        Row: AccountingJournalRow;
+        Insert: {
+          id?: string;
+          journal_no: string;
+          source_module: string;
+          source_id?: string | null;
+          period: string;
+          journal_date?: string;
+          description: string;
+          status?: "draft" | "posted" | "void";
+          total_debit?: number;
+          total_credit?: number;
+          created_by?: string | null;
+          approved_by?: string | null;
+          posted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<AccountingJournalRow, "id" | "created_at" | "updated_at">> & {
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      accounting_journal_lines: {
+        Row: AccountingJournalLineRow;
+        Insert: Omit<AccountingJournalLineRow, "id" | "created_at" | "memo" | "entity_type" | "entity_id"> & {
+          id?: string;
+          memo?: string | null;
+          entity_type?: string | null;
+          entity_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Omit<AccountingJournalLineRow, "id" | "journal_id" | "created_at">>;
+        Relationships: [];
+      };
+      accounting_audit_logs: {
+        Row: AccountingAuditLogRow;
+        Insert: Omit<AccountingAuditLogRow, "id" | "created_at" | "actor_id" | "actor_email" | "entity_id" | "before_data" | "after_data"> & {
+          id?: string;
+          actor_id?: string | null;
+          actor_email?: string | null;
+          entity_id?: string | null;
+          before_data?: Record<string, unknown> | null;
+          after_data?: Record<string, unknown> | null;
+          created_at?: string;
+        };
+        Update: Partial<Omit<AccountingAuditLogRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      accounting_sync_batches: {
+        Row: AccountingSyncBatchRow;
+        Insert: Omit<AccountingSyncBatchRow, "id" | "created_at" | "updated_at" | "status" | "exported_by" | "file_name" | "row_count" | "error_message"> & {
+          id?: string;
+          status?: "draft" | "exported" | "synced" | "failed";
+          exported_by?: string | null;
+          file_name?: string | null;
+          row_count?: number;
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<AccountingSyncBatchRow, "id" | "created_at" | "updated_at">> & {
+          updated_at?: string;
+        };
         Relationships: [];
       };
     };

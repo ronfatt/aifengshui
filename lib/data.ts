@@ -63,6 +63,10 @@ export const plans: Plan[] = [
 ];
 
 export const reportTypes = [
+  { title: "八字命理测算完整报告", points: 380, tag: "命盘" },
+  { title: "梅花易数测算完整报告", points: 260, tag: "占断" },
+  { title: "紫微斗数命盘详细解析报告", points: 420, tag: "紫微" },
+  { title: "数字命理测算完整报告", points: 220, tag: "数字" },
   { title: "财运报告", points: 120, tag: "热门" },
   { title: "事业报告", points: 150, tag: "职场" },
   { title: "合盘报告", points: 180, tag: "关系" },

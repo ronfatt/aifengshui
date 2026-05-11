@@ -92,6 +92,13 @@ const moduleTabs = [
     stat: "RM612,480"
   },
   {
+    id: "accounting",
+    title: "Accounting Export",
+    desc: "销售、佣金、库存、AI 成本导出",
+    icon: Download,
+    stat: "CSV"
+  },
+  {
     id: "pool",
     title: "Pool Share",
     desc: "5% 业绩奖励池、审批、发放、审计",
@@ -259,6 +266,10 @@ const aiFeatureSeed = [
   { name: "普通 AI 问答", points: 1, tier: "Free+", status: "Enabled" },
   { name: "紫微 + 梅花深度分析", points: 12, tier: "进阶会员版", status: "Enabled" },
   { name: "三数起卦决策", points: 36, tier: "进阶会员版", status: "Enabled" },
+  { name: "八字命理测算完整报告", points: 380, tier: "付费报告", status: "Enabled" },
+  { name: "梅花易数测算完整报告", points: 260, tier: "付费报告", status: "Enabled" },
+  { name: "紫微斗数命盘详细解析报告", points: 420, tier: "付费报告", status: "Enabled" },
+  { name: "数字命理测算完整报告", points: 220, tier: "付费报告", status: "Enabled" },
   { name: "生成完整 PDF 报告", points: 120, tier: "高阶战略版", status: "Enabled" },
   { name: "生成意图符印", points: 88, tier: "进阶会员版", status: "Enabled" }
 ];
@@ -311,6 +322,7 @@ const ceoRiskQueue = [
 
 const ceoOperatingChecklist = [
   { title: "确认今日收款与订单差异", module: "finance" },
+  { title: "导出会计对账包给 accountant", module: "accounting" },
   { title: "处理支付审核与异常订单", module: "payments" },
   { title: "检查 AI 成本和报告生成失败", module: "ai" },
   { title: "审批佣金 / Pool Share 前先看退款", module: "pool" },
@@ -363,6 +375,28 @@ function statusTone(status: string) {
 
 function StatusBadge({ status }: { status: string }) {
   return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusTone(status)}`}>{status}</span>;
+}
+
+function csvEscape(value: string | number) {
+  const raw = String(value ?? "");
+  if (/[",\n]/.test(raw)) {
+    return `"${raw.replace(/"/g, '""')}"`;
+  }
+  return raw;
+}
+
+function downloadCsv(fileName: string, rows: Record<string, string | number>[]) {
+  if (!rows.length) return;
+
+  const headers = Object.keys(rows[0]);
+  const csv = [headers.join(","), ...rows.map((row) => headers.map((header) => csvEscape(row[header])).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function ModuleCard({
@@ -552,6 +586,521 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
         </section>
       </div>
     </div>
+  );
+}
+
+function AccountingExportModule() {
+  const chartOfAccountsRows = [
+    { Code: "1000", Account: "Cash / Bank", Type: "Asset", Usage: "银行入账、FPX、Stripe 结算后现金" },
+    { Code: "1100", Account: "Payment Gateway Clearing", Type: "Asset", Usage: "Stripe / FPX / e-wallet 未结算金额" },
+    { Code: "1200", Account: "Accounts Receivable", Type: "Asset", Usage: "已开单但未收款订单" },
+    { Code: "1300", Account: "Inventory", Type: "Asset", Usage: "产品库存成本" },
+    { Code: "2000", Account: "Commission Payable", Type: "Liability", Usage: "待发放佣金" },
+    { Code: "2100", Account: "Partner Pool Payable", Type: "Liability", Usage: "Pool Share 待发放金额" },
+    { Code: "2200", Account: "Deferred Revenue", Type: "Liability", Usage: "课程、订阅、点数未履约部分" },
+    { Code: "2300", Account: "SST / Tax Payable", Type: "Liability", Usage: "SST / 税务预留科目" },
+    { Code: "4000", Account: "Subscription Revenue", Type: "Revenue", Usage: "会员订阅收入" },
+    { Code: "4100", Account: "Credit Top-up Revenue", Type: "Revenue", Usage: "点数充值收入" },
+    { Code: "4200", Account: "Product Sales Revenue", Type: "Revenue", Usage: "产品商城收入" },
+    { Code: "4300", Account: "Course Sales Revenue", Type: "Revenue", Usage: "课程收入" },
+    { Code: "4400", Account: "AI Reports Revenue", Type: "Revenue", Usage: "AI 报告收入" },
+    { Code: "4500", Account: "Agent Package Revenue", Type: "Revenue", Usage: "创业配套收入" },
+    { Code: "5000", Account: "Cost of Goods Sold", Type: "Expense", Usage: "产品销售成本" },
+    { Code: "5100", Account: "AI API Cost", Type: "Expense", Usage: "OpenAI / Gemini API 成本" },
+    { Code: "5200", Account: "Commission Expense", Type: "Expense", Usage: "三层佣金成本" },
+    { Code: "5300", Account: "Partner Pool Expense", Type: "Expense", Usage: "业绩共享池成本" },
+    { Code: "5400", Account: "Payment Gateway Fees", Type: "Expense", Usage: "Stripe / FPX / 本地网关手续费" }
+  ];
+
+  const salesJournalRows = orders.map((order) => ({
+    Date: order.createdAt,
+    OrderID: order.id,
+    Customer: order.customer,
+    Source: order.type,
+    PaymentMethod: order.paymentMethod,
+    Status: order.status,
+    DebitAccount: order.paymentStatus === "Paid" ? "Bank / Payment Gateway Clearing" : "Accounts Receivable",
+    CreditAccount: order.type === "Agent Packages" ? "Agent Package Revenue" : `${order.type} Revenue`,
+    AmountMYR: order.amount.replace("RM", ""),
+    TaxCode: "SST-TBC",
+    EInvoiceStatus: order.paymentStatus === "Paid" ? "Ready for MyInvois" : "Hold"
+  }));
+
+  const commissionPayableRows = commissionRecords.map((record) => ({
+    CommissionID: record.id,
+    Agent: record.agent,
+    Source: record.source,
+    Status: record.status,
+    DebitAccount: "Commission Expense",
+    CreditAccount: "Commission Payable",
+    AmountMYR: record.amount.replace("RM", ""),
+    HoldPeriod: "14 days",
+    Clawback: record.status === "Paid" ? "Closed" : "Enabled"
+  }));
+
+  const inventoryRows = inventoryProducts.map((product) => ({
+    SKU: product.sku,
+    Product: product.product,
+    Category: product.category,
+    StockQty: product.stock,
+    CostMYR: product.cost,
+    SellingPriceMYR: product.price,
+    InventoryValueMYR: formatMoney(parseMoney(product.cost) * product.stock),
+    DebitAccount: "Inventory",
+    COGSAccount: "Cost of Goods Sold",
+    Status: product.status
+  }));
+
+  const aiCostRows = aiCostRecords.map((record) => ({
+    UserID: record.userId,
+    Requests: record.requests,
+    AvgCostMYR: record.avgCost.replace("RM", ""),
+    DailyCostMYR: record.daily.replace("RM", ""),
+    MonthlyCostMYR: record.monthly.replace("RM", ""),
+    DebitAccount: "AI API Cost",
+    CreditAccount: "Accrued Platform Cost"
+  }));
+
+  const poolShareRows = [
+    {
+      Period: "2026-05",
+      PoolName: "Partner Performance Pool",
+      PoolRate: "5%",
+      PoolAmountMYR: "30624",
+      DebitAccount: "Partner Pool Expense",
+      CreditAccount: "Partner Pool Payable",
+      Status: "Pending Approval",
+      Note: "Final payout after refund clawback and finance approval"
+    }
+  ];
+
+  const doubleEntryRows = [
+    ...orders.flatMap((order) => {
+      const amount = order.amount.replace("RM", "");
+      const revenueAccount = order.type === "Agent Packages" ? "4500 Agent Package Revenue" : `${order.type} Revenue`;
+      return [
+        {
+          Date: order.createdAt,
+          JournalID: `JE-${order.id}-DR`,
+          Source: order.id,
+          Line: "Debit",
+          Account: order.paymentStatus === "Paid" ? "1100 Payment Gateway Clearing" : "1200 Accounts Receivable",
+          DebitMYR: amount,
+          CreditMYR: "0",
+          Memo: `${order.type} order from ${order.customer}`
+        },
+        {
+          Date: order.createdAt,
+          JournalID: `JE-${order.id}-CR`,
+          Source: order.id,
+          Line: "Credit",
+          Account: revenueAccount,
+          DebitMYR: "0",
+          CreditMYR: amount,
+          Memo: `${order.type} revenue recognition`
+        }
+      ];
+    }),
+    ...commissionRecords.flatMap((record) => {
+      const amount = record.amount.replace("RM", "");
+      return [
+        {
+          Date: "2026-05",
+          JournalID: `JE-${record.id}-DR`,
+          Source: record.id,
+          Line: "Debit",
+          Account: "5200 Commission Expense",
+          DebitMYR: amount,
+          CreditMYR: "0",
+          Memo: `${record.agent} commission from ${record.source}`
+        },
+        {
+          Date: "2026-05",
+          JournalID: `JE-${record.id}-CR`,
+          Source: record.id,
+          Line: "Credit",
+          Account: "2000 Commission Payable",
+          DebitMYR: "0",
+          CreditMYR: amount,
+          Memo: "Commission payable pending approval / payout"
+        }
+      ];
+    }),
+    {
+      Date: "2026-05",
+      JournalID: "JE-POOL-2026-05-DR",
+      Source: "POOL-2026-05",
+      Line: "Debit",
+      Account: "5300 Partner Pool Expense",
+      DebitMYR: "30624",
+      CreditMYR: "0",
+      Memo: "Monthly partner performance pool"
+    },
+    {
+      Date: "2026-05",
+      JournalID: "JE-POOL-2026-05-CR",
+      Source: "POOL-2026-05",
+      Line: "Credit",
+      Account: "2100 Partner Pool Payable",
+      DebitMYR: "0",
+      CreditMYR: "30624",
+      Memo: "Pool Share payable after finance approval"
+    }
+  ];
+
+  const bankReconciliationRows = paymentReconciliation.map((row) => ({
+    Gateway: row.gateway,
+    PlatformOrdersMYR: row.orders.replace("RM", ""),
+    GatewayReceivedMYR: row.received.replace("RM", ""),
+    GatewayFeeMYR: row.fee.replace("RM", ""),
+    NetSettledMYR: row.net.replace("RM", ""),
+    SettlementDate: row.settlement,
+    Status: row.status,
+    Action: row.status === "Mismatch" ? "Investigate before revenue close" : "Ready to close"
+  }));
+
+  const eInvoiceRows = orders.map((order) => ({
+    OrderID: order.id,
+    Customer: order.customer,
+    AmountMYR: order.amount.replace("RM", ""),
+    Source: order.type,
+    BuyerTIN: "Required before submission",
+    IDType: "NRIC / Passport / BRN",
+    SSTCode: "TBC",
+    MyInvoisStatus: order.paymentStatus === "Paid" ? "Ready" : "Hold",
+    SubmissionMode: "CSV now / API later"
+  }));
+
+  const auditTrailRows = [
+    { Time: "2026-05-11 09:10", Actor: "Finance Admin", Action: "Calculated Pool Share", Entity: "POOL-2026-05", Before: "Draft", After: "Pending Approval" },
+    { Time: "2026-05-11 09:18", Actor: "Admin", Action: "Adjusted credits", Entity: "ronfatt@gmail.com", Before: "0", After: "10000" },
+    { Time: "2026-05-11 09:26", Actor: "Ops Admin", Action: "Approved manual bank transfer", Entity: "PAY-9201", Before: "Pending Review", After: "Approved" },
+    { Time: "2026-05-11 09:32", Actor: "System", Action: "Queued commission clawback", Entity: "FS-20377", Before: "Paid", After: "Clawback Pending" }
+  ];
+
+  const exportPacks: {
+    title: string;
+    desc: string;
+    rows: Record<string, string | number>[];
+    fileName: string;
+    total: string;
+  }[] = [
+    {
+      title: "Sales Journal",
+      desc: "订单收入、支付方式、收入科目、e-Invoice 状态",
+      rows: salesJournalRows,
+      fileName: "sales-journal-export.csv",
+      total: `${salesJournalRows.length} rows`
+    },
+    {
+      title: "Chart of Accounts",
+      desc: "系统建议会计科目表，后续可映射到 SQL Accounting / AutoCount / Xero",
+      rows: chartOfAccountsRows,
+      fileName: "chart-of-accounts-export.csv",
+      total: `${chartOfAccountsRows.length} accounts`
+    },
+    {
+      title: "Double Entry Journal",
+      desc: "把订单、佣金、Pool Share 转成 Debit / Credit 预览",
+      rows: doubleEntryRows,
+      fileName: "double-entry-journal-export.csv",
+      total: `${doubleEntryRows.length} journal lines`
+    },
+    {
+      title: "Bank Reconciliation",
+      desc: "平台订单、网关收款、手续费、净结算与差异检查",
+      rows: bankReconciliationRows,
+      fileName: "bank-reconciliation-export.csv",
+      total: `${bankReconciliationRows.length} gateways`
+    },
+    {
+      title: "SST / e-Invoice Mapping",
+      desc: "MyInvois 前置字段、Buyer TIN、税码与提交状态",
+      rows: eInvoiceRows,
+      fileName: "einvoice-mapping-export.csv",
+      total: `${eInvoiceRows.length} orders`
+    },
+    {
+      title: "Audit Trail",
+      desc: "关键财务动作的不可删除审计记录样板",
+      rows: auditTrailRows,
+      fileName: "audit-trail-export.csv",
+      total: `${auditTrailRows.length} logs`
+    },
+    {
+      title: "Commission Payable",
+      desc: "佣金应付、hold period、退款追回状态",
+      rows: commissionPayableRows,
+      fileName: "commission-payable-export.csv",
+      total: `${commissionPayableRows.length} rows`
+    },
+    {
+      title: "Inventory & COGS",
+      desc: "库存、成本价、销售价、库存价值与 COGS 科目",
+      rows: inventoryRows,
+      fileName: "inventory-cogs-export.csv",
+      total: `${inventoryRows.length} SKU`
+    },
+    {
+      title: "AI Cost Ledger",
+      desc: "AI 请求成本、用户用量、平台成本科目",
+      rows: aiCostRows,
+      fileName: "ai-cost-ledger-export.csv",
+      total: `${aiCostRows.length} users`
+    },
+    {
+      title: "Pool Share Payable",
+      desc: "业绩共享池总额、应付科目、审批状态",
+      rows: poolShareRows,
+      fileName: "pool-share-payable-export.csv",
+      total: "1 pool"
+    }
+  ];
+
+  const [ledgerStatus, setLedgerStatus] = useState<"checking" | "ready" | "missing" | "error">("checking");
+  const [ledgerMessage, setLedgerMessage] = useState("正在检查 Supabase ledger 表。");
+  const [ledgerSummary, setLedgerSummary] = useState({ accounts: 0, journals: 0, lines: 0, auditLogs: 0 });
+  const [isPostingJournal, setIsPostingJournal] = useState(false);
+
+  async function getAdminAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+    const {
+      data: { session }
+    } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+    return session?.access_token || "";
+  }
+
+  async function refreshLedgerStatus() {
+    const token = await getAdminAccessToken();
+
+    if (!token) {
+      setLedgerStatus("error");
+      setLedgerMessage("请先用管理员账号登录，后台才能读取真实 ledger。");
+      return;
+    }
+
+    setLedgerStatus("checking");
+
+    try {
+      const response = await fetch("/api/admin/accounting/ledger", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Ledger 检查失败。");
+      }
+
+      setLedgerSummary({
+        accounts: payload.accounts?.length || 0,
+        journals: payload.journals?.length || 0,
+        lines: payload.lines?.length || 0,
+        auditLogs: payload.auditLogs?.length || 0
+      });
+      setLedgerStatus(payload.configured === false ? "missing" : "ready");
+      setLedgerMessage(
+        payload.configured === false
+          ? payload.message
+          : "真实数据库 ledger 已可读取，可开始记录双分录、审计日志与后续会计软件同步。"
+      );
+    } catch (error) {
+      setLedgerStatus("error");
+      setLedgerMessage(error instanceof Error ? error.message : "Ledger 检查失败。");
+    }
+  }
+
+  async function postRevenueJournal() {
+    const token = await getAdminAccessToken();
+
+    if (!token) {
+      setLedgerStatus("error");
+      setLedgerMessage("请先用管理员账号登录。");
+      return;
+    }
+
+    setIsPostingJournal(true);
+    setLedgerMessage("正在写入收入双分录凭证。");
+
+    try {
+      const response = await fetch("/api/admin/accounting/ledger", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          sourceModule: "ai_report",
+          sourceId: `DEMO-${Date.now()}`,
+          description: "AI 深度报告收入凭证",
+          lines: [
+            {
+              accountCode: "1100",
+              accountName: "Payment Gateway Clearing",
+              debit: 188,
+              credit: 0,
+              memo: "AI report paid via gateway"
+            },
+            {
+              accountCode: "4400",
+              accountName: "AI Reports Revenue",
+              debit: 0,
+              credit: 188,
+              memo: "Recognize AI report revenue"
+            }
+          ]
+        })
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload.error || "收入凭证写入失败。");
+      }
+
+      setLedgerMessage(`已写入 ${payload.journal?.journal_no || "收入凭证"}，Debit/Credit 平衡。`);
+      await refreshLedgerStatus();
+    } catch (error) {
+      setLedgerStatus("error");
+      setLedgerMessage(error instanceof Error ? error.message : "收入凭证写入失败。");
+    } finally {
+      setIsPostingJournal(false);
+    }
+  }
+
+  useEffect(() => {
+    void refreshLedgerStatus();
+  }, []);
+
+  function exportAll() {
+    exportPacks.forEach((pack) => downloadCsv(pack.fileName, pack.rows));
+  }
+
+  return (
+    <SectionFrame
+      eyebrow="Accounting Bridge"
+      title="Accounting Export 会计导出中心"
+      desc="这里不是完整会计软件，而是把业务系统数据整理成会计可导入的 journal / ledger / payable CSV，方便接 SQL Accounting、AutoCount、Xero、Bukku 或交给 accountant。"
+      action={
+        <button type="button" onClick={exportAll} className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white">
+          <Download className="size-4" /> Export all CSV
+        </button>
+      }
+    >
+      <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+          <h3 className="text-xl font-semibold text-[#063F4A]">上市前建议口径</h3>
+          <div className="mt-4 grid gap-3">
+            {[
+              ["业务系统", "订单、会员、点数、佣金、Pool、库存、AI 成本"],
+              ["会计系统", "总账、双分录、税务、银行对账、审计报表"],
+              ["同步方式", "CSV / Excel 导出，未来可做 API integration"],
+              ["审计重点", "每笔金额都要有订单号、审批人、时间与来源"]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded border border-black/10 bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{label}</p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-ink">{value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded border border-[#C79A54]/30 bg-white p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">Real Ledger</p>
+                <h4 className="mt-1 text-lg font-semibold text-[#063F4A]">数据库账本状态</h4>
+              </div>
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  ledgerStatus === "ready"
+                    ? "bg-emerald-50 text-emerald-700"
+                    : ledgerStatus === "missing"
+                      ? "bg-amber-50 text-amber-800"
+                      : ledgerStatus === "checking"
+                        ? "bg-[#DDEFF2] text-[#063F4A]"
+                        : "bg-red-50 text-red-700"
+                }`}
+              >
+                {ledgerStatus === "ready" ? "Ready" : ledgerStatus === "missing" ? "SQL Required" : ledgerStatus === "checking" ? "Checking" : "Action Needed"}
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+              {[
+                ["Accounts", ledgerSummary.accounts],
+                ["Journals", ledgerSummary.journals],
+                ["Lines", ledgerSummary.lines],
+                ["Audit Logs", ledgerSummary.auditLogs]
+              ].map(([label, value]) => (
+                <div key={label} className="rounded bg-[#F5FAFA] p-3">
+                  <p className="text-xs text-ink/50">{label}</p>
+                  <p className="mt-1 text-lg font-semibold text-[#063F4A]">{value}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{ledgerMessage}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={postRevenueJournal}
+                disabled={isPostingJournal || ledgerStatus === "missing"}
+                className="rounded-full bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-ink/20"
+              >
+                {isPostingJournal ? "写入中..." : "生成收入凭证"}
+              </button>
+              <button
+                type="button"
+                onClick={refreshLedgerStatus}
+                className="rounded-full border border-[#063F4A]/15 px-4 py-2 text-sm font-semibold text-[#063F4A]"
+              >
+                刷新状态
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          {exportPacks.map((pack) => (
+            <article key={pack.title} className="rounded border border-black/10 bg-white p-5 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{pack.total}</p>
+                  <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">{pack.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">{pack.desc}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => downloadCsv(pack.fileName, pack.rows)}
+                  className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]"
+                >
+                  <Download className="size-4" /> CSV
+                </button>
+              </div>
+              <div className="mt-4 overflow-x-auto rounded border border-black/10 bg-[#F5FAFA]">
+                <table className="w-full min-w-[760px] text-left text-xs">
+                  <thead className="bg-white text-ink/50">
+                    <tr>
+                      {Object.keys(pack.rows[0]).slice(0, 5).map((header) => (
+                        <th key={header} className="px-3 py-2 font-medium">{header}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-black/10">
+                    {pack.rows.slice(0, 2).map((row, index) => (
+                      <tr key={`${pack.title}-${index}`}>
+                        {Object.keys(pack.rows[0]).slice(0, 5).map((header) => (
+                          <td key={header} className="px-3 py-2 text-ink/65">{row[header]}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 rounded border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+        已建立基础会计导出口径：Chart of Accounts、Double Entry Journal、Bank Reconciliation、SST/e-Invoice mapping 与 Audit Trail。下一阶段可把这些 CSV 导出升级为真实数据库 ledger 与会计软件 API sync。
+      </div>
+    </SectionFrame>
   );
 }
 
@@ -837,6 +1386,10 @@ function CreditsModule() {
 function AiControlModule() {
   const [features, setFeatures] = useState(aiFeatureSeed);
   const [prompt, setPrompt] = useState("你是易玺老师的 AI 风水师助理。先用结构化命理数据判断，再用温和、实战、可执行的口吻输出建议。禁止制造恐惧，必须加入免责声明与行动建议。");
+  const [baziPrompt, setBaziPrompt] = useState("你是易玺老师的八字命理报告助理。根据用户姓名、性别、公历/农历生日、出生时辰、出生地与问题重点，生成中文专业八字报告。输出必须包含四柱、藏干、十神、纳音、空亡、五行比例、喜用神、忌神、性格、事业财运、感情婚姻、健康倾向、大运、流年、评分与行动建议。语气稳重、文化参考、避免恐吓或绝对承诺，并固定加入免责声明。");
+  const [meihuaPrompt, setMeihuaPrompt] = useState("你是易玺老师的梅花易数报告助理。根据用户资料、问题类别、具体问题、起卦时间、数字或时间起卦模式，生成中文专业梅花易数测算报告。必须解释起卦方式、本卦、变卦、动爻、体用关系、五行生克、时机预测、方位颜色与行动建议。不可制造恐惧，不可给绝对承诺，必须加入文化参考与非专业建议免责声明。");
+  const [ziweiPrompt, setZiweiPrompt] = useState("你是易玺老师的紫微斗数命盘报告助理。根据用户姓名、性别、公历/农历生日、出生时辰、出生地与重点问题，生成中文专业紫微斗数报告。必须覆盖命宫、身宫、五行局、命主身主、十二宫、主星辅星、四化、大限、流年、重点星曜、评分与实际建议。不可声称绝对准确，不可制造恐惧，并固定加入文化参考与非专业建议免责声明。");
+  const [numerologyPrompt, setNumerologyPrompt] = useState("你是易玺老师的数字命理报告助理。根据用户姓名、性别、出生日期、出生时间与问题重点，生成中文现代数字命理报告。必须解释生命路径数、命运数、灵魂渴望数、人格数、生日数、成熟数、个人年数、1-9 能量分布、人生周期、年度趋势、幸运指南和行动建议。不可绝对化，并固定加入文化参考与非专业建议免责声明。");
   const [sensitiveWords, setSensitiveWords] = useState("保证发财、百分百改命、医疗诊断、投资承诺");
 
   return (
@@ -865,6 +1418,26 @@ function AiControlModule() {
           <label className="block rounded border border-black/10 bg-[#F5FAFA] p-4">
             <span className="font-semibold text-[#063F4A]">核心 Prompt 模板</span>
             <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={7} className="mt-3 w-full rounded border border-black/10 bg-white p-3 text-sm leading-6 outline-none" />
+          </label>
+          <label className="block rounded border border-[#C79A54]/25 bg-white p-4">
+            <span className="font-semibold text-[#063F4A]">八字付费报告 Prompt 模板</span>
+            <p className="mt-1 text-xs leading-5 text-ink/50">后台可编辑报告生成口吻与结构；当前扣点在左侧功能表配置。</p>
+            <textarea value={baziPrompt} onChange={(event) => setBaziPrompt(event.target.value)} rows={8} className="mt-3 w-full rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm leading-6 outline-none" />
+          </label>
+          <label className="block rounded border border-[#C79A54]/25 bg-white p-4">
+            <span className="font-semibold text-[#063F4A]">梅花易数付费报告 Prompt 模板</span>
+            <p className="mt-1 text-xs leading-5 text-ink/50">用于控制起卦解释、体用生克、动爻、时机与行动建议。</p>
+            <textarea value={meihuaPrompt} onChange={(event) => setMeihuaPrompt(event.target.value)} rows={8} className="mt-3 w-full rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm leading-6 outline-none" />
+          </label>
+          <label className="block rounded border border-[#C79A54]/25 bg-white p-4">
+            <span className="font-semibold text-[#063F4A]">紫微斗数付费报告 Prompt 模板</span>
+            <p className="mt-1 text-xs leading-5 text-ink/50">用于控制十二宫、四化、大限、流年、星曜解释与建议口吻。</p>
+            <textarea value={ziweiPrompt} onChange={(event) => setZiweiPrompt(event.target.value)} rows={8} className="mt-3 w-full rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm leading-6 outline-none" />
+          </label>
+          <label className="block rounded border border-[#C79A54]/25 bg-white p-4">
+            <span className="font-semibold text-[#063F4A]">数字命理付费报告 Prompt 模板</span>
+            <p className="mt-1 text-xs leading-5 text-ink/50">用于控制核心数字、能量图、年度趋势、幸运指南与现代建议。</p>
+            <textarea value={numerologyPrompt} onChange={(event) => setNumerologyPrompt(event.target.value)} rows={8} className="mt-3 w-full rounded border border-black/10 bg-[#F5FAFA] p-3 text-sm leading-6 outline-none" />
           </label>
           <label className="block rounded border border-black/10 bg-white p-4">
             <span className="font-semibold text-[#063F4A]">敏感词 / 高风险承诺</span>
@@ -2233,6 +2806,7 @@ export default function AdminPage() {
             {activeModule === "credits" ? <CreditsModule /> : null}
             {activeModule === "ai" ? <AiControlModule /> : null}
             {activeModule === "finance" ? <FinanceModule /> : null}
+            {activeModule === "accounting" ? <AccountingExportModule /> : null}
             {activeModule === "pool" ? <PartnerPoolModule /> : null}
             {activeModule === "stock" ? (
               <StockModule

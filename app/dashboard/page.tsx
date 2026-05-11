@@ -63,6 +63,15 @@ type DashboardModule =
   | "courses"
   | "team";
 
+type PartnerPackage = "none" | "startup_8888" | "partner_16888" | "regional_38888";
+
+const partnerPackageLabels: Record<PartnerPackage, string> = {
+  none: "未购买创业配套",
+  startup_8888: "8888 创业启动包",
+  partner_16888: "16888 事业合伙人",
+  regional_38888: "38888 区域导师 / 代理商"
+};
+
 const modules: {
   id: DashboardModule;
   title: string;
@@ -544,6 +553,13 @@ type SavedReport = {
   points: number;
   createdAt: string;
   summary: string;
+  metadata?: {
+    kind?: "bazi_destiny" | "meihua_divination" | "ziwei_destiny" | "numerology_life_path" | "integrated_destiny";
+    baziInput?: BaziReportInput;
+    meihuaInput?: MeihuaReportInput;
+    ziweiInput?: ZiweiReportInput;
+    numerologyInput?: NumerologyReportInput;
+  };
   sections: {
     title: string;
     content: string;
@@ -579,7 +595,154 @@ type DailyFortuneResponse = {
   };
 };
 
+type BaziReportInput = {
+  fullName: string;
+  gender: string;
+  birthDate: string;
+  birthTime: string;
+  birthLocation: string;
+  calendarType: "Gregorian" | "Lunar";
+  focus: "career" | "wealth" | "relationship" | "health" | "business" | "yearly luck";
+};
+
+type BaziPillar = {
+  label: string;
+  stem: string;
+  branch: string;
+  hiddenStems: string;
+  tenGods: string;
+  naYin: string;
+  emptyBranch: string;
+};
+
+type MeihuaReportInput = {
+  fullName: string;
+  gender: string;
+  birthDate: string;
+  birthTime: string;
+  birthLocation: string;
+  questionCategory: "career" | "wealth" | "relationship" | "health" | "business" | "legal" | "travel";
+  specificQuestion: string;
+  divinationDateTime: string;
+  manualNumbers: string;
+  mode: "random" | "time";
+};
+
+type ZiweiReportInput = {
+  fullName: string;
+  gender: string;
+  birthDate: string;
+  birthTime: string;
+  birthLocation: string;
+  calendarType: "Gregorian" | "Lunar";
+  focus: "career" | "wealth" | "relationship" | "health" | "business" | "annual luck";
+};
+
+type NumerologyReportInput = {
+  fullName: string;
+  gender: string;
+  birthDate: string;
+  birthTime: string;
+  focus: "career" | "wealth" | "relationship" | "personal growth" | "business" | "yearly luck";
+};
+
+const baziReportCost = 380;
+const meihuaReportCost = 260;
+const ziweiReportCost = 420;
+const numerologyReportCost = 220;
+const integratedReportCost = 680;
+const baziDisclaimer =
+  "This report is based on traditional metaphysics and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
+const meihuaDisclaimer =
+  "This report is based on traditional Mei Hua Yi Shu metaphysics and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
+const ziweiDisclaimer =
+  "This report is based on traditional Zi Wei Dou Shu metaphysics and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
+const numerologyDisclaimer =
+  "This report is based on numerology principles and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
+
+const focusLabels: Record<BaziReportInput["focus"], string> = {
+  career: "事业",
+  wealth: "财运",
+  relationship: "感情",
+  health: "健康",
+  business: "商业",
+  "yearly luck": "流年"
+};
+
+const meihuaCategoryLabels: Record<MeihuaReportInput["questionCategory"], string> = {
+  career: "事业",
+  wealth: "财运",
+  relationship: "感情",
+  health: "健康",
+  business: "商业",
+  legal: "法律 / 冲突",
+  travel: "出行 / 搬迁"
+};
+
+const ziweiFocusLabels: Record<ZiweiReportInput["focus"], string> = {
+  career: "事业",
+  wealth: "财运",
+  relationship: "感情",
+  health: "健康",
+  business: "商业",
+  "annual luck": "流年"
+};
+
+const numerologyFocusLabels: Record<NumerologyReportInput["focus"], string> = {
+  career: "事业",
+  wealth: "财富",
+  relationship: "关系",
+  "personal growth": "个人成长",
+  business: "商业",
+  "yearly luck": "年度运势"
+};
+
 const reportContent: Record<string, Omit<SavedReport, "id" | "createdAt" | "tag" | "points">> = {
+  八字命理测算完整报告: {
+    title: "八字命理测算完整报告",
+    summary: "命局以戊土日主为核心，五行土金较明显，适合先稳结构、定标准、再借水木之气打开流动与成长。",
+    sections: [
+      { title: "命局主轴", content: "日主戊土重稳定、责任与承载，遇金旺则利表达、技术与规则输出，遇水木则打开财流、学习与事业成长。" },
+      { title: "事业财运", content: "适合经营、管理、顾问、地产空间、教育培训、系统化服务与需要长期信用累积的行业。财运宜守正现金流，再逐步扩张。" },
+      { title: "行动建议", content: "今年先建立标准作业、现金流表与合作边界。重要决策前先复盘时机、资源、人和，再决定推进节奏。" }
+    ]
+  },
+  梅花易数测算完整报告: {
+    title: "梅花易数测算完整报告",
+    summary: "此卦以当下问题为中心，先看本卦定位现状，再看动爻与变卦判断转折，适合用来做短线决策和行动窗口判断。",
+    sections: [
+      { title: "现状判断", content: "当前局势宜先观察，不宜急推。真正的关键在于厘清体用关系，分辨自己能控制的部分和外部变化。" },
+      { title: "趋势推演", content: "变卦显示事情会有转圜空间，但需要等待沟通窗口和节奏变化，避免在阻力最大时硬碰硬。" },
+      { title: "行动建议", content: "先整理资料、确认边界、选择吉时推进。若涉及财务、法律、健康等事项，请同步咨询专业人士。" }
+    ]
+  },
+  紫微斗数命盘详细解析报告: {
+    title: "紫微斗数命盘详细解析报告",
+    summary: "此命盘以命宫格局为主轴，结合身宫、大限、流年与十二宫状态，帮助看清事业、财富、关系与人生阶段节奏。",
+    sections: [
+      { title: "命宫总论", content: "命宫主个性、格局与人生主轴。此盘适合以专业、责任、资源整合为核心，先建立长期可信度，再逐步扩大影响力。" },
+      { title: "事业财帛", content: "官禄宫与财帛宫显示适合系统化服务、管理、顾问、教育与商业运营。财运宜从正财、长期合作和可复制产品中累积。" },
+      { title: "行动建议", content: "重要阶段先看大限，再看流年触发点。重大合作、投资或转型需保留复盘、预算和风险边界。" }
+    ]
+  },
+  数字命理测算完整报告: {
+    title: "数字命理测算完整报告",
+    summary: "数字命理以出生日期与姓名能量为基础，读取生命路径、命运数、灵魂渴望与年度节奏，帮助你看清优势、课题与行动方向。",
+    sections: [
+      { title: "核心数字", content: "生命路径数看人生主线，命运数看外在使命，灵魂渴望数看内在驱动力，人格数看外界感知。" },
+      { title: "能量分布", content: "1-9 数字能量可观察表达力、行动力、关系力、秩序感与灵性直觉，缺失数字代表需要主动训练的课题。" },
+      { title: "行动建议", content: "把优势变成稳定习惯，把缺口变成训练计划。重要年份先设目标，再用季度复盘校准方向。" }
+    ]
+  },
+  综合命理决策报告: {
+    title: "综合命理决策报告",
+    summary: "综合报告以八字看底层命局，紫微看人生宫位与阶段，梅花易数看当前问题趋势，数字命理看人格节奏，最后整合成可执行策略。",
+    sections: [
+      { title: "四术交叉判断", content: "八字负责五行强弱与人生基础，紫微负责十二宫与阶段趋势，梅花负责当下问题的动爻转折，数字命理负责个人节奏与行为模式。" },
+      { title: "当前策略", content: "先用八字与紫微判断长期方向，再以梅花确认短线时机，以数字命理校准执行习惯，避免只看单一系统导致判断偏差。" },
+      { title: "行动建议", content: "重大决策建议分三步：先看方向是否匹配，再看时机是否成熟，最后看资源、人和、风险边界是否完整。" }
+    ]
+  },
   财运报告: {
     title: "财运报告",
     summary: "近期财运以守正为主，适合先稳定现金流，再寻找低风险扩张机会。",
@@ -715,7 +878,7 @@ function formatReportText(report: SavedReport, memberProfile: MemberProfile) {
     "报告摘要",
     report.summary,
     "",
-    ...report.sections.flatMap((section) => [section.title, section.content, ""]),
+    ...visibleReportSections(report).flatMap((section) => [section.title, section.content, ""]),
     "免责声明：本报告为 AI 命理与风水辅助建议，仅供参考，不构成投资、医疗、法律或重大人生决策的唯一依据。"
   ].join("\n");
 }
@@ -740,6 +903,526 @@ function createSavedReport(report: (typeof reportTypes)[number]): SavedReport {
   };
 }
 
+function defaultBaziReportInput(memberProfile: MemberProfile): BaziReportInput {
+  return {
+    fullName: memberProfile.name,
+    gender: memberProfile.gender,
+    birthDate: memberProfile.birthDate,
+    birthTime: memberProfile.birthTime,
+    birthLocation: memberProfile.region,
+    calendarType: "Gregorian",
+    focus: "career"
+  };
+}
+
+function defaultMeihuaReportInput(memberProfile: MemberProfile): MeihuaReportInput {
+  return {
+    fullName: memberProfile.name,
+    gender: memberProfile.gender,
+    birthDate: memberProfile.birthDate,
+    birthTime: memberProfile.birthTime,
+    birthLocation: memberProfile.region,
+    questionCategory: "business",
+    specificQuestion: "我现在是否适合推进这个重要计划？",
+    divinationDateTime: new Date().toISOString().slice(0, 16),
+    manualNumbers: "8, 6, 3",
+    mode: "time"
+  };
+}
+
+function defaultZiweiReportInput(memberProfile: MemberProfile): ZiweiReportInput {
+  return {
+    fullName: memberProfile.name,
+    gender: memberProfile.gender,
+    birthDate: memberProfile.birthDate,
+    birthTime: memberProfile.birthTime,
+    birthLocation: memberProfile.region,
+    calendarType: "Gregorian",
+    focus: "career"
+  };
+}
+
+function defaultNumerologyReportInput(memberProfile: MemberProfile): NumerologyReportInput {
+  return {
+    fullName: memberProfile.name,
+    gender: memberProfile.gender,
+    birthDate: memberProfile.birthDate,
+    birthTime: memberProfile.birthTime,
+    focus: "personal growth"
+  };
+}
+
+function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const focusLabel = focusLabels[input.focus];
+
+  return {
+    id: `bazi-destiny-${Date.now()}`,
+    title: "八字命理测算完整报告",
+    tag: "命盘",
+    points: baziReportCost,
+    metadata: {
+      kind: "bazi_destiny",
+      baziInput: input
+    },
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    summary: aiContent?.summary || `${input.fullName} 的八字报告已围绕「${focusLabel}」生成。整体命局重视稳定、规划与长期累积，适合先建立标准，再借流动资源打开机会。`,
+    sections: aiContent?.sections?.length
+      ? aiContent.sections
+      : [
+          {
+            title: "命局总论",
+            content: `以 ${input.birthDate} ${input.birthTime || "未提供时辰"}、${input.birthLocation || "未提供出生地"} 为基础，报告从四柱、十神、五行强弱、大运与流年综合判断，重点观察${focusLabel}相关趋势。`
+          },
+          {
+            title: "重点方向",
+            content: "当前适合先整理资源、现金流、合作边界与执行节奏。若要扩大事业或投资，应先看清风险、时间窗口与自身承载力。"
+          },
+          {
+            title: "实用建议",
+            content: "用木水之气疏通成长与财流，用金的规则感建立表达与系统，用土的稳定性做长期复盘。避免因急于证明自己而过度承诺。"
+          }
+        ]
+  };
+}
+
+function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const category = meihuaCategoryLabels[input.questionCategory];
+
+  return {
+    id: `meihua-divination-${Date.now()}`,
+    title: "梅花易数测算完整报告",
+    tag: "占断",
+    points: meihuaReportCost,
+    metadata: {
+      kind: "meihua_divination",
+      meihuaInput: input
+    },
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    summary:
+      aiContent?.summary ||
+      `${input.fullName} 的梅花易数报告已围绕「${category}」问题生成。本卦看现状，动爻看转折，变卦看趋势，重点是选择合适时机和行动方式。`,
+    sections: aiContent?.sections?.length
+      ? aiContent.sections
+      : [
+          { title: "现状判断", content: `问题：${input.specificQuestion || category}。当前宜先观局势，确认体用关系，不宜急于硬推。` },
+          { title: "转折趋势", content: "动爻提示事情会在沟通、时间或资源配置上出现变化，先守后动更稳。" },
+          { title: "行动建议", content: "先整理资料与边界，选择有利时间窗口推进；若遇冲突，以缓和沟通和证据整理为先。" }
+        ]
+  };
+}
+
+function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const focusLabel = ziweiFocusLabels[input.focus];
+
+  return {
+    id: `ziwei-destiny-${Date.now()}`,
+    title: "紫微斗数命盘详细解析报告",
+    tag: "紫微",
+    points: ziweiReportCost,
+    metadata: {
+      kind: "ziwei_destiny",
+      ziweiInput: input
+    },
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    summary:
+      aiContent?.summary ||
+      `${input.fullName} 的紫微斗数命盘已围绕「${focusLabel}」生成。报告重点读取命宫、身宫、官禄宫、财帛宫、大限与流年触发。`,
+    sections: aiContent?.sections?.length
+      ? aiContent.sections
+      : [
+          { title: "命宫总论", content: "命宫主个性、格局与人生主轴。此盘适合以专业、责任和资源整合为核心，稳步建立影响力。" },
+          { title: "事业财帛", content: "事业适合系统化服务、管理、顾问、教育与商业运营。财运宜走长期合作与可复制产品路线。" },
+          { title: "行动建议", content: "先看大限阶段，再看流年触发。重大决策需保留预算、风险边界和复盘节奏。" }
+        ]
+  };
+}
+
+function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const focusLabel = numerologyFocusLabels[input.focus];
+
+  return {
+    id: `numerology-life-path-${Date.now()}`,
+    title: "数字命理测算完整报告",
+    tag: "数字",
+    points: numerologyReportCost,
+    metadata: {
+      kind: "numerology_life_path",
+      numerologyInput: input
+    },
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    summary:
+      aiContent?.summary ||
+      `${input.fullName} 的数字命理报告已围绕「${focusLabel}」生成。报告重点读取生命路径数、命运数、灵魂渴望数、人格数、生日数、成熟数与个人年数。`,
+    sections: aiContent?.sections?.length
+      ? aiContent.sections
+      : [
+          { title: "核心数字", content: "生命路径数代表人生主线，命运数代表外在使命，灵魂渴望数代表内在驱动力，人格数代表外界感知。" },
+          { title: "能量分布", content: "1-9 数字能量显示表达、行动、关系、稳定、自由、责任、洞察、财富与完成力。缺失数字是可训练的成长课题。" },
+          { title: "行动建议", content: "把天赋转化为固定节奏，把年度主题拆成季度行动。重要合作前先确认边界、资源与时间表。" }
+        ]
+  };
+}
+
+function createIntegratedDestinyReport(input: BaziReportInput): SavedReport {
+  const focusLabel = focusLabels[input.focus];
+
+  return {
+    id: `integrated-destiny-${Date.now()}`,
+    title: "综合命理决策报告",
+    tag: "综合",
+    points: integratedReportCost,
+    metadata: {
+      kind: "integrated_destiny",
+      baziInput: input,
+      ziweiInput: {
+        ...input,
+        focus: input.focus === "yearly luck" ? "annual luck" : input.focus
+      } as ZiweiReportInput,
+      numerologyInput: {
+        fullName: input.fullName,
+        gender: input.gender,
+        birthDate: input.birthDate,
+        birthTime: input.birthTime,
+        focus: input.focus === "health" ? "personal growth" : input.focus
+      } as NumerologyReportInput
+    },
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date()),
+    summary: `${input.fullName} 的综合命理决策报告已围绕「${focusLabel}」生成。报告结合八字、紫微斗数、梅花易数与数字命理，输出长期格局、阶段趋势、当下时机与行动策略。`,
+    sections: [
+      { title: "八字底盘", content: "从四柱、十神与五行强弱读取性格底层、资源结构、事业财运基础和需要补足的行动能量。" },
+      { title: "紫微阶段", content: "从命宫、官禄宫、财帛宫、夫妻宫与大限流年观察人生阶段、关键宫位和适合放大的资源。" },
+      { title: "梅花时机", content: "以当前问题为起点，观察本卦、互卦、变卦与动爻，判断现在该进、该守、该转还是该等。" },
+      { title: "数字节奏", content: "用生命路径数、命运数、个人年数与 1-9 能量分布，校准个人执行习惯、沟通模式和年度主题。" },
+      { title: "综合建议", content: "先确定长期方向，再筛选短期机会。凡涉及合作、投资、事业转换，必须同时看时机、资源、边界和风险承载。" }
+    ]
+  };
+}
+
+function visibleReportSections(report: SavedReport) {
+  return report.sections.filter((section) => section.title !== "__metadata");
+}
+
+function getBaziPillars(): BaziPillar[] {
+  return [
+    { label: "年柱", stem: "庚", branch: "申", hiddenStems: "庚 / 壬 / 戊", tenGods: "食神 / 偏财 / 比肩", naYin: "石榴木", emptyBranch: "子丑" },
+    { label: "月柱", stem: "壬", branch: "午", hiddenStems: "丁 / 己", tenGods: "偏财 / 正印 / 劫财", naYin: "杨柳木", emptyBranch: "申酉" },
+    { label: "日柱", stem: "戊", branch: "戌", hiddenStems: "戊 / 辛 / 丁", tenGods: "日主 / 伤官 / 正印", naYin: "平地木", emptyBranch: "辰巳" },
+    { label: "时柱", stem: "辛", branch: "酉", hiddenStems: "辛", tenGods: "伤官 / 金旺", naYin: "石榴木", emptyBranch: "子丑" }
+  ];
+}
+
+function getBaziElementRows() {
+  return [
+    { element: "金", value: 30, tone: "表达、规则、专业输出明显，适合顾问、系统与品牌标准化。" },
+    { element: "木", value: 8, tone: "成长与学习需要主动补足，可通过课程、规划和长期项目提升。" },
+    { element: "水", value: 15, tone: "财流与流动性有机会，但要避免资金过散或情绪型决策。" },
+    { element: "火", value: 20, tone: "名气、曝光与执行热度足，需控制急躁和过度消耗。" },
+    { element: "土", value: 27, tone: "承载力强，适合稳盘、管理、资源整合和长期责任。" }
+  ];
+}
+
+function getTenYearLuckRows() {
+  return [
+    ["5-14", "1985-1994", "癸", "未", "正财", "学习基础期，家庭与稳定感影响较深。"],
+    ["15-24", "1995-2004", "甲", "申", "七杀", "竞争变强，适合训练胆识与纪律。"],
+    ["25-34", "2005-2014", "乙", "酉", "正官", "事业规则建立，名声与责任逐步提高。"],
+    ["35-44", "2015-2024", "丙", "戌", "偏印", "适合沉淀专业，重整事业模式。"],
+    ["45-54", "2025-2034", "丁", "亥", "正印", "学习、品牌、系统化服务有利，宜稳中扩张。"],
+    ["55-64", "2035-2044", "戊", "子", "比肩", "资源整合与团队协作成为重点。"],
+    ["65-74", "2045-2054", "己", "丑", "劫财", "宜守成、传承、资产保全。"],
+    ["75-84", "2055-2064", "庚", "寅", "食神", "适合分享经验、教学与顾问输出。"]
+  ];
+}
+
+function getAnnualLuckRows() {
+  const startYear = new Date().getFullYear();
+  const stems = ["丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙"];
+  const branches = ["午", "未", "申", "酉", "戌", "亥", "子", "丑", "寅", "卯", "辰"];
+  const themes = ["整理方向", "合作扩张", "现金流优化", "规则升级", "品牌输出", "资源整合", "学习转型", "稳固资产", "开创新线", "人脉放大", "复盘收成"];
+
+  return Array.from({ length: 11 }, (_, index) => ({
+    year: startYear + index,
+    stemBranch: `${stems[index]}${branches[index]}`,
+    theme: themes[index],
+    career: index % 3 === 0 ? "稳中推进" : index % 3 === 1 ? "利合作" : "宜系统化",
+    wealth: index % 2 === 0 ? "正财优先" : "注意预算",
+    relationship: index % 2 === 0 ? "沟通顺畅" : "避免误会",
+    reminder: index % 3 === 2 ? "重大决定先复盘风险" : "先定目标再行动"
+  }));
+}
+
+function getBaziScoreRows() {
+  return [
+    ["整体命格", 82],
+    ["事业", 86],
+    ["财运", 78],
+    ["感情", 72],
+    ["健康", 70],
+    ["贵人运", 80]
+  ] as const;
+}
+
+function getMeihuaHexagramLines(variant: "main" | "change" = "main") {
+  return variant === "main" ? [1, 1, 1, 0, 0, 0] : [1, 1, 0, 1, 0, 0];
+}
+
+function getMeihuaScoreRows() {
+  return [
+    ["整体卦势", 78],
+    ["事业", 76],
+    ["财运", 72],
+    ["感情", 70],
+    ["健康倾向", 74],
+    ["行动时机", 82]
+  ] as const;
+}
+
+function getZiweiPalaceRows() {
+  const palaces = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "交友宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
+  const stars = ["紫微 天府", "天机 太阴", "贪狼 红鸾", "天同 天梁", "武曲 禄存", "巨门 天刑", "太阳 文昌", "七杀 左辅", "廉贞 天相", "破军 右弼", "太阴 天魁", "天梁 天钺"];
+  const minor = ["文昌", "文曲", "红鸾", "天喜", "禄存", "陀罗", "天马", "左辅", "右弼", "地空", "天魁", "天钺"];
+  const transforms = ["化禄", "", "化科", "", "化权", "化忌", "", "", "化禄", "", "化科", ""];
+
+  return palaces.map((palace, index) => ({
+    palace,
+    age: `${index * 10 + 3}-${index * 10 + 12}`,
+    stars: stars[index],
+    minor: minor[index],
+    transform: transforms[index] || "平",
+    summary: index % 3 === 0 ? "主轴明确，宜稳中推进。" : index % 3 === 1 ? "重视资源整合与边界。" : "先观察，再择机行动。"
+  }));
+}
+
+function getZiweiLuckRows() {
+  return [
+    ["3-12", "命宫", "紫微 天府", "基础稳定，重视学习与家庭影响。"],
+    ["13-22", "兄弟宫", "天机 太阴", "思维活跃，人际与学习变化多。"],
+    ["23-32", "夫妻宫", "贪狼 红鸾", "关系与合作机会增加，需定边界。"],
+    ["33-42", "子女宫", "天同 天梁", "适合沉淀专业，建立服务模式。"],
+    ["43-52", "财帛宫", "武曲 禄存", "财务结构变强，利正财与资产配置。"],
+    ["53-62", "疾厄宫", "巨门 天刑", "注意压力管理与作息规律。"],
+    ["63-72", "迁移宫", "太阳 文昌", "外部机会增加，利教学与顾问。"],
+    ["73-82", "交友宫", "七杀 左辅", "团队资源需筛选，重视信任机制。"]
+  ];
+}
+
+function getZiweiAnnualRows() {
+  const startYear = new Date().getFullYear();
+  const palaces = ["官禄宫", "财帛宫", "夫妻宫", "迁移宫", "福德宫", "命宫", "田宅宫", "交友宫", "父母宫", "疾厄宫", "子女宫"];
+
+  return Array.from({ length: 11 }, (_, index) => ({
+    year: startYear + index,
+    palace: palaces[index],
+    theme: index % 3 === 0 ? "事业布局" : index % 3 === 1 ? "财务整理" : "关系调整",
+    career: index % 2 === 0 ? "利规划与升维" : "宜稳守执行",
+    wealth: index % 2 === 0 ? "正财稳进" : "投资需保守",
+    relationship: index % 2 === 0 ? "贵人助力" : "沟通需慢",
+    reminder: index % 3 === 1 ? "先审预算再扩大" : "重要决定先复盘"
+  }));
+}
+
+function getZiweiScoreRows() {
+  return [
+    ["整体命格", 88],
+    ["事业", 86],
+    ["财运", 82],
+    ["感情", 76],
+    ["健康", 72],
+    ["贵人运", 84]
+  ] as const;
+}
+
+function reduceNumerologyNumber(value: number) {
+  let total = Math.abs(value);
+  while (total > 9) {
+    total = String(total)
+      .split("")
+      .reduce((sum, digit) => sum + Number(digit), 0);
+  }
+  return total || 9;
+}
+
+function numberValueFromChar(char: string) {
+  const normalized = char.toUpperCase();
+  if (normalized >= "A" && normalized <= "Z") {
+    return ((normalized.charCodeAt(0) - 65) % 9) + 1;
+  }
+  return (char.charCodeAt(0) % 9) + 1;
+}
+
+function sumNameNumbers(name: string, mode: "all" | "soul" | "personality" = "all") {
+  const chars = Array.from(name.replace(/\s/g, ""));
+  const vowels = new Set(["A", "E", "I", "O", "U"]);
+
+  return chars.reduce((sum, char, index) => {
+    const upper = char.toUpperCase();
+    const isRoman = upper >= "A" && upper <= "Z";
+    const isSoul = isRoman ? vowels.has(upper) : index % 2 === 0;
+    if (mode === "soul" && !isSoul) return sum;
+    if (mode === "personality" && isSoul) return sum;
+    return sum + numberValueFromChar(char);
+  }, 0);
+}
+
+function getBirthDigits(birthDate: string) {
+  return birthDate.replace(/\D/g, "").split("").map(Number).filter((digit) => digit > 0);
+}
+
+function getNumerologyCore(input?: NumerologyReportInput) {
+  const birthDate = input?.birthDate || "1980-06-14";
+  const name = input?.fullName || "冯家奇";
+  const [, month = "6", day = "14"] = birthDate.split("-");
+  const dateDigits = birthDate.replace(/\D/g, "");
+  const lifePath = reduceNumerologyNumber(dateDigits.split("").reduce((sum, digit) => sum + Number(digit), 0));
+  const destiny = reduceNumerologyNumber(sumNameNumbers(name));
+  const soulUrge = reduceNumerologyNumber(sumNameNumbers(name, "soul"));
+  const personality = reduceNumerologyNumber(sumNameNumbers(name, "personality") || destiny);
+  const birthday = reduceNumerologyNumber(Number(day));
+  const maturity = reduceNumerologyNumber(lifePath + destiny);
+  const personalYear = reduceNumerologyNumber(
+    String(new Date().getFullYear()).split("").reduce((sum, digit) => sum + Number(digit), 0) + Number(month) + Number(day)
+  );
+
+  return { lifePath, destiny, soulUrge, personality, birthday, maturity, personalYear };
+}
+
+function getNumerologyMeaning(number: number) {
+  const meanings: Record<number, { title: string; strength: string; weakness: string; lesson: string }> = {
+    1: { title: "开创与领导", strength: "独立、果断、敢开始", weakness: "容易急躁或太想掌控", lesson: "学习把主见变成稳定带领" },
+    2: { title: "合作与感受", strength: "敏锐、温和、善协调", weakness: "容易犹豫或过度在意别人", lesson: "学习表达真实需求" },
+    3: { title: "表达与创造", strength: "创意、沟通、感染力", weakness: "容易分散或情绪化", lesson: "学习把灵感落地成作品" },
+    4: { title: "秩序与执行", strength: "稳定、纪律、重细节", weakness: "容易僵化或压力过重", lesson: "学习在规则中保留弹性" },
+    5: { title: "自由与变化", strength: "适应快、机会感强", weakness: "容易不安定或三分钟热度", lesson: "学习选择值得长期投入的方向" },
+    6: { title: "责任与照顾", strength: "可靠、温暖、重承诺", weakness: "容易过度承担", lesson: "学习照顾别人前先照顾自己" },
+    7: { title: "洞察与研究", strength: "分析、直觉、深度学习", weakness: "容易封闭或想太多", lesson: "学习把洞察说清楚" },
+    8: { title: "资源与成就", strength: "商业、管理、目标感", weakness: "容易用结果定义自己", lesson: "学习平衡成果与价值观" },
+    9: { title: "整合与影响", strength: "格局、同理、完成力", weakness: "容易理想化或边界不清", lesson: "学习有边界地付出" }
+  };
+  return meanings[number] || meanings[9];
+}
+
+function getNumerologyEnergyRows(input?: NumerologyReportInput) {
+  const core = getNumerologyCore(input);
+  const counts = Array.from({ length: 9 }, () => 0);
+  [...getBirthDigits(input?.birthDate || "1980-06-14"), ...Object.values(core)].forEach((value) => {
+    counts[value - 1] += 1;
+  });
+
+  return counts.map((count, index) => ({
+    number: index + 1,
+    count,
+    strength: Math.min(100, 20 + count * 20),
+    label: count === 0 ? "缺失" : count >= 3 ? "重复强" : count === 2 ? "稳定" : "基础"
+  }));
+}
+
+function getNumerologyCycleRows(input?: NumerologyReportInput) {
+  const core = getNumerologyCore(input);
+  const startYear = Number((input?.birthDate || "1980-06-14").slice(0, 4));
+  const cycles = [
+    ["0-28", startYear, core.lifePath, "打底与自我认知", 72, "建立基础能力，找到最自然的表达方式。"],
+    ["29-36", startYear + 29, core.destiny, "事业定位", 80, "把经验整理成专业，减少无效试探。"],
+    ["37-45", startYear + 37, core.maturity, "资源整合", 86, "适合品牌、团队、产品化与长期合作。"],
+    ["46-54", startYear + 46, core.personalYear, "成果放大", 83, "以复盘与管理能力承接更大机会。"],
+    ["55+", startYear + 55, reduceNumerologyNumber(core.lifePath + core.maturity), "传承与影响", 78, "适合教学、顾问、分享经验与稳定资产。"]
+  ] as const;
+
+  return cycles.map(([age, year, number, theme, score, advice]) => ({
+    age,
+    yearRange: `${year}-${year + (age === "55+" ? 9 : 7)}`,
+    number,
+    theme,
+    score,
+    advice
+  }));
+}
+
+function getNumerologyAnnualRows(input?: NumerologyReportInput) {
+  const birthDate = input?.birthDate || "1980-06-14";
+  const [, month = "6", day = "14"] = birthDate.split("-");
+  const startYear = new Date().getFullYear();
+  const themes = ["开创", "合作", "表达", "打底", "变化", "责任", "研究", "资源", "整合"];
+
+  return Array.from({ length: 11 }, (_, index) => {
+    const year = startYear + index;
+    const number = reduceNumerologyNumber(
+      String(year).split("").reduce((sum, digit) => sum + Number(digit), 0) + Number(month) + Number(day)
+    );
+
+    return {
+      year,
+      number,
+      theme: themes[number - 1],
+      career: number === 1 || number === 8 ? "利主动争取" : number === 4 ? "宜稳扎稳打" : "先沟通再推进",
+      wealth: number === 8 ? "财务机会强" : number === 5 ? "避免冲动消费" : "正财与预算优先",
+      relationship: number === 2 || number === 6 ? "利修复关系" : "保持清楚边界",
+      reminder: number === 9 ? "适合收尾与断舍离" : "把主题拆成季度行动"
+    };
+  });
+}
+
+function getNumerologyScoreRows(input?: NumerologyReportInput) {
+  const core = getNumerologyCore(input);
+  const base = 68 + core.lifePath;
+  return [
+    ["整体", Math.min(96, base + 8)],
+    ["事业", Math.min(94, base + (core.destiny >= 7 ? 10 : 5))],
+    ["财富", Math.min(92, base + (core.destiny === 8 ? 12 : 3))],
+    ["关系", Math.min(90, base + (core.soulUrge === 2 || core.soulUrge === 6 ? 10 : 2))],
+    ["健康", Math.min(88, base + (core.personality === 4 ? 6 : 1))],
+    ["个人成长", Math.min(95, base + (core.maturity >= 7 ? 9 : 4))]
+  ] as const;
+}
+
+function HexagramLines({ lines }: { lines: number[] }) {
+  return (
+    <div className="grid justify-center gap-3 py-4">
+      {lines.map((solid, index) => (
+        <div key={`${solid}-${index}`} className="flex justify-center gap-3">
+          {solid ? (
+            <span className="h-2 w-36 rounded bg-[#102F38]" />
+          ) : (
+            <>
+              <span className="h-2 w-16 rounded bg-[#102F38]" />
+              <span className="h-2 w-16 rounded bg-[#102F38]" />
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function downloadReport(report: SavedReport, memberProfile: MemberProfile) {
   const blob = new Blob([formatReportText(report, memberProfile)], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -753,6 +1436,18 @@ function downloadReport(report: SavedReport, memberProfile: MemberProfile) {
 }
 
 function reportTemplateType(report: SavedReport) {
+  if (report.title.includes("综合")) {
+    return "综合命理";
+  }
+
+  if (report.title.includes("数字")) {
+    return "数字命理";
+  }
+
+  if (report.title.includes("梅花")) {
+    return "梅花易数";
+  }
+
   if (report.title.includes("流年") || report.title.includes("事业")) {
     return "紫微斗数";
   }
@@ -768,7 +1463,7 @@ function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
   const template = reportTemplateType(report);
   const lines = [
     report.summary,
-    ...report.sections.map((section) => `${section.title}：${section.content}`)
+    ...visibleReportSections(report).map((section) => `${section.title}：${section.content}`)
   ].join(" ").slice(0, 260);
   const safe = (value: string) =>
     value
@@ -794,7 +1489,7 @@ function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
   <rect x="560" y="500" width="544" height="420" fill="#fff" stroke="#C79A54" stroke-width="2"/>
   <text x="592" y="565" font-size="32" font-weight="700" fill="#063F4A">核心摘要</text>
   <foreignObject x="592" y="600" width="480" height="250"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:24px;line-height:1.65;color:#102F38;font-family:Arial,'Microsoft YaHei',sans-serif;">${safe(lines)}</div></foreignObject>
-  ${report.sections
+  ${visibleReportSections(report)
     .map((section, index) => {
       const y = 980 + index * 180;
       return `<rect x="96" y="${y}" width="1008" height="140" rx="12" fill="#F5FAFA" stroke="#C79A54" stroke-width="1.5"/>
@@ -1266,11 +1961,15 @@ function downloadSigil(artifact: SigilArtifact) {
 function ModuleCard({
   module,
   active,
-  onClick
+  onClick,
+  locked = false,
+  lockLabel = "需购买"
 }: {
   module: (typeof modules)[number];
   active: boolean;
   onClick: () => void;
+  locked?: boolean;
+  lockLabel?: string;
 }) {
   const Icon = module.icon;
 
@@ -1287,23 +1986,23 @@ function ModuleCard({
       <div className="flex items-start justify-between gap-3">
         <span
           className={`grid size-9 place-items-center rounded ${
-            active ? "bg-white/12 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"
+            active ? "bg-white/12 text-[#C79A54]" : locked ? "bg-[#F5FAFA] text-ink/35" : "bg-[#DDEFF2] text-[#063F4A]"
           }`}
         >
-          <Icon className="size-5" />
+          {locked ? <LockKeyhole className="size-5" /> : <Icon className="size-5" />}
         </span>
         <span
           className={`rounded px-2.5 py-1 text-xs font-semibold ${
             active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"
           }`}
         >
-          {module.metric}
+          {locked ? lockLabel : module.metric}
         </span>
       </div>
       <h3 className="mt-4 font-semibold">{module.title}</h3>
       <p className={`mt-1 text-xs ${active ? "text-white/62" : "text-ink/48"}`}>{module.desc}</p>
       <div className={`mt-3 flex items-center gap-1 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>
-        打开 <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
+        {locked ? "购买创业配套后开放" : "打开"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
       </div>
     </button>
   );
@@ -1409,12 +2108,13 @@ function TodayActionCenter({
 
 function MembershipPlanPanel({
   currentTier,
-  onChangeTier
+  onRequestUpgrade
 }: {
   currentTier: MembershipTier;
-  onChangeTier: (tier: MembershipTier) => void;
+  onRequestUpgrade: (tier: MembershipTier) => void;
 }) {
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
+  const tierRank: Record<MembershipTier, number> = { free: 0, tactical: 1, strategic: 2 };
 
   return (
     <section className="mt-6 rounded border border-black/10 bg-white p-5 shadow-sm">
@@ -1432,13 +2132,13 @@ function MembershipPlanPanel({
       <div className="grid gap-4 lg:grid-cols-3">
         {membershipTiers.map((tier) => {
           const active = tier.id === currentTier;
+          const included = tierRank[tier.id] < tierRank[currentTier];
+          const canUpgrade = tierRank[tier.id] > tierRank[currentTier];
 
           return (
-            <button
+            <article
               key={tier.id}
-              type="button"
-              onClick={() => onChangeTier(tier.id)}
-              className={`rounded border p-5 text-left transition hover:-translate-y-0.5 hover:shadow-soft ${
+              className={`rounded border p-5 text-left transition ${
                 active
                   ? "border-[#C79A54] bg-[#063F4A] text-white"
                   : "border-black/10 bg-rice text-ink hover:border-[#C79A54]/55"
@@ -1472,7 +2172,22 @@ function MembershipPlanPanel({
                   </div>
                 ))}
               </div>
-            </button>
+              <button
+                type="button"
+                onClick={() => onRequestUpgrade(tier.id)}
+                disabled={!canUpgrade}
+                className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded px-4 py-3 text-sm font-semibold transition ${
+                  canUpgrade
+                    ? "bg-[#1495A0] text-white hover:bg-[#0F7F88]"
+                    : active
+                      ? "cursor-default bg-white/12 text-white"
+                      : "cursor-default bg-white text-ink/45"
+                }`}
+              >
+                {active ? "当前方案" : included ? "已包含权益" : `付费升级到 ${tier.name}`}
+                {canUpgrade ? <CreditCard className="size-4" /> : null}
+              </button>
+            </article>
           );
         })}
       </div>
@@ -2331,201 +3046,803 @@ function FavoritesVaultModule() {
 }
 
 function BaziReportPanel({ report, memberProfile }: { report: SavedReport; memberProfile: MemberProfile }) {
-  const pillars = [
-    ["年柱", "庚", "申", "食神 / 偏财"],
-    ["月柱", "壬", "午", "正印 / 劫财"],
-    ["日柱", "戊", "戌", "日主 / 比肩"],
-    ["时柱", "辛", "酉", "伤官 / 金旺"]
-  ];
-  const elements = [["金", 30], ["木", 0], ["水", 15], ["火", 20], ["土", 25]] as const;
+  const pillars = getBaziPillars();
+  const elements = getBaziElementRows();
+  const luckRows = getTenYearLuckRows();
+  const annualRows = getAnnualLuckRows();
+  const scoreRows = getBaziScoreRows();
+  const baziInput = report.metadata?.baziInput;
+  const displayName = baziInput?.fullName || memberProfile.name;
+  const displayBirthDate = baziInput?.birthDate || memberProfile.birthDate;
+  const displayBirthTime = baziInput?.birthTime || memberProfile.birthTimeLabel;
+  const displayBirthLocation = baziInput?.birthLocation || memberProfile.region;
+  const pieStyle = {
+    background:
+      "conic-gradient(#C79A54 0 30%, #1495A0 30% 38%, #9ED8DF 38% 53%, #B91C1C 53% 73%, #E8D4A8 73% 100%)"
+  };
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-        <h4 className="font-semibold text-[#063F4A]">一、八字排盘</h4>
-        <div className="mt-3 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/25 text-center">
-          {pillars.map(([label, sky, branch, god]) => (
-            <div key={label} className="border-r border-[#C79A54]/20 last:border-r-0">
-              <p className="bg-[#F5FAFA] py-2 text-sm font-semibold">{label}</p>
-              <p className="py-3 text-4xl font-semibold text-[#C79A54]">{sky}</p>
-              <p className="py-3 text-4xl font-semibold text-[#063F4A]">{branch}</p>
-              <p className="min-h-14 border-t border-[#C79A54]/20 px-2 py-2 text-xs leading-5 text-ink/62">{god}</p>
+    <div className="grid gap-4">
+      <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+        <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、八字排盘</h4>
+            <span className="text-sm font-semibold text-[#063F4A]">日主：戊土 · 命盘核心</span>
+          </div>
+          <div className="mt-4 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/35 text-center">
+            {pillars.map((pillar) => (
+              <div key={pillar.label} className="border-r border-[#C79A54]/25 last:border-r-0">
+                <p className="bg-[#F5FAFA] py-2 text-sm font-semibold">{pillar.label}</p>
+                <p className="py-3 text-5xl font-semibold text-[#C79A54]">{pillar.stem}</p>
+                <p className="py-3 text-5xl font-semibold text-[#7A1F16]">{pillar.branch}</p>
+                <div className="border-t border-[#C79A54]/25 px-2 py-3 text-xs leading-5 text-ink/65">
+                  <p>藏干：{pillar.hiddenStems}</p>
+                  <p>十神：{pillar.tenGods}</p>
+                  <p>纳音：{pillar.naYin}</p>
+                  <p>空亡：{pillar.emptyBranch}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-center text-sm leading-6 text-ink/58">
+            分析对象：{displayName} · 公历 {displayBirthDate} {displayBirthTime} · 出生地：{displayBirthLocation}
+          </p>
+        </section>
+
+        <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">二、五行强弱分析</h4>
+          <div className="mt-4 grid gap-4 md:grid-cols-[180px_1fr]">
+            <div className="grid place-items-center">
+              <div className="grid size-40 place-items-center rounded-full shadow-inner" style={pieStyle}>
+                <div className="grid size-24 place-items-center rounded-full bg-[#fffaf0] text-center">
+                  <p className="text-3xl font-semibold text-[#063F4A]">82</p>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-ink/45">Score</p>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-        <p className="mt-3 text-center text-sm font-semibold text-[#063F4A]">
-          日主：戊土 · {memberProfile.name} · {memberProfile.birthDate}
-        </p>
+            <div className="grid gap-2">
+              {elements.map((item) => (
+                <div key={item.element} className="grid grid-cols-[36px_1fr_42px] items-center gap-3 text-sm">
+                  <span className="font-semibold">{item.element}</span>
+                  <span className="h-3 rounded-full bg-[#DDEFF2]">
+                    <span className="block h-full rounded-full bg-[#C79A54]" style={{ width: `${Math.max(item.value, 4)}%` }} />
+                  </span>
+                  <span className="text-right text-ink/55">{item.value}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-3">
+              <p className="text-sm font-semibold text-[#063F4A]">喜用神</p>
+              <p className="mt-1 text-sm leading-6 text-ink/65">木、水为主要调候，利学习、规划、流动资金与业务开拓。</p>
+            </div>
+            <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-3">
+              <p className="text-sm font-semibold text-[#063F4A]">忌神提醒</p>
+              <p className="mt-1 text-sm leading-6 text-ink/65">火土过旺时易固执、压力内化，重大决定不宜急推。</p>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-        <h4 className="font-semibold text-[#063F4A]">二、五行强弱分析</h4>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["三、性格分析", "戊土日主重承诺、守信用、能承载压力。金旺带来表达、制度与专业输出能力，但情绪紧绷时容易过度控制。"],
+          ["四、事业与财运", "适合管理、顾问、地产空间、教育培训、系统服务与长期信用型行业。财富宜走正财、长期复利与可复制产品。"],
+          ["五、感情婚姻", "关系中重安全感与实际行动，适合慢热稳定型伴侣。沟通上要减少闷着不说，避免把责任感变成压力。"],
+          ["六、健康倾向", "五行土金较显，需留意消化、睡眠、压力与呼吸系统保养。本段仅为生活提醒，不构成医疗建议。"]
+        ].map(([title, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#7A1F16]">{title}</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">七、十年大运表</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#063F4A]">
+              <tr>{["年龄", "年份", "天干", "地支", "十神", "运势简评"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {luckRows.map((row) => (
+                <tr key={row.join("-")}>{row.map((cell) => <td key={cell} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">八、未来十年流年运势</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[980px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#063F4A]">
+              <tr>{["年份", "干支", "主题", "事业", "财运", "感情", "提醒"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {annualRows.map((row) => (
+                <tr key={row.year}>
+                  <td className="px-3 py-2 font-semibold">{row.year}</td>
+                  <td className="px-3 py-2 text-[#7A1F16]">{row.stemBranch}</td>
+                  <td className="px-3 py-2">{row.theme}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.career}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.wealth}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.relationship}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.reminder}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[0.75fr_1.25fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">九、综合评分</h4>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {scoreRows.map(([label, score]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="mt-1 text-xs text-ink/55">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">十、开运建议与重要提醒</h4>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ["幸运颜色", "绿色、蓝色、金色；用于穿搭、办公小物与品牌细节。"],
+              ["适合方位", "东方、北方、西北方；适合学习、谈判与复盘。"],
+              ["适合行业", "顾问咨询、教育培训、地产空间、系统服务、管理与品牌运营。"],
+              ["提升建议", "建立现金流表、合作边界、复盘制度；先稳住结构，再扩大规模。"]
+            ].map(([label, content]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/65">{content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/60">{baziDisclaimer}</p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function NumerologyReportPanel({ report }: { report: SavedReport }) {
+  const input = report.metadata?.numerologyInput;
+  const core = getNumerologyCore(input);
+  const energyRows = getNumerologyEnergyRows(input);
+  const cycleRows = getNumerologyCycleRows(input);
+  const annualRows = getNumerologyAnnualRows(input);
+  const scoreRows = getNumerologyScoreRows(input);
+  const coreNumbers = [
+    ["生命路径数", core.lifePath, "人生主线"],
+    ["命运数", core.destiny, "外在使命"],
+    ["灵魂渴望数", core.soulUrge, "内在驱动力"],
+    ["人格数", core.personality, "外界感知"],
+    ["生日数", core.birthday, "天赋入口"],
+    ["成熟数", core.maturity, "后天整合"],
+    ["个人年数", core.personalYear, "今年主题"]
+  ] as const;
+  const missingNumbers = energyRows.filter((row) => row.count === 0).map((row) => row.number).join("、") || "无明显缺失";
+  const repeatedNumbers = energyRows.filter((row) => row.count >= 3).map((row) => row.number).join("、") || "能量较平均";
+
+  return (
+    <div className="grid gap-4">
+      <section className="overflow-hidden rounded border border-[#C79A54]/40 bg-[#102F38] text-white">
+        <div className="grid gap-5 p-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">一、核心数字计算</h4>
+            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
+              {coreNumbers.map(([label, value, hint]) => (
+                <div key={label} className="rounded border border-white/15 bg-white/8 p-3">
+                  <p className="text-xs text-white/55">{label}</p>
+                  <p className="mt-1 text-4xl font-semibold text-[#E8D4A8]">{value}</p>
+                  <p className="mt-1 text-xs text-white/60">{hint}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded border border-white/15 bg-white/8 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#E8D4A8]">Life Path Matrix</p>
+            <div className="mt-5 grid grid-cols-3 gap-2">
+              {energyRows.map((row) => (
+                <div key={row.number} className="grid aspect-square place-items-center rounded border border-white/15 bg-[#0A0A0A]/25 text-center">
+                  <span className="text-3xl font-semibold text-[#C79A54]">{row.number}</span>
+                  <span className="text-xs text-white/55">{row.count} 次</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-sm leading-6 text-white/70">
+              缺失数字：{missingNumbers}。重复数字：{repeatedNumbers}。数字能量用于观察习惯、天赋与需要训练的课题。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">二、核心数字含义</h4>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {coreNumbers.slice(0, 6).map(([label, value]) => {
+            const meaning = getNumerologyMeaning(value);
+            return (
+              <article key={label} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-semibold text-[#102F38]">{label}</p>
+                  <span className="grid size-10 place-items-center rounded-full bg-[#C79A54] font-semibold text-white">{value}</span>
+                </div>
+                <p className="mt-3 font-semibold text-[#3B1B66]">{meaning.title}</p>
+                <p className="mt-2 text-sm leading-6 text-ink/62">优势：{meaning.strength}。挑战：{meaning.weakness}。课题：{meaning.lesson}。</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#102F38] px-4 py-2 font-semibold text-white">三、1-9 数字能量分布</h4>
         <div className="mt-4 grid gap-3">
-          {elements.map(([element, value]) => (
-            <div key={element} className="grid grid-cols-[36px_1fr_42px] items-center gap-3 text-sm">
-              <span className="font-semibold">{element}</span>
-              <span className="h-3 rounded-full bg-[#DDEFF2]">
-                <span className="block h-full rounded-full bg-[#C79A54]" style={{ width: `${Math.max(value, 4)}%` }} />
-              </span>
-              <span className="text-right text-ink/55">{value}%</span>
+          {energyRows.map((row) => (
+            <div key={row.number} className="grid gap-3 rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 md:grid-cols-[60px_1fr_90px] md:items-center">
+              <p className="text-2xl font-semibold text-[#3B1B66]">{row.number}</p>
+              <div>
+                <div className="h-3 overflow-hidden rounded-full bg-white">
+                  <div className="h-full rounded-full bg-gradient-to-r from-[#3B1B66] via-[#1495A0] to-[#C79A54]" style={{ width: `${row.strength}%` }} />
+                </div>
+                <p className="mt-1 text-xs text-ink/50">{getNumerologyMeaning(row.number).title}</p>
+              </div>
+              <p className="text-sm font-semibold text-[#102F38]">{row.label}</p>
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
-          <p className="text-sm font-semibold text-[#063F4A]">喜用神</p>
-          <p className="mt-2 text-sm leading-6 text-ink/65">喜用以木、水为调候，忌火土过旺。适合先疏通结构，再谈扩张。</p>
-        </div>
-      </div>
+      </section>
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
-        <h4 className="font-semibold text-[#063F4A]">三、命局分析</h4>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {report.sections.map((section) => (
+      <section className="grid gap-4 md:grid-cols-3">
+        {[
+          ["四、生命路径分析", core.lifePath, "你的人生主线适合用稳定行动把天赋变成长期成果。先建立清楚节奏，再放大影响力。"],
+          ["五、命运数分析", core.destiny, "外在使命强调可被看见的专业价值。适合把经验整理成产品、内容或服务流程。"],
+          ["六、灵魂渴望分析", core.soulUrge, "内在动力来自真实感与意义感。越能把选择和价值观对齐，行动越稳定。"]
+        ].map(([title, value, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#3B1B66]">{title}</h4>
+            <p className="mt-3 text-5xl font-semibold text-[#C79A54]">{value}</p>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["事业", "适合以专业、沟通、系统化服务与持续输出建立个人品牌。"],
+          ["财富", "宜走长期现金流、可复制产品与稳健合作，避免只凭情绪追机会。"],
+          ["关系", "关系质量来自清楚表达和稳定边界，别让照顾别人变成过度消耗。"],
+          ["健康 / 生活", "注意睡眠、压力节奏与固定运动。本项为生活提醒，不是医疗建议。"]
+        ].map(([title, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#102F38]">{title}</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">七、人生周期表</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#3B1B66]">
+              <tr>{["年龄", "年份", "周期数", "主题", "运势分", "建议"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {cycleRows.map((row) => (
+                <tr key={row.age}>
+                  <td className="px-3 py-2 font-semibold">{row.age}</td>
+                  <td className="px-3 py-2">{row.yearRange}</td>
+                  <td className="px-3 py-2 text-[#3B1B66]">{row.number}</td>
+                  <td className="px-3 py-2">{row.theme}</td>
+                  <td className="px-3 py-2 text-[#C79A54]">{row.score}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.advice}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#102F38] px-4 py-2 font-semibold text-white">八、未来十年数字流年</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[980px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#102F38]">
+              <tr>{["年份", "个人年数", "年度主题", "事业建议", "财富建议", "关系建议", "行动提醒"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {annualRows.map((row) => (
+                <tr key={row.year}>
+                  <td className="px-3 py-2 font-semibold">{row.year}</td>
+                  <td className="px-3 py-2 text-[#3B1B66]">{row.number}</td>
+                  <td className="px-3 py-2">{row.theme}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.career}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.wealth}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.relationship}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.reminder}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">九、评分摘要</h4>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {scoreRows.map(([label, score]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+                <p className="text-3xl font-semibold text-[#3B1B66]">{score}</p>
+                <p className="mt-1 text-xs text-ink/55">{label}</p>
+                <p className="mt-1 text-xs tracking-widest text-[#C79A54]">★★★★★</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#102F38] px-4 py-2 font-semibold text-white">十、幸运指南与最终建议</h4>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ["幸运数字", `${core.lifePath}、${core.destiny}、${core.maturity}`],
+              ["幸运颜色", "深蓝、金色、紫色、米白"],
+              ["幸运方向", "北方、西北、东南"],
+              ["幸运日期", `每月 ${core.lifePath} / ${core.destiny} / ${core.personalYear} 日前后`],
+              ["适合行业", "顾问、教育、内容、管理、科技服务、品牌运营"],
+              ["合作对象", `生命路径 ${core.destiny}、${core.maturity} 或 ${reduceNumerologyNumber(core.lifePath + 2)} 的伙伴`]
+            ].map(([label, content]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                <p className="font-semibold text-[#102F38]">{label}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/65">{content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-sm leading-6 text-ink/65">
+            最终建议：先把天赋数字变成可重复的日常节奏。你越能把目标、边界、资源和时间表讲清楚，越容易让机会真正落地。
+          </p>
+          <p className="mt-3 rounded bg-[#F5FAFA] p-3 text-xs leading-5 text-ink/55">{numerologyDisclaimer}</p>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十一、AI 综合解析</h4>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {visibleReportSections(report).map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-              <p className="font-semibold">{section.title}</p>
-              <p className="mt-2 text-sm leading-6 text-ink/65">{section.content}</p>
+              <p className="font-semibold text-[#3B1B66]">{section.title}</p>
+              <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
+    </div>
+  );
+}
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
-        <h4 className="font-semibold text-[#063F4A]">四、综合评分与开运建议</h4>
-        <div className="mt-4 grid gap-4 md:grid-cols-[220px_1fr]">
-          <div className="grid place-items-center rounded border border-[#C79A54]/25 bg-[#C79A54]/10 p-5 text-center">
-            <p className="text-6xl font-semibold text-[#1495A0]">82</p>
-            <p className="mt-2 text-sm font-semibold text-ink/58">命理综合评分</p>
+function IntegratedReportPanel({ report }: { report: SavedReport }) {
+  const input = report.metadata?.baziInput;
+  const core = getNumerologyCore(report.metadata?.numerologyInput);
+  const scoreRows = [
+    ["长期格局", 86],
+    ["事业机会", 88],
+    ["财务节奏", 82],
+    ["行动时机", 79],
+    ["人和资源", 84],
+    ["风险控制", 81]
+  ] as const;
+
+  return (
+    <div className="grid gap-4">
+      <section className="rounded border border-[#C79A54]/40 bg-[#102F38] p-5 text-white">
+        <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Integrated Metaphysics Engine</p>
+            <h4 className="mt-3 text-3xl font-semibold">四术合参 · 决策总览</h4>
+            <p className="mt-3 text-sm leading-6 text-white/70">
+              以八字定底盘，紫微看阶段，梅花判时机，数字命理校准行为节奏。适合事业、合作、投资、转型与人生关键节点前使用。
+            </p>
           </div>
-          <div className="text-sm leading-7 text-ink/68">
-            <p>建议颜色：绿色、蓝色、金色。适合方位：东方、北方。</p>
-            <p className="mt-2">行动建议：先做资源盘点，再推进重要谈判。报告重点：{report.summary}</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              ["八字", "命局底盘", "五行强弱 / 十神 / 大运"],
+              ["紫微", "人生宫位", "命宫 / 财帛 / 官禄 / 大限"],
+              ["梅花", "当下时机", "本卦 / 动爻 / 变卦"],
+              ["数字", "行为节奏", `${core.lifePath} 生命路径 / ${core.personalYear} 个人年`]
+            ].map(([title, label, desc]) => (
+              <div key={title} className="rounded border border-white/15 bg-white/8 p-4">
+                <p className="text-2xl font-semibold text-[#E8D4A8]">{title}</p>
+                <p className="mt-1 text-sm font-semibold">{label}</p>
+                <p className="mt-2 text-xs leading-5 text-white/60">{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["一、八字底盘", "先判断日主、五行流通、十神结构与长期资源。这里决定一个人适合用什么方式累积成果。"],
+          ["二、紫微阶段", "再看命宫、官禄、财帛、夫妻与大限，确认当前人生阶段应该放大什么、收敛什么。"],
+          ["三、梅花时机", "针对当前问题看本卦与变卦，判断现在适合推进、等待、转向还是先处理阻力。"],
+          ["四、数字节奏", "用生命路径和个人年数看执行习惯，避免方向对了，但节奏、沟通和习惯拖慢成果。"]
+        ].map(([title, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#063F4A]">{title}</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">五、交叉判断矩阵</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#063F4A]">
+              <tr>{["系统", "看什么", "当前重点", "决策用途"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {[
+                ["八字", "五行强弱 / 十神", input ? focusLabels[input.focus] : "事业与财运", "判断长期适配度"],
+                ["紫微", "十二宫 / 大限流年", "命宫、官禄、财帛", "判断阶段与资源"],
+                ["梅花", "本卦 / 动爻 / 变卦", "当下问题与转折", "判断短线时机"],
+                ["数字命理", "核心数字 / 年度数字", `生命路径 ${core.lifePath} / 个人年 ${core.personalYear}`, "校准执行节奏"]
+              ].map((row) => (
+                <tr key={row[0]}>{row.map((cell) => <td key={cell} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">六、综合评分</h4>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {scoreRows.map(([label, score]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="mt-1 text-xs text-ink/55">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">七、最终行动策略</h4>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {visibleReportSections(report).map((section) => (
+              <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
+                <p className="font-semibold text-[#063F4A]">{section.title}</p>
+                <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/60">
+            本综合报告为传统命理、易学与数字命理的文化参考和自我规划工具，不构成金融、法律、医疗或其他专业建议。
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
 
 function ZiweiReportPanel({ report }: { report: SavedReport }) {
-  const palaces = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "仆役宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
-  const stars = ["紫微 左辅", "贪狼 陀罗", "太阴 文曲", "天府 天钺", "武曲 七杀", "巨门 天刑"];
-  const years = ["2026", "2027", "2028", "2029", "2030", "2031"];
+  const input = report.metadata?.ziweiInput;
+  const palaceRows = getZiweiPalaceRows();
+  const luckRows = getZiweiLuckRows();
+  const annualRows = getZiweiAnnualRows();
+  const scoreRows = getZiweiScoreRows();
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-        <h4 className="font-semibold text-[#063F4A]">一、紫微命盘十二宫</h4>
-        <div className="mt-3 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/25">
-          {palaces.map((palace, index) => (
-            <div key={palace} className="min-h-28 border-b border-r border-[#C79A54]/20 p-3 text-sm">
-              <p className="font-semibold text-[#063F4A]">{palace}</p>
-              <p className="mt-2 text-base font-semibold text-[#C79A54]">{stars[index % stars.length]}</p>
-              <p className="mt-2 text-xs text-ink/50">{index * 10 + 3}~{index * 10 + 12}</p>
+    <div className="grid gap-4">
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">一、命盘基础资料</h4>
+            <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+              {[
+                ["命宫", "寅宫"],
+                ["身宫", "申宫"],
+                ["五行局", "阳男土五局"],
+                ["阴阳性别", input?.gender === "女" ? "阴女" : "阳男"],
+                ["主星", "紫微 · 天府"],
+                ["命主", "廉贞星"],
+                ["身主", "火星"],
+                ["重点", input ? ziweiFocusLabels[input.focus] : "综合命盘"]
+              ].map(([label, value]) => (
+                <p key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                  <span className="text-ink/52">{label}</span>
+                  <span className="ml-2 font-semibold text-[#3B1B66]">{value}</span>
+                </p>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid gap-3">
-        <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-          <h4 className="font-semibold text-[#063F4A]">二、命盘格局分析</h4>
-          <p className="mt-3 text-sm leading-6 text-ink/65">{report.summary}</p>
-        </div>
-        {report.sections.map((section) => (
-          <div key={section.title} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
-            <p className="font-semibold">{section.title}</p>
-            <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
           </div>
-        ))}
-      </div>
+          <div className="grid place-items-center rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5 text-center">
+            <p className="text-7xl text-[#3B1B66]">✦</p>
+            <p className="mt-3 text-2xl font-semibold text-[#3B1B66]">紫微星曜 · 洞悉天命</p>
+            <p className="mt-2 max-w-md text-sm leading-6 text-ink/60">以十二宫为人生数据桶，读取命宫、身宫、官禄、财帛、夫妻与流年触发，转化为可执行的人生规划。</p>
+          </div>
+        </div>
+      </section>
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
-        <h4 className="font-semibold text-[#063F4A]">三、大限与流年趋势</h4>
-        <div className="mt-3 grid gap-2 md:grid-cols-6">
-          {years.map((year, index) => (
-            <div key={year} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-              <p className="font-semibold text-[#063F4A]">{year}</p>
-              <p className="mt-2 text-xs leading-5 text-ink/58">{index % 2 ? "稳步提升，适合整合资源。" : "先守后攻，避免急进。"}</p>
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">二、十二宫命盘</h4>
+        <div className="mt-4 grid grid-cols-2 overflow-hidden rounded border border-[#C79A54]/35 md:grid-cols-4">
+          {palaceRows.map((row) => (
+            <div key={row.palace} className="min-h-40 border-b border-r border-[#C79A54]/20 p-3 text-sm">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-semibold text-[#3B1B66]">{row.palace}</p>
+                <span className="rounded bg-[#F5FAFA] px-2 py-0.5 text-xs text-ink/50">{row.age}</span>
+              </div>
+              <p className="mt-2 text-base font-semibold text-[#C79A54]">{row.stars}</p>
+              <p className="mt-1 text-xs text-ink/55">辅星：{row.minor}</p>
+              <p className="mt-1 text-xs text-[#7A1F16]">四化：{row.transform}</p>
+              <p className="mt-2 text-xs leading-5 text-ink/56">{row.summary}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["三、命宫分析", "命宫紫微天府，重格局、责任与管理能力。优势是稳、能承载、愿意做长期布局；弱点是容易想太多、行动慢半拍。"],
+          ["四、事业宫分析", "官禄宫利顾问、管理、教育、系统化服务、品牌与商业运营。适合带团队或打造标准化产品。"],
+          ["五、财帛宫分析", "武曲禄存守财帛，财运宜走正财、专业收入、长期合作和资产配置，投资需避开高杠杆。"],
+          ["六、感情健康", "夫妻宫重沟通与节奏，感情宜慢热稳定。疾厄宫提醒压力、睡眠、消化与规律作息。"]
+        ].map(([title, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#3B1B66]">{title}</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">七、大限运势表</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[840px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#3B1B66]">
+              <tr>{["年龄", "宫位", "主星", "运势简评"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {luckRows.map((row) => (
+                <tr key={row.join("-")}>{row.map((cell) => <td key={cell} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">八、未来十年流年</h4>
+        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
+          <table className="w-full min-w-[980px] text-left text-sm">
+            <thead className="bg-[#F5FAFA] text-[#3B1B66]">
+              <tr>{["年份", "触发宫位", "主题", "事业", "财运", "感情", "提醒"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-[#C79A54]/15">
+              {annualRows.map((row) => (
+                <tr key={row.year}>
+                  <td className="px-3 py-2 font-semibold">{row.year}</td>
+                  <td className="px-3 py-2 text-[#3B1B66]">{row.palace}</td>
+                  <td className="px-3 py-2">{row.theme}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.career}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.wealth}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.relationship}</td>
+                  <td className="px-3 py-2 text-ink/65">{row.reminder}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">九、评分摘要</h4>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {scoreRows.map(([label, score]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+                <p className="text-3xl font-semibold text-[#3B1B66]">{score}</p>
+                <p className="mt-1 text-xs text-ink/55">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十、重点星曜与建议</h4>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ["紫微", "格局、领导、责任，适合做长期品牌。"],
+              ["天府", "资源库、稳定、财库，利资产与管理。"],
+              ["武曲", "执行与财务纪律，适合正财累积。"],
+              ["贪狼", "人缘与创意，需防过度应酬。"],
+              ["幸运色", "紫色、金色、米白。"],
+              ["幸运方向", "西北、东南、北方。"],
+              ["幸运数字", "5、6、8。"],
+              ["风水建议", "办公桌后方宜稳，文件区分明，财务资料不可杂乱。"]
+            ].map(([label, content]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                <p className="font-semibold text-[#3B1B66]">{label}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/65">{content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/60">{ziweiDisclaimer}</p>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十一、AI 综合解析</h4>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {visibleReportSections(report).map((section) => (
+            <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
+              <p className="font-semibold text-[#3B1B66]">{section.title}</p>
+              <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
 
 function MeihuaReportPanel({ report }: { report: SavedReport }) {
-  const hexagrams = [
-    ["本卦", "天地否", "当前阻力较大，宜守不宜攻。"],
-    ["互卦", "风地观", "过程中要观察人心与局势细节。"],
-    ["变卦", "地山谦", "最终以谦和、稳进、借势为上。"]
-  ];
-  const lineRows = [0, 1, 0, 0, 1, 1];
+  const input = report.metadata?.meihuaInput;
+  const scoreRows = getMeihuaScoreRows();
+  const question = input?.specificQuestion || "当前问题";
+  const modeLabel = input?.mode === "random" ? "随机数字起卦" : "时间起卦";
 
   return (
-    <div className="grid gap-4 xl:grid-cols-3">
-      {hexagrams.map(([label, name, desc], index) => (
-        <div key={label} className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-          <h4 className="font-semibold text-[#063F4A]">{label}：{name}</h4>
-          <div className="my-5 grid justify-center gap-3">
-            {lineRows.map((broken, lineIndex) => (
-              <div key={`${label}-${lineIndex}`} className="flex justify-center gap-3">
-                {broken ? (
-                  <>
-                    <span className="h-2 w-14 rounded bg-[#102F38]" />
-                    <span className="h-2 w-14 rounded bg-[#102F38]" />
-                  </>
-                ) : (
-                  <span className="h-2 w-32 rounded bg-[#102F38]" />
-                )}
-              </div>
-            ))}
+    <div className="grid gap-4">
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <div className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr_0.8fr]">
+          <div>
+            <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、起卦说明</h4>
+            <div className="mt-3 space-y-2 text-sm leading-6 text-ink/65">
+              <p>起卦方式：{modeLabel}</p>
+              <p>数字：{input?.manualNumbers || "系统按时间取数"}</p>
+              <p>起卦时间：{input?.divinationDateTime || "当前时间"}</p>
+              <p>问题类别：{input ? meihuaCategoryLabels[input.questionCategory] : "综合"}</p>
+            </div>
           </div>
-          <p className="text-sm leading-6 text-ink/62">{desc}</p>
-          {index === 0 ? <p className="mt-3 text-sm font-semibold text-[#C79A54]">动爻：上六</p> : null}
+          <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4 text-center">
+            <p className="text-6xl text-[#063F4A]">☯</p>
+            <p className="mt-3 text-lg font-semibold text-[#7A1F16]">本卦：天地否 · 变卦：地山谦</p>
+            <p className="mt-2 text-sm leading-6 text-ink/60">上卦乾，下卦坤，动爻上六。先闭塞后转谦，宜以柔化刚，等待时机。</p>
+          </div>
+          <div className="rounded border border-[#C79A54]/25 bg-white p-4">
+            <p className="font-semibold text-[#063F4A]">占问事项</p>
+            <p className="mt-2 text-sm leading-6 text-ink/65">{question}</p>
+          </div>
         </div>
-      ))}
+      </section>
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4 xl:col-span-2">
-        <h4 className="font-semibold text-[#063F4A]">四、动爻解读与趋势</h4>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {report.sections.map((section) => (
+      <section className="grid gap-4 lg:grid-cols-2">
+        <article className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">二、本卦 · 当前局势</h4>
+          <HexagramLines lines={getMeihuaHexagramLines("main")} />
+          <div className="grid gap-2 text-sm md:grid-cols-2">
+            <p className="rounded bg-[#F5FAFA] p-3">上卦：乾（金）</p>
+            <p className="rounded bg-[#F5FAFA] p-3">下卦：坤（土）</p>
+          </div>
+          <p className="mt-3 text-sm leading-6 text-ink/65">天地否象，主上下不交、沟通未通。当前宜先守住节奏，厘清事实和资源，不宜急于硬推。</p>
+        </article>
+        <article className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">三、变卦 · 未来趋势</h4>
+          <HexagramLines lines={getMeihuaHexagramLines("change")} />
+          <div className="grid gap-2 text-sm md:grid-cols-2">
+            <p className="rounded bg-[#F5FAFA] p-3">上卦：坤（土）</p>
+            <p className="rounded bg-[#F5FAFA] p-3">下卦：艮（土）</p>
+          </div>
+          <p className="mt-3 text-sm leading-6 text-ink/65">地山谦象，未来靠降低姿态、稳住承诺、逐步推进而得转机。越急越堵，越稳越通。</p>
+        </article>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["四、动爻解读", "动爻在上六，代表事情已经到达一个必须调整表达方式的位置。转折不在硬冲，而在改变姿态与沟通角度。"],
+          ["五、五行生克", "本卦金土重，变卦土气更稳。土生金，利规则、凭证、流程；忌火气过盛导致急躁。喜用木水疏通。"],
+          ["六、体用分析", "体卦为坤土，用卦为乾金。用生体，外部资源可用，但需你先承接、整理、定边界。"],
+          ["七、时机预测", "短线宜先整理，3-7 天内适合沟通确认，15-30 天内可进入下一步执行窗口。"]
+        ].map(([title, content]) => (
+          <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
+            <h4 className="font-semibold text-[#7A1F16]">{title}</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/65">{content}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">八、综合解读</h4>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {visibleReportSections(report).map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-              <p className="font-semibold">{section.title}</p>
+              <p className="font-semibold text-[#063F4A]">{section.title}</p>
               <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="rounded border border-[#C79A54]/40 bg-white/80 p-4">
-        <h4 className="font-semibold text-[#063F4A]">五、吉凶方位与颜色</h4>
-        <div className="mt-4 grid gap-3 text-sm">
-          {[["吉方", "东南、北方"], ["吉色", "青色、蓝色、金色"], ["宜", "复盘、沟通、择时推进"], ["忌", "冲动签约、夜间决策"]].map(([label, value]) => (
-            <p key={label} className="flex justify-between gap-3 rounded bg-[#F5FAFA] px-3 py-2">
-              <span className="text-ink/52">{label}</span>
-              <span className="font-semibold">{value}</span>
-            </p>
-          ))}
+      <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">九、评分摘要</h4>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {scoreRows.map(([label, score]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
+                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="mt-1 text-xs text-ink/55">{label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">十、方位颜色与行动建议</h4>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ["吉方", "东南、北方；利沟通、学习、复盘。"],
+              ["忌方", "正南；火气旺时容易急躁。"],
+              ["幸运色", "青色、蓝色、金色。"],
+              ["避免色", "过多红色、强烈橙色。"],
+              ["现在要做", "整理证据、确认目标、约定下一步时间。"],
+              ["暂时避免", "冲动签约、夜间决策、口头承诺过多。"]
+            ].map(([label, content]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/65">{content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/60">{meihuaDisclaimer}</p>
+        </div>
+      </section>
     </div>
   );
 }
 
 function FullReportView({ report, memberProfile, onClose }: { report: SavedReport; memberProfile: MemberProfile; onClose: () => void }) {
   const template = reportTemplateType(report);
+  const baziInput = report.metadata?.baziInput;
+  const meihuaInput = report.metadata?.meihuaInput;
+  const ziweiInput = report.metadata?.ziweiInput;
+  const numerologyInput = report.metadata?.numerologyInput;
+  const displayName = baziInput?.fullName || memberProfile.name;
+  const displayGender = baziInput?.gender || memberProfile.gender;
+  const displayBirthDate = baziInput?.birthDate || memberProfile.birthDate;
+  const displayBirthTime = baziInput?.birthTime || memberProfile.birthTimeLabel;
+  const displayBirthLocation = baziInput?.birthLocation || memberProfile.region;
+  const headerName = meihuaInput?.fullName || displayName;
+  const headerGender = meihuaInput?.gender || displayGender;
+  const headerBirthDate = meihuaInput?.birthDate || displayBirthDate;
+  const headerBirthTime = meihuaInput?.birthTime || displayBirthTime;
+  const headerBirthLocation = meihuaInput?.birthLocation || displayBirthLocation;
+  const finalName = numerologyInput?.fullName || ziweiInput?.fullName || headerName;
+  const finalGender = numerologyInput?.gender || ziweiInput?.gender || headerGender;
+  const finalBirthDate = numerologyInput?.birthDate || ziweiInput?.birthDate || headerBirthDate;
+  const finalBirthTime = numerologyInput?.birthTime || ziweiInput?.birthTime || headerBirthTime;
+  const finalBirthLocation = ziweiInput?.birthLocation || headerBirthLocation;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 backdrop-blur-sm md:p-6">
       <div className="mx-auto max-w-7xl">
-        <div className="sticky top-3 z-10 mb-3 flex flex-wrap items-center justify-between gap-3 rounded border border-white/10 bg-[#063F4A] p-3 text-white shadow-soft">
+        <div className="no-print sticky top-3 z-10 mb-3 flex flex-wrap items-center justify-between gap-3 rounded border border-white/10 bg-[#063F4A] p-3 text-white shadow-soft">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Paid Report Preview</p>
             <h3 className="mt-1 text-xl font-semibold">{report.title} · {template}</h3>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => window.print()} className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">打印 / 存 PDF</button>
+            <span className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">Desktop / Mobile Preview</span>
+            <button type="button" onClick={() => window.print()} className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">导出 PDF</button>
             <button type="button" onClick={() => downloadReportSvg(report, memberProfile)} className="rounded bg-[#C79A54] px-3 py-2 text-sm font-semibold text-[#063F4A]">下载 SVG</button>
             <button type="button" onClick={onClose} className="grid size-10 place-items-center rounded bg-white/10" aria-label="关闭报告">
               <X className="size-5" />
@@ -2533,17 +3850,19 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
           </div>
         </div>
 
-        <article className="rounded border-4 border-[#C79A54] bg-[#fffaf0] p-5 text-[#102F38] shadow-2xl md:p-8">
+        <article className="report-print-area rounded border-4 border-[#C79A54] bg-[#fffaf0] p-5 text-[#102F38] shadow-2xl md:p-8">
           <header className="grid gap-5 border-b-2 border-[#C79A54]/45 pb-5 md:grid-cols-[0.75fr_1.1fr_0.8fr] md:items-center">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#C79A54]">AI Feng Shui Master</p>
-              <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{memberProfile.name}</h1>
+              <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{finalName}</h1>
             </div>
             <div className="text-sm leading-7">
               <h2 className="text-center text-4xl font-semibold tracking-[0.12em] text-[#063F4A]">{report.title} 完整报告</h2>
               <div className="mt-4 grid gap-1 rounded border border-[#C79A54]/25 bg-white/70 p-4">
-                <p>公历：{memberProfile.birthDate}　{memberProfile.birthTimeLabel}</p>
-                <p>性别：{memberProfile.gender}　地区：{memberProfile.region}</p>
+                <p>公历：{finalBirthDate}　{finalBirthTime}</p>
+                <p>农历：一九八零年 五月 初二日 酉时</p>
+                <p>性别：{finalGender}　地区：{finalBirthLocation}</p>
+                {meihuaInput ? <p>起卦：{meihuaInput.divinationDateTime}　问题：{meihuaInput.specificQuestion}</p> : null}
                 <p>Email：{memberProfile.email}</p>
                 <p>生成时间：{report.createdAt}　消耗：{report.points} 点</p>
               </div>
@@ -2556,12 +3875,14 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
 
           <div className="mt-5">
             {template === "八字命理" ? <BaziReportPanel report={report} memberProfile={memberProfile} /> : null}
+            {template === "综合命理" ? <IntegratedReportPanel report={report} /> : null}
+            {template === "数字命理" ? <NumerologyReportPanel report={report} /> : null}
             {template === "紫微斗数" ? <ZiweiReportPanel report={report} /> : null}
             {template === "梅花易数" ? <MeihuaReportPanel report={report} /> : null}
           </div>
 
           <footer className="mt-5 border-t border-[#C79A54]/35 pt-4 text-center text-xs leading-5 text-ink/50">
-            注：本报告基于传统命理学理与 AI 辅助分析，仅供参考。人生运势受多种因素影响，命运掌握在自己手中。
+            注：本报告基于传统命理学理与 AI 辅助分析，仅供文化参考、自我觉察与个人规划，不构成金融、法律、医疗或其他专业建议。
           </footer>
         </article>
       </div>
@@ -2584,8 +3905,55 @@ function WalletAndReports({
   const [selectedReport, setSelectedReport] = useState<SavedReport | null>(null);
   const [isFullReportOpen, setIsFullReportOpen] = useState(false);
   const [reportMessage, setReportMessage] = useState("生成后的报告会自动保存，之后可随时找回。");
+  const [baziActionMessage, setBaziActionMessage] = useState("填写资料后即可生成，报告会自动保存。");
+  const [isGeneratingBazi, setIsGeneratingBazi] = useState(false);
+  const [baziInput, setBaziInput] = useState<BaziReportInput>(() => defaultBaziReportInput(memberProfile));
+  const [meihuaActionMessage, setMeihuaActionMessage] = useState("输入问题后即可起卦生成完整报告。");
+  const [isGeneratingMeihua, setIsGeneratingMeihua] = useState(false);
+  const [meihuaInput, setMeihuaInput] = useState<MeihuaReportInput>(() => defaultMeihuaReportInput(memberProfile));
+  const [ziweiActionMessage, setZiweiActionMessage] = useState("填写资料后即可生成紫微斗数命盘。");
+  const [isGeneratingZiwei, setIsGeneratingZiwei] = useState(false);
+  const [ziweiInput, setZiweiInput] = useState<ZiweiReportInput>(() => defaultZiweiReportInput(memberProfile));
+  const [numerologyActionMessage, setNumerologyActionMessage] = useState("填写资料后即可生成数字命理完整报告。");
+  const [isGeneratingNumerology, setIsGeneratingNumerology] = useState(false);
+  const [numerologyInput, setNumerologyInput] = useState<NumerologyReportInput>(() => defaultNumerologyReportInput(memberProfile));
+  const [selectedPaidReport, setSelectedPaidReport] = useState<"integrated" | "bazi" | "ziwei" | "meihua" | "numerology">("integrated");
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const strategicReportTitles = new Set(["流年报告", "开业择日报告", "公司风水初步分析报告"]);
+
+  useEffect(() => {
+    setBaziInput((current) => ({
+      ...current,
+      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+    }));
+    setMeihuaInput((current) => ({
+      ...current,
+      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+    }));
+    setZiweiInput((current) => ({
+      ...current,
+      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+    }));
+    setNumerologyInput((current) => ({
+      ...current,
+      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime
+    }));
+  }, [memberProfile]);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(reportStorageKey);
@@ -2625,15 +3993,27 @@ function WalletAndReports({
 
       if (!mounted || !data?.length) return;
 
-      const cloudReports: SavedReport[] = data.map((report) => ({
-        id: report.id,
-        title: report.title,
-        tag: report.tag,
-        points: report.points,
-        createdAt: new Date(report.created_at).toLocaleString("zh-CN", { hour12: false }),
-        summary: report.summary,
-        sections: report.sections
-      }));
+      const cloudReports: SavedReport[] = data.map((report) => {
+        const metaSection = report.sections.find((section) => section.title === "__metadata");
+        let metadata: SavedReport["metadata"];
+
+        try {
+          metadata = metaSection ? (JSON.parse(metaSection.content) as SavedReport["metadata"]) : undefined;
+        } catch {
+          metadata = undefined;
+        }
+
+        return {
+          id: report.id,
+          title: report.title,
+          tag: report.tag,
+          points: report.points,
+          createdAt: new Date(report.created_at).toLocaleString("zh-CN", { hour12: false }),
+          summary: report.summary,
+          metadata,
+          sections: report.sections.filter((section) => section.title !== "__metadata")
+        };
+      });
       setSavedReports(cloudReports);
       setSelectedReport(cloudReports[0] || null);
       setReportMessage("已读取你的云端报告档案。");
@@ -2647,6 +4027,10 @@ function WalletAndReports({
   }, []);
 
   function isReportLocked(report: (typeof reportTypes)[number]) {
+    if (report.title === "八字命理测算完整报告") {
+      return false;
+    }
+
     return currentTier === "free" || (currentTier === "tactical" && strategicReportTitles.has(report.title));
   }
 
@@ -2667,11 +4051,23 @@ function WalletAndReports({
       tag: report.tag,
       points: report.points,
       summary: report.summary,
-      sections: report.sections
+      sections: report.metadata
+        ? [{ title: "__metadata", content: JSON.stringify(report.metadata) }, ...visibleReportSections(report)]
+        : visibleReportSections(report)
     });
   }
 
   function handleOpenReport(report: (typeof reportTypes)[number]) {
+    if (report.title === "八字命理测算完整报告") {
+      handleGenerateBaziReport();
+      return;
+    }
+
+    if (report.title === "数字命理测算完整报告") {
+      handleGenerateNumerologyReport();
+      return;
+    }
+
     if (isReportLocked(report)) {
       return;
     }
@@ -2689,6 +4085,214 @@ function WalletAndReports({
     setReportMessage(`${report.title} 已生成，并正在保存到云端档案。`);
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
     saveReportToCloud(generated).then(() => setReportMessage(`${report.title} 已保存，之后可以在报告档案找回。`));
+  }
+
+  async function handleGenerateBaziReport() {
+    if (!baziInput.fullName || !baziInput.birthDate) {
+      setBaziActionMessage("请先填写姓名与出生日期。");
+      setReportMessage("请先填写姓名与出生日期，才能生成八字命理完整报告。");
+      return;
+    }
+
+    if (points < baziReportCost || !onSpendPoints(baziReportCost, "bazi_destiny_report", "生成八字命理测算完整报告")) {
+      setBaziActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${baziReportCost} 点。`);
+      setReportMessage("点数不足，八字命理完整报告需要 380 点。请先充值点数后再生成。");
+      return;
+    }
+
+    setIsGeneratingBazi(true);
+    setBaziActionMessage("AI 正在生成报告，通常需要 10-30 秒。");
+    setReportMessage("AI 正在生成八字命理完整报告，请稍候。");
+    let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+
+    try {
+      const response = await fetch("/api/bazi-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(baziInput)
+      });
+      const payload = await response.json();
+
+      if (payload.summary && Array.isArray(payload.sections)) {
+        aiContent = {
+          summary: payload.summary,
+          sections: payload.sections
+        };
+      }
+    } catch {
+      aiContent = undefined;
+    } finally {
+      setIsGeneratingBazi(false);
+    }
+
+    const generated = createBaziDestinyReport(baziInput, aiContent);
+    const nextReports = [generated, ...savedReports].slice(0, 12);
+    setSavedReports(nextReports);
+    setSelectedReport(generated);
+    setIsFullReportOpen(true);
+    setBaziActionMessage("报告已生成并打开预览。");
+    setReportMessage("八字命理测算完整报告已生成，并正在保存到云端档案。");
+    window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage("八字命理测算完整报告已保存，之后可以在报告档案找回。"));
+  }
+
+  async function handleGenerateMeihuaReport() {
+    if (!meihuaInput.fullName || !meihuaInput.specificQuestion) {
+      setMeihuaActionMessage("请先填写姓名与具体问题。");
+      setReportMessage("请先填写姓名与具体问题，才能生成梅花易数完整报告。");
+      return;
+    }
+
+    if (points < meihuaReportCost || !onSpendPoints(meihuaReportCost, "meihua_divination_report", "生成梅花易数测算完整报告")) {
+      setMeihuaActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${meihuaReportCost} 点。`);
+      setReportMessage("点数不足，梅花易数完整报告需要 260 点。请先充值点数后再生成。");
+      return;
+    }
+
+    setIsGeneratingMeihua(true);
+    setMeihuaActionMessage("AI 正在起卦生成报告，通常需要 10-30 秒。");
+    setReportMessage("AI 正在生成梅花易数完整报告，请稍候。");
+    let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+
+    try {
+      const response = await fetch("/api/meihua-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(meihuaInput)
+      });
+      const payload = await response.json();
+      if (payload.summary && Array.isArray(payload.sections)) {
+        aiContent = { summary: payload.summary, sections: payload.sections };
+      }
+    } catch {
+      aiContent = undefined;
+    } finally {
+      setIsGeneratingMeihua(false);
+    }
+
+    const generated = createMeihuaDivinationReport(meihuaInput, aiContent);
+    const nextReports = [generated, ...savedReports].slice(0, 12);
+    setSavedReports(nextReports);
+    setSelectedReport(generated);
+    setIsFullReportOpen(true);
+    setMeihuaActionMessage("报告已生成并打开预览。");
+    setReportMessage("梅花易数测算完整报告已生成，并正在保存到云端档案。");
+    window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage("梅花易数测算完整报告已保存，之后可以在报告档案找回。"));
+  }
+
+  async function handleGenerateZiweiReport() {
+    if (!ziweiInput.fullName || !ziweiInput.birthDate) {
+      setZiweiActionMessage("请先填写姓名与出生日期。");
+      setReportMessage("请先填写姓名与出生日期，才能生成紫微斗数命盘报告。");
+      return;
+    }
+
+    if (points < ziweiReportCost || !onSpendPoints(ziweiReportCost, "ziwei_destiny_report", "生成紫微斗数命盘详细解析报告")) {
+      setZiweiActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${ziweiReportCost} 点。`);
+      setReportMessage("点数不足，紫微斗数命盘报告需要 420 点。请先充值点数后再生成。");
+      return;
+    }
+
+    setIsGeneratingZiwei(true);
+    setZiweiActionMessage("AI 正在排盘生成报告，通常需要 10-30 秒。");
+    setReportMessage("AI 正在生成紫微斗数命盘详细解析报告，请稍候。");
+    let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+
+    try {
+      const response = await fetch("/api/ziwei-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ziweiInput)
+      });
+      const payload = await response.json();
+      if (payload.summary && Array.isArray(payload.sections)) {
+        aiContent = { summary: payload.summary, sections: payload.sections };
+      }
+    } catch {
+      aiContent = undefined;
+    } finally {
+      setIsGeneratingZiwei(false);
+    }
+
+    const generated = createZiweiDestinyReport(ziweiInput, aiContent);
+    const nextReports = [generated, ...savedReports].slice(0, 12);
+    setSavedReports(nextReports);
+    setSelectedReport(generated);
+    setIsFullReportOpen(true);
+    setZiweiActionMessage("报告已生成并打开预览。");
+    setReportMessage("紫微斗数命盘详细解析报告已生成，并正在保存到云端档案。");
+    window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage("紫微斗数命盘详细解析报告已保存，之后可以在报告档案找回。"));
+  }
+
+  async function handleGenerateNumerologyReport() {
+    if (!numerologyInput.fullName || !numerologyInput.birthDate) {
+      setNumerologyActionMessage("请先填写姓名与出生日期。");
+      setReportMessage("请先填写姓名与出生日期，才能生成数字命理完整报告。");
+      return;
+    }
+
+    if (points < numerologyReportCost || !onSpendPoints(numerologyReportCost, "numerology_life_path_report", "生成数字命理测算完整报告")) {
+      setNumerologyActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${numerologyReportCost} 点。`);
+      setReportMessage("点数不足，数字命理完整报告需要 220 点。请先充值点数后再生成。");
+      return;
+    }
+
+    setIsGeneratingNumerology(true);
+    setNumerologyActionMessage("AI 正在计算数字命理报告，通常需要 10-30 秒。");
+    setReportMessage("AI 正在生成数字命理测算完整报告，请稍候。");
+    let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+
+    try {
+      const response = await fetch("/api/numerology-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(numerologyInput)
+      });
+      const payload = await response.json();
+      if (payload.summary && Array.isArray(payload.sections)) {
+        aiContent = { summary: payload.summary, sections: payload.sections };
+      }
+    } catch {
+      aiContent = undefined;
+    } finally {
+      setIsGeneratingNumerology(false);
+    }
+
+    const generated = createNumerologyLifePathReport(numerologyInput, aiContent);
+    const nextReports = [generated, ...savedReports].slice(0, 12);
+    setSavedReports(nextReports);
+    setSelectedReport(generated);
+    setIsFullReportOpen(true);
+    setNumerologyActionMessage("报告已生成并打开预览。");
+    setReportMessage("数字命理测算完整报告已生成，并正在保存到云端档案。");
+    window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage("数字命理测算完整报告已保存，之后可以在报告档案找回。"));
+  }
+
+  function handleGenerateIntegratedReport() {
+    if (!baziInput.fullName || !baziInput.birthDate) {
+      setBaziActionMessage("请先填写姓名与出生日期。");
+      setReportMessage("请先填写姓名与出生日期，才能生成综合命理决策报告。");
+      return;
+    }
+
+    if (points < integratedReportCost || !onSpendPoints(integratedReportCost, "integrated_destiny_report", "生成综合命理决策报告")) {
+      setBaziActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${integratedReportCost} 点。`);
+      setReportMessage("点数不足，综合命理决策报告需要 680 点。请先充值点数后再生成。");
+      return;
+    }
+
+    const generated = createIntegratedDestinyReport(baziInput);
+    const nextReports = [generated, ...savedReports].slice(0, 12);
+    setSavedReports(nextReports);
+    setSelectedReport(generated);
+    setIsFullReportOpen(true);
+    setBaziActionMessage("综合报告已生成并打开预览。");
+    setReportMessage("综合命理决策报告已生成，并正在保存到云端档案。");
+    window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
+    saveReportToCloud(generated).then(() => setReportMessage("综合命理决策报告已保存，之后可以在报告档案找回。"));
   }
 
   function handleSelectSaved(report: SavedReport) {
@@ -2736,8 +4340,371 @@ function WalletAndReports({
 
         <div className="mt-6 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
           <div>
+            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Choose Report</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">选择报告类型</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">建议优先使用综合命理决策报告，再按需要生成单项专业报告。</p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-ink/55">Step 1</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {[
+                  { id: "integrated", title: "综合命理决策报告", cost: integratedReportCost, desc: "八字 + 紫微 + 梅花 + 数字命理，适合重大决策", tone: "border-[#C79A54] bg-[#102F38] text-white" },
+                  { id: "bazi", title: "八字完整报告", cost: baziReportCost, desc: "命局底盘、五行、十神、大运流年", tone: "border-[#C79A54]/35 bg-white text-ink" },
+                  { id: "ziwei", title: "紫微斗数报告", cost: ziweiReportCost, desc: "十二宫、命宫、大限、事业财帛", tone: "border-[#C79A54]/35 bg-white text-ink" },
+                  { id: "meihua", title: "梅花易数报告", cost: meihuaReportCost, desc: "一事一问，看现状、转折与结果", tone: "border-[#C79A54]/35 bg-white text-ink" },
+                  { id: "numerology", title: "数字命理报告", cost: numerologyReportCost, desc: "生命路径、姓名能量、年度节奏", tone: "border-[#C79A54]/35 bg-white text-ink" }
+                ].map((item) => {
+                  const active = selectedPaidReport === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setSelectedPaidReport(item.id as typeof selectedPaidReport)}
+                      className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
+                        active ? item.tone : "border-black/10 bg-white text-ink"
+                      } ${item.id === "integrated" ? "md:col-span-2" : ""}`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-semibold">{item.title}</p>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#102F38]" : "bg-[#F5FAFA] text-ink/60"}`}>{item.cost} 点</span>
+                      </div>
+                      <p className={`mt-2 text-sm leading-6 ${active && item.id === "integrated" ? "text-white/70" : "text-ink/55"}`}>{item.desc}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            {selectedPaidReport === "integrated" ? (
+              <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Premium Integrated Report</p>
+                    <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">综合命理决策报告</h3>
+                    <p className="mt-2 text-sm leading-6 text-ink/58">结合八字、紫微斗数、梅花易数与数字命理，适合事业、合作、投资、转型等关键决策。</p>
+                  </div>
+                  <span className="rounded-full bg-[#102F38] px-3 py-1 text-xs font-semibold text-white">{integratedReportCost} 点</span>
+                </div>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  <label className="text-sm font-semibold">
+                    姓名
+                    <input value={baziInput.fullName} onChange={(event) => setBaziInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  </label>
+                  <label className="text-sm font-semibold">
+                    性别
+                    <select value={baziInput.gender} onChange={(event) => setBaziInput((current) => ({ ...current, gender: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                      <option value="男">男</option>
+                      <option value="女">女</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </label>
+                  <label className="text-sm font-semibold">
+                    出生日期
+                    <input type="date" value={baziInput.birthDate} onChange={(event) => setBaziInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  </label>
+                  <label className="text-sm font-semibold">
+                    出生时间
+                    <input type="time" value={baziInput.birthTime} onChange={(event) => setBaziInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  </label>
+                  <label className="text-sm font-semibold md:col-span-2">
+                    出生地点
+                    <input value={baziInput.birthLocation} onChange={(event) => setBaziInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  </label>
+                  <label className="text-sm font-semibold">
+                    历法
+                    <select value={baziInput.calendarType} onChange={(event) => setBaziInput((current) => ({ ...current, calendarType: event.target.value as BaziReportInput["calendarType"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                      <option value="Gregorian">Gregorian 公历</option>
+                      <option value="Lunar">Lunar 农历</option>
+                    </select>
+                  </label>
+                  <label className="text-sm font-semibold">
+                    决策重点
+                    <select value={baziInput.focus} onChange={(event) => setBaziInput((current) => ({ ...current, focus: event.target.value as BaziReportInput["focus"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                      <option value="career">事业 career</option>
+                      <option value="wealth">财运 wealth</option>
+                      <option value="relationship">感情 relationship</option>
+                      <option value="health">健康 health</option>
+                      <option value="business">商业 business</option>
+                      <option value="yearly luck">流年 yearly luck</option>
+                    </select>
+                  </label>
+                </div>
+                <button type="button" onClick={handleGenerateIntegratedReport} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#102F38] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0A0A0A]">
+                  <FileText className="size-4" /> 生成综合命理决策报告
+                </button>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
+                  <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
+                  <span className={points >= integratedReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>建议重大决策前使用四术合参，报告会自动保存。</span>
+                </div>
+              </div>
+            ) : null}
+            {selectedPaidReport === "bazi" ? (
+            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7A1F16]">Paid AI Report</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">八字命理测算完整报告</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">
+                    专业海报式报告，包含四柱、十神、五行、大运、流年、评分与实用建议。
+                  </p>
+                </div>
+                <span className="rounded-full bg-[#7A1F16] px-3 py-1 text-xs font-semibold text-white">{baziReportCost} 点</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <label className="text-sm font-semibold">
+                  姓名
+                  <input value={baziInput.fullName} onChange={(event) => setBaziInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  性别
+                  <select value={baziInput.gender} onChange={(event) => setBaziInput((current) => ({ ...current, gender: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  出生日期
+                  <input type="date" value={baziInput.birthDate} onChange={(event) => setBaziInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  出生时间
+                  <input type="time" value={baziInput.birthTime} onChange={(event) => setBaziInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold md:col-span-2">
+                  出生地点
+                  <input value={baziInput.birthLocation} onChange={(event) => setBaziInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  历法
+                  <select value={baziInput.calendarType} onChange={(event) => setBaziInput((current) => ({ ...current, calendarType: event.target.value as BaziReportInput["calendarType"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="Gregorian">Gregorian 公历</option>
+                    <option value="Lunar">Lunar 农历</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  重点问题
+                  <select value={baziInput.focus} onChange={(event) => setBaziInput((current) => ({ ...current, focus: event.target.value as BaziReportInput["focus"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="career">事业 career</option>
+                    <option value="wealth">财运 wealth</option>
+                    <option value="relationship">感情 relationship</option>
+                    <option value="health">健康 health</option>
+                    <option value="business">商业 business</option>
+                    <option value="yearly luck">流年 yearly luck</option>
+                  </select>
+                </label>
+              </div>
+              <button
+                type="button"
+                onClick={handleGenerateBaziReport}
+                disabled={isGeneratingBazi}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#7A1F16] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5f170f] disabled:cursor-wait disabled:bg-[#7A1F16]/60"
+              >
+                <FileText className="size-4" /> {isGeneratingBazi ? "AI 生成中..." : "生成八字完整报告"}
+              </button>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
+                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
+                <span className={points >= baziReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>
+                  {baziActionMessage}
+                </span>
+              </div>
+            </div>
+            ) : null}
+            {selectedPaidReport === "meihua" ? (
+            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7A1F16]">Paid Divination Report</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">梅花易数测算完整报告</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">适合一事一问：本卦看现状，动爻看转折，变卦看趋势。</p>
+                </div>
+                <span className="rounded-full bg-[#7A1F16] px-3 py-1 text-xs font-semibold text-white">{meihuaReportCost} 点</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <label className="text-sm font-semibold">
+                  姓名
+                  <input value={meihuaInput.fullName} onChange={(event) => setMeihuaInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  性别
+                  <select value={meihuaInput.gender} onChange={(event) => setMeihuaInput((current) => ({ ...current, gender: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  出生日期
+                  <input type="date" value={meihuaInput.birthDate} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  出生时间
+                  <input type="time" value={meihuaInput.birthTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold md:col-span-2">
+                  出生地点
+                  <input value={meihuaInput.birthLocation} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  问题类别
+                  <select value={meihuaInput.questionCategory} onChange={(event) => setMeihuaInput((current) => ({ ...current, questionCategory: event.target.value as MeihuaReportInput["questionCategory"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="career">事业</option>
+                    <option value="wealth">财运</option>
+                    <option value="relationship">感情</option>
+                    <option value="health">健康</option>
+                    <option value="business">商业</option>
+                    <option value="legal">法律 / 冲突</option>
+                    <option value="travel">出行 / 搬迁</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  起卦时间
+                  <input type="datetime-local" value={meihuaInput.divinationDateTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, divinationDateTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  起卦模式
+                  <select value={meihuaInput.mode} onChange={(event) => setMeihuaInput((current) => ({ ...current, mode: event.target.value as MeihuaReportInput["mode"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="time">Time-based mode 时间起卦</option>
+                    <option value="random">Random number mode 随机数字</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  手动数字
+                  <input value={meihuaInput.manualNumbers} onChange={(event) => setMeihuaInput((current) => ({ ...current, manualNumbers: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold md:col-span-2">
+                  具体问题
+                  <textarea value={meihuaInput.specificQuestion} onChange={(event) => setMeihuaInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+              </div>
+              <button type="button" onClick={handleGenerateMeihuaReport} disabled={isGeneratingMeihua} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#7A1F16] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5f170f] disabled:cursor-wait disabled:bg-[#7A1F16]/60">
+                <FileText className="size-4" /> {isGeneratingMeihua ? "AI 起卦中..." : "生成梅花易数完整报告"}
+              </button>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
+                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
+                <span className={points >= meihuaReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{meihuaActionMessage}</span>
+              </div>
+            </div>
+            ) : null}
+            {selectedPaidReport === "ziwei" ? (
+            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3B1B66]">Paid Zi Wei Report</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">紫微斗数命盘详细解析报告</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">十二宫命盘、大限流年、星曜重点与人生策略建议。</p>
+                </div>
+                <span className="rounded-full bg-[#3B1B66] px-3 py-1 text-xs font-semibold text-white">{ziweiReportCost} 点</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <label className="text-sm font-semibold">
+                  姓名
+                  <input value={ziweiInput.fullName} onChange={(event) => setZiweiInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  性别
+                  <select value={ziweiInput.gender} onChange={(event) => setZiweiInput((current) => ({ ...current, gender: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  出生日期
+                  <input type="date" value={ziweiInput.birthDate} onChange={(event) => setZiweiInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  出生时间
+                  <input type="time" value={ziweiInput.birthTime} onChange={(event) => setZiweiInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold md:col-span-2">
+                  出生地点
+                  <input value={ziweiInput.birthLocation} onChange={(event) => setZiweiInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  历法
+                  <select value={ziweiInput.calendarType} onChange={(event) => setZiweiInput((current) => ({ ...current, calendarType: event.target.value as ZiweiReportInput["calendarType"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="Gregorian">Gregorian 公历</option>
+                    <option value="Lunar">Lunar 农历</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  重点
+                  <select value={ziweiInput.focus} onChange={(event) => setZiweiInput((current) => ({ ...current, focus: event.target.value as ZiweiReportInput["focus"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="career">事业 Career</option>
+                    <option value="wealth">财运 Wealth</option>
+                    <option value="relationship">感情 Relationship</option>
+                    <option value="health">健康 Health</option>
+                    <option value="business">商业 Business</option>
+                    <option value="annual luck">流年 Annual luck</option>
+                  </select>
+                </label>
+              </div>
+              <button type="button" onClick={handleGenerateZiweiReport} disabled={isGeneratingZiwei} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#3B1B66] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2b124c] disabled:cursor-wait disabled:bg-[#3B1B66]/60">
+                <FileText className="size-4" /> {isGeneratingZiwei ? "AI 排盘中..." : "生成紫微斗数完整报告"}
+              </button>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
+                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
+                <span className={points >= ziweiReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{ziweiActionMessage}</span>
+              </div>
+            </div>
+            ) : null}
+            {selectedPaidReport === "numerology" ? (
+            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3B1B66]">Paid Numerology Report</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">数字命理测算完整报告</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">生命路径、姓名数字、1-9 能量图、人生周期、十年流年与幸运指南。</p>
+                </div>
+                <span className="rounded-full bg-[#102F38] px-3 py-1 text-xs font-semibold text-white">{numerologyReportCost} 点</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <label className="text-sm font-semibold">
+                  姓名
+                  <input value={numerologyInput.fullName} onChange={(event) => setNumerologyInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  性别
+                  <select value={numerologyInput.gender} onChange={(event) => setNumerologyInput((current) => ({ ...current, gender: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </label>
+                <label className="text-sm font-semibold">
+                  出生日期
+                  <input type="date" value={numerologyInput.birthDate} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold">
+                  出生时间（选填）
+                  <input type="time" value={numerologyInput.birthTime} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                </label>
+                <label className="text-sm font-semibold md:col-span-2">
+                  重点方向
+                  <select value={numerologyInput.focus} onChange={(event) => setNumerologyInput((current) => ({ ...current, focus: event.target.value as NumerologyReportInput["focus"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
+                    <option value="career">事业 Career</option>
+                    <option value="wealth">财富 Wealth</option>
+                    <option value="relationship">关系 Relationship</option>
+                    <option value="personal growth">个人成长 Personal growth</option>
+                    <option value="business">商业 Business</option>
+                    <option value="yearly luck">年度运势 Yearly luck</option>
+                  </select>
+                </label>
+              </div>
+              <button type="button" onClick={handleGenerateNumerologyReport} disabled={isGeneratingNumerology} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#102F38] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0A0A0A] disabled:cursor-wait disabled:bg-[#102F38]/60">
+                <FileText className="size-4" /> {isGeneratingNumerology ? "AI 计算中..." : "生成数字命理完整报告"}
+              </button>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
+                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
+                <span className={points >= numerologyReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{numerologyActionMessage}</span>
+              </div>
+            </div>
+            ) : null}
             <div className="grid gap-3 sm:grid-cols-2">
-              {reportTypes.map((report) => {
+              {reportTypes.filter((report) => !["八字命理测算完整报告", "梅花易数测算完整报告", "紫微斗数命盘详细解析报告", "数字命理测算完整报告"].includes(report.title)).map((report) => {
                 const locked = isReportLocked(report);
 
                 return (
@@ -2849,7 +4816,7 @@ function WalletAndReports({
                 </div>
 
                 <div className="mt-5 grid gap-3">
-                  {selectedReport.sections.map((section) => (
+                  {visibleReportSections(selectedReport).map((section) => (
                     <div key={section.title} className="rounded border border-black/10 bg-rice p-4">
                       <p className="font-semibold">{section.title}</p>
                       <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
@@ -3071,7 +5038,7 @@ function PartnerCommandCenter({
           <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-[#E8D4A8]">团队规模模拟</p>
+                <p className="text-sm font-semibold text-[#E8D4A8]">团队规模概览</p>
                 <p className="mt-1 text-sm text-white/60">当前视角：已招收 {totalPartnerMembers} 位创业配套 + 126 位 Free 会员。</p>
               </div>
               <button
@@ -3939,13 +5906,16 @@ export default function DashboardPage() {
   const router = useRouter();
   const moduleContentRef = useRef<HTMLElement | null>(null);
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
-  const [currentTier, setCurrentTier] = useState<MembershipTier>("tactical");
+  const [currentTier, setCurrentTier] = useState<MembershipTier>("free");
   const [pointBalance, setPointBalance] = useState(2680);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(demoMemberProfile);
   const [referralCode, setReferralCode] = useState("HQ001");
   const [sponsorCode, setSponsorCode] = useState("HQ001");
   const [referralSource, setReferralSource] = useState("organic_hq");
+  const [partnerPackage, setPartnerPackage] = useState<PartnerPackage>("none");
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
+  const [membershipMessage, setMembershipMessage] = useState("正式模式：会员等级只会在付款成功后由系统升级。");
+  const hasPartnerAccess = partnerPackage !== "none";
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const accountStats = dashboardStats.map((stat) => {
@@ -4004,6 +5974,7 @@ export default function DashboardPage() {
           setMemberProfile(profileRowToMemberProfile(profile));
           setCurrentTier(profile.membership_tier);
           setPointBalance(profile.credit_balance);
+          setPartnerPackage((profile.partner_package as PartnerPackage | undefined) || (metadata.partner_package as PartnerPackage | undefined) || "none");
           setReferralCode((metadata.referral_code as string | undefined) || `YIXI-${user.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`);
           setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
           setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
@@ -4016,6 +5987,7 @@ export default function DashboardPage() {
           setReferralCode((metadata.referral_code as string | undefined) || "HQ001");
           setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
           setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
+          setPartnerPackage((metadata.partner_package as PartnerPackage | undefined) || "none");
         }
         setAuthStatus("authenticated");
       }
@@ -4062,10 +6034,27 @@ export default function DashboardPage() {
   }
 
   function openModule(module: DashboardModule) {
+    if (module === "partner" && !hasPartnerAccess) {
+      setMembershipMessage("创业会员经营中心只开放给已购买 8888 / 16888 / 38888 创业配套的会员。普通 Free、进阶会员版、高阶战略版无法进入。");
+      setActiveModule("wallet");
+      window.setTimeout(() => {
+        moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+      return;
+    }
+
     setActiveModule(module);
     window.setTimeout(() => {
       moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
+  }
+
+  function requestMembershipUpgrade(tier: MembershipTier) {
+    const plan = membershipTiers.find((item) => item.id === tier);
+    if (!plan || tier === currentTier) return;
+
+    setMembershipMessage(`已选择 ${plan.name}（${plan.price}）。下一步应连接 Stripe / FPX / 本地支付网关创建订阅订单，付款成功后后台自动升级会员。`);
+    openModule("wallet");
   }
 
   if (authStatus !== "authenticated") {
@@ -4106,7 +6095,11 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <MembershipPlanPanel currentTier={currentTier} onChangeTier={setCurrentTier} />
+          <div className="mt-4 rounded border border-[#C79A54]/30 bg-[#fffaf0] px-4 py-3 text-sm font-semibold text-[#063F4A]">
+            {membershipMessage}
+            <span className="mt-1 block text-xs font-medium text-ink/55">创业配套状态：{partnerPackageLabels[partnerPackage]}</span>
+          </div>
+          <MembershipPlanPanel currentTier={currentTier} onRequestUpgrade={requestMembershipUpgrade} />
           <OnboardingPanel onOpenModule={openModule} />
           <TodayRecommendedActions onOpenModule={openModule} />
           <MoodCheckInPanel onOpenModule={openModule} />
@@ -4120,14 +6113,20 @@ export default function DashboardPage() {
               <p className="text-sm text-ink/55">当前打开：{active.title}</p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-              {modules.map((module) => (
-                <ModuleCard
-                  key={module.id}
-                  module={module}
-                  active={module.id === activeModule}
-                  onClick={() => openModule(module.id)}
-                />
-              ))}
+              {modules.map((module) => {
+                const partnerLocked = module.id === "partner" && !hasPartnerAccess;
+
+                return (
+                  <ModuleCard
+                    key={module.id}
+                    module={module}
+                    active={module.id === activeModule}
+                    locked={partnerLocked}
+                    lockLabel="创业配套"
+                    onClick={() => openModule(module.id)}
+                  />
+                );
+              })}
             </div>
           </section>
 
@@ -4162,7 +6161,7 @@ export default function DashboardPage() {
             {activeModule === "invite" ? (
               <InviteFriendsModule referralCode={referralCode} sponsorCode={sponsorCode} referralSource={referralSource} />
             ) : null}
-            {activeModule === "partner" ? (
+            {activeModule === "partner" && hasPartnerAccess ? (
               <PartnerCommandCenter referralCode={referralCode} onOpenModule={openModule} />
             ) : null}
             {activeModule === "wallet" ? (
