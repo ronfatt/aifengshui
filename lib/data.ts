@@ -237,10 +237,10 @@ export const closeLoop = [
 ];
 
 export const dashboardStats = [
-  { label: "当前点数", value: "2,680", change: "+800 课程赠送", icon: WalletCards },
-  { label: "今日 AI 次数", value: "12", change: "Plus 剩余额度充足", icon: Bot },
-  { label: "推荐收益", value: "RM3,191.55", change: "三层团队 46 人", icon: Network },
-  { label: "待完成报告", value: "3", change: "2 份可生成 PDF", icon: ClipboardList }
+  { label: "当前点数", value: "0", change: "注册后按真实余额显示", icon: WalletCards },
+  { label: "今日 AI 次数", value: "0", change: "正式测试从 0 开始", icon: Bot },
+  { label: "推荐收益", value: "RM0", change: "推荐成交后自动累积", icon: Network },
+  { label: "待完成报告", value: "0", change: "生成后自动保存", icon: ClipboardList }
 ];
 
 export const dailyRituals = [
@@ -280,12 +280,12 @@ export const recentInsights = [
 ];
 
 export const adminStats = [
-  { label: "今日注册", value: "128", icon: UsersRound },
-  { label: "今日销售额", value: "RM42,860", icon: BadgeDollarSign },
-  { label: "点数充值金额", value: "RM18,240", icon: CircleDollarSign },
-  { label: "AI 使用次数", value: "9,482", icon: Bot },
-  { label: "课程销售额", value: "RM76,900", icon: BookOpenCheck },
-  { label: "推荐成交", value: "318", icon: HandCoins }
+  { label: "今日注册", value: "0", icon: UsersRound },
+  { label: "今日销售额", value: "RM0", icon: BadgeDollarSign },
+  { label: "点数充值金额", value: "RM0", icon: CircleDollarSign },
+  { label: "AI 使用次数", value: "0", icon: Bot },
+  { label: "课程销售额", value: "RM0", icon: BookOpenCheck },
+  { label: "推荐成交", value: "0", icon: HandCoins }
 ];
 
 export const adminModules = [
@@ -311,253 +311,140 @@ export const navItems = [
 ];
 
 export const orderKpis = [
-  { label: "今日订单", value: "86", note: "+14% vs 昨日" },
-  { label: "待付款", value: "12", note: "Pending payment" },
-  { label: "已付款待处理", value: "18", note: "Paid / Processing" },
-  { label: "待发货 / 开通", value: "9", note: "Fulfillment queue" },
-  { label: "退款中", value: "3", note: "Refund review" },
-  { label: "今日实收", value: "RM38,420", note: "Cash received" }
+  { label: "今日订单", value: "0", note: "等待真实订单" },
+  { label: "待付款", value: "0", note: "Pending payment" },
+  { label: "已付款待处理", value: "0", note: "Paid / Processing" },
+  { label: "待发货 / 开通", value: "0", note: "Fulfillment queue" },
+  { label: "退款中", value: "0", note: "Refund review" },
+  { label: "今日实收", value: "RM0", note: "Cash received" }
 ];
 
 export const orderPipeline = [
-  { status: "Pending", count: 12 },
-  { status: "Paid", count: 31 },
-  { status: "Processing", count: 18 },
-  { status: "Completed", count: 22 },
-  { status: "Refunded", count: 3 },
-  { status: "Cancelled", count: 4 }
+  { status: "Pending", count: 0 },
+  { status: "Paid", count: 0 },
+  { status: "Processing", count: 0 },
+  { status: "Completed", count: 0 },
+  { status: "Refunded", count: 0 },
+  { status: "Cancelled", count: 0 }
 ];
 
-export const orderExceptions = [
-  { title: "Manual Bank 待审核", orderId: "FS-20394", severity: "High", desc: "银行转账凭证未审核，暂不触发佣金。" },
-  { title: "Paid 但库存未扣", orderId: "FS-20401", severity: "High", desc: "产品订单已付款，但库存自动扣减失败。" },
-  { title: "退款后佣金未追回", orderId: "FS-20377", severity: "Medium", desc: "退款订单需要执行 commission clawback。" },
-  { title: "AI 报告未生成", orderId: "FS-20392", severity: "Medium", desc: "报告订单已处理，但 PDF 生成队列仍未完成。" }
-];
+export const orderExceptions: {
+  title: string;
+  orderId: string;
+  severity: string;
+  desc: string;
+}[] = [];
 
-export const orders = [
-  {
-    id: "FS-20391",
-    type: "Credit Top-up",
-    customer: "Lim Mei",
-    userId: "USR-1028",
-    amount: "RM500",
-    paymentMethod: "FPX",
-    paymentStatus: "Paid",
-    fulfillmentStatus: "Points issued",
-    commissionStatus: "Not applicable",
-    stockStatus: "Not applicable",
-    status: "Completed",
-    createdAt: "2026-04-29 09:42",
-    item: "5,000 点数充值",
-    automation: ["点数已发放", "订单收据已发送", "团队业绩已更新"],
-    logs: ["09:42 FPX paid", "09:43 Credits issued", "09:43 Receipt sent"]
-  },
-  {
-    id: "FS-20392",
-    type: "AI Reports",
-    customer: "Tan Wei",
-    userId: "USR-1041",
-    amount: "RM188",
-    paymentMethod: "Stripe",
-    paymentStatus: "Paid",
-    fulfillmentStatus: "Generating report",
-    commissionStatus: "Pending",
-    stockStatus: "Not applicable",
-    status: "Processing",
-    createdAt: "2026-04-29 10:18",
-    item: "事业深度报告",
-    automation: ["报告队列已创建", "点数已扣除", "佣金待生成"],
-    logs: ["10:18 Stripe paid", "10:19 Report job created", "10:22 PDF pending"]
-  },
-  {
-    id: "FS-20393",
-    type: "Course Orders",
-    customer: "Alicia Wong",
-    userId: "USR-0988",
-    amount: "RM1,288",
-    paymentMethod: "Credit Card",
-    paymentStatus: "Paid",
-    fulfillmentStatus: "Course opened",
-    commissionStatus: "Approved",
-    stockStatus: "Not applicable",
-    status: "Completed",
-    createdAt: "2026-04-29 11:06",
-    item: "家居风水实战营",
-    automation: ["课程已开通", "赠送点数已发放", "佣金已生成"],
-    logs: ["11:06 Card paid", "11:07 Course access opened", "11:07 Commission approved"]
-  },
-  {
-    id: "FS-20394",
-    type: "Agent Packages",
-    customer: "Jason Lee",
-    userId: "USR-1112",
-    amount: "RM8,888",
-    paymentMethod: "Manual Bank",
-    paymentStatus: "Pending Review",
-    fulfillmentStatus: "On hold",
-    commissionStatus: "Hold",
-    stockStatus: "Reserved",
-    status: "Pending",
-    createdAt: "2026-04-29 11:31",
-    item: "8888 创业启动包",
-    automation: ["等待银行转账审核", "未升级会员", "未生成佣金"],
-    logs: ["11:31 Order created", "11:32 Proof uploaded", "Pending admin approval"]
-  },
-  {
-    id: "FS-20401",
-    type: "Product Orders",
-    customer: "Nadia Chong",
-    userId: "USR-1150",
-    amount: "RM328",
-    paymentMethod: "Stripe",
-    paymentStatus: "Paid",
-    fulfillmentStatus: "Packing",
-    commissionStatus: "Pending",
-    stockStatus: "Deduction failed",
-    status: "Processing",
-    createdAt: "2026-04-29 12:08",
-    item: "招财水晶摆件",
-    automation: ["付款成功", "库存扣减失败", "佣金暂缓"],
-    logs: ["12:08 Stripe paid", "12:09 Stock deduction failed", "12:09 Ops alert created"]
-  }
-];
+export const orders: {
+  id: string;
+  type: string;
+  customer: string;
+  userId: string;
+  amount: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  fulfillmentStatus: string;
+  commissionStatus: string;
+  stockStatus: string;
+  status: string;
+  createdAt: string;
+  item: string;
+  automation: string[];
+  logs: string[];
+}[] = [];
 
 export const financeRevenue = [
-  { label: "今日收入", value: "RM42,860", note: "+18% vs 昨日" },
-  { label: "本月收入", value: "RM612,480", note: "目标达成 76%" },
-  { label: "年度收入", value: "RM4.82M", note: "订阅 + 代理包驱动" }
+  { label: "今日收入", value: "RM0", note: "等待真实订单" },
+  { label: "本月收入", value: "RM0", note: "等待真实订单" },
+  { label: "年度收入", value: "RM0", note: "等待真实订单" }
 ];
 
 export const financeExecutiveKpis = [
-  { label: "Gross Revenue", value: "RM642,180", note: "订单总额，未扣退款/手续费" },
-  { label: "Net Revenue", value: "RM612,480", note: "扣除退款后可确认收入" },
-  { label: "Gross Profit", value: "RM508,240", note: "扣产品成本与课程交付成本" },
-  { label: "Net Profit", value: "RM418,900", note: "扣 AI、Hosting、Gateway、佣金" },
-  { label: "Cash In Today", value: "RM38,420", note: "今日实际到账" },
-  { label: "Pending Payout", value: "RM29,860", note: "待支付佣金与提现" }
+  { label: "Gross Revenue", value: "RM0", note: "订单总额，未扣退款/手续费" },
+  { label: "Net Revenue", value: "RM0", note: "扣除退款后可确认收入" },
+  { label: "Gross Profit", value: "RM0", note: "扣产品成本与课程交付成本" },
+  { label: "Net Profit", value: "RM0", note: "扣 AI、Hosting、Gateway、佣金" },
+  { label: "Cash In Today", value: "RM0", note: "今日实际到账" },
+  { label: "Pending Payout", value: "RM0", note: "待支付佣金与提现" }
 ];
 
 export const revenueBreakdown = [
-  { source: "Subscription", amount: "RM168,900", pct: "27.6%" },
-  { source: "Credit top-up", amount: "RM124,800", pct: "20.4%" },
-  { source: "Product sales", amount: "RM98,640", pct: "16.1%" },
-  { source: "Course sales", amount: "RM132,200", pct: "21.6%" },
-  { source: "AI reports", amount: "RM45,940", pct: "7.5%" },
-  { source: "Agent packages", amount: "RM42,000", pct: "6.8%" }
+  { source: "Subscription", amount: "RM0", pct: "0%" },
+  { source: "Credit top-up", amount: "RM0", pct: "0%" },
+  { source: "Product sales", amount: "RM0", pct: "0%" },
+  { source: "Course sales", amount: "RM0", pct: "0%" },
+  { source: "AI reports", amount: "RM0", pct: "0%" },
+  { source: "Agent packages", amount: "RM0", pct: "0%" }
 ];
 
-export const paymentReconciliation = [
-  {
-    gateway: "Stripe",
-    orders: "RM142,880",
-    received: "RM140,620",
-    fee: "RM4,286",
-    net: "RM136,334",
-    settlement: "2026-04-30",
-    status: "Matched"
-  },
-  {
-    gateway: "FPX",
-    orders: "RM188,420",
-    received: "RM188,420",
-    fee: "RM1,884",
-    net: "RM186,536",
-    settlement: "2026-04-29",
-    status: "Matched"
-  },
-  {
-    gateway: "Manual Bank",
-    orders: "RM72,000",
-    received: "RM63,112",
-    fee: "RM0",
-    net: "RM63,112",
-    settlement: "Pending",
-    status: "Mismatch"
-  }
-];
+export const paymentReconciliation: {
+  gateway: string;
+  orders: string;
+  received: string;
+  fee: string;
+  net: string;
+  settlement: string;
+  status: string;
+}[] = [];
 
 export const costCenter = [
-  { category: "OpenAI / Gemini API", amount: "RM7,860", pct: "1.28% of net revenue" },
-  { category: "Vercel Hosting", amount: "RM1,420", pct: "0.23% of net revenue" },
-  { category: "Database & Storage", amount: "RM860", pct: "0.14% of net revenue" },
-  { category: "Storage / File", amount: "RM200", pct: "0.03% of net revenue" },
-  { category: "Payment Gateway Fees", amount: "RM8,940", pct: "1.46% of net revenue" },
-  { category: "Product COGS", amount: "RM54,220", pct: "55.0% product revenue" },
-  { category: "Course Delivery", amount: "RM12,600", pct: "9.5% course revenue" },
-  { category: "Commission Cost", amount: "RM108,880", pct: "17.8% of net revenue" }
+  { category: "OpenAI / Gemini API", amount: "RM0", pct: "0% of net revenue" },
+  { category: "Vercel Hosting", amount: "RM0", pct: "0% of net revenue" },
+  { category: "Database & Storage", amount: "RM0", pct: "0% of net revenue" },
+  { category: "Storage / File", amount: "RM0", pct: "0% of net revenue" },
+  { category: "Payment Gateway Fees", amount: "RM0", pct: "0% of net revenue" },
+  { category: "Product COGS", amount: "RM0", pct: "0% product revenue" },
+  { category: "Course Delivery", amount: "RM0", pct: "0% course revenue" },
+  { category: "Commission Cost", amount: "RM0", pct: "0% of net revenue" }
 ];
 
-export const transactionRecords = [
-  {
-    userId: "USR-1028",
-    orderId: "FS-20391",
-    amount: "RM500",
-    method: "FPX",
-    status: "Paid",
-    timestamp: "2026-04-29 09:42",
-    source: "Credit top-up"
-  },
-  {
-    userId: "USR-1041",
-    orderId: "FS-20392",
-    amount: "RM188",
-    method: "Stripe",
-    status: "Processing",
-    timestamp: "2026-04-29 10:18",
-    source: "AI reports"
-  },
-  {
-    userId: "USR-0988",
-    orderId: "FS-20393",
-    amount: "RM1,288",
-    method: "Credit Card",
-    status: "Completed",
-    timestamp: "2026-04-29 11:06",
-    source: "Course sales"
-  },
-  {
-    userId: "USR-1112",
-    orderId: "FS-20394",
-    amount: "RM8,888",
-    method: "Manual Bank",
-    status: "Pending",
-    timestamp: "2026-04-29 11:31",
-    source: "Agent packages"
-  }
-];
+export const transactionRecords: {
+  userId: string;
+  orderId: string;
+  amount: string;
+  method: string;
+  status: string;
+  timestamp: string;
+  source: string;
+}[] = [];
 
-export const aiCostRecords = [
-  { userId: "USR-1028", requests: 42, avgCost: "RM0.018", daily: "RM0.76", monthly: "RM18.40" },
-  { userId: "USR-1041", requests: 18, avgCost: "RM0.042", daily: "RM0.76", monthly: "RM9.62" },
-  { userId: "USR-0988", requests: 96, avgCost: "RM0.026", daily: "RM2.50", monthly: "RM64.10" }
-];
+export const aiCostRecords: {
+  userId: string;
+  requests: number;
+  avgCost: string;
+  daily: string;
+  monthly: string;
+}[] = [];
 
 export const aiMarginRows = [
-  { feature: "普通 AI 问答", revenue: "RM18,640", cost: "RM1,120", margin: "94.0%", costPerReq: "RM0.012" },
-  { feature: "深度分析", revenue: "RM42,880", cost: "RM3,240", margin: "92.4%", costPerReq: "RM0.038" },
-  { feature: "PDF 报告", revenue: "RM45,940", cost: "RM2,680", margin: "94.2%", costPerReq: "RM0.118" },
-  { feature: "奇门 / 梅花推演", revenue: "RM21,260", cost: "RM820", margin: "96.1%", costPerReq: "RM0.052" }
+  { feature: "普通 AI 问答", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
+  { feature: "深度分析", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
+  { feature: "PDF 报告", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
+  { feature: "奇门 / 梅花推演", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" }
 ];
 
 export const profitSummary = [
-  { label: "总收入", value: "RM612,480" },
-  { label: "AI 成本", value: "RM7,860" },
-  { label: "Hosting 成本", value: "RM2,480" },
-  { label: "净利润", value: "RM602,140" }
+  { label: "总收入", value: "RM0" },
+  { label: "AI 成本", value: "RM0" },
+  { label: "Hosting 成本", value: "RM0" },
+  { label: "净利润", value: "RM0" }
 ];
 
-export const commissionRecords = [
-  { id: "COM-8821", agent: "Tan Wei", source: "Pro 订阅", amount: "RM58.80", status: "Pending" },
-  { id: "COM-8822", agent: "Lim Mei", source: "课程订单", amount: "RM193.20", status: "Approved" },
-  { id: "COM-8823", agent: "Alicia Wong", source: "产品销售", amount: "RM68.80", status: "Paid" }
-];
+export const commissionRecords: {
+  id: string;
+  agent: string;
+  source: string;
+  amount: string;
+  status: string;
+}[] = [];
 
-export const withdrawalRequests = [
-  { id: "WD-1048", user: "Tan Wei", amount: "RM420", method: "Bank Transfer", status: "Pending Review" },
-  { id: "WD-1049", user: "Lim Mei", amount: "RM1,260", method: "DuitNow", status: "Approved" },
-  { id: "WD-1050", user: "Jason Lee", amount: "RM300", method: "Bank Transfer", status: "Paid" }
-];
+export const withdrawalRequests: {
+  id: string;
+  user: string;
+  amount: string;
+  method: string;
+  status: string;
+}[] = [];
 
 export const withdrawalRiskChecks = [
   { check: "KYC verified", status: "Required", note: "未验证不可提现" },
@@ -628,23 +515,28 @@ export const inventoryProducts = [
   }
 ];
 
-export const stockMovements = [
-  { id: "STK-8841", sku: "FS-BRC-001", type: "Stock in", qty: "+80", reason: "Supplier restock", timestamp: "2026-04-28 16:20" },
-  { id: "STK-8842", sku: "FS-CRY-002", type: "Stock out", qty: "-3", reason: "Paid order auto deduction", timestamp: "2026-04-29 09:48" },
-  { id: "STK-8843", sku: "FS-ARO-003", type: "Adjustment", qty: "-2", reason: "Damaged unit", timestamp: "2026-04-29 10:10" }
-];
+export const stockMovements: {
+  id: string;
+  sku: string;
+  type: string;
+  qty: string;
+  reason: string;
+  timestamp: string;
+}[] = [];
 
 export const inventoryReports = [
-  { label: "Best-selling", value: "五行平衡手串", note: "326 sold / month" },
-  { label: "Low stock alerts", value: "2 SKU", note: "水晶摆件、香氛盒" },
-  { label: "Inventory value", value: "RM42,680", note: "按成本价估算" }
+  { label: "Best-selling", value: "暂无", note: "等待真实销售" },
+  { label: "Low stock alerts", value: "0 SKU", note: "按真实库存阈值计算" },
+  { label: "Inventory value", value: "RM0", note: "按成本价估算" }
 ];
 
-export const productProfitRows = [
-  { product: "五行平衡手串", sold: 326, revenue: "RM61,288", profit: "RM37,816", margin: "61.7%" },
-  { product: "办公室布局套装", sold: 58, revenue: "RM39,904", profit: "RM21,924", margin: "54.9%" },
-  { product: "招财水晶摆件", sold: 74, revenue: "RM24,272", profit: "RM13,468", margin: "55.5%" }
-];
+export const productProfitRows: {
+  product: string;
+  sold: number;
+  revenue: string;
+  profit: string;
+  margin: string;
+}[] = [];
 
 export const paymentFlow = [
   { title: "支付成功", icon: PackageCheck },
@@ -672,113 +564,22 @@ export type DownlineMember = {
 };
 
 export const downlineTree: DownlineMember = {
-  id: "u-root",
-  name: "Lim Mei",
-  code: "FENG-LIM88",
-  level: "Plus",
+  id: "current-member",
+  name: "当前会员",
+  code: "HQ001",
+  level: "Free",
   relationLevel: 0,
-  status: "活跃",
-  joinedAt: "2026-01-06",
-  sales: "RM12,860",
-  commission: "RM3,191.55",
-  points: "2,680",
-  children: [
-    {
-      id: "u-101",
-      name: "Tan Wei",
-      code: "FENG-TAN21",
-      level: "Pro",
-      relationLevel: 1,
-      status: "活跃",
-      joinedAt: "2026-02-12",
-      sales: "RM5,388",
-      commission: "RM1,077.60",
-      points: "1,420",
-      children: [
-        {
-          id: "u-201",
-          name: "Alicia Wong",
-          code: "FENG-ALI09",
-          level: "Plus",
-          relationLevel: 2,
-          status: "活跃",
-          joinedAt: "2026-03-02",
-          sales: "RM1,288",
-          commission: "RM128.80",
-          points: "820",
-          children: [
-            {
-              id: "u-301",
-              name: "Jason Lee",
-              code: "FENG-JAS18",
-              level: "Free",
-              relationLevel: 3,
-              status: "跟进中",
-              joinedAt: "2026-03-28",
-              sales: "RM399",
-              commission: "RM19.95",
-              points: "120"
-            }
-          ]
-        },
-        {
-          id: "u-202",
-          name: "Chong Kai",
-          code: "FENG-CHK37",
-          level: "Free",
-          relationLevel: 2,
-          status: "跟进中",
-          joinedAt: "2026-03-10",
-          sales: "RM188",
-          commission: "RM18.80",
-          points: "60"
-        }
-      ]
-    },
-    {
-      id: "u-102",
-      name: "Nora Ismail",
-      code: "FENG-NOR52",
-      level: "Master",
-      relationLevel: 1,
-      status: "活跃",
-      joinedAt: "2026-02-18",
-      sales: "RM8,888",
-      commission: "RM1,777.60",
-      points: "5,900",
-      children: [
-        {
-          id: "u-203",
-          name: "Goh Xin",
-          code: "FENG-GOH11",
-          level: "Pro",
-          relationLevel: 2,
-          status: "活跃",
-          joinedAt: "2026-03-22",
-          sales: "RM1,688",
-          commission: "RM168.80",
-          points: "1,260"
-        }
-      ]
-    },
-    {
-      id: "u-103",
-      name: "Raymond Ho",
-      code: "FENG-RAY77",
-      level: "Free",
-      relationLevel: 1,
-      status: "沉睡",
-      joinedAt: "2026-02-26",
-      sales: "RM0",
-      commission: "RM0",
-      points: "30"
-    }
-  ]
+  status: "跟进中",
+  joinedAt: "-",
+  sales: "RM0",
+  commission: "RM0",
+  points: "0",
+  children: []
 };
 
 export const downlineSummary = [
-  { label: "直属下线", value: "3", helper: "第一代 20%" },
-  { label: "团队总人数", value: "7", helper: "含二代、三代" },
-  { label: "团队销售", value: "RM17,839", helper: "本月累计" },
-  { label: "预计佣金", value: "RM3,191.55", helper: "按 20% / 10% / 5%" }
+  { label: "直属下线", value: "0", helper: "第一代 20%" },
+  { label: "团队总人数", value: "0", helper: "含二代、三代" },
+  { label: "团队销售", value: "RM0", helper: "按真实订单计算" },
+  { label: "预计佣金", value: "RM0", helper: "20% / 10% / 5%" }
 ];

@@ -8,6 +8,10 @@ type CreditBody = {
   description?: string;
 };
 
+const memberRewardRules: Record<string, number> = {
+  divination_checkin_reward: 18
+};
+
 export async function PATCH(request: Request) {
   const supabase = createServerSupabaseClient();
   const token = request.headers.get("authorization")?.replace("Bearer ", "").trim();
@@ -32,6 +36,9 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "点数变化不合法。" }, { status: 400 });
   }
 
+  const source = body.source || "member_usage";
+  const allowedRewardAmount = memberRewardRules[source];
+
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("id,credit_balance")
@@ -42,7 +49,52 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "找不到会员资料。" }, { status: 404 });
   }
 
-  const nextBalance = profile.credit_balance + delta;
+  if (delta > 0) {
+    if (delta !== allowedRewardAmount) {
+      return NextResponse.json(
+        { error: "会员端不允许自行增加点数。请通过支付、推荐奖励或后台审核发放。" },
+        { status: 403 }
+      );
+    }
+
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0);
+    const { data: existingReward } = await supabase
+      .from("credit_transactions")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("source", source)
+      .gte("created_at", todayStart.toISOString())
+      .limit(1);
+
+    if (existingReward?.length) {
+      return NextResponse.json({ creditBalance: profile.credit_balance, alreadyRewarded: true });
+    }
+
+    const nextBalance = profile.credit_balance + delta;
+    const { data: updatedProfile, error: updateError } = await supabase
+      .from("profiles")
+      .update({ credit_balance: nextBalance, updated_at: new Date().toISOString() })
+      .eq("id", user.id)
+      .select("credit_balance")
+      .single();
+
+    if (updateError || !updatedProfile) {
+      return NextResponse.json({ error: "点数奖励发放失败。" }, { status: 500 });
+    }
+
+    await supabase.from("credit_transactions").insert({
+      user_id: user.id,
+      amount: delta,
+      source,
+      description: body.description || "会员端每日打卡奖励"
+    });
+
+    return NextResponse.json({ creditBalance: updatedProfile.credit_balance });
+  }
+
+  const spendAmount = Math.abs(delta);
+  const nextBalance = profile.credit_balance - spendAmount;
 
   if (nextBalance < 0) {
     return NextResponse.json({ error: "点数不足。" }, { status: 400 });
@@ -52,17 +104,18 @@ export async function PATCH(request: Request) {
     .from("profiles")
     .update({ credit_balance: nextBalance, updated_at: new Date().toISOString() })
     .eq("id", user.id)
+    .gte("credit_balance", spendAmount)
     .select("credit_balance")
     .single();
 
   if (updateError || !updatedProfile) {
-    return NextResponse.json({ error: "点数更新失败。" }, { status: 500 });
+    return NextResponse.json({ error: "点数不足或更新失败。" }, { status: 400 });
   }
 
   await supabase.from("credit_transactions").insert({
     user_id: user.id,
     amount: delta,
-    source: body.source || "member_usage",
+    source,
     description: body.description || "会员端功能点数变化"
   });
 

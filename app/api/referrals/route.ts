@@ -43,9 +43,6 @@ function statusFor(user: ReferralUser): DownlineMember["status"] {
 }
 
 function estimateSales(user: ReferralUser, relationLevel: 0 | 1 | 2 | 3) {
-  if (relationLevel === 0) return 0;
-  if (user.tier === "strategic") return 8888;
-  if (user.tier === "tactical") return 399;
   return 0;
 }
 

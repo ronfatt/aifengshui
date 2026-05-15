@@ -67,12 +67,19 @@ export default function AuthPage() {
       }
 
       const userId = data.user?.id;
+      const accessToken = data.session?.access_token;
 
       if (userId) {
+        if (!accessToken) {
+          setMessage("注册成功，请先完成邮箱验证后再登录建立会员资料。");
+          return;
+        }
+
         const profileResponse = await fetch("/api/auth/profile", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
           },
           body: JSON.stringify({
             userId,

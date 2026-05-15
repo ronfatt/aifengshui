@@ -68,7 +68,7 @@ const moduleTabs = [
     title: "用户管理",
     desc: "会员资料、等级、点数、冻结、团队",
     icon: UsersRound,
-    stat: "3 users"
+    stat: "0 users"
   },
   {
     id: "credits",
@@ -89,7 +89,7 @@ const moduleTabs = [
     title: "Finance",
     desc: "收入、成本、利润、佣金、提现",
     icon: CircleDollarSign,
-    stat: "RM612,480"
+    stat: "RM0"
   },
   {
     id: "accounting",
@@ -110,21 +110,21 @@ const moduleTabs = [
     title: "Stock Keeper",
     desc: "SKU、库存流水、低库存、产品利润",
     icon: Warehouse,
-    stat: "4 SKU"
+    stat: "0 SKU"
   },
   {
     id: "courses",
     title: "课程管理",
     desc: "课程、价格、报名、签到、证书",
     icon: BookOpenCheck,
-    stat: "3 courses"
+    stat: "0 courses"
   },
   {
     id: "orders",
     title: "Orders",
     desc: "订单状态、支付审核、履约跟踪",
     icon: Banknote,
-    stat: "4 orders"
+    stat: "0 orders"
   },
   {
     id: "agents",
@@ -138,7 +138,7 @@ const moduleTabs = [
     title: "支付审核",
     desc: "银行转账、网关对账、人工审核",
     icon: Landmark,
-    stat: "5 reviews"
+    stat: "0 reviews"
   },
   {
     id: "system",
@@ -205,56 +205,7 @@ type AdminUserRecord = {
   referralSource: string;
 };
 
-const userSeed: AdminUserRecord[] = [
-  {
-    id: "USR-1001",
-    name: "冯家奇",
-    email: "ronfatt@gmail.com",
-    phone: "0111313131",
-    tier: "进阶会员版",
-    status: "Active",
-    points: 860,
-    birth: "1980-06-14 17:30",
-    gender: "男",
-    team: "46 人",
-    aiUsage: "12 次 / 今日",
-    referralCode: "YIXI-RON01",
-    sponsorCode: "HQ001",
-    referralSource: "organic_hq"
-  },
-  {
-    id: "USR-1002",
-    name: "陈美玲",
-    email: "may@example.com",
-    phone: "0129988776",
-    tier: "高阶战略版",
-    status: "Active",
-    points: 1680,
-    birth: "1991-09-22 09:15",
-    gender: "女",
-    team: "18 人",
-    aiUsage: "8 次 / 今日",
-    referralCode: "YIXI-MAY01",
-    sponsorCode: "YIXI-RON01",
-    referralSource: "member_referral"
-  },
-  {
-    id: "USR-1003",
-    name: "Lim Wei",
-    email: "lim@example.com",
-    phone: "0162233445",
-    tier: "Free",
-    status: "Frozen",
-    points: 35,
-    birth: "1988-03-02 13:00",
-    gender: "男",
-    team: "2 人",
-    aiUsage: "1 次 / 今日",
-    referralCode: "YIXI-LIM01",
-    sponsorCode: "HQ001",
-    referralSource: "invalid_ref_fallback"
-  }
-];
+const userSeed: AdminUserRecord[] = [];
 
 const creditPackageSeed = [
   { name: "入门补充包", price: "RM30", points: 300, bonus: 0, status: "Active" },
@@ -286,19 +237,25 @@ const agentPackageSeed = [
   { name: "38888 区域导师", price: "RM38,888", points: 48888, tier: "Regional", commission: "30% / 12% / 6%", poolShare: "50% 池", status: "Draft" }
 ];
 
-const paymentReviewSeed = [
-  { id: "PAY-9201", user: "冯家奇", order: "ORD-2038", amount: "RM188", method: "Bank Transfer", status: "Pending Review", proof: "receipt-2038.jpg" },
-  { id: "PAY-9202", user: "陈美玲", order: "ORD-2041", amount: "RM1,288", method: "FPX", status: "Matched", proof: "gateway-fpx" },
-  { id: "PAY-9203", user: "Lim Wei", order: "ORD-2044", amount: "RM39.90", method: "Stripe", status: "Matched", proof: "stripe-session" }
-];
+const paymentReviewSeed: {
+  id: string;
+  user: string;
+  order: string;
+  amount: string;
+  method: string;
+  status: string;
+  proof: string;
+}[] = [];
 
-const poolParticipantSeed = [
-  { id: "P-38888-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "38888 区域导师", status: "Eligible", joinedAt: "2026-04-01", activity: "已完成认证 · 有团队成交" },
-  { id: "P-16888-001", name: "陈美玲", email: "may@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-04-10", activity: "已完成认证 · 活跃推广" },
-  { id: "P-16888-002", name: "Tan Wei", email: "tan@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-04-18", activity: "已完成认证 · 有效订单" },
-  { id: "P-8888-001", name: "Lim Wei", email: "lim@example.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-04-05", activity: "基础培训完成" },
-  { id: "P-8888-002", name: "Joanne Lee", email: "joanne@example.com", packageName: "8888 创业启动包", status: "Hold", joinedAt: "2026-04-20", activity: "待完成合规推广确认" }
-];
+const poolParticipantSeed: {
+  id: string;
+  name: string;
+  email: string;
+  packageName: string;
+  status: string;
+  joinedAt: string;
+  activity: string;
+}[] = [];
 
 const poolTiers = [
   { packageName: "38888 区域导师", share: 50, label: "区域导师池" },
@@ -307,18 +264,19 @@ const poolTiers = [
 ];
 
 const ceoCashSnapshot = [
-  { label: "今日实收现金", value: "RM38,420", note: "已入账 / 不含待审转账" },
-  { label: "本月销售额", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
-  { label: "AI 成本", value: "RM4,280", note: "本月 OpenAI / Gemini 估算" },
-  { label: "Pool Share 总池", value: "RM30,624", note: "待月结审批" }
+  { label: "今日实收现金", value: "RM0", note: "已入账 / 不含待审转账" },
+  { label: "本月销售额", value: "RM0", note: "订阅、报告、课程、产品、配套" },
+  { label: "AI 成本", value: "RM0", note: "本月 OpenAI / Gemini 估算" },
+  { label: "Pool Share 总池", value: "RM0", note: "待月结审批" }
 ] as const;
 
-const ceoRiskQueue = [
-  { title: "银行转账待审核", count: "5", module: "payments", priority: "High", desc: "审核前不发放点数、不触发佣金。" },
-  { title: "退款后佣金追回", count: "3", module: "orders", priority: "High", desc: "需要 clawback，避免多发佣金。" },
-  { title: "低库存 SKU", count: "2", module: "stock", priority: "Medium", desc: "影响产品商城成交与发货体验。" },
-  { title: "Pool Share 待审批", count: "1", module: "pool", priority: "Medium", desc: "月结前需锁定净业绩口径。" }
-] as const;
+const ceoRiskQueue: {
+  title: string;
+  count: string;
+  module: string;
+  priority: string;
+  desc: string;
+}[] = [];
 
 const ceoOperatingChecklist = [
   { title: "确认今日收款与订单差异", module: "finance" },
@@ -572,10 +530,10 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
           <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">待审批事项</h3>
           <div className="mt-4 grid gap-3">
             {[
-              ["佣金待批", "RM18,420", "finance"],
-              ["提现待批", "7 requests", "finance"],
-              ["Pool Share", "RM30,624", "pool"],
-              ["手动转账", "5 payments", "payments"]
+              ["佣金待批", "RM0", "finance"],
+              ["提现待批", "0 requests", "finance"],
+              ["Pool Share", "RM0", "pool"],
+              ["手动转账", "0 payments", "payments"]
             ].map(([label, value, module]) => (
               <button key={label} type="button" onClick={() => onOpenModule(module as ActiveModule)} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3 text-left transition hover:border-[#C79A54]/60">
                 <span className="text-sm font-semibold">{label}</span>
@@ -661,18 +619,16 @@ function AccountingExportModule() {
     CreditAccount: "Accrued Platform Cost"
   }));
 
-  const poolShareRows = [
-    {
-      Period: "2026-05",
-      PoolName: "Partner Performance Pool",
-      PoolRate: "5%",
-      PoolAmountMYR: "30624",
-      DebitAccount: "Partner Pool Expense",
-      CreditAccount: "Partner Pool Payable",
-      Status: "Pending Approval",
-      Note: "Final payout after refund clawback and finance approval"
-    }
-  ];
+  const poolShareRows: {
+    Period: string;
+    PoolName: string;
+    PoolRate: string;
+    PoolAmountMYR: string;
+    DebitAccount: string;
+    CreditAccount: string;
+    Status: string;
+    Note: string;
+  }[] = [];
 
   const doubleEntryRows = [
     ...orders.flatMap((order) => {
@@ -725,27 +681,7 @@ function AccountingExportModule() {
           Memo: "Commission payable pending approval / payout"
         }
       ];
-    }),
-    {
-      Date: "2026-05",
-      JournalID: "JE-POOL-2026-05-DR",
-      Source: "POOL-2026-05",
-      Line: "Debit",
-      Account: "5300 Partner Pool Expense",
-      DebitMYR: "30624",
-      CreditMYR: "0",
-      Memo: "Monthly partner performance pool"
-    },
-    {
-      Date: "2026-05",
-      JournalID: "JE-POOL-2026-05-CR",
-      Source: "POOL-2026-05",
-      Line: "Credit",
-      Account: "2100 Partner Pool Payable",
-      DebitMYR: "0",
-      CreditMYR: "30624",
-      Memo: "Pool Share payable after finance approval"
-    }
+    })
   ];
 
   const bankReconciliationRows = paymentReconciliation.map((row) => ({
@@ -771,12 +707,14 @@ function AccountingExportModule() {
     SubmissionMode: "CSV now / API later"
   }));
 
-  const auditTrailRows = [
-    { Time: "2026-05-11 09:10", Actor: "Finance Admin", Action: "Calculated Pool Share", Entity: "POOL-2026-05", Before: "Draft", After: "Pending Approval" },
-    { Time: "2026-05-11 09:18", Actor: "Admin", Action: "Adjusted credits", Entity: "ronfatt@gmail.com", Before: "0", After: "10000" },
-    { Time: "2026-05-11 09:26", Actor: "Ops Admin", Action: "Approved manual bank transfer", Entity: "PAY-9201", Before: "Pending Review", After: "Approved" },
-    { Time: "2026-05-11 09:32", Actor: "System", Action: "Queued commission clawback", Entity: "FS-20377", Before: "Paid", After: "Clawback Pending" }
-  ];
+  const auditTrailRows: {
+    Time: string;
+    Actor: string;
+    Action: string;
+    Entity: string;
+    Before: string;
+    After: string;
+  }[] = [];
 
   const exportPacks: {
     title: string;
@@ -853,7 +791,7 @@ function AccountingExportModule() {
       desc: "业绩共享池总额、应付科目、审批状态",
       rows: poolShareRows,
       fileName: "pool-share-payable-export.csv",
-      total: "1 pool"
+      total: `${poolShareRows.length} pool`
     }
   ];
 
@@ -1808,17 +1746,14 @@ function FinanceModule() {
 }
 
 function PartnerPoolModule() {
-  const [grossRevenue, setGrossRevenue] = useState("612480");
-  const [refunds, setRefunds] = useState("18420");
-  const [gatewayFees, setGatewayFees] = useState("7420");
-  const [excludedRevenue, setExcludedRevenue] = useState("12880");
+  const [grossRevenue, setGrossRevenue] = useState("0");
+  const [refunds, setRefunds] = useState("0");
+  const [gatewayFees, setGatewayFees] = useState("0");
+  const [excludedRevenue, setExcludedRevenue] = useState("0");
   const [poolRate, setPoolRate] = useState("5");
   const [participants, setParticipants] = useState(poolParticipantSeed);
   const [poolStatus, setPoolStatus] = useState("Pending");
-  const [auditLogs, setAuditLogs] = useState([
-    "2026-05-07 10:00 Draft pool created by Finance Admin",
-    "2026-05-07 10:05 Eligible revenue basis set to net collected revenue"
-  ]);
+  const [auditLogs, setAuditLogs] = useState<string[]>([]);
 
   const eligibleRevenue = Math.max(0, parseMoney(grossRevenue) - parseMoney(refunds) - parseMoney(gatewayFees) - parseMoney(excludedRevenue));
   const poolTotal = eligibleRevenue * ((Number(poolRate) || 0) / 100);

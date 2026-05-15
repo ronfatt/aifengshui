@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-import { demoMemberProfile, type MemberProfile } from "@/lib/member-profile";
+import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
+import { rateLimitRequest } from "@/lib/rate-limit";
 
 const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
 const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
@@ -36,14 +38,14 @@ type DailyFortuneRequest = {
 };
 
 async function generateFortune({
-  profile = demoMemberProfile,
+  profile = emptyMemberProfile,
   memberLevel = "进阶会员版"
 }: {
   profile?: Partial<MemberProfile>;
   memberLevel?: string;
 }) {
   const activeProfile = {
-    ...demoMemberProfile,
+    ...emptyMemberProfile,
     ...profile
   };
 
@@ -113,6 +115,18 @@ ${JSON.stringify(dailyMatrix, null, 2)}
 }
 
 export async function POST(request: Request) {
+  const limited = rateLimitRequest(request, { scope: "daily-fortune", limit: 12, windowMs: 60_000 });
+
+  if (limited) {
+    return limited;
+  }
+
+  const { errorResponse } = await requireAuthenticatedUser(request);
+
+  if (errorResponse) {
+    return errorResponse;
+  }
+
   const body = (await request.json().catch(() => ({}))) as DailyFortuneRequest;
   return generateFortune({
     profile: body.profile,

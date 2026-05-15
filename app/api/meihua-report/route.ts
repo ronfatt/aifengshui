@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { rateLimitRequest } from "@/lib/rate-limit";
 
 type MeihuaReportBody = {
   fullName?: string;
@@ -32,6 +34,18 @@ function fallbackReport(body: MeihuaReportBody) {
 }
 
 export async function POST(request: Request) {
+  const limited = rateLimitRequest(request, { scope: "meihua-report", limit: 6, windowMs: 60_000 });
+
+  if (limited) {
+    return limited;
+  }
+
+  const { errorResponse } = await requireAuthenticatedUser(request);
+
+  if (errorResponse) {
+    return errorResponse;
+  }
+
   const body = (await request.json().catch(() => ({}))) as MeihuaReportBody;
 
   if (!hasOpenAIKey) {

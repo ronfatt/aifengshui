@@ -22,7 +22,7 @@ type JournalPostBody = {
   lines?: JournalLineInput[];
 };
 
-const demoAccounts = [
+const defaultAccounts = [
   { code: "1000", name: "Cash / Bank", type: "asset", normal_balance: "debit" },
   { code: "1100", name: "Payment Gateway Clearing", type: "asset", normal_balance: "debit" },
   { code: "2000", name: "Commission Payable", type: "liability", normal_balance: "credit" },
@@ -33,7 +33,7 @@ const demoAccounts = [
 ];
 
 function adminEmails() {
-  return (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "ronfatt@gmail.com")
+  return (process.env.ADMIN_EMAILS || "ronfatt@gmail.com,charles.leongch@gmail.com,calven1313@gmail.com")
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
@@ -93,7 +93,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         configured: false,
         message: "Accounting ledger 表还没部署。请在 Supabase SQL Editor 执行 supabase/schema.sql 最新内容。",
-        accounts: demoAccounts,
+        accounts: defaultAccounts,
         journals: [],
         lines: [],
         auditLogs: []

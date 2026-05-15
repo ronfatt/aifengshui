@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-import { demoMemberProfile } from "@/lib/member-profile";
+import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { emptyMemberProfile } from "@/lib/member-profile";
+import { rateLimitRequest } from "@/lib/rate-limit";
 
 type ChatRequest = {
   message?: string;
@@ -75,6 +77,18 @@ ${isStrategicTier ? "5. 3 个行动路线" : "5. 3 个建议行动"}
 
 export async function POST(request: Request) {
   try {
+    const limited = rateLimitRequest(request, { scope: "fengshui-chat", limit: 20, windowMs: 60_000 });
+
+    if (limited) {
+      return limited;
+    }
+
+    const { errorResponse } = await requireAuthenticatedUser(request);
+
+    if (errorResponse) {
+      return errorResponse;
+    }
+
     const body = (await request.json()) as ChatRequest;
     const message = body.message?.trim();
 
@@ -105,8 +119,8 @@ export async function POST(request: Request) {
       input: buildPrompt({
         message,
         memberLevel: body.memberLevel || "Plus",
-        points: body.points ?? 2680,
-        profile: body.profile || demoMemberProfile
+        points: body.points ?? 0,
+        profile: body.profile || emptyMemberProfile
       })
     });
 

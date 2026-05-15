@@ -1,14 +1,13 @@
-export const demoMemberProfile = {
-  name: "冯家奇",
-  birthDate: "1980-06-14",
-  birthYear: "1980",
-  birthTime: "17:30",
-  birthTimeLabel: "下午 5 点 30 分",
-  gender: "男",
-  email: "testing@gmail.com",
-  phone: "0111313131",
+export const emptyMemberProfile = {
+  name: "未填写",
+  birthDate: "",
+  birthYear: "",
+  birthTime: "",
+  birthTimeLabel: "未填写",
+  gender: "未填写",
+  email: "",
+  phone: "",
   region: "Malaysia / Kuala Lumpur"
 };
 
-export type MemberProfile = typeof demoMemberProfile;
-
+export type MemberProfile = typeof emptyMemberProfile;

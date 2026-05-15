@@ -13,7 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "ronfatt@gmail.com")
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "ronfatt@gmail.com,charles.leongch@gmail.com,calven1313@gmail.com")
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);

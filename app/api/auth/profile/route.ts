@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isSupabaseServiceConfigured } from "@/lib/supabase/config";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { requireAuthenticatedUser } from "@/lib/api-auth";
 
 type ProfilePayload = {
   userId?: string;
@@ -30,13 +31,17 @@ function generateReferralCode(name: string, userId: string) {
 }
 
 export async function POST(request: Request) {
-  const supabase = createServerSupabaseClient();
+  const { supabase, user, errorResponse } = await requireAuthenticatedUser(request);
 
   if (!supabase) {
     return NextResponse.json(
       { error: "会员系统暂时维护中，请稍后再试。" },
       { status: 503 }
     );
+  }
+
+  if (errorResponse || !user) {
+    return errorResponse;
   }
 
   if (!isSupabaseServiceConfigured) {
@@ -55,6 +60,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "姓名、生日、性别、Email 与 userId 为必填。" }, { status: 400 });
   }
 
+  if (body.userId !== user.id) {
+    return NextResponse.json({ error: "不能替其他会员建立或修改资料。" }, { status: 403 });
+  }
+
+  const verifiedEmail = user.email || body.email;
   const referralCode = generateReferralCode(body.name, body.userId);
 
   const { data, error } = await supabase
@@ -65,7 +75,7 @@ export async function POST(request: Request) {
       birth_date: body.birthDate,
       birth_time: body.birthTime || null,
       gender: body.gender,
-      email: body.email,
+      email: verifiedEmail,
       phone: body.phone || null,
       region: body.region || "Malaysia / Kuala Lumpur",
       membership_tier: "free",
@@ -121,7 +131,7 @@ export async function POST(request: Request) {
           user_id: sponsorProfile.id,
           amount: referralReward,
           source: "referral_signup_reward",
-          description: `${body.email} 完成注册推荐奖励`
+          description: `${verifiedEmail} 完成注册推荐奖励`
         });
       }
     }

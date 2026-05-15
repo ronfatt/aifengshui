@@ -1,4 +1,4 @@
-import { demoMemberProfile } from "@/lib/member-profile";
+import { emptyMemberProfile } from "@/lib/member-profile";
 import type { ProfileRow } from "@/lib/supabase/types";
 
 export function profileRowToMemberProfile(profile: ProfileRow) {
@@ -11,7 +11,7 @@ export function profileRowToMemberProfile(profile: ProfileRow) {
     gender: profile.gender,
     email: profile.email,
     phone: profile.phone || "",
-    region: profile.region || demoMemberProfile.region
+    region: profile.region || emptyMemberProfile.region
   };
 }
 

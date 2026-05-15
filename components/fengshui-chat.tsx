@@ -2,7 +2,8 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { BookOpenCheck, Bot, FileText, Loader2, Send, ShoppingBag, Sparkles } from "lucide-react";
-import { demoMemberProfile, type MemberProfile } from "@/lib/member-profile";
+import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 type Message = {
   role: "user" | "assistant" | "system";
@@ -96,7 +97,7 @@ export function FengshuiChat({
   tier = "tactical",
   tierName = "进阶会员版",
   aiMode = "战术行动指南",
-  profile = demoMemberProfile,
+  profile = emptyMemberProfile,
   points = 0,
   onSpendPoints,
   onRefundPoints
@@ -109,6 +110,20 @@ export function FengshuiChat({
   const tierCopy = tierModeCopy[tier];
   const isFree = tier === "free";
   const chatCost = tier === "strategic" ? 8 : tier === "tactical" ? 5 : 1;
+
+  async function getMemberAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      return "";
+    }
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
 
   useEffect(() => {
     if (!isLoading) {
@@ -163,6 +178,13 @@ export function FengshuiChat({
       return;
     }
 
+    const accessToken = await getMemberAccessToken();
+
+    if (!accessToken) {
+      setMessages((current) => [...current, { role: "system", content: "登录状态已过期，请重新登录后再使用 AI 风水师。" }]);
+      return;
+    }
+
     if (onSpendPoints && !onSpendPoints(chatCost, "ai_chat", `AI 风水师聊天：${message.slice(0, 36)}`)) {
       setMessages((current) => [...current, { role: "system", content: `点数不足，本次 AI 问答需要 ${chatCost} 点。请先充值或邀请好友获得奖励点数。` }]);
       return;
@@ -176,7 +198,8 @@ export function FengshuiChat({
       const response = await fetch("/api/fengshui-chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           message,

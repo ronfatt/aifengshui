@@ -11,7 +11,7 @@ type CreditPatchBody = {
 };
 
 function adminEmails() {
-  return (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "ronfatt@gmail.com")
+  return (process.env.ADMIN_EMAILS || "ronfatt@gmail.com,charles.leongch@gmail.com,calven1313@gmail.com")
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);

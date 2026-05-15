@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-import { isSupabaseServiceConfigured } from "@/lib/supabase/config";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { rateLimitRequest } from "@/lib/rate-limit";
 
 function normalizeCode(code?: string) {
   return code?.trim().toUpperCase() || "";
@@ -93,23 +93,19 @@ async function generateAiBackground() {
 }
 
 export async function POST(request: Request) {
-  const supabase = createServerSupabaseClient();
-  const token = request.headers.get("authorization")?.replace("Bearer ", "").trim();
+  const limited = rateLimitRequest(request, { scope: "referral-poster", limit: 3, windowMs: 60_000 });
 
-  if (!supabase || !isSupabaseServiceConfigured || !token) {
-    return NextResponse.json({ error: "请先登录会员账号。" }, { status: 401 });
+  if (limited) {
+    return limited;
   }
 
-  const {
-    data: { user },
-    error: authError
-  } = await supabase.auth.getUser(token);
+  const { user, errorResponse } = await requireAuthenticatedUser(request);
 
-  if (authError || !user) {
-    return NextResponse.json({ error: "会员登录已过期，请重新登录。" }, { status: 401 });
+  if (errorResponse || !user) {
+    return errorResponse;
   }
 
-  const origin = request.headers.get("origin") || new URL(request.url).origin;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
   const referralCode = normalizeCode(user.user_metadata?.referral_code as string | undefined) || fallbackReferralCode(user.id, user.email);
   const inviteLink = `${origin}/auth?ref=${encodeURIComponent(referralCode)}`;
 

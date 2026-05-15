@@ -43,7 +43,7 @@ import {
 import { AppShell, MetricCard, StatusPill } from "@/components/shell";
 import { FengshuiChat } from "@/components/fengshui-chat";
 import { HierarchyTree } from "@/components/hierarchy-tree";
-import { demoMemberProfile, type MemberProfile } from "@/lib/member-profile";
+import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { profileRowToMemberProfile } from "@/lib/profile-adapter";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
@@ -146,14 +146,14 @@ const modules: {
     id: "partner",
     title: "创业中心",
     desc: "团队转化 + Pool",
-    metric: "52 人",
+    metric: "0 人",
     icon: Trophy
   },
   {
     id: "wallet",
     title: "钱包与报告",
     desc: "点数 + 报告",
-    metric: "2,680 点",
+    metric: "0 点",
     icon: WalletCards
   },
   {
@@ -174,7 +174,7 @@ const modules: {
     id: "team",
     title: "推荐团队",
     desc: "三层团队",
-    metric: "46 人",
+    metric: "0 人",
     icon: Network
   }
 ];
@@ -518,32 +518,32 @@ const favoriteItems = [
 ] as const;
 
 const partnerMetrics = [
-  ["Free 线索", "126", "43 位本周活跃"],
-  ["创业配套", "52", "31 / 15 / 6"],
-  ["本月新增", "18", "+12 Free / +6 配套"],
-  ["Pool Share", "RM30,624", "本月总分享金额"]
+  ["Free 线索", "0", "等待真实推荐"],
+  ["创业配套", "0", "8888 / 16888 / 38888"],
+  ["本月新增", "0", "等待真实注册"],
+  ["Pool Share", "RM0", "本月总分享金额"]
 ] as const;
 
 const partnerPackageMix = [
-  ["8888 创业启动包", 31, "引导完成首 10 位 Free 邀请"],
-  ["16888 事业合伙人", 15, "检查 Pool 资格与培训出席"],
-  ["38888 区域导师", 6, "安排区域课程与导师带教"]
+  ["8888 创业启动包", 0, "等待真实购买"],
+  ["16888 事业合伙人", 0, "等待真实购买"],
+  ["38888 区域导师", 0, "等待真实购买"]
 ] as const;
 
 const partnerLeadSegments = [
-  ["Free 新人未完成资料", "38 人", "发送生日资料提醒"],
-  ["Free 已连续打卡 7 天", "24 人", "推荐 AI 深度报告"],
-  ["已生成报告未咨询", "12 人", "邀约大师咨询"],
-  ["8888 已招 5 人以上", "9 人", "引导升级 16888"],
-  ["16888 活跃合伙人", "5 人", "安排 Pool 规则说明"],
-  ["38888 区域代理", "1 人", "确认区域课程计划"]
+  ["Free 新人未完成资料", "0 人", "等待真实会员"],
+  ["Free 已连续打卡 7 天", "0 人", "等待真实打卡"],
+  ["已生成报告未咨询", "0 人", "等待真实报告"],
+  ["8888 已招 5 人以上", "0 人", "等待真实团队"],
+  ["16888 活跃合伙人", "0 人", "等待真实团队"],
+  ["38888 区域代理", "0 人", "等待真实团队"]
 ] as const;
 
 const partnerFollowUps = [
-  "联系 21 位 Free 会员完成命理资料",
-  "跟进 8 位报告用户转大师咨询",
-  "本周举办一场创业说明会",
-  "复核 3 位合伙人的推荐归属与佣金状态"
+  "邀请第一批会员完成注册资料",
+  "引导新会员生成第一份报告",
+  "整理真实客户问题与后续跟进",
+  "确认创业配套购买资格与合规文案"
 ] as const;
 
 type SavedReport = {
@@ -1299,8 +1299,8 @@ function getBirthDigits(birthDate: string) {
 }
 
 function getNumerologyCore(input?: NumerologyReportInput) {
-  const birthDate = input?.birthDate || "1980-06-14";
-  const name = input?.fullName || "冯家奇";
+  const birthDate = input?.birthDate || new Date().toISOString().slice(0, 10);
+  const name = input?.fullName || "用户";
   const [, month = "6", day = "14"] = birthDate.split("-");
   const dateDigits = birthDate.replace(/\D/g, "");
   const lifePath = reduceNumerologyNumber(dateDigits.split("").reduce((sum, digit) => sum + Number(digit), 0));
@@ -2376,15 +2376,36 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
   const canUseAiReading = currentTier !== "free";
   const canSeeStrategicCycle = currentTier === "strategic";
 
+  async function getMemberAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      return "";
+    }
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
   async function generateDailyFortune() {
     setIsLoadingFortune(true);
 
     try {
+      const accessToken = await getMemberAccessToken();
+
+      if (!accessToken) {
+        return;
+      }
+
       const response = await fetch("/api/daily-fortune", {
         method: "POST",
         cache: "no-store",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           profile: memberProfile,
@@ -3921,37 +3942,51 @@ function WalletAndReports({
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const strategicReportTitles = new Set(["流年报告", "开业择日报告", "公司风水初步分析报告"]);
 
+  async function getMemberAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      return "";
+    }
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
   useEffect(() => {
     setBaziInput((current) => ({
       ...current,
-      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
-      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+      fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
     }));
     setMeihuaInput((current) => ({
       ...current,
-      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
-      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+      fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
     }));
     setZiweiInput((current) => ({
       ...current,
-      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
-      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === demoMemberProfile.region ? memberProfile.region : current.birthLocation
+      fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
     }));
     setNumerologyInput((current) => ({
       ...current,
-      fullName: !current.fullName || current.fullName === demoMemberProfile.name ? memberProfile.name : current.fullName,
-      gender: !current.gender || current.gender === demoMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === demoMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === demoMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime
+      fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
+      gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
+      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
+      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime
     }));
   }, [memberProfile]);
 
@@ -4094,6 +4129,14 @@ function WalletAndReports({
       return;
     }
 
+    const accessToken = await getMemberAccessToken();
+
+    if (!accessToken) {
+      setBaziActionMessage("登录状态已过期，请重新登录后再生成报告。");
+      setReportMessage("登录状态已过期，请重新登录后再生成报告。");
+      return;
+    }
+
     if (points < baziReportCost || !onSpendPoints(baziReportCost, "bazi_destiny_report", "生成八字命理测算完整报告")) {
       setBaziActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${baziReportCost} 点。`);
       setReportMessage("点数不足，八字命理完整报告需要 380 点。请先充值点数后再生成。");
@@ -4108,7 +4151,7 @@ function WalletAndReports({
     try {
       const response = await fetch("/api/bazi-report", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(baziInput)
       });
       const payload = await response.json();
@@ -4143,6 +4186,14 @@ function WalletAndReports({
       return;
     }
 
+    const accessToken = await getMemberAccessToken();
+
+    if (!accessToken) {
+      setMeihuaActionMessage("登录状态已过期，请重新登录后再生成报告。");
+      setReportMessage("登录状态已过期，请重新登录后再生成报告。");
+      return;
+    }
+
     if (points < meihuaReportCost || !onSpendPoints(meihuaReportCost, "meihua_divination_report", "生成梅花易数测算完整报告")) {
       setMeihuaActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${meihuaReportCost} 点。`);
       setReportMessage("点数不足，梅花易数完整报告需要 260 点。请先充值点数后再生成。");
@@ -4157,7 +4208,7 @@ function WalletAndReports({
     try {
       const response = await fetch("/api/meihua-report", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(meihuaInput)
       });
       const payload = await response.json();
@@ -4188,6 +4239,14 @@ function WalletAndReports({
       return;
     }
 
+    const accessToken = await getMemberAccessToken();
+
+    if (!accessToken) {
+      setZiweiActionMessage("登录状态已过期，请重新登录后再生成报告。");
+      setReportMessage("登录状态已过期，请重新登录后再生成报告。");
+      return;
+    }
+
     if (points < ziweiReportCost || !onSpendPoints(ziweiReportCost, "ziwei_destiny_report", "生成紫微斗数命盘详细解析报告")) {
       setZiweiActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${ziweiReportCost} 点。`);
       setReportMessage("点数不足，紫微斗数命盘报告需要 420 点。请先充值点数后再生成。");
@@ -4202,7 +4261,7 @@ function WalletAndReports({
     try {
       const response = await fetch("/api/ziwei-report", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(ziweiInput)
       });
       const payload = await response.json();
@@ -4233,6 +4292,14 @@ function WalletAndReports({
       return;
     }
 
+    const accessToken = await getMemberAccessToken();
+
+    if (!accessToken) {
+      setNumerologyActionMessage("登录状态已过期，请重新登录后再生成报告。");
+      setReportMessage("登录状态已过期，请重新登录后再生成报告。");
+      return;
+    }
+
     if (points < numerologyReportCost || !onSpendPoints(numerologyReportCost, "numerology_life_path_report", "生成数字命理测算完整报告")) {
       setNumerologyActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${numerologyReportCost} 点。`);
       setReportMessage("点数不足，数字命理完整报告需要 220 点。请先充值点数后再生成。");
@@ -4247,7 +4314,7 @@ function WalletAndReports({
     try {
       const response = await fetch("/api/numerology-report", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify(numerologyInput)
       });
       const payload = await response.json();
@@ -5039,7 +5106,7 @@ function PartnerCommandCenter({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-[#E8D4A8]">团队规模概览</p>
-                <p className="mt-1 text-sm text-white/60">当前视角：已招收 {totalPartnerMembers} 位创业配套 + 126 位 Free 会员。</p>
+                <p className="mt-1 text-sm text-white/60">当前视角：已招收 {totalPartnerMembers} 位创业配套 + 0 位 Free 会员。</p>
               </div>
               <button
                 type="button"
@@ -5062,7 +5129,7 @@ function PartnerCommandCenter({
           </div>
           <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-6">
             <p className="text-sm text-ink/50">本月总分享金额</p>
-            <p className="mt-3 text-5xl font-semibold tracking-tight text-[#063F4A]">RM30,624</p>
+            <p className="mt-3 text-5xl font-semibold tracking-tight text-[#063F4A]">RM0</p>
             <p className="mt-3 text-sm text-ink/55">状态：待月结确认</p>
           </div>
           <p className="mt-4 rounded bg-[#C79A54]/10 p-3 text-xs leading-5 text-ink/58">
@@ -5075,11 +5142,11 @@ function PartnerCommandCenter({
         <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-2xl font-semibold text-[#063F4A]">创业配套分布</h3>
-            <StatusPill>52 位</StatusPill>
+            <StatusPill>{totalPartnerMembers} 位</StatusPill>
           </div>
           <div className="mt-5 grid gap-3">
             {partnerPackageMix.map(([name, count, action]) => {
-              const percentage = Math.round((count / totalPartnerMembers) * 100);
+              const percentage = totalPartnerMembers ? Math.round((count / totalPartnerMembers) * 100) : 0;
 
               return (
                 <div key={name} className="rounded border border-black/10 bg-rice p-4">
@@ -5416,7 +5483,7 @@ function DivinationModule({
 }: {
   points: number;
   onSpendPoints: (amount: number) => boolean;
-  onEarnPoints: (amount: number) => void;
+  onEarnPoints: (amount: number, source?: string, description?: string) => void;
   onOpenModule: (module: DashboardModule) => void;
 }) {
   const [numbers, setNumbers] = useState<[string, string, string]>(["3", "8", "9"]);
@@ -5500,7 +5567,7 @@ function DivinationModule({
     setCheckIns(nextCheckIns);
     setNote("");
     setError("");
-    onEarnPoints(reward);
+    onEarnPoints(reward, "divination_checkin_reward", "九运问卦每日打卡奖励");
     window.localStorage.setItem(divinationCheckInKey, JSON.stringify(nextCheckIns));
   }
 
@@ -5907,8 +5974,8 @@ export default function DashboardPage() {
   const moduleContentRef = useRef<HTMLElement | null>(null);
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("free");
-  const [pointBalance, setPointBalance] = useState(2680);
-  const [memberProfile, setMemberProfile] = useState<MemberProfile>(demoMemberProfile);
+  const [pointBalance, setPointBalance] = useState(0);
+  const [memberProfile, setMemberProfile] = useState<MemberProfile>(emptyMemberProfile);
   const [referralCode, setReferralCode] = useState("HQ001");
   const [sponsorCode, setSponsorCode] = useState("HQ001");
   const [referralSource, setReferralSource] = useState("organic_hq");
@@ -5946,7 +6013,7 @@ export default function DashboardPage() {
 
       if (!supabase) {
         if (mounted) {
-          setMemberProfile(demoMemberProfile);
+          setMemberProfile(emptyMemberProfile);
           setAuthStatus("unauthenticated");
           router.replace("/auth");
         }
@@ -5959,7 +6026,7 @@ export default function DashboardPage() {
 
       if (!user) {
         if (mounted) {
-          setMemberProfile(demoMemberProfile);
+          setMemberProfile(emptyMemberProfile);
           setAuthStatus("unauthenticated");
           router.replace("/auth");
         }
@@ -5980,9 +6047,9 @@ export default function DashboardPage() {
           setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
         } else {
           setMemberProfile({
-            ...demoMemberProfile,
-            email: user.email || demoMemberProfile.email,
-            name: user.user_metadata?.full_name || demoMemberProfile.name
+            ...emptyMemberProfile,
+            email: user.email || emptyMemberProfile.email,
+            name: user.user_metadata?.full_name || emptyMemberProfile.name
           });
           setReferralCode((metadata.referral_code as string | undefined) || "HQ001");
           setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
@@ -6003,18 +6070,32 @@ export default function DashboardPage() {
   function syncCreditDelta(delta: number, source: string, description: string) {
     const supabase = createBrowserSupabaseClient();
 
-    supabase?.auth.getSession().then(({ data }) => {
+    supabase?.auth.getSession().then(async ({ data }) => {
       const token = data.session?.access_token;
       if (!token) return;
 
-      fetch("/api/credits", {
+      const response = await fetch("/api/credits", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ delta, source, description })
-      }).catch(() => undefined);
+      });
+      const payload = (await response.json().catch(() => ({}))) as { creditBalance?: number };
+
+      if (response.ok && typeof payload.creditBalance === "number") {
+        setPointBalance(payload.creditBalance);
+        return;
+      }
+
+      if (delta > 0) {
+        setPointBalance((current) => Math.max(0, current - delta));
+      }
+    }).catch(() => {
+      if (delta > 0) {
+        setPointBalance((current) => Math.max(0, current - delta));
+      }
     });
   }
 
