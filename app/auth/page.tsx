@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { BadgeCheck, CalendarDays, Compass, Loader2, LogIn, Sparkles, SunMedium } from "lucide-react";
+import { BadgeCheck, CalendarDays, Compass, Loader2, LogIn, Mail, Sparkles, SunMedium } from "lucide-react";
 import { AppShell } from "@/components/shell";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
@@ -20,6 +20,7 @@ export default function AuthPage() {
   const [referralCode, setReferralCode] = useState("HQ001");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
 
   useEffect(() => {
     const ref = new URLSearchParams(window.location.search).get("ref");
@@ -111,6 +112,40 @@ export default function AuthPage() {
       setMessage(friendlyMessage);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handlePasswordReset() {
+    setMessage("");
+
+    if (!email.trim()) {
+      setMessage("请先输入 Email，再发送重设密码链接。");
+      return;
+    }
+
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      setMessage("会员系统暂时维护中，请稍后再试。");
+      return;
+    }
+
+    setIsResetLoading(true);
+
+    try {
+      const redirectTo = `${window.location.origin}/reset-password`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+
+      if (error) {
+        throw error;
+      }
+
+      setMessage("重设密码链接已发送，请到邮箱点击链接后设置新密码。");
+    } catch (error) {
+      const rawMessage = error instanceof Error ? error.message : "";
+      setMessage(rawMessage || "发送重设密码链接失败，请稍后再试。");
+    } finally {
+      setIsResetLoading(false);
     }
   }
 
@@ -252,7 +287,7 @@ export default function AuthPage() {
               </label>
               <label className="grid gap-2 text-sm font-semibold">
                 密码
-                <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]" required minLength={8} />
+                <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]" required minLength={6} />
               </label>
             </div>
 
@@ -266,6 +301,17 @@ export default function AuthPage() {
               {isLoading ? <Loader2 className="size-4 animate-spin" /> : <LogIn className="size-4" />}
               {mode === "register" ? "注册并保存资料" : "登录"}
             </button>
+            {mode === "login" ? (
+              <button
+                type="button"
+                onClick={handlePasswordReset}
+                disabled={isResetLoading}
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded border border-[#063F4A]/15 bg-white px-5 py-3 text-sm font-semibold text-[#063F4A] transition hover:bg-[#DDEFF2] disabled:opacity-60"
+              >
+                {isResetLoading ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
+                忘记密码？发送重设链接
+              </button>
+            ) : null}
           </form>
         </section>
       </main>

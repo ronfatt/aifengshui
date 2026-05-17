@@ -22,6 +22,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
 
+    if (typeof window !== "undefined" && window.location.hash.includes("type=recovery") && pathname !== "/reset-password") {
+      router.replace(`/reset-password${window.location.hash}`);
+      return;
+    }
+
     if (!supabase) {
       setIsLoggedIn(false);
       setAuthChecked(true);
