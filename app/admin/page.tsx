@@ -207,6 +207,46 @@ type AdminUserRecord = {
 
 const userSeed: AdminUserRecord[] = [];
 
+type AdminProfilePayload = {
+  id: string;
+  email: string;
+  credit_balance: number;
+  membership_tier: "free" | "tactical" | "strategic" | string;
+  full_name: string;
+  phone: string | null;
+  gender: string | null;
+  birth_date: string | null;
+  birth_time: string | null;
+  referral_code?: string;
+  sponsor_code?: string;
+  referral_source?: string;
+};
+
+function membershipLabel(tier: string) {
+  if (tier === "strategic") return "高阶战略版";
+  if (tier === "tactical") return "进阶会员版";
+  return tier && tier !== "free" ? tier : "Free";
+}
+
+function profileToAdminUser(profile: AdminProfilePayload): AdminUserRecord {
+  return {
+    id: profile.id,
+    name: profile.full_name || profile.email.split("@")[0] || "未命名会员",
+    email: profile.email,
+    phone: profile.phone || "-",
+    tier: membershipLabel(profile.membership_tier),
+    status: "Active",
+    points: profile.credit_balance || 0,
+    birth: profile.birth_date ? `${profile.birth_date}${profile.birth_time ? ` ${profile.birth_time}` : ""}` : "未填写",
+    gender: profile.gender || "未填写",
+    team: "读取推荐关系中",
+    aiUsage: "待接入 AI usage ledger",
+    referralCode: profile.referral_code || "-",
+    sponsorCode: profile.sponsor_code || "HQ001",
+    referralSource: profile.referral_source || "organic_hq"
+  };
+}
+
 const creditPackageSeed = [
   { name: "入门补充包", price: "RM30", points: 300, bonus: 0, status: "Active" },
   { name: "报告生成包", price: "RM88", points: 900, bonus: 80, status: "Active" },
@@ -994,44 +1034,55 @@ function AccountingExportModule() {
         </div>
 
         <div className="grid gap-4">
-          {exportPacks.map((pack) => (
-            <article key={pack.title} className="rounded border border-black/10 bg-white p-5 shadow-sm">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{pack.total}</p>
-                  <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">{pack.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/58">{pack.desc}</p>
+          {exportPacks.map((pack) => {
+            const previewHeaders = pack.rows[0] ? Object.keys(pack.rows[0]).slice(0, 5) : [];
+
+            return (
+              <article key={pack.title} className="rounded border border-black/10 bg-white p-5 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{pack.total}</p>
+                    <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">{pack.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-ink/58">{pack.desc}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => downloadCsv(pack.fileName, pack.rows)}
+                    disabled={!pack.rows.length}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A] disabled:cursor-not-allowed disabled:opacity-45"
+                  >
+                    <Download className="size-4" /> CSV
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => downloadCsv(pack.fileName, pack.rows)}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]"
-                >
-                  <Download className="size-4" /> CSV
-                </button>
-              </div>
-              <div className="mt-4 overflow-x-auto rounded border border-black/10 bg-[#F5FAFA]">
-                <table className="w-full min-w-[760px] text-left text-xs">
-                  <thead className="bg-white text-ink/50">
-                    <tr>
-                      {Object.keys(pack.rows[0]).slice(0, 5).map((header) => (
-                        <th key={header} className="px-3 py-2 font-medium">{header}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-black/10">
-                    {pack.rows.slice(0, 2).map((row, index) => (
-                      <tr key={`${pack.title}-${index}`}>
-                        {Object.keys(pack.rows[0]).slice(0, 5).map((header) => (
-                          <td key={header} className="px-3 py-2 text-ink/65">{row[header]}</td>
+                <div className="mt-4 overflow-x-auto rounded border border-black/10 bg-[#F5FAFA]">
+                  {previewHeaders.length ? (
+                    <table className="w-full min-w-[760px] text-left text-xs">
+                      <thead className="bg-white text-ink/50">
+                        <tr>
+                          {previewHeaders.map((header) => (
+                            <th key={header} className="px-3 py-2 font-medium">{header}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-black/10">
+                        {pack.rows.slice(0, 2).map((row, index) => (
+                          <tr key={`${pack.title}-${index}`}>
+                            {previewHeaders.map((header) => (
+                              <td key={header} className="px-3 py-2 text-ink/65">{row[header]}</td>
+                            ))}
+                          </tr>
                         ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </article>
-          ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="px-4 py-8 text-center text-sm text-ink/50">
+                      暂无可导出数据。正式订单、佣金、库存或 AI 成本产生后，这里会自动显示预览。
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
 
@@ -1044,8 +1095,8 @@ function AccountingExportModule() {
 
 function UsersModule() {
   const [users, setUsers] = useState<AdminUserRecord[]>(userSeed);
-  const [selectedId, setSelectedId] = useState(userSeed[0].id);
-  const [saveMessage, setSaveMessage] = useState("点数保存后会同步到会员中心。");
+  const [selectedId, setSelectedId] = useState(userSeed[0]?.id ?? "");
+  const [saveMessage, setSaveMessage] = useState("正在读取真实会员资料...");
   const [isSavingUser, setIsSavingUser] = useState(false);
   const selectedUser = users.find((user) => user.id === selectedId) ?? users[0];
 
@@ -1058,6 +1109,7 @@ function UsersModule() {
   }
 
   function updateSelectedUser(patch: Partial<AdminUserRecord>) {
+    if (!selectedUser) return;
     setUsers((current) => current.map((user) => (user.id === selectedUser.id ? { ...user, ...patch } : user)));
   }
 
@@ -1068,45 +1120,33 @@ function UsersModule() {
     async function loadSupabaseCredits() {
       try {
         const token = await getAccessToken();
-        const response = await fetch(`/api/admin/credits?emails=${encodeURIComponent(emails)}`, {
+        const url = emails ? `/api/admin/credits?emails=${encodeURIComponent(emails)}` : "/api/admin/credits";
+        const response = await fetch(url, {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined
         });
         const data = (await response.json()) as {
-          profiles?: {
-            email: string;
-            credit_balance: number;
-            membership_tier: "free" | "tactical" | "strategic";
-            full_name: string;
-            phone: string | null;
-            gender: string;
-            birth_date: string;
-            birth_time: string | null;
-            referral_code?: string;
-            sponsor_code?: string;
-            referral_source?: string;
-          }[];
+          error?: string;
+          profiles?: AdminProfilePayload[];
         };
 
-        if (!mounted || !data.profiles?.length) return;
+        if (!response.ok) {
+          throw new Error(data.error || "读取会员资料失败。");
+        }
 
-        setUsers((current) =>
-          current.map((user) => {
-            const profile = data.profiles?.find((item) => item.email.toLowerCase() === user.email.toLowerCase());
-            if (!profile) return user;
-            return {
-              ...user,
-              name: profile.full_name || user.name,
-              phone: profile.phone || user.phone,
-              gender: profile.gender || user.gender,
-              birth: `${profile.birth_date}${profile.birth_time ? ` ${profile.birth_time}` : ""}`,
-              tier: profile.membership_tier === "strategic" ? "高阶战略版" : profile.membership_tier === "tactical" ? "进阶会员版" : "Free",
-              points: profile.credit_balance,
-              referralCode: profile.referral_code || user.referralCode,
-              sponsorCode: profile.sponsor_code || "HQ001",
-              referralSource: profile.referral_source || "organic_hq"
-            };
-          })
-        );
+        if (!mounted) return;
+
+        if (!data.profiles?.length) {
+          setUsers([]);
+          setSelectedId("");
+          setSaveMessage("目前还没有会员资料。新会员注册后会显示在这里。");
+          return;
+        }
+
+        const loadedUsers = data.profiles.map(profileToAdminUser);
+
+        setUsers(loadedUsers);
+        setSelectedId((current) => (loadedUsers.some((user) => user.id === current) ? current : loadedUsers[0].id));
+        setSaveMessage("点数保存后会同步到会员中心。");
       } catch {
         if (mounted) {
           setSaveMessage("目前读取不到真实点数资料，请确认你使用管理员账号登录。");
@@ -1122,6 +1162,11 @@ function UsersModule() {
   }, []);
 
   async function saveSelectedUserCredits() {
+    if (!selectedUser) {
+      setSaveMessage("请选择一个会员后再保存点数。");
+      return;
+    }
+
     setIsSavingUser(true);
       setSaveMessage("正在保存点数...");
 
@@ -1163,6 +1208,12 @@ function UsersModule() {
       desc="查看会员资料、生日时辰、等级、点数余额、团队和 AI 使用记录，并可直接调整会员状态。"
       action={<StatusPill>{users.length} 位会员</StatusPill>}
     >
+      {!selectedUser ? (
+        <div className="rounded border border-dashed border-black/15 bg-[#F5FAFA] p-8 text-center">
+          <p className="text-lg font-semibold text-[#063F4A]">暂无会员资料</p>
+          <p className="mt-2 text-sm text-ink/55">{saveMessage}</p>
+        </div>
+      ) : (
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center gap-3">
@@ -1256,6 +1307,7 @@ function UsersModule() {
           <p className="mt-4 rounded bg-[#F5FAFA] px-4 py-3 text-sm text-ink/58">{saveMessage}</p>
         </div>
       </div>
+      )}
     </SectionFrame>
   );
 }

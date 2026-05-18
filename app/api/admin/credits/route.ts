@@ -51,14 +51,13 @@ export async function GET(request: Request) {
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
 
-  if (!emails?.length) {
-    return NextResponse.json({ error: "请提供 emails 参数。" }, { status: 400 });
-  }
-
-  const { data, error } = await supabase
+  const query = supabase
     .from("profiles")
     .select("id,email,credit_balance,membership_tier,full_name,phone,gender,birth_date,birth_time")
-    .in("email", emails);
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  const { data, error } = emails?.length ? await query.in("email", emails) : await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

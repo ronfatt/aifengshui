@@ -56,6 +56,7 @@ type DashboardModule =
   | "vault"
   | "ai"
   | "divination"
+  | "hexagram64"
   | "sigil"
   | "invite"
   | "partner"
@@ -128,6 +129,13 @@ const modules: {
     desc: "三数起卦",
     metric: "36 点",
     icon: Flame
+  },
+  {
+    id: "hexagram64",
+    title: "64卦一字",
+    desc: "当下命理字",
+    metric: "8 点",
+    icon: Sparkles
   },
   {
     id: "sigil",
@@ -843,6 +851,8 @@ const sigilCost = 88;
 const divinationStorageKey = "ai-fengshui-jiuyun-divinations";
 const divinationCheckInKey = "ai-fengshui-jiuyun-checkins";
 const divinationCost = 36;
+const hexagram64StorageKey = "ai-fengshui-hexagram64-one-word";
+const hexagram64Cost = 8;
 
 type SigilArtifact = {
   id: string;
@@ -902,6 +912,22 @@ type DivinationCheckIn = {
   note: string;
   reward: number;
   status: "待审核" | "已通过";
+};
+
+type Hexagram64Reading = {
+  id: string;
+  createdAt: string;
+  dateKey: string;
+  timeKey: string;
+  hexagram: string;
+  upper: Trigram;
+  lower: Trigram;
+  word: string;
+  theme: string;
+  explanation: string;
+  action: string;
+  element: Trigram["element"];
+  score: number;
 };
 
 function formatReportText(report: SavedReport, memberProfile: MemberProfile) {
@@ -1938,6 +1964,62 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
       action: ritual.action,
       mantra: `我以${passElement}通关，先看清，再行动。`
     }
+  };
+}
+
+const hexagramOneWordMap: Record<Trigram["element"], string[]> = {
+  金: ["断", "清", "界", "决", "守", "律", "锋", "简"],
+  木: ["生", "启", "伸", "长", "仁", "策", "萌", "进"],
+  水: ["静", "观", "藏", "润", "听", "缓", "流", "省"],
+  火: ["明", "燃", "显", "照", "发", "醒", "耀", "动"],
+  土: ["稳", "定", "承", "厚", "蓄", "基", "安", "实"]
+};
+
+const hexagramThemeMap: Record<Trigram["element"], string> = {
+  金: "边界、规则、取舍与判断力",
+  木: "成长、启动、学习与长期规划",
+  水: "冷静、观察、隐藏信息与情绪流动",
+  火: "曝光、表达、热度与关键行动",
+  土: "稳定、承载、资源整合与现实基础"
+};
+
+function createHexagram64Reading(selectedDate = new Date()): Hexagram64Reading {
+  const hourBranch = getCurrentHourBranch(selectedDate);
+  const dateSeed =
+    selectedDate.getFullYear() * 10000 +
+    (selectedDate.getMonth() + 1) * 100 +
+    selectedDate.getDate() +
+    selectedDate.getHours() * 7 +
+    selectedDate.getMinutes();
+  const randomSeed = Math.floor(Math.random() * 64) + 1;
+  const upper = trigrams[(dateSeed + randomSeed) % 8];
+  const lower = trigrams[(Math.floor(dateSeed / 3) + randomSeed * 2) % 8];
+  const dominantElement = upper.element === lower.element ? upper.element : lower.element;
+  const words = hexagramOneWordMap[dominantElement];
+  const word = words[(dateSeed + randomSeed + hourBranches.indexOf(hourBranch)) % words.length];
+  const hexagram = composeHexagramName(upper, lower);
+  const score = 64 + ((dateSeed + randomSeed * 5) % 28);
+
+  return {
+    id: `hexagram64-${Date.now()}`,
+    createdAt: new Intl.DateTimeFormat("zh-MY", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(selectedDate),
+    dateKey: selectedDate.toISOString().slice(0, 10),
+    timeKey: `${String(selectedDate.getHours()).padStart(2, "0")}:${String(selectedDate.getMinutes()).padStart(2, "0")}`,
+    hexagram,
+    upper,
+    lower,
+    word,
+    theme: hexagramThemeMap[dominantElement],
+    explanation: `此刻抽得「${hexagram}」，上卦为${upper.name}，下卦为${lower.name}。系统以当下日期、时辰与随机卦象合参，取「${word}」作为此刻命理关键字。它不是完整断事，而是提醒你今天最应该抓住的一个状态。`,
+    action: `今日围绕「${word}」行动：先处理${hexagramThemeMap[dominantElement]}，把一件模糊的事情写清楚，再做一个可逆的小决定。`,
+    element: dominantElement,
+    score
   };
 }
 
@@ -6019,6 +6101,172 @@ function SigilModule({
   );
 }
 
+function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPoints: (amount: number) => boolean }) {
+  const [readings, setReadings] = useState<Hexagram64Reading[]>([]);
+  const [selectedReading, setSelectedReading] = useState<Hexagram64Reading | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(hexagram64StorageKey);
+
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored) as Hexagram64Reading[];
+      setReadings(parsed);
+      setSelectedReading(parsed[0] || null);
+    } catch {
+      window.localStorage.removeItem(hexagram64StorageKey);
+    }
+  }, []);
+
+  function handleGenerate() {
+    if (points < hexagram64Cost || !onSpendPoints(hexagram64Cost)) {
+      setError(`点数不足，64卦一字需要 ${hexagram64Cost} 点。`);
+      return;
+    }
+
+    const reading = createHexagram64Reading(new Date());
+    const nextReadings = [reading, ...readings].slice(0, 12);
+    setReadings(nextReadings);
+    setSelectedReading(reading);
+    setError("");
+    window.localStorage.setItem(hexagram64StorageKey, JSON.stringify(nextReadings));
+  }
+
+  return (
+    <section className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
+      <div className="grid gap-5">
+        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">64 Hexagram One Word</p>
+              <h2 className="mt-2 text-2xl font-semibold">64卦一字</h2>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-ink/58">
+                根据当下日期、时间与随机抽取的一个卦，生成一个总结你此刻命理状态的关键字。轻量、高频，适合每日打开。
+              </p>
+            </div>
+            <StatusPill>一次 {hexagram64Cost} 点</StatusPill>
+          </div>
+
+          <div className="mt-5 grid gap-3 rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4 sm:grid-cols-3">
+            <div>
+              <p className="text-xs text-ink/45">当前日期</p>
+              <p className="mt-1 font-semibold text-[#063F4A]">{new Date().toLocaleDateString("zh-MY")}</p>
+            </div>
+            <div>
+              <p className="text-xs text-ink/45">当前时间</p>
+              <p className="mt-1 font-semibold text-[#063F4A]">{new Date().toLocaleTimeString("zh-MY", { hour: "2-digit", minute: "2-digit" })}</p>
+            </div>
+            <div>
+              <p className="text-xs text-ink/45">当前点数</p>
+              <p className="mt-1 font-semibold text-[#063F4A]">{points.toLocaleString("en-US")} 点</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGenerate}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#052F38]"
+          >
+            消耗 {hexagram64Cost} 点抽取一字 <Sparkles className="size-4" />
+          </button>
+          <p className="mt-2 text-xs leading-5 text-ink/45">当前为 MVP 版：后续可替换为你提供的完整 64 卦取字规则。</p>
+          {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#7A1F16]">{error}</p> : null}
+        </div>
+
+        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Archive className="size-4 text-[#063F4A]" />
+            <h3 className="font-semibold">一字档案</h3>
+          </div>
+          <div className="mt-3 grid gap-2">
+            {readings.length ? (
+              readings.map((reading) => (
+                <button
+                  key={reading.id}
+                  type="button"
+                  onClick={() => setSelectedReading(reading)}
+                  className={`rounded border p-3 text-left transition ${
+                    selectedReading?.id === reading.id ? "border-[#C79A54] bg-white" : "border-black/10 bg-white/70"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xl font-semibold text-[#063F4A]">{reading.word}</span>
+                    <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.score}</span>
+                  </div>
+                  <p className="mt-1 text-xs text-ink/45">{reading.createdAt} · {reading.hexagram}</p>
+                </button>
+              ))
+            ) : (
+              <p className="rounded border border-dashed border-black/15 bg-white p-4 text-sm leading-6 text-ink/55">
+                还没有一字记录。点击抽取后，会自动保存本次结果。
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
+        {selectedReading ? (
+          <div>
+            <div className="rounded bg-[#063F4A] p-6 text-white">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">今日一字</p>
+              <div className="mt-5 grid gap-5 md:grid-cols-[0.75fr_1fr] md:items-center">
+                <div className="grid aspect-square place-items-center rounded-full border border-[#C79A54]/45 bg-white/8">
+                  <span className="text-8xl font-semibold text-[#C79A54]">{selectedReading.word}</span>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold">{selectedReading.hexagram}</h3>
+                  <p className="mt-3 text-sm leading-6 text-white/72">{selectedReading.explanation}</p>
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    {[
+                      ["上卦", `${selectedReading.upper.symbol} ${selectedReading.upper.name}`],
+                      ["下卦", `${selectedReading.lower.symbol} ${selectedReading.lower.name}`],
+                      ["元素", selectedReading.element],
+                      ["指数", `${selectedReading.score}/100`]
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded bg-white/8 p-3">
+                        <p className="text-xs text-white/45">{label}</p>
+                        <p className="mt-1 font-semibold text-white">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Theme</p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">此刻主题</h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.theme}</p>
+              </div>
+              <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Action</p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">今日行动</h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.action}</p>
+              </div>
+            </div>
+
+            <p className="mt-5 rounded border border-black/10 bg-rice p-4 text-xs leading-5 text-ink/55">
+              64卦一字为轻量文化参考，用于每日自我提醒与行动聚焦，不构成金融、法律、医疗或重大决策建议。
+            </p>
+          </div>
+        ) : (
+          <div className="grid min-h-[460px] place-items-center rounded border border-dashed border-[#C79A54]/40 bg-[#C79A54]/5 p-8 text-center">
+            <div>
+              <Sparkles className="mx-auto size-12 text-[#C79A54]" />
+              <h3 className="mt-4 text-2xl font-semibold text-[#063F4A]">等待抽取一字</h3>
+              <p className="mt-2 max-w-sm text-sm leading-6 text-ink/55">点击左侧按钮后，系统会根据此刻时间与随机卦象生成你的今日命理关键字。</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function DivinationModule({
   points,
   onSpendPoints,
@@ -6803,6 +7051,9 @@ export default function DashboardPage() {
                 onEarnPoints={earnPoints}
                 onOpenModule={openModule}
               />
+            ) : null}
+            {activeModule === "hexagram64" ? (
+              <Hexagram64Module points={pointBalance} onSpendPoints={spendPoints} />
             ) : null}
             {activeModule === "sigil" ? (
               <SigilModule points={pointBalance} onSpendPoints={spendPoints} />
