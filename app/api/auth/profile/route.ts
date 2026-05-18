@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isSupabaseServiceConfigured } from "@/lib/supabase/config";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 
 type ProfilePayload = {
   userId?: string;
@@ -15,19 +16,30 @@ type ProfilePayload = {
   referralCode?: string;
 };
 
-const companySponsorCode = "HQ001";
 const referralReward = 30;
 
-function normalizeReferralCode(code?: string) {
-  return code?.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 24) || "";
-}
+async function generateUniqueReferralCode(
+  supabase: NonNullable<ReturnType<typeof createServerSupabaseClient>>,
+  userId: string,
+  email?: string
+) {
+  const { data: authUsers } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const existingCodes = new Set(
+    authUsers.users
+      .filter((user) => user.id !== userId)
+      .map((user) => normalizeReferralCode(user.user_metadata?.referral_code as string | undefined))
+      .filter(Boolean)
+  );
 
-function generateReferralCode(name: string, userId: string) {
-  const cleanName = name
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .slice(0, 5);
-  return `YIXI-${cleanName || "USER"}${userId.replace(/-/g, "").slice(0, 5).toUpperCase()}`;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const code = generateShortReferralCode(`${userId}:${email || ""}`, String(attempt));
+
+    if (!existingCodes.has(code) && code !== companySponsorCode) {
+      return code;
+    }
+  }
+
+  return generateShortReferralCode(`${userId}:${Date.now()}`);
 }
 
 export async function POST(request: Request) {
@@ -65,7 +77,10 @@ export async function POST(request: Request) {
   }
 
   const verifiedEmail = user.email || body.email;
-  const referralCode = generateReferralCode(body.name, body.userId);
+  const currentReferralCode = normalizeReferralCode(user.user_metadata?.referral_code as string | undefined);
+  const referralCode = currentReferralCode.length === 6
+    ? currentReferralCode
+    : await generateUniqueReferralCode(supabase, body.userId, verifiedEmail);
 
   const { data, error } = await supabase
     .from("profiles")

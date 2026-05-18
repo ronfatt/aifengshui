@@ -2,14 +2,10 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
-
-function normalizeCode(code?: string) {
-  return code?.trim().toUpperCase() || "";
-}
+import { generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 
 function fallbackReferralCode(userId: string, email?: string) {
-  const handle = (email?.split("@")[0] || "USER").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5);
-  return `YIXI-${handle}${userId.replace(/-/g, "").slice(0, 5).toUpperCase()}`;
+  return generateShortReferralCode(`${userId}:${email || ""}`);
 }
 
 function escapeXml(value: string) {
@@ -106,7 +102,7 @@ export async function POST(request: Request) {
   }
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin;
-  const referralCode = normalizeCode(user.user_metadata?.referral_code as string | undefined) || fallbackReferralCode(user.id, user.email);
+  const referralCode = normalizeReferralCode(user.user_metadata?.referral_code as string | undefined) || fallbackReferralCode(user.id, user.email);
   const inviteLink = `${origin}/auth?ref=${encodeURIComponent(referralCode)}`;
 
   try {

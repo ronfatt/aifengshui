@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isSupabaseServiceConfigured } from "@/lib/supabase/config";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { DownlineMember } from "@/lib/data";
+import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 
 type ReferralUser = {
   id: string;
@@ -21,13 +22,8 @@ const commissionRate = {
   3: 0.05
 } as const;
 
-function normalizeCode(code?: string) {
-  return code?.trim().toUpperCase() || "";
-}
-
 function fallbackReferralCode(userId: string, name: string) {
-  const cleanName = name.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5) || "USER";
-  return `YIXI-${cleanName}${userId.replace(/-/g, "").slice(0, 5).toUpperCase()}`;
+  return generateShortReferralCode(`${userId}:${name}`);
 }
 
 function tierToLevel(tier: ReferralUser["tier"]): DownlineMember["level"] {
@@ -57,7 +53,7 @@ function buildTree(users: ReferralUser[], root: ReferralUser, relationLevel: 0 |
     relationLevel >= 3
       ? []
       : users
-          .filter((user) => normalizeCode(user.sponsorCode) === normalizeCode(root.referralCode))
+          .filter((user) => normalizeReferralCode(user.sponsorCode) === normalizeReferralCode(root.referralCode))
           .map((child) => buildTree(users, child, (relationLevel + 1) as 1 | 2 | 3));
 
   return {
@@ -112,8 +108,8 @@ export async function GET(request: Request) {
       id: profile.id,
       email: profile.email,
       name,
-      referralCode: normalizeCode(authUser?.user_metadata?.referral_code as string | undefined) || fallbackReferralCode(profile.id, name),
-      sponsorCode: normalizeCode(authUser?.user_metadata?.sponsor_code as string | undefined) || "HQ001",
+      referralCode: normalizeReferralCode(authUser?.user_metadata?.referral_code as string | undefined) || fallbackReferralCode(profile.id, name),
+      sponsorCode: normalizeReferralCode(authUser?.user_metadata?.sponsor_code as string | undefined) || companySponsorCode,
       referralSource: (authUser?.user_metadata?.referral_source as string | undefined) || "organic_hq",
       createdAt: profile.created_at,
       tier: profile.membership_tier,

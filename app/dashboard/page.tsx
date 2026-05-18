@@ -46,6 +46,7 @@ import { HierarchyTree } from "@/components/hierarchy-tree";
 import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { profileRowToMemberProfile } from "@/lib/profile-adapter";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 
 type DashboardModule =
   | "fortune"
@@ -560,11 +561,18 @@ type SavedReport = {
     ziweiInput?: ZiweiReportInput;
     numerologyInput?: NumerologyReportInput;
     integratedInput?: IntegratedReportInput;
+    integratedScores?: Record<string, number>;
+    integratedActions?: Record<string, string[]>;
   };
   sections: {
     title: string;
     content: string;
   }[];
+};
+
+type IntegratedAiContent = Pick<SavedReport, "summary" | "sections"> & {
+  scores?: Record<string, number>;
+  actions?: Record<string, string[]>;
 };
 
 type DailyFortuneResponse = {
@@ -1196,7 +1204,7 @@ function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?
   };
 }
 
-function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?: IntegratedAiContent): SavedReport {
   const focusLabel = integratedFocusLabels[input.focus];
   const ziweiFocus = input.focus === "yearly luck" ? "annual luck" : input.focus;
   const numerologyFocus = input.focus === "health" ? "personal growth" : input.focus;
@@ -1245,7 +1253,9 @@ function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?:
         birthDate: input.birthDate,
         birthTime: input.birthTime,
         focus: numerologyFocus
-      } as NumerologyReportInput
+      } as NumerologyReportInput,
+      integratedScores: aiContent?.scores,
+      integratedActions: aiContent?.actions
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1256,22 +1266,37 @@ function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?:
     }).format(new Date()),
     summary:
       aiContent?.summary ||
-      `${input.fullName} 的综合命理合参完整报告已围绕「${focusLabel}」生成。报告结合八字命理、紫微斗数、梅花易数与数字命理，交叉判断命局底盘、长期格局、当下问题、个人节奏与行动策略。`,
+      `${input.fullName} 的个人命理综合报告已围绕「${focusLabel}」生成。报告会从个人底层性格、当前阶段、关键问题、风险处理、通关方式、产品与仪式建议等角度给出完整拆解。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
-          { title: "八字命理：命局底盘", content: "以出生年月日时读取四柱、五行强弱、日主状态、十神倾向与大运流年基础，判断个人承载力、资源结构与长期适配方向。" },
-          { title: "紫微斗数：人生格局与阶段", content: "以命宫、身宫、官禄宫、财帛宫与大限流年为主轴，判断个人长期发展方向、适合放大的资源，以及阶段性风险。" },
-          { title: "梅花易数：当前问题与时机", content: `以「${input.specificQuestion || "当前关键问题"}」为应机问题，结合${input.mode === "time" ? "当前时间" : `手动三数 ${input.manualNumbers}`}起卦，判断现状、转折、阻力与行动窗口。` },
-          { title: "数字命理：人格节奏与执行方式", content: "以出生日期与姓名能量读取生命路径、命运数、个人年数和 1-9 能量分布，校准执行节奏、沟通方式与年度主题。" },
-          { title: "四术交叉结论", content: "八字看底盘，紫微看阶段，梅花看时机，数字命理看行为模式。若四者指向一致，可主动推进；若出现冲突，应先补资料、定边界、降低风险。" },
-          { title: "行动建议", content: "重大决策先分成方向、时机、资源、人和、风险五项复盘。适合先做小规模验证，再逐步扩大，不宜只凭一时情绪或单一信号行动。" }
+          { title: "一、个人命格总论", content: "你适合先建立稳定结构，再逐步打开机会。优势在于能观察细节、整理资源、累积长期信任；弱点是压力大时容易想太多，导致行动变慢或沟通不够直接。" },
+          { title: "二、当前阶段状态", content: `围绕「${input.specificQuestion || "当前关键问题"}」，现在更像整理与校准期。适合先确认目标、资源、人和与风险边界，不宜因为一时焦虑而做不可逆决定。` },
+          { title: "三、事业与财富建议", content: "事业上适合走专业化、流程化、可复制的方向。财务上要优先管理现金流、合约、预算与回款节奏。任何合作都要先写清楚角色、分账、责任和退出机制。" },
+          { title: "四、关系与健康提醒", content: "关系中要避免承担过多情绪压力。健康方面只作生活提醒：规律睡眠、减少熬夜、固定运动与情绪释放比短期补救更重要；身体不适必须咨询医疗专业人士。" },
+          { title: "五、通关与危机处理", content: "遇到阻滞时先暂停 24 小时，把问题写成事实、风险、选择三栏，再做小规模验证。适合用整理空间、清楚边界、固定复盘来通关。" },
+          { title: "六、产品与仪式建议", content: "可使用九运香、白水晶、金属收纳或办公室布局用品帮助聚焦，但重点不是物件本身，而是配合固定仪式：点香 9 分钟、写下一件最重要行动、完成后整理桌面。" },
+          { title: "七、30 天行动节奏", content: "未来 30 天先做清理与校准：整理资料、确认预算、重排优先级，并把最重要的合作或计划写成可追踪清单。不要一次处理太多方向，先让一个关键事项稳定推进。" },
+          { title: "八、60 天资源布局", content: "60 天内适合做小范围测试，例如试跑服务、接触合作对象、复盘客户反馈或优化产品内容。重点不是立刻放大，而是看清谁能配合、什么能成交、哪里需要补强。" },
+          { title: "九、90 天扩张判断", content: "90 天后才适合评估是否扩大投入。判断标准包括现金流是否稳定、团队是否能承接、客户是否有复购，以及自己是否还能保持健康节奏。若其中两项不足，应先稳盘再扩张。" },
+          { title: "十、最终提醒", content: "命理分析的价值在于帮助你看清节奏，而不是替代现实判断。重要财务、法律、医疗事项必须咨询专业人士；本报告更适合用来做自我觉察、规划排序和行动提醒。" }
         ]
   };
 }
 
 function visibleReportSections(report: SavedReport) {
   return report.sections.filter((section) => section.title !== "__metadata");
+}
+
+function reportSubjectName(report: SavedReport) {
+  return (
+    report.metadata?.integratedInput?.fullName ||
+    report.metadata?.baziInput?.fullName ||
+    report.metadata?.ziweiInput?.fullName ||
+    report.metadata?.meihuaInput?.fullName ||
+    report.metadata?.numerologyInput?.fullName ||
+    "未命名对象"
+  );
 }
 
 function getBaziPillars(): BaziPillar[] {
@@ -3606,53 +3631,56 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
 
 function IntegratedReportPanel({ report }: { report: SavedReport }) {
   const input = report.metadata?.integratedInput;
-  const baziInput = report.metadata?.baziInput;
   const meihuaInput = report.metadata?.meihuaInput;
-  const core = getNumerologyCore(report.metadata?.numerologyInput);
   const scoreRows = [
-    ["长期格局", 86],
-    ["事业机会", 88],
-    ["财务节奏", 82],
-    ["行动时机", 79],
-    ["人和资源", 84],
-    ["风险控制", 81]
+    ["长期格局", report.metadata?.integratedScores?.overall ?? 86],
+    ["事业机会", report.metadata?.integratedScores?.career ?? 88],
+    ["财务节奏", report.metadata?.integratedScores?.wealth ?? 82],
+    ["行动时机", report.metadata?.integratedScores?.timing ?? 79],
+    ["人和资源", report.metadata?.integratedScores?.relationship ?? 84],
+    ["风险控制", report.metadata?.integratedScores?.risk ?? 81]
   ] as const;
+  const actionGroups = [
+    ["现在先做", report.metadata?.integratedActions?.now],
+    ["需要避免", report.metadata?.integratedActions?.avoid],
+    ["仪式建议", report.metadata?.integratedActions?.ritual],
+    ["产品建议", report.metadata?.integratedActions?.products]
+  ].filter(([, items]) => Array.isArray(items) && items.length > 0) as [string, string[]][];
 
   return (
     <div className="grid gap-4">
       <section className="rounded border border-[#C79A54]/40 bg-[#102F38] p-5 text-white">
-        <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+        <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Integrated Metaphysics Engine</p>
-            <h4 className="mt-3 text-3xl font-semibold">四术合参 · 决策总览</h4>
+            <h4 className="mt-3 text-3xl font-semibold">个人命理综合分析</h4>
             <p className="mt-3 text-sm leading-6 text-white/70">
-              以八字定命局底盘，紫微看长期格局，梅花判当下时机，数字命理校准行为节奏。适合事业、合作、投资、转型与人生关键节点前使用。
+              本报告把多套命理推演融成一份可执行的个人分析，重点拆解性格底层、当前阶段、关键问题、风险处理、通关方法与行动建议。
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3">
             {[
-              ["八字", "命局底盘", `${baziInput?.calendarType || "Gregorian"} / 五行 / 十神 / 大运`],
-              ["紫微", "长期格局", "命宫 / 财帛 / 官禄 / 大限"],
-              ["梅花", "当下时机", `${meihuaInput?.mode === "random" ? "三数" : "时间"} / 本卦 / 动爻 / 变卦`],
-              ["数字", "行为节奏", `${core.lifePath} 生命路径 / ${core.personalYear} 个人年`]
-            ].map(([title, label, desc]) => (
+              ["分析对象", `${input?.fullName || "用户"}｜${input?.gender || "未填"}｜${input?.birthDate || "未填生日"} ${input?.birthTime || ""}`],
+              ["当前问题", meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键决策"],
+              ["分析重点", input ? integratedFocusLabels[input.focus] : "综合人生方向"]
+            ].map(([title, desc]) => (
               <div key={title} className="rounded border border-white/15 bg-white/8 p-4">
-                <p className="text-2xl font-semibold text-[#E8D4A8]">{title}</p>
-                <p className="mt-1 text-sm font-semibold">{label}</p>
-                <p className="mt-2 text-xs leading-5 text-white/60">{desc}</p>
+                <p className="text-sm font-semibold text-[#E8D4A8]">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-white/72">{desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {[
-          ["一、个人资料", `${input?.fullName || "用户"}｜${input?.gender || "未填"}｜${input?.birthDate || "未填生日"} ${input?.birthTime || ""}｜${input?.birthLocation || "未填地区"}`],
-          ["二、八字底盘", "看四柱、五行强弱、日主状态与十神结构，确认个人底层资源、承载力和长期适配方向。"],
-          ["三、紫微格局", "看命宫、官禄、财帛、夫妻与大限，确认当前人生阶段应该放大什么、收敛什么。"],
-          ["四、梅花时机", `问题：${meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键决策"}。以本卦与变卦判断适合推进、等待、转向还是先处理阻力。`],
-          ["五、数字节奏", "用生命路径和个人年数看执行习惯，避免方向对了，但节奏、沟通和习惯拖慢成果。"]
+          ["命格总论", "读取个人底层性格、优势、弱点与人生主线，判断适合用什么方式累积成果。"],
+          ["阶段判断", "判断当前处于扩张、整理、等待、转向或修复状态，避免误用力。"],
+          ["关键问题", `围绕「${meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键决策"}」拆解现状、阻力与下一步。`],
+          ["通关方法", "提供颜色、方位、空间整理、日常行为与心法建议，把分析转成行动。"],
+          ["危机处理", "给出遇到冲突、破财、误判、情绪波动时的处理步骤。"],
+          ["产品仪式", "结合九运香、水晶、五行饰品、办公室布局或课程咨询，给出克制建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
             <h4 className="font-semibold text-[#063F4A]">{title}</h4>
@@ -3661,29 +3689,9 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         ))}
       </section>
 
-      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-        <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">五、交叉判断矩阵</h4>
-        <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
-          <table className="w-full min-w-[860px] text-left text-sm">
-            <thead className="bg-[#F5FAFA] text-[#063F4A]">
-              <tr>{["系统", "看什么", "当前重点", "决策用途"].map((head) => <th key={head} className="px-3 py-2">{head}</th>)}</tr>
-            </thead>
-            <tbody className="divide-y divide-[#C79A54]/15">
-              {[
-                ["八字", "四柱 / 五行 / 十神", input ? integratedFocusLabels[input.focus] : "事业与财运", "判断命局底盘"],
-                ["紫微", "十二宫 / 大限流年", input ? integratedFocusLabels[input.focus] : "事业与财运", "判断阶段与资源"],
-                ["梅花", "本卦 / 动爻 / 变卦", meihuaInput?.manualNumbers || "时间起卦", "判断短线时机"],
-                ["数字命理", "核心数字 / 年度数字", `生命路径 ${core.lifePath} / 个人年 ${core.personalYear}`, "校准执行节奏"]
-              ].map((row) => (
-                <tr key={row[0]}>{row.map((cell) => <td key={cell} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       <section className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
-        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <div className="grid gap-4">
+          <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
           <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">六、综合评分</h4>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
@@ -3693,10 +3701,28 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
               </div>
             ))}
           </div>
+          </div>
+          {actionGroups.length > 0 ? (
+            <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+              <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">行动清单</h4>
+              <div className="mt-4 grid gap-3">
+                {actionGroups.map(([label, items]) => (
+                  <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                    <p className="font-semibold text-[#063F4A]">{label}</p>
+                    <ul className="mt-2 grid gap-1 text-sm leading-6 text-ink/62">
+                      {items.slice(0, 4).map((item) => (
+                        <li key={item}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">七、最终行动策略</h4>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">完整个人分析与建议</h4>
+          <div className="mt-4 grid gap-3">
             {visibleReportSections(report).map((section) => (
               <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
                 <p className="font-semibold text-[#063F4A]">{section.title}</p>
@@ -4009,6 +4035,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
   const finalBirthDate = numerologyInput?.birthDate || ziweiInput?.birthDate || headerBirthDate;
   const finalBirthTime = numerologyInput?.birthTime || ziweiInput?.birthTime || headerBirthTime;
   const finalBirthLocation = ziweiInput?.birthLocation || headerBirthLocation;
+  const reportHeading = report.title.includes("完整报告") ? report.title : `${report.title} 完整报告`;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 backdrop-blur-sm md:p-6">
@@ -4035,7 +4062,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
               <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{finalName}</h1>
             </div>
             <div className="text-sm leading-7">
-              <h2 className="text-center text-4xl font-semibold tracking-[0.12em] text-[#063F4A]">{report.title} 完整报告</h2>
+              <h2 className="text-center text-4xl font-semibold tracking-[0.12em] text-[#063F4A]">{reportHeading}</h2>
               <div className="mt-4 grid gap-1 rounded border border-[#C79A54]/25 bg-white/70 p-4">
                 <p>公历：{finalBirthDate}　{finalBirthTime}</p>
                 <p>农历：一九八零年 五月 初二日 酉时</p>
@@ -4064,6 +4091,21 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
           </footer>
         </article>
       </div>
+    </div>
+  );
+}
+
+function CreditPreview({ points, cost, message }: { points: number; cost: number; message: string }) {
+  const enough = points >= cost;
+
+  return (
+    <div className="mt-3 grid gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-3 text-xs leading-5 md:grid-cols-3">
+      <span className="font-semibold text-[#063F4A]">当前：{points.toLocaleString("en-US")} 点</span>
+      <span className="font-semibold text-[#7A1F16]">本次扣点：{cost.toLocaleString("en-US")} 点</span>
+      <span className={enough ? "font-semibold text-[#063F4A]" : "font-semibold text-[#7A1F16]"}>
+        生成后：{Math.max(points - cost, 0).toLocaleString("en-US")} 点
+      </span>
+      <span className={`md:col-span-3 ${enough ? "text-ink/55" : "font-semibold text-[#7A1F16]"}`}>{message}</span>
     </div>
   );
 }
@@ -4758,7 +4800,7 @@ function WalletAndReports({
     setIsGeneratingIntegrated(true);
     setIntegratedActionMessage("AI 正在整合八字、紫微斗数、梅花易数与数字命理，通常需要 15-40 秒。");
     setReportMessage("AI 正在生成综合命理合参完整报告，请稍候。");
-    let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+    let aiContent: IntegratedAiContent | undefined;
 
     try {
       const response = await fetch("/api/integrated-report", {
@@ -4768,7 +4810,12 @@ function WalletAndReports({
       });
       const payload = await response.json();
       if (payload.summary && Array.isArray(payload.sections)) {
-        aiContent = { summary: payload.summary, sections: payload.sections };
+        aiContent = {
+          summary: payload.summary,
+          sections: payload.sections,
+          scores: payload.scores,
+          actions: payload.actions
+        };
       }
     } catch {
       aiContent = undefined;
@@ -4900,6 +4947,9 @@ function WalletAndReports({
                 <div className="mt-3 grid gap-2 rounded border border-black/10 bg-[#F5FAFA] p-3 md:grid-cols-[1fr_auto] md:items-end">
                   <label className="text-sm font-semibold">
                     常用资料档案
+                    <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-ink/45">
+                      已保存 {savedSubjectProfiles.length} 组
+                    </span>
                     <select
                       value=""
                       onChange={(event) => handleApplySavedSubjectProfile(event.target.value)}
@@ -4919,6 +4969,20 @@ function WalletAndReports({
                     保存当前资料
                   </button>
                 </div>
+                {savedSubjectProfiles.length ? (
+                  <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                    {savedSubjectProfiles.slice(0, 6).map((profile) => (
+                      <button
+                        key={profile.id}
+                        type="button"
+                        onClick={() => handleApplySavedSubjectProfile(profile.id)}
+                        className="shrink-0 rounded-full border border-[#C79A54]/30 bg-white px-3 py-1 text-xs font-semibold text-[#063F4A] transition hover:border-[#C79A54]"
+                      >
+                        {profile.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <label className="text-sm font-semibold">
                     姓名
@@ -4993,10 +5057,7 @@ function WalletAndReports({
                 <button type="button" onClick={handleGenerateIntegratedReport} disabled={isGeneratingIntegrated} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#102F38] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0A0A0A] disabled:opacity-60">
                   <FileText className="size-4" /> {isGeneratingIntegrated ? "AI 合参生成中..." : "生成综合命理合参完整报告"}
                 </button>
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
-                  <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
-                  <span className={points >= integratedReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{integratedActionMessage}</span>
-                </div>
+                <CreditPreview points={points} cost={integratedReportCost} message={integratedActionMessage} />
               </div>
             ) : null}
             {selectedPaidReport === "bazi" ? (
@@ -5063,12 +5124,7 @@ function WalletAndReports({
               >
                 <FileText className="size-4" /> {isGeneratingBazi ? "AI 生成中..." : "生成八字完整报告"}
               </button>
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
-                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
-                <span className={points >= baziReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>
-                  {baziActionMessage}
-                </span>
-              </div>
+              <CreditPreview points={points} cost={baziReportCost} message={baziActionMessage} />
             </div>
             ) : null}
             {selectedPaidReport === "meihua" ? (
@@ -5141,10 +5197,7 @@ function WalletAndReports({
               <button type="button" onClick={handleGenerateMeihuaReport} disabled={isGeneratingMeihua} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#7A1F16] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5f170f] disabled:cursor-wait disabled:bg-[#7A1F16]/60">
                 <FileText className="size-4" /> {isGeneratingMeihua ? "AI 起卦中..." : "生成梅花易数完整报告"}
               </button>
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
-                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
-                <span className={points >= meihuaReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{meihuaActionMessage}</span>
-              </div>
+              <CreditPreview points={points} cost={meihuaReportCost} message={meihuaActionMessage} />
             </div>
             ) : null}
             {selectedPaidReport === "ziwei" ? (
@@ -5204,10 +5257,7 @@ function WalletAndReports({
               <button type="button" onClick={handleGenerateZiweiReport} disabled={isGeneratingZiwei} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#3B1B66] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2b124c] disabled:cursor-wait disabled:bg-[#3B1B66]/60">
                 <FileText className="size-4" /> {isGeneratingZiwei ? "AI 排盘中..." : "生成紫微斗数完整报告"}
               </button>
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
-                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
-                <span className={points >= ziweiReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{ziweiActionMessage}</span>
-              </div>
+              <CreditPreview points={points} cost={ziweiReportCost} message={ziweiActionMessage} />
             </div>
             ) : null}
             {selectedPaidReport === "numerology" ? (
@@ -5256,10 +5306,7 @@ function WalletAndReports({
               <button type="button" onClick={handleGenerateNumerologyReport} disabled={isGeneratingNumerology} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#102F38] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0A0A0A] disabled:cursor-wait disabled:bg-[#102F38]/60">
                 <FileText className="size-4" /> {isGeneratingNumerology ? "AI 计算中..." : "生成数字命理完整报告"}
               </button>
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-2 text-xs leading-5">
-                <span className="font-semibold text-[#063F4A]">当前点数：{points.toLocaleString("en-US")} 点</span>
-                <span className={points >= numerologyReportCost ? "text-ink/55" : "font-semibold text-[#7A1F16]"}>{numerologyActionMessage}</span>
-              </div>
+              <CreditPreview points={points} cost={numerologyReportCost} message={numerologyActionMessage} />
             </div>
             ) : null}
             <div className="grid gap-3 sm:grid-cols-2">
@@ -5320,7 +5367,9 @@ function WalletAndReports({
                     >
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-semibold">{report.title}</span>
-                        <span className="mt-0.5 block truncate text-xs text-ink/50">{report.createdAt}</span>
+                        <span className="mt-0.5 block truncate text-xs text-ink/50">
+                          {reportSubjectName(report)} · {report.createdAt} · {report.points} 点
+                        </span>
                       </span>
                       <Eye className="size-4 shrink-0 text-ink/38" />
                     </button>
@@ -6495,8 +6544,8 @@ export default function DashboardPage() {
   const [currentTier, setCurrentTier] = useState<MembershipTier>("free");
   const [pointBalance, setPointBalance] = useState(0);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(emptyMemberProfile);
-  const [referralCode, setReferralCode] = useState("HQ001");
-  const [sponsorCode, setSponsorCode] = useState("HQ001");
+  const [referralCode, setReferralCode] = useState(companySponsorCode);
+  const [sponsorCode, setSponsorCode] = useState(companySponsorCode);
   const [referralSource, setReferralSource] = useState("organic_hq");
   const [partnerPackage, setPartnerPackage] = useState<PartnerPackage>("none");
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
@@ -6561,8 +6610,8 @@ export default function DashboardPage() {
           setCurrentTier(profile.membership_tier);
           setPointBalance(profile.credit_balance);
           setPartnerPackage((profile.partner_package as PartnerPackage | undefined) || (metadata.partner_package as PartnerPackage | undefined) || "none");
-          setReferralCode((metadata.referral_code as string | undefined) || `YIXI-${user.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`);
-          setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
+          setReferralCode(normalizeReferralCode(metadata.referral_code as string | undefined) || generateShortReferralCode(user.id));
+          setSponsorCode(normalizeReferralCode(metadata.sponsor_code as string | undefined) || companySponsorCode);
           setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
         } else {
           setMemberProfile({
@@ -6570,8 +6619,8 @@ export default function DashboardPage() {
             email: user.email || emptyMemberProfile.email,
             name: user.user_metadata?.full_name || emptyMemberProfile.name
           });
-          setReferralCode((metadata.referral_code as string | undefined) || "HQ001");
-          setSponsorCode((metadata.sponsor_code as string | undefined) || "HQ001");
+          setReferralCode(normalizeReferralCode(metadata.referral_code as string | undefined) || companySponsorCode);
+          setSponsorCode(normalizeReferralCode(metadata.sponsor_code as string | undefined) || companySponsorCode);
           setReferralSource((metadata.referral_source as string | undefined) || "organic_hq");
           setPartnerPackage((metadata.partner_package as PartnerPackage | undefined) || "none");
         }

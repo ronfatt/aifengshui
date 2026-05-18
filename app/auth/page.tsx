@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BadgeCheck, CalendarDays, Compass, Loader2, LogIn, Mail, Sparkles, SunMedium } from "lucide-react";
 import { AppShell } from "@/components/shell";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { companySponsorCode, normalizeReferralCode } from "@/lib/referral-code";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -17,14 +18,14 @@ export default function AuthPage() {
   const [birthTime, setBirthTime] = useState("");
   const [gender, setGender] = useState("男");
   const [phone, setPhone] = useState("");
-  const [referralCode, setReferralCode] = useState("HQ001");
+  const [referralCode, setReferralCode] = useState(companySponsorCode);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResetLoading, setIsResetLoading] = useState(false);
 
   useEffect(() => {
     const ref = new URLSearchParams(window.location.search).get("ref");
-    setReferralCode(ref?.trim().toUpperCase() || "HQ001");
+    setReferralCode(normalizeReferralCode(ref || undefined) || companySponsorCode);
   }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -272,7 +273,7 @@ export default function AuthPage() {
                     推荐码
                     <input
                       value={referralCode}
-                      onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
+                      onChange={(event) => setReferralCode(normalizeReferralCode(event.target.value))}
                       className="rounded border border-black/10 bg-rice px-4 py-3 font-normal outline-none focus:border-[#063F4A]"
                       placeholder="没有推荐码则默认 HQ001"
                     />
