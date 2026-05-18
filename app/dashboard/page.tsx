@@ -4728,6 +4728,7 @@ function WalletAndReports({
   const [integratedActionMessage, setIntegratedActionMessage] = useState("可使用已保存会员资料，也可以为客户临时填写一组新资料。");
   const [isGeneratingIntegrated, setIsGeneratingIntegrated] = useState(false);
   const [integratedInput, setIntegratedInput] = useState<IntegratedReportInput>(() => defaultIntegratedReportInput(memberProfile));
+  const [isIntegratedFormOpen, setIsIntegratedFormOpen] = useState(false);
   const [savedSubjectProfiles, setSavedSubjectProfiles] = useState<ReportSubjectProfile[]>([]);
   const [selectedPaidReport, setSelectedPaidReport] = useState<"integrated" | "bazi" | "ziwei" | "meihua" | "numerology">("integrated");
   const [generatingReportTitle, setGeneratingReportTitle] = useState("");
@@ -4796,6 +4797,7 @@ function WalletAndReports({
     }
 
     setSelectedPaidReport("integrated");
+    setIsIntegratedFormOpen(true);
     setIntegratedInput((current) => ({
       ...current,
       focus: reportPreset.focus,
@@ -5472,29 +5474,29 @@ function WalletAndReports({
   }
 
   return (
-    <section className="grid gap-5 lg:grid-cols-[0.72fr_1.28fr]">
-      <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Coins className="size-5 text-[#C79A54]" />
-            <h2 className="text-xl font-semibold">点数钱包</h2>
-          </div>
-          <button className="rounded bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F7F88]">
-            充值点数
-          </button>
-        </div>
-        <div className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
-          <p className="text-sm text-ink/55">当前可用点数</p>
-          <p className="mt-2 text-4xl font-semibold text-[#063F4A]">{points.toLocaleString("en-US")}</p>
-          <p className="mt-2 text-sm text-ink/55">点数只用于平台功能，不可提现。</p>
-        </div>
-        <div className="mt-4">
-          {walletRecords.map(([label, value]) => (
-            <div key={label} className="flex justify-between border-t border-black/10 py-3 text-sm">
-              <span className="text-ink/65">{label}</span>
-              <span className="font-semibold">{value}</span>
+    <section className="space-y-5">
+      <div className="rounded border border-black/10 bg-white p-4 shadow-sm">
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
+              <div className="flex items-center gap-2">
+                <Coins className="size-4 text-[#C79A54]" />
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#063F4A]">Credit Balance</p>
+              </div>
+              <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{points.toLocaleString("en-US")} 点</p>
+              <p className="mt-1 text-xs text-ink/50">点数只用于平台功能，不可提现。</p>
             </div>
-          ))}
+            {walletRecords.slice(0, 2).map(([label, value]) => (
+              <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                <p className="text-xs text-ink/45">{label}</p>
+                <p className="mt-2 text-lg font-semibold text-[#063F4A]">{value}</p>
+                <p className="mt-1 text-xs text-ink/45">正式账务将同步后台流水</p>
+              </div>
+            ))}
+          </div>
+          <button className="inline-flex items-center justify-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]">
+            充值点数 <CreditCard className="size-4" />
+          </button>
         </div>
       </div>
 
@@ -5502,48 +5504,70 @@ function WalletAndReports({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">AI Report Center</p>
-            <h2 className="mt-2 text-2xl font-semibold">报告中心</h2>
+            <h2 className="mt-2 text-2xl font-semibold">专业报告生成</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
-              {activeTier.name} 当前可用：{currentTier === "free" ? "报告摘要预览" : currentTier === "tactical" ? "财运、事业、感情、合盘等战术报告" : "全部报告与流月/流年战略分析"}。
+              先选择你要解决的问题，系统会以综合命理合参生成可保存、可下载、可回看的高级报告。
             </p>
           </div>
-          <StatusPill>云端保存</StatusPill>
+          <StatusPill>{activeTier.name} · 云端保存</StatusPill>
         </div>
 
-        <div className="mt-6 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+        <div className="mt-5 grid gap-3 rounded border border-[#063F4A]/10 bg-[#F5FAFA] p-3 md:grid-cols-3">
+          {[
+            ["01", "选择需求", "先选事业、财运、感情或年度方向"],
+            ["02", "确认资料", "使用会员资料或为客户填写新资料"],
+            ["03", "生成交付", "扣点后自动保存，可打开和下载"]
+          ].map(([step, title, desc]) => (
+            <div key={step} className="flex gap-3 rounded bg-white p-3">
+              <span className="grid size-8 shrink-0 place-items-center rounded bg-[#063F4A] text-xs font-semibold text-white">{step}</span>
+              <span>
+                <span className="block text-sm font-semibold text-[#063F4A]">{title}</span>
+                <span className="mt-1 block text-xs leading-5 text-ink/50">{desc}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
           <div>
             <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Choose Report</p>
-                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">选择报告类型</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/58">建议优先使用综合命理决策报告，再按需要生成单项专业报告。</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Choose Purpose</p>
+                  <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">你想解决什么问题？</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/58">正式版主推综合命理合参报告，用户不需要先理解术数名称。</p>
                 </div>
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-ink/55">Step 1</span>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-ink/55">Step 1 / 3</span>
               </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-2">
-                {[
-                  { id: "integrated", title: "综合命理决策报告", cost: integratedReportCost, desc: "八字 + 紫微 + 梅花 + 数字命理，适合重大决策", tone: "border-[#C79A54] bg-[#102F38] text-white" },
-                  { id: "bazi", title: "八字完整报告", cost: baziReportCost, desc: "命局底盘、五行、十神、大运流年", tone: "border-[#C79A54]/35 bg-white text-ink" },
-                  { id: "ziwei", title: "紫微斗数报告", cost: ziweiReportCost, desc: "十二宫、命宫、大限、事业财帛", tone: "border-[#C79A54]/35 bg-white text-ink" },
-                  { id: "meihua", title: "梅花易数报告", cost: meihuaReportCost, desc: "一事一问，看现状、转折与结果", tone: "border-[#C79A54]/35 bg-white text-ink" },
-                  { id: "numerology", title: "数字命理报告", cost: numerologyReportCost, desc: "生命路径、姓名能量、年度节奏", tone: "border-[#C79A54]/35 bg-white text-ink" }
-                ].map((item) => {
-                  const active = selectedPaidReport === item.id;
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {demandReportCards.map((item) => {
+                  const active = selectedPaidReport === "integrated" && integratedInput.focus === item.preset.focus && integratedInput.specificQuestion === item.preset.specificQuestion;
                   return (
                     <button
-                      key={item.id}
+                      key={item.title}
                       type="button"
-                      onClick={() => setSelectedPaidReport(item.id as typeof selectedPaidReport)}
+                      onClick={() => {
+                        setSelectedPaidReport("integrated");
+                        setIntegratedInput((current) => ({
+                          ...current,
+                          focus: item.preset.focus,
+                          questionCategory: item.preset.questionCategory,
+                          specificQuestion: item.preset.specificQuestion,
+                          divinationDateTime: current.divinationDateTime || new Date().toISOString().slice(0, 16),
+                          mode: "time"
+                        }));
+                        setIntegratedActionMessage(item.preset.message);
+                        setReportMessage(`${item.title} 已准备好，请确认资料后生成。`);
+                      }}
                       className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
-                        active ? item.tone : "border-black/10 bg-white text-ink"
-                      } ${item.id === "integrated" ? "md:col-span-2" : ""}`}
+                        active ? "border-[#C79A54] bg-[#102F38] text-white" : "border-black/10 bg-white text-ink"
+                      }`}
                     >
                       <div className="flex items-center justify-between gap-3">
                         <p className="font-semibold">{item.title}</p>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#102F38]" : "bg-[#F5FAFA] text-ink/60"}`}>{item.cost} 点</span>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#102F38]" : "bg-[#F5FAFA] text-ink/60"}`}>{item.cost}</span>
                       </div>
-                      <p className={`mt-2 text-sm leading-6 ${active && item.id === "integrated" ? "text-white/70" : "text-ink/55"}`}>{item.desc}</p>
+                      <p className={`mt-2 text-sm leading-6 ${active ? "text-white/70" : "text-ink/55"}`}>{item.desc}</p>
                     </button>
                   );
                 })}
@@ -5553,22 +5577,37 @@ function WalletAndReports({
               <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Premium Integrated Report</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Step 2 / 3 · Confirm Profile</p>
                     <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">综合命理合参完整报告</h3>
-                    <p className="mt-2 text-sm leading-6 text-ink/58">以八字看命局底盘，紫微斗数看长期格局，梅花易数看当下问题，数字命理看人格节奏；适合事业、合作、投资、转型等关键决策。</p>
+                    <p className="mt-2 text-sm leading-6 text-ink/58">底层融合四大命理模型，但报告会以用户看得懂的方式输出：格局、机会、风险、通关与行动建议。</p>
                   </div>
                   <span className="rounded-full bg-[#102F38] px-3 py-1 text-xs font-semibold text-white">{integratedReportCost} 点</span>
+                </div>
+                <div className="mt-4 grid gap-2 rounded border border-[#C79A54]/25 bg-white p-3 sm:grid-cols-2">
+                  {[
+                    ["姓名", integratedInput.fullName || "未填写"],
+                    ["生日", integratedInput.birthDate || "未填写"],
+                    ["出生时间", integratedInput.birthTime || "未填写"],
+                    ["重点", integratedInput.focus],
+                    ["地点", integratedInput.birthLocation || "未填写"],
+                    ["问题", integratedInput.specificQuestion || "未填写"]
+                  ].map(([label, value]) => (
+                    <div key={label} className={label === "问题" || label === "地点" ? "sm:col-span-2" : ""}>
+                      <p className="text-xs text-ink/42">{label}</p>
+                      <p className="mt-1 truncate text-sm font-semibold text-[#063F4A]">{value}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="mt-4 grid gap-2 rounded border border-[#C79A54]/25 bg-white p-3 md:grid-cols-[1fr_auto_auto] md:items-center">
                   <div>
                     <p className="text-sm font-semibold text-[#063F4A]">资料来源</p>
-                    <p className="text-xs leading-5 text-ink/55">可直接使用会员中心已保存资料，也可临时填写客户或家人的资料生成新报告。</p>
+                    <p className="text-xs leading-5 text-ink/55">默认只确认资料。需要修改时再展开表单，页面会更像正式付费流程。</p>
                   </div>
                   <button type="button" onClick={handleUseSavedProfileForIntegrated} className="rounded bg-[#DDEFF2] px-3 py-2 text-xs font-semibold text-[#063F4A]">
                     使用已保存资料
                   </button>
-                  <button type="button" onClick={handleClearIntegratedProfile} className="rounded border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/65">
-                    填写新资料
+                  <button type="button" onClick={() => setIsIntegratedFormOpen((current) => !current)} className="rounded border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/65">
+                    {isIntegratedFormOpen ? "收起资料表单" : "编辑 / 填写资料"}
                   </button>
                 </div>
                 <div className="mt-3 grid gap-2 rounded border border-black/10 bg-[#F5FAFA] p-3 md:grid-cols-[1fr_auto] md:items-end">
@@ -5610,7 +5649,13 @@ function WalletAndReports({
                     ))}
                   </div>
                 ) : null}
+                {isIntegratedFormOpen ? (
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  <div className="md:col-span-2 flex justify-end">
+                    <button type="button" onClick={handleClearIntegratedProfile} className="rounded border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/65">
+                      清空并填写新资料
+                    </button>
+                  </div>
                   <label className="text-sm font-semibold">
                     姓名
                     <input value={integratedInput.fullName} onChange={(event) => setIntegratedInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
@@ -5681,12 +5726,58 @@ function WalletAndReports({
                     <textarea value={integratedInput.specificQuestion} onChange={(event) => setIntegratedInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} placeholder="例如：我是否应该在三个月内扩大团队？" className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
                   </label>
                 </div>
+                ) : null}
+                <div className="mt-4 grid gap-2 rounded border border-[#063F4A]/10 bg-white p-3 sm:grid-cols-3">
+                  {["命理格局拆解", "关键风险判断", "通关行动建议"].map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-sm font-semibold text-[#063F4A]">
+                      <CheckCircle2 className="size-4 text-[#1495A0]" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
                 <button type="button" onClick={handleGenerateIntegratedReport} disabled={isGeneratingIntegrated} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#102F38] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0A0A0A] disabled:opacity-60">
-                  <FileText className="size-4" /> {isGeneratingIntegrated ? "AI 合参生成中..." : "生成综合命理合参完整报告"}
+                  <FileText className="size-4" /> {isGeneratingIntegrated ? "AI 合参生成中..." : `确认扣除 ${integratedReportCost} 点并生成报告`}
                 </button>
                 <CreditPreview points={points} cost={integratedReportCost} message={integratedActionMessage} />
               </div>
             ) : null}
+            <details className="mb-4 rounded border border-black/10 bg-white p-4">
+              <summary className="cursor-pointer list-none">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Optional</p>
+                    <h3 className="mt-1 font-semibold text-[#063F4A]">更多专业单项报告</h3>
+                    <p className="mt-1 text-xs leading-5 text-ink/50">需要单独看八字、紫微、梅花或数字命理时再展开。</p>
+                  </div>
+                  <ChevronRight className="size-4 text-ink/35" />
+                </div>
+              </summary>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {[
+                  { id: "bazi", title: "八字完整报告", cost: baziReportCost, desc: "命局底盘、五行、十神、大运流年" },
+                  { id: "ziwei", title: "紫微斗数报告", cost: ziweiReportCost, desc: "十二宫、命宫、大限、事业财帛" },
+                  { id: "meihua", title: "梅花易数报告", cost: meihuaReportCost, desc: "一事一问，看现状、转折与结果" },
+                  { id: "numerology", title: "数字命理报告", cost: numerologyReportCost, desc: "生命路径、姓名能量、年度节奏" }
+                ].map((item) => {
+                  const active = selectedPaidReport === item.id;
+
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setSelectedPaidReport(item.id as typeof selectedPaidReport)}
+                      className={active ? "rounded border border-[#C79A54] bg-[#102F38] p-4 text-left text-white" : "rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60"}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-semibold">{item.title}</p>
+                        <span className={active ? "rounded-full bg-[#C79A54] px-3 py-1 text-xs font-semibold text-[#102F38]" : "rounded-full bg-white px-3 py-1 text-xs font-semibold text-ink/60"}>{item.cost} 点</span>
+                      </div>
+                      <p className={active ? "mt-2 text-sm leading-6 text-white/65" : "mt-2 text-sm leading-6 text-ink/55"}>{item.desc}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
             {selectedPaidReport === "bazi" ? (
             <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -5936,7 +6027,18 @@ function WalletAndReports({
               <CreditPreview points={points} cost={numerologyReportCost} message={numerologyActionMessage} />
             </div>
             ) : null}
-            <div className="grid gap-3 sm:grid-cols-2">
+            <details className="mb-4 rounded border border-black/10 bg-white p-4">
+              <summary className="cursor-pointer list-none">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">More Reports</p>
+                    <h3 className="mt-1 font-semibold text-[#063F4A]">其他主题报告</h3>
+                    <p className="mt-1 text-xs leading-5 text-ink/50">财运、事业、合盘、流年等主题报告收纳在这里，避免页面过长。</p>
+                  </div>
+                  <ChevronRight className="size-4 text-ink/35" />
+                </div>
+              </summary>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {reportTypes.filter((report) => !["八字命理测算完整报告", "梅花易数测算完整报告", "紫微斗数命盘详细解析报告", "数字命理测算完整报告"].includes(report.title)).map((report) => {
                 const locked = isReportLocked(report);
                 const isGeneratingThisReport = generatingReportTitle === report.title;
@@ -5972,6 +6074,7 @@ function WalletAndReports({
                 );
               })}
             </div>
+            </details>
 
             <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
               <div className="flex items-center justify-between gap-3">
@@ -6010,42 +6113,59 @@ function WalletAndReports({
             </div>
           </div>
 
-          <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+          <div className="rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
             {selectedReport ? (
               <div>
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Saved Report</p>
-                    <h3 className="mt-2 text-2xl font-semibold">{selectedReport.title}</h3>
-                    <p className="mt-2 text-sm text-ink/55">
-                      分析对象：{memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender}
-                    </p>
-                    <p className="mt-2 text-sm text-ink/55">生成时间：{selectedReport.createdAt}</p>
+                <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
+                  <div className="bg-[#102F38] p-5 text-white">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Premium Report Preview</p>
+                    <h3 className="mt-3 text-3xl font-semibold leading-tight">{selectedReport.title}</h3>
+                    <div className="mt-4 grid gap-2 rounded border border-white/10 bg-white/8 p-3 text-sm text-white/70 sm:grid-cols-2">
+                      <span>对象：{reportSubjectName(selectedReport)}</span>
+                      <span>时间：{selectedReport.createdAt}</span>
+                      <span>消耗：{selectedReport.points} 点</span>
+                      <span>状态：已保存</span>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => downloadReport(selectedReport, memberProfile)}
-                    className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#052F38]"
-                  >
-                    <Download className="size-4" /> 下载 TXT
-                  </button>
-                </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsFullReportOpen(true)}
-                    className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
-                  >
-                    <Eye className="size-4" /> 打开完整报告
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => downloadReportSvg(selectedReport, memberProfile)}
-                    className="inline-flex items-center gap-2 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 px-4 py-2 text-sm font-semibold text-[#063F4A]"
-                  >
-                    <Download className="size-4" /> 下载 SVG
-                  </button>
+                  <div className="grid gap-3 p-4 sm:grid-cols-3">
+                    {[
+                      ["完整内容", `${visibleReportSections(selectedReport).length} 节`],
+                      ["报告类型", selectedReport.tag],
+                      ["可下载", "PDF / SVG / TXT"]
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
+                        <p className="text-xs text-ink/45">{label}</p>
+                        <p className="mt-1 font-semibold text-[#063F4A]">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-black/10 p-4">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsFullReportOpen(true)}
+                        className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
+                      >
+                        <Eye className="size-4" /> 打开完整报告
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadReportSvg(selectedReport, memberProfile)}
+                        className="inline-flex items-center gap-2 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 px-4 py-2 text-sm font-semibold text-[#063F4A]"
+                      >
+                        <Download className="size-4" /> 下载 SVG
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadReport(selectedReport, memberProfile)}
+                        className="inline-flex items-center gap-2 rounded border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-[#063F4A]"
+                      >
+                        <Download className="size-4" /> 下载 TXT
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
@@ -6067,12 +6187,28 @@ function WalletAndReports({
                 </p>
               </div>
             ) : (
-              <div className="grid min-h-[440px] place-items-center rounded border border-dashed border-black/15 bg-[#F5FAFA] p-8 text-center">
-                <div>
-                  <FileText className="mx-auto size-10 text-[#063F4A]" />
-                  <h3 className="mt-4 text-xl font-semibold">选择一个报告开始生成</h3>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-ink/55">
-                    点击左侧报告类型后，这里会显示完整报告内容，并自动保存到“我的报告档案”。
+              <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
+                <div className="bg-[#102F38] p-6 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Sample Preview</p>
+                  <h3 className="mt-3 text-3xl font-semibold leading-tight">高级命理报告预览</h3>
+                  <p className="mt-3 max-w-lg text-sm leading-6 text-white/65">生成后会在这里显示完整报告封面、核心洞察、行动建议与下载入口。</p>
+                </div>
+                <div className="grid gap-3 p-5 sm:grid-cols-3">
+                  {[
+                    ["01", "命理格局", "判断底层优势、风险与长期方向"],
+                    ["02", "当下问题", "拆解当前决策、阻力与转折点"],
+                    ["03", "行动建议", "输出通关、危机处理、产品与仪式建议"]
+                  ].map(([step, title, desc]) => (
+                    <div key={step} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                      <p className="text-xs font-semibold text-[#C79A54]">{step}</p>
+                      <p className="mt-2 font-semibold text-[#063F4A]">{title}</p>
+                      <p className="mt-2 text-xs leading-5 text-ink/55">{desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-black/10 p-5">
+                  <p className="rounded bg-[#fffaf0] p-4 text-sm leading-6 text-ink/65">
+                    建议先选择左侧「综合命理报告」，确认资料后生成。报告会自动保存，之后可随时找回与下载。
                   </p>
                 </div>
               </div>
