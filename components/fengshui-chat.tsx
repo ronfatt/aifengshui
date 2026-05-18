@@ -17,13 +17,16 @@ type OpenAIStatus = {
 };
 
 type ChatTier = "free" | "tactical" | "strategic";
+type ChatNextActionTarget = "report" | "shop" | "courses";
 
 type FengshuiChatProps = {
   tier?: ChatTier;
   tierName?: string;
   aiMode?: string;
+  initialPrompt?: string;
   profile?: MemberProfile;
   points?: number;
+  onNextAction?: (target: ChatNextActionTarget) => void;
   onSpendPoints?: (amount: number, source?: string, description?: string) => boolean;
   onRefundPoints?: (amount: number, source?: string, description?: string) => void;
 };
@@ -59,18 +62,21 @@ const nextStepActions = [
     title: "生成深度报告",
     desc: "把这次分析保存成完整报告",
     icon: FileText,
+    target: "report" as const,
     prompt: "请根据刚才的问题，用紫微十二宫、四化触发、梅花易数体用生克和评分权重，帮我整理成一份完整深度报告的大纲。"
   },
   {
     title: "推荐开运方案",
     desc: "查看适合的产品与布局建议",
     icon: ShoppingBag,
+    target: "shop" as const,
     prompt: "请根据我的财帛宫、官禄宫、今日四化状态和梅花易数象意，推荐适合的开运产品、摆放方向和使用场景。"
   },
   {
     title: "学习相关课程",
     desc: "把建议变成可学习的方法",
     icon: BookOpenCheck,
+    target: "courses" as const,
     prompt: "我想学习如何用紫微斗数、飞星四化和梅花易数判断类似问题，应该从哪类课程开始？"
   }
 ];
@@ -97,8 +103,10 @@ export function FengshuiChat({
   tier = "tactical",
   tierName = "进阶会员版",
   aiMode = "战术行动指南",
+  initialPrompt = "",
   profile = emptyMemberProfile,
   points = 0,
+  onNextAction,
   onSpendPoints,
   onRefundPoints
 }: FengshuiChatProps) {
@@ -110,6 +118,12 @@ export function FengshuiChat({
   const tierCopy = tierModeCopy[tier];
   const isFree = tier === "free";
   const chatCost = tier === "strategic" ? 8 : tier === "tactical" ? 5 : 1;
+
+  useEffect(() => {
+    if (initialPrompt) {
+      setInput(initialPrompt);
+    }
+  }, [initialPrompt]);
 
   async function getMemberAccessToken() {
     const supabase = createBrowserSupabaseClient();
@@ -349,7 +363,10 @@ export function FengshuiChat({
               <button
                 key={action.title}
                 type="button"
-                onClick={() => setInput(action.prompt)}
+                onClick={() => {
+                  setInput(action.prompt);
+                  onNextAction?.(action.target);
+                }}
                 className="rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
               >
                 <Icon className="size-4 text-[#063F4A]" />

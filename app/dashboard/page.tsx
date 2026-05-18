@@ -40,7 +40,7 @@ import {
   recentInsights,
   reportTypes
 } from "@/lib/data";
-import { AppShell, MetricCard, StatusPill } from "@/components/shell";
+import { AppShell, StatusPill } from "@/components/shell";
 import { FengshuiChat } from "@/components/fengshui-chat";
 import { HierarchyTree } from "@/components/hierarchy-tree";
 import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
@@ -66,6 +66,7 @@ type DashboardModule =
   | "team";
 
 type PartnerPackage = "none" | "startup_8888" | "partner_16888" | "regional_38888";
+type DashboardCategory = "today" | "ai" | "reports" | "wallet" | "profile" | "partner";
 
 const partnerPackageLabels: Record<PartnerPackage, string> = {
   none: "未购买创业配套",
@@ -187,6 +188,149 @@ const modules: {
     icon: Network
   }
 ];
+
+const dashboardCategories: {
+  id: DashboardCategory;
+  title: string;
+  desc: string;
+  modules: DashboardModule[];
+}[] = [
+  {
+    id: "today",
+    title: "今日",
+    desc: "每日运势、日历、打卡与收藏",
+    modules: ["fortune", "calendar", "growth", "vault"]
+  },
+  {
+    id: "ai",
+    title: "AI 问答",
+    desc: "风水师、问卦、一字与符印",
+    modules: ["ai", "divination", "hexagram64", "sigil"]
+  },
+  {
+    id: "reports",
+    title: "报告",
+    desc: "按需求生成专业命理报告",
+    modules: ["wallet"]
+  },
+  {
+    id: "wallet",
+    title: "钱包",
+    desc: "点数、消费、充值与邀请",
+    modules: ["wallet", "invite"]
+  },
+  {
+    id: "profile",
+    title: "我的",
+    desc: "资料、命盘、课程与商城",
+    modules: ["profile", "shop", "courses"]
+  },
+  {
+    id: "partner",
+    title: "创业中心",
+    desc: "团队、佣金与创业经营",
+    modules: ["invite", "team", "partner"]
+  }
+];
+
+const memberDashboardCategories = dashboardCategories.slice(0, 5);
+const partnerDashboardCategory = dashboardCategories[5]!;
+
+const aiQuestionPrompts: {
+  title: string;
+  desc: string;
+  module: DashboardModule;
+}[] = [
+  { title: "我最近事业适合变动吗？", desc: "适合换工、转型、创业前判断", module: "ai" },
+  { title: "今天适合谈合作吗？", desc: "看时机、风险与沟通策略", module: "ai" },
+  { title: "最近财运哪里要注意？", desc: "先守现金流，再看机会", module: "ai" },
+  { title: "感情关系该怎么处理？", desc: "看沟通节奏与关系卡点", module: "ai" },
+  { title: "我要做一个重要决定", desc: "结合当下状态拆解下一步", module: "divination" }
+];
+
+const demandReportCards: {
+  title: string;
+  desc: string;
+  cost: string;
+  preset: ReportDemandPreset;
+}[] = [
+  {
+    title: "事业方向报告",
+    desc: "适合换工作、创业、合作前判断方向。",
+    cost: "消耗 680 点",
+    preset: {
+      title: "事业方向报告",
+      focus: "career",
+      questionCategory: "career",
+      specificQuestion: "我接下来事业方向应该如何选择？目前适合换工作、创业、合作，还是先稳定累积？",
+      message: "已预设事业方向报告：系统会以综合命理合参生成事业节奏、机会、风险与行动建议。"
+    }
+  },
+  {
+    title: "财运趋势报告",
+    desc: "整理收入模式、现金流、风险与机会。",
+    cost: "消耗 680 点",
+    preset: {
+      title: "财运趋势报告",
+      focus: "wealth",
+      questionCategory: "wealth",
+      specificQuestion: "我近期财运趋势如何？收入、现金流、投资和合作收款有什么需要注意？",
+      message: "已预设财运趋势报告：系统会重点分析现金流、机会窗口、破财风险与通关建议。"
+    }
+  },
+  {
+    title: "感情关系报告",
+    desc: "分析关系模式、沟通卡点与相处建议。",
+    cost: "消耗 680 点",
+    preset: {
+      title: "感情关系报告",
+      focus: "relationship",
+      questionCategory: "relationship",
+      specificQuestion: "我目前的感情关系模式、沟通卡点和下一步处理方式是什么？",
+      message: "已预设感情关系报告：系统会重点分析关系模式、沟通节奏与修复建议。"
+    }
+  },
+  {
+    title: "年度运势报告",
+    desc: "看未来一年节奏、关键月份与避险提醒。",
+    cost: "消耗 680 点",
+    preset: {
+      title: "年度运势报告",
+      focus: "yearly luck",
+      questionCategory: "business",
+      specificQuestion: "请分析我未来一年的整体节奏、关键月份、事业财运机会与需要避开的风险。",
+      message: "已预设年度运势报告：系统会重点看未来一年节奏、关键月份与避险行动。"
+    }
+  },
+  {
+    title: "综合命理报告",
+    desc: "适合第一次全面了解自己的人。",
+    cost: "消耗 680 点",
+    preset: {
+      title: "综合命理报告",
+      focus: "business",
+      questionCategory: "business",
+      specificQuestion: "请综合分析我的人生优势、事业财运、关系模式、风险点、通关方式和长期行动方向。",
+      message: "已预设综合命理报告：系统会融合四大命理底层分析，输出完整个人策略。"
+    }
+  }
+];
+
+const walletQuickRows = [
+  ["当前点数", "pointBalance"],
+  ["今日已用", "0 点"],
+  ["最近消费", "问卦 36 点 / 报告 380 点"],
+  ["推荐奖励", "+30 点 / 新会员"]
+] as const;
+
+const onboardingProgressStorageKey = "ai-fengshui-onboarding-progress";
+
+const moduleCategoryMap = dashboardCategories.reduce<Record<DashboardModule, DashboardCategory>>((map, category) => {
+  category.modules.forEach((module) => {
+    if (!map[module]) map[module] = category.id;
+  });
+  return map;
+}, {} as Record<DashboardModule, DashboardCategory>);
 
 type MembershipTier = "free" | "tactical" | "strategic";
 
@@ -555,6 +699,32 @@ const partnerFollowUps = [
   "确认创业配套购买资格与合规文案"
 ] as const;
 
+function compactAccountStats(
+  stats: typeof dashboardStats,
+  pointBalance: number,
+  currentTier: MembershipTier
+) {
+  return stats.map((stat) => {
+    if (stat.label === "当前点数") {
+      return { ...stat, value: pointBalance.toLocaleString("en-US"), change: pointBalance <= 30 ? "注册奖励已到账" : stat.change };
+    }
+
+    if (stat.label === "今日 AI 次数") {
+      return currentTier === "free" ? { ...stat, value: "0 / 3", change: "Free 每日基础额度" } : stat;
+    }
+
+    if (stat.label === "推荐收益") {
+      return currentTier === "free" ? { ...stat, value: "RM0", change: "邀请好友后开始累积" } : stat;
+    }
+
+    if (stat.label === "待完成报告") {
+      return currentTier === "free" ? { ...stat, value: "0", change: "生成报告需点数解锁" } : stat;
+    }
+
+    return stat;
+  });
+}
+
 type SavedReport = {
   id: string;
   title: string;
@@ -676,6 +846,14 @@ type IntegratedReportInput = {
   divinationDateTime: string;
   manualNumbers: string;
   mode: MeihuaReportInput["mode"];
+};
+
+type ReportDemandPreset = {
+  title: string;
+  focus: IntegratedReportInput["focus"];
+  questionCategory: IntegratedReportInput["questionCategory"];
+  specificQuestion: string;
+  message: string;
 };
 
 type ReportSubjectProfile = {
@@ -2289,69 +2467,74 @@ function ScoreRing({ score, label, desc }: { score: number; label: string; desc:
 function TodayActionCenter({
   currentPlan,
   currentPoints,
+  hasPartnerAccess,
   onOpenModule
 }: {
   currentPlan: (typeof membershipTiers)[number];
   currentPoints: number;
+  hasPartnerAccess: boolean;
   onOpenModule: (module: DashboardModule) => void;
 }) {
   return (
     <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
-      <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr_0.85fr]">
+      <div className="grid gap-6 lg:grid-cols-[0.78fr_1fr_0.9fr]">
         <div className="rounded bg-[#F5FAFA] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Today</p>
           <h1 className="mt-2 text-3xl font-semibold md:text-4xl">今日行动中心</h1>
-          <p className="mt-3 text-sm leading-6 text-ink/58">先看分数，再决定行动。减少选择压力。</p>
+          <p className="mt-3 text-sm leading-6 text-ink/58">先看分数、宜忌、吉时与吉方，再决定今天最稳的下一步。</p>
           <div className="mt-5">
             <StatusPill>{currentPlan.name} · {currentPoints.toLocaleString("en-US")} 点</StatusPill>
           </div>
+          {hasPartnerAccess ? (
+            <button
+              type="button"
+              onClick={() => onOpenModule("partner")}
+              className="mt-3 inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-white px-3 py-2 text-xs font-semibold text-[#063F4A]"
+            >
+              创业中心 <ChevronRight className="size-3.5" />
+            </button>
+          ) : null}
         </div>
 
         <div className="grid gap-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-5 sm:grid-cols-[160px_1fr]">
           <ScoreRing score={89} label="Score" desc="稳中有进" />
-          <div className="grid gap-3">
-            {todayActionCards.map((action) => {
-              const Icon = action.icon;
-              const toneClass =
-                action.tone === "gold"
-                  ? "bg-[#C79A54]/15 text-[#C79A54]"
-                  : action.tone === "green"
-                    ? "bg-[#DDEFF2] text-[#063F4A]"
-                    : "bg-[#E8D4A8] text-[#1495A0]";
-
-              return (
-                <button
-                  key={action.title}
-                  type="button"
-                  onClick={() => onOpenModule(action.module)}
-                  className="group flex items-center gap-3 rounded border border-black/10 bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/55 hover:shadow-sm"
-                >
-                  <span className={`grid size-10 shrink-0 place-items-center rounded ${toneClass}`}>
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold">{action.title}</span>
-                    <span className="mt-0.5 block text-xs text-ink/50">{action.desc}</span>
-                  </span>
-                  <ChevronRight className="size-4 shrink-0 text-ink/35 transition group-hover:translate-x-0.5" />
-                </button>
-              );
-            })}
+          <div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {fortuneScores.map(([label, score, note]) => (
+                <div key={label} className="rounded border border-black/10 bg-white p-3">
+                  <p className="text-xs text-ink/45">{label}</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#063F4A]">{score}</p>
+                  <p className="mt-1 text-xs text-ink/50">{note}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <div className="rounded border border-black/10 bg-white p-3">
+                <p className="text-xs text-ink/45">今日宜</p>
+                <p className="mt-1 font-semibold text-[#063F4A]">复盘、整理资源、谈合作</p>
+              </div>
+              <div className="rounded border border-black/10 bg-white p-3">
+                <p className="text-xs text-ink/45">今日忌</p>
+                <p className="mt-1 font-semibold text-[#7A1F16]">冲动承诺、夜间大额决策</p>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="rounded bg-[#063F4A] p-5 text-white">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Read</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            {fortuneScores.map(([label, score]) => (
-              <div key={label} className="rounded bg-white/8 p-3">
-                <p className="text-xs text-white/45">{label}</p>
-                <p className="mt-1 text-2xl font-semibold text-[#C79A54]">{score}</p>
-              </div>
-            ))}
             <div className="rounded bg-white/8 p-3">
-              <p className="text-xs text-white/45">贵人方</p>
+              <p className="text-xs text-white/45">吉时</p>
+              <p className="mt-1 text-xl font-semibold text-[#C79A54]">09:00 - 11:00</p>
+            </div>
+            <div className="rounded bg-white/8 p-3">
+              <p className="text-xs text-white/45">吉方</p>
               <p className="mt-1 text-xl font-semibold text-[#C79A54]">东南</p>
+            </div>
+            <div className="col-span-2 rounded bg-white/8 p-3">
+              <p className="text-xs text-white/45">今日建议</p>
+              <p className="mt-1 text-sm leading-6 text-white/72">先整理方向与资源，再判断下一步行动。</p>
             </div>
           </div>
           <button
@@ -2360,6 +2543,13 @@ function TodayActionCenter({
             className="mt-4 flex w-full items-center justify-center gap-2 rounded bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A]"
           >
             问 AI 风水师 <Bot className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpenModule("wallet")}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded border border-white/15 px-4 py-3 text-sm font-semibold text-white"
+          >
+            生成今日建议报告 <FileText className="size-4" />
           </button>
         </div>
       </div>
@@ -2376,81 +2566,43 @@ function MembershipPlanPanel({
 }) {
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const tierRank: Record<MembershipTier, number> = { free: 0, tactical: 1, strategic: 2 };
+  const upgradeOptions = membershipTiers.filter((tier) => tierRank[tier.id] > tierRank[currentTier]);
+  const visibleFeatures = activeTier.features.slice(0, 3);
 
   return (
-    <section className="mt-6 rounded border border-black/10 bg-white p-5 shadow-sm">
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+    <section className="mt-4 rounded border border-black/10 bg-white p-4 shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Membership Engine</p>
-          <h2 className="mt-2 text-2xl font-semibold">三级会员权限与 AI 算力</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/58">
-            Free 负责高频打卡，RM39.90 开始启用紫微斗数 + 梅花易数双引擎，RM69.90 提供流月/流年与商业战略顾问。
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Current Plan</p>
+            <StatusPill>{activeTier.name}</StatusPill>
+          </div>
+          <h2 className="mt-2 text-xl font-semibold text-[#063F4A]">{activeTier.positioning}</h2>
+          <p className="mt-1 text-sm leading-6 text-ink/58">
+            {activeTier.dataDepth}。{currentTier === "free" ? "升级后可解锁 AI 深度解读、每周/月趋势和高级报告额度。" : "当前方案已按付款结果锁定，升级会由支付成功后自动开通。"}
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {visibleFeatures.map((feature) => (
+              <span key={feature} className="rounded-full bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A]">
+                {feature}
+              </span>
+            ))}
+          </div>
         </div>
-        <StatusPill>当前：{activeTier.name}</StatusPill>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        {membershipTiers.map((tier) => {
-          const active = tier.id === currentTier;
-          const included = tierRank[tier.id] < tierRank[currentTier];
-          const canUpgrade = tierRank[tier.id] > tierRank[currentTier];
-
-          return (
-            <article
+        <div className="flex flex-wrap gap-2 lg:justify-end">
+          {upgradeOptions.length ? upgradeOptions.map((tier) => (
+            <button
               key={tier.id}
-              className={`rounded border p-5 text-left transition ${
-                active
-                  ? "border-[#C79A54] bg-[#063F4A] text-white"
-                  : "border-black/10 bg-rice text-ink hover:border-[#C79A54]/55"
-              }`}
+              type="button"
+              onClick={() => onRequestUpgrade(tier.id)}
+              className={tier.id === "strategic" ? "inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white" : "inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2.5 text-sm font-semibold text-[#063F4A]"}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className={`text-sm font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>{tier.positioning}</p>
-                  <h3 className="mt-2 text-xl font-semibold">{tier.name}</h3>
-                </div>
-                <span className={`rounded px-2.5 py-1 text-sm font-semibold ${active ? "bg-[#C79A54] text-[#063F4A]" : "bg-white text-[#063F4A]"}`}>
-                  {tier.price}
-                </span>
-              </div>
-              <div className={`mt-4 rounded p-3 ${active ? "bg-white/8" : "bg-white"}`}>
-                <p className={`text-xs ${active ? "text-white/45" : "text-ink/45"}`}>AI / 数据调用权限</p>
-                <p className="mt-1 text-sm font-semibold">{tier.aiMode}</p>
-                <p className={`mt-1 text-xs leading-5 ${active ? "text-white/58" : "text-ink/55"}`}>{tier.dataDepth}</p>
-              </div>
-              <div className="mt-4 grid gap-2">
-                {tier.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={`size-4 ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`} />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-                {tier.locked?.map((feature) => (
-                  <div key={feature} className={`flex items-center gap-2 text-sm ${active ? "text-white/42" : "text-ink/35"}`}>
-                    <LockKeyhole className="size-4" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => onRequestUpgrade(tier.id)}
-                disabled={!canUpgrade}
-                className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded px-4 py-3 text-sm font-semibold transition ${
-                  canUpgrade
-                    ? "bg-[#1495A0] text-white hover:bg-[#0F7F88]"
-                    : active
-                      ? "cursor-default bg-white/12 text-white"
-                      : "cursor-default bg-white text-ink/45"
-                }`}
-              >
-                {active ? "当前方案" : included ? "已包含权益" : `付费升级到 ${tier.name}`}
-                {canUpgrade ? <CreditCard className="size-4" /> : null}
-              </button>
-            </article>
-          );
-        })}
+              {tier.id === "tactical" ? "升级进阶版" : "升级高阶版"} <CreditCard className="size-4" />
+            </button>
+          )) : (
+            <span className="rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white">已是最高会员方案</span>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -2626,6 +2778,358 @@ function MoodCheckInPanel({ onOpenModule }: { onOpenModule: (module: DashboardMo
           带着这个问题去问 AI <ChevronRight className="size-4" />
         </button>
       </div>
+    </section>
+  );
+}
+
+function TodayAssistantPanel({
+  onOpenModule,
+  onSelectPrompt,
+  onSelectReport
+}: {
+  onOpenModule: (module: DashboardModule) => void;
+  onSelectPrompt: (prompt: string, module: DashboardModule) => void;
+  onSelectReport: (preset: ReportDemandPreset) => void;
+}) {
+  const [selectedMood, setSelectedMood] = useState<(typeof moodOptions)[number]>(moodOptions[1]);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(onboardingProgressStorageKey);
+      if (stored) {
+        setCompletedSteps(JSON.parse(stored) as number[]);
+      }
+    } catch {
+      window.localStorage.removeItem(onboardingProgressStorageKey);
+    }
+  }, []);
+
+  function completeStep(index: number) {
+    setCompletedSteps((current) => {
+      const next = Array.from(new Set([...current, index])).sort((a, b) => a - b);
+      window.localStorage.setItem(onboardingProgressStorageKey, JSON.stringify(next));
+      return next;
+    });
+  }
+
+  function handleOnboardingStep(step: (typeof onboardingSteps)[number], index: number) {
+    completeStep(index);
+
+    if (step.module === "wallet") {
+      onSelectReport(demandReportCards[4].preset);
+      return;
+    }
+
+    if (step.module === "ai") {
+      onSelectPrompt("请根据我的资料，帮我判断今天最应该先处理的一个事业、财运或关系问题。", "ai");
+      return;
+    }
+
+    onOpenModule(step.module);
+  }
+
+  const progress = Math.round((completedSteps.length / onboardingSteps.length) * 100);
+
+  return (
+    <section className="mt-5 rounded border border-black/10 bg-white p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Sparkles className="size-5 text-[#C79A54]" />
+          <div>
+            <h2 className="text-lg font-semibold text-[#063F4A]">今日助手</h2>
+            <p className="text-sm text-ink/55">完成资料、选状态、进入最适合的下一步。</p>
+          </div>
+        </div>
+        <StatusPill>新手路径 · 今日推荐</StatusPill>
+      </div>
+
+      <div className="mt-4 grid gap-4 xl:grid-cols-[0.9fr_1fr_1.1fr]">
+        <div className="rounded border border-[#C79A54]/25 bg-rice p-4">
+          <p className="text-sm font-semibold text-[#063F4A]">1. 今天你的状态？</p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {moodOptions.slice(0, 6).map((mood) => {
+              const active = selectedMood.label === mood.label;
+              return (
+                <button
+                  key={mood.label}
+                  type="button"
+                  onClick={() => setSelectedMood(mood)}
+                  className={active ? "rounded border border-[#C79A54] bg-[#C79A54]/15 px-3 py-2 text-left" : "rounded border border-black/10 bg-white px-3 py-2 text-left"}
+                >
+                  <span className="block text-lg font-semibold text-[#063F4A]">{mood.label}</span>
+                  <span className="block text-xs text-ink/50">{mood.desc}</span>
+                </button>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => onSelectPrompt(selectedMood.prompt, "ai")}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            用这个状态问 AI <Bot className="size-4" />
+          </button>
+        </div>
+
+        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-[#063F4A]">2. 新会员先做这 4 件事</p>
+            <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">{completedSteps.length}/{onboardingSteps.length}</span>
+          </div>
+          <div className="mt-3 h-2 rounded-full bg-white">
+            <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="mt-3 grid gap-2">
+            {onboardingSteps.map((step, index) => {
+              const done = completedSteps.includes(index);
+
+              return (
+                <button
+                  key={step.title}
+                  type="button"
+                  onClick={() => handleOnboardingStep(step, index)}
+                  className={done ? "group flex items-center gap-3 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 p-3 text-left transition hover:border-[#C79A54]" : "group flex items-center gap-3 rounded border border-black/10 bg-white p-3 text-left transition hover:border-[#C79A54]/55"}
+                >
+                  <span className={done ? "grid size-7 shrink-0 place-items-center rounded bg-[#C79A54] text-xs font-semibold text-[#063F4A]" : "grid size-7 shrink-0 place-items-center rounded bg-[#DDEFF2] text-xs font-semibold text-[#063F4A]"}>
+                    {done ? <CheckCircle2 className="size-4" /> : index + 1}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-semibold">{step.title}</span>
+                    <span className="block truncate text-xs text-ink/48">{done ? "已完成，可再次查看" : step.desc}</span>
+                  </span>
+                  <ChevronRight className="size-4 shrink-0 text-ink/35 transition group-hover:translate-x-0.5" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="rounded border border-black/10 bg-[#063F4A] p-4 text-white">
+          <p className="text-sm font-semibold text-[#C79A54]">3. 系统建议你现在做</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
+            {recommendedActions.slice(0, 3).map((action) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={action.title}
+                  type="button"
+                  onClick={() => onOpenModule(action.module)}
+                  className="group flex items-center gap-3 rounded border border-white/10 bg-white/8 p-3 text-left transition hover:border-[#C79A54]/60"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded bg-white/10 text-[#C79A54]">
+                    <Icon className="size-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-semibold">{action.title}</span>
+                    <span className="block truncate text-xs text-white/50">{action.desc}</span>
+                  </span>
+                  <ChevronRight className="size-4 shrink-0 text-white/35 transition group-hover:translate-x-0.5" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AccountSummaryBar({
+  accountStats,
+  partnerPackage,
+  membershipMessage,
+  pointBalance,
+  onOpenWallet,
+  onOpenInvite
+}: {
+  accountStats: ReturnType<typeof compactAccountStats>;
+  partnerPackage: PartnerPackage;
+  membershipMessage: string;
+  pointBalance: number;
+  onOpenWallet: () => void;
+  onOpenInvite: () => void;
+}) {
+  const primaryStats = accountStats.filter((stat) => ["当前点数", "今日 AI 次数", "推荐收益", "待完成报告"].includes(stat.label));
+
+  return (
+    <section className="mt-5 rounded border border-black/10 bg-white p-4 shadow-sm">
+      <div className="grid gap-4 xl:grid-cols-[1fr_auto] xl:items-center">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {primaryStats.map((stat) => (
+            <article key={stat.label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <p className="text-xs font-medium text-ink/48">{stat.label}</p>
+              <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{stat.value}</p>
+              <p className="mt-1 text-xs font-semibold text-[#1495A0]">{stat.change}</p>
+            </article>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2 xl:justify-end">
+          <button
+            type="button"
+            onClick={onOpenWallet}
+            className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#052F38]"
+          >
+            充值 / 生成报告 <CreditCard className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={onOpenInvite}
+            className="inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2.5 text-sm font-semibold text-[#063F4A]"
+          >
+            邀请好友 <Share2 className="size-4" />
+          </button>
+        </div>
+      </div>
+      <div className="mt-3 grid gap-2 md:grid-cols-4">
+        {walletQuickRows.map(([label, value]) => (
+          <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] px-3 py-2 text-sm">
+            <span className="text-ink/48">{label}</span>
+            <span className="ml-2 font-semibold text-[#063F4A]">{value === "pointBalance" ? `${pointBalance.toLocaleString("en-US")} 点` : value}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 rounded border border-[#C79A54]/25 bg-[#fffaf0] px-4 py-3 text-sm font-semibold text-[#063F4A]">
+        {membershipMessage}
+        <span className="mt-1 block text-xs font-medium text-ink/55">创业配套状态：{partnerPackageLabels[partnerPackage]}</span>
+      </div>
+    </section>
+  );
+}
+
+function AiQuestionStarter({ onSelectPrompt }: { onSelectPrompt: (prompt: string, module: DashboardModule) => void }) {
+  return (
+    <section className="mt-5 rounded border border-black/10 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">AI Master</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">你今天想问什么？</h2>
+          <p className="mt-2 text-sm text-ink/55">像 ChatGPT 一样直接问，不懂命理也能开始。</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onSelectPrompt("", "ai")}
+          className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
+        >
+          打开 AI 对话 <Bot className="size-4" />
+        </button>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-5">
+        {aiQuestionPrompts.map((prompt) => (
+          <button
+            key={prompt.title}
+            type="button"
+            onClick={() => onSelectPrompt(prompt.title, prompt.module)}
+            className="group rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:bg-white hover:shadow-sm"
+          >
+            <p className="font-semibold text-[#063F4A]">{prompt.title}</p>
+            <p className="mt-2 text-xs leading-5 text-ink/55">{prompt.desc}</p>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#1495A0]">
+              开始分析 <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ReportDemandPanel({ onSelectReport }: { onSelectReport: (preset: ReportDemandPreset) => void }) {
+  return (
+    <section className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Report Center</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">你想解决哪一类问题？</h2>
+          <p className="mt-2 text-sm leading-6 text-ink/55">先选需求，不需要先懂八字、紫微、梅花或数字命理。</p>
+        </div>
+        <StatusPill>四术合参 · 自动保存</StatusPill>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-5">
+        {demandReportCards.map((report) => (
+          <button
+            key={report.title}
+            type="button"
+            onClick={() => onSelectReport(report.preset)}
+            className="rounded border border-black/10 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
+          >
+            <p className="font-semibold text-[#063F4A]">{report.title}</p>
+            <p className="mt-2 text-xs leading-5 text-ink/55">{report.desc}</p>
+            <p className="mt-3 rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{report.cost}</p>
+            <p className="mt-2 text-xs text-ink/42">结合八字、紫微、梅花、数字命理生成</p>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProfileOverviewPanel({ memberProfile, onOpenProfile }: { memberProfile: MemberProfile; onOpenProfile: () => void }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <section className="mt-5 rounded border border-black/10 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">My Destiny File</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">我的资料与命盘</h2>
+          <p className="mt-2 text-sm text-ink/55">AI、每日运势和报告都会读取这份基础资料。</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => setExpanded((current) => !current)} className="rounded border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
+            {expanded ? "收起" : "展开命盘"}
+          </button>
+          <button type="button" onClick={onOpenProfile} className="rounded bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white">
+            编辑资料
+          </button>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-6">
+        {[
+          ["姓名", memberProfile.name],
+          ["生日", memberProfile.birthDate],
+          ["出生时间", memberProfile.birthTimeLabel],
+          ["性别", memberProfile.gender],
+          ["地区", memberProfile.region],
+          ["年度关键词", destinyKeywords[0]]
+        ].map(([label, value]) => (
+          <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
+            <p className="text-xs text-ink/45">{label}</p>
+            <p className="mt-1 truncate font-semibold text-[#063F4A]">{value}</p>
+          </div>
+        ))}
+      </div>
+      {expanded ? (
+        <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+            <p className="font-semibold text-[#063F4A]">五行状态</p>
+            <div className="mt-3 grid gap-3">
+              {fiveElementProfile.map(([element, score, desc]) => (
+                <div key={element}>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-semibold">{element}</span>
+                    <span className="text-[#063F4A]">{score}/100</span>
+                  </div>
+                  <div className="mt-1 h-2 rounded-full bg-white">
+                    <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${score}%` }} />
+                  </div>
+                  <p className="mt-1 text-xs text-ink/50">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+            <p className="font-semibold text-[#063F4A]">十二宫简表</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {palaceExplanations.slice(0, 12).map((palace) => (
+                <button key={palace.name} type="button" onClick={onOpenProfile} className="rounded bg-white px-3 py-2 text-left text-sm font-semibold text-[#063F4A]">
+                  {palace.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -4196,12 +4700,14 @@ function WalletAndReports({
   currentTier,
   memberProfile,
   points,
-  onCreditBalanceChange
+  onCreditBalanceChange,
+  reportPreset
 }: {
   currentTier: MembershipTier;
   memberProfile: MemberProfile;
   points: number;
   onCreditBalanceChange: (nextBalance: number) => void;
+  reportPreset?: ReportDemandPreset | null;
 }) {
   const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<SavedReport | null>(null);
@@ -4283,6 +4789,45 @@ function WalletAndReports({
       birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
     }));
   }, [memberProfile]);
+
+  useEffect(() => {
+    if (!reportPreset) {
+      return;
+    }
+
+    setSelectedPaidReport("integrated");
+    setIntegratedInput((current) => ({
+      ...current,
+      focus: reportPreset.focus,
+      questionCategory: reportPreset.questionCategory,
+      specificQuestion: reportPreset.specificQuestion,
+      divinationDateTime: current.divinationDateTime || new Date().toISOString().slice(0, 16),
+      mode: "time"
+    }));
+    setBaziInput((current) => ({ ...current, focus: reportPreset.focus }));
+    setZiweiInput((current) => ({
+      ...current,
+      focus: reportPreset.focus === "yearly luck" ? "annual luck" : reportPreset.focus
+    }));
+    setMeihuaInput((current) => ({
+      ...current,
+      questionCategory: reportPreset.questionCategory,
+      specificQuestion: reportPreset.specificQuestion,
+      divinationDateTime: current.divinationDateTime || new Date().toISOString().slice(0, 16),
+      mode: "time"
+    }));
+    setNumerologyInput((current) => ({
+      ...current,
+      focus:
+        reportPreset.focus === "health"
+          ? "personal growth"
+          : reportPreset.focus === "yearly luck"
+            ? "yearly luck"
+            : reportPreset.focus
+    }));
+    setIntegratedActionMessage(reportPreset.message);
+    setReportMessage(`${reportPreset.title} 已准备好，请确认资料后生成。`);
+  }, [reportPreset]);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(reportStorageKey);
@@ -6789,6 +7334,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const moduleContentRef = useRef<HTMLElement | null>(null);
   const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
+  const [activeCategory, setActiveCategory] = useState<DashboardCategory>("today");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("free");
   const [pointBalance, setPointBalance] = useState(0);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(emptyMemberProfile);
@@ -6798,28 +7344,15 @@ export default function DashboardPage() {
   const [partnerPackage, setPartnerPackage] = useState<PartnerPackage>("none");
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
   const [membershipMessage, setMembershipMessage] = useState("正式模式：会员等级只会在付款成功后由系统升级。");
+  const [aiStarterPrompt, setAiStarterPrompt] = useState("");
+  const [reportPreset, setReportPreset] = useState<ReportDemandPreset | null>(null);
   const hasPartnerAccess = partnerPackage !== "none";
   const active = modules.find((module) => module.id === activeModule) || modules[0];
+  const availableDashboardCategories = hasPartnerAccess ? [...memberDashboardCategories, partnerDashboardCategory] : memberDashboardCategories;
+  const activeCategoryConfig = dashboardCategories.find((category) => category.id === activeCategory) || dashboardCategories[0];
+  const visibleModules = modules.filter((module) => activeCategoryConfig.modules.includes(module.id));
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
-  const accountStats = dashboardStats.map((stat) => {
-    if (stat.label === "当前点数") {
-      return { ...stat, value: pointBalance.toLocaleString("en-US"), change: pointBalance <= 30 ? "注册奖励已到账" : stat.change };
-    }
-
-    if (stat.label === "今日 AI 次数") {
-      return currentTier === "free" ? { ...stat, value: "0 / 3", change: "Free 每日基础额度" } : stat;
-    }
-
-    if (stat.label === "推荐收益") {
-      return currentTier === "free" ? { ...stat, value: "RM0", change: "邀请好友后开始累积" } : stat;
-    }
-
-    if (stat.label === "待完成报告") {
-      return currentTier === "free" ? { ...stat, value: "0", change: "生成报告需点数解锁" } : stat;
-    }
-
-    return stat;
-  });
+  const accountStats = compactAccountStats(dashboardStats, pointBalance, currentTier);
 
   useEffect(() => {
     let mounted = true;
@@ -6931,9 +7464,13 @@ export default function DashboardPage() {
   }
 
   function openModule(module: DashboardModule) {
+    const nextCategory = moduleCategoryMap[module];
+    if (nextCategory) setActiveCategory(nextCategory);
+
     if (module === "partner" && !hasPartnerAccess) {
       setMembershipMessage("创业会员经营中心只开放给已购买 8888 / 16888 / 38888 创业配套的会员。普通 Free、进阶会员版、高阶战略版无法进入。");
       setActiveModule("wallet");
+      setActiveCategory("reports");
       window.setTimeout(() => {
         moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 80);
@@ -6944,6 +7481,25 @@ export default function DashboardPage() {
     window.setTimeout(() => {
       moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
+  }
+
+  function handleSelectAiPrompt(prompt: string, module: DashboardModule) {
+    setAiStarterPrompt(prompt);
+    openModule(module);
+  }
+
+  function handleSelectReportDemand(preset: ReportDemandPreset) {
+    setReportPreset(preset);
+    openModule("wallet");
+  }
+
+  function handleChatNextAction(target: "report" | "shop" | "courses") {
+    if (target === "report") {
+      handleSelectReportDemand(demandReportCards[4].preset);
+      return;
+    }
+
+    openModule(target);
   }
 
   function requestMembershipUpgrade(tier: MembershipTier) {
@@ -6972,45 +7528,70 @@ export default function DashboardPage() {
     <AppShell>
       <main className="px-5 py-8">
         <div className="mx-auto max-w-7xl">
-          <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} onOpenModule={openModule} />
-
-          <section className="mt-6 rounded border border-black/10 bg-white p-4 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <WalletCards className="size-5 text-[#063F4A]" />
-                <h2 className="text-lg font-semibold">账户快照</h2>
-              </div>
-              <StatusPill>会员资料</StatusPill>
-              <button className="inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#052F38]">
-                充值点数 <CreditCard className="size-4" />
-              </button>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {accountStats.map((stat) => (
-                <MetricCard key={stat.label} {...stat} />
-              ))}
-            </div>
-          </section>
-
-          <div className="mt-4 rounded border border-[#C79A54]/30 bg-[#fffaf0] px-4 py-3 text-sm font-semibold text-[#063F4A]">
-            {membershipMessage}
-            <span className="mt-1 block text-xs font-medium text-ink/55">创业配套状态：{partnerPackageLabels[partnerPackage]}</span>
-          </div>
+          <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} hasPartnerAccess={hasPartnerAccess} onOpenModule={openModule} />
+          <AiQuestionStarter onSelectPrompt={handleSelectAiPrompt} />
+          <ReportDemandPanel onSelectReport={handleSelectReportDemand} />
+          <ProfileOverviewPanel memberProfile={memberProfile} onOpenProfile={() => openModule("profile")} />
+          <AccountSummaryBar
+            accountStats={accountStats}
+            partnerPackage={partnerPackage}
+            membershipMessage={membershipMessage}
+            pointBalance={pointBalance}
+            onOpenWallet={() => openModule("wallet")}
+            onOpenInvite={() => openModule("invite")}
+          />
           <MembershipPlanPanel currentTier={currentTier} onRequestUpgrade={requestMembershipUpgrade} />
-          <OnboardingPanel onOpenModule={openModule} />
-          <TodayRecommendedActions onOpenModule={openModule} />
-          <MoodCheckInPanel onOpenModule={openModule} />
+          <TodayAssistantPanel onOpenModule={openModule} onSelectPrompt={handleSelectAiPrompt} onSelectReport={handleSelectReportDemand} />
 
           <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
               <div className="flex items-center gap-2">
                 <LayoutGrid className="size-5 text-[#063F4A]" />
-                <h2 className="text-xl font-semibold">功能模块</h2>
+                <h2 className="text-xl font-semibold">会员功能</h2>
               </div>
               <p className="text-sm text-ink/55">当前打开：{active.title}</p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-              {modules.map((module) => {
+
+            <div className="grid gap-2 md:grid-cols-5">
+              {availableDashboardCategories.map((category) => {
+                const activeCategoryButton = activeCategory === category.id;
+                const partnerCategoryLocked = category.id === "partner" && !hasPartnerAccess;
+
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => setActiveCategory(category.id)}
+                    className={[
+                      "rounded border p-3 text-left transition hover:-translate-y-0.5",
+                      activeCategoryButton
+                        ? "border-[#C79A54] bg-[#063F4A] text-white shadow-sm"
+                        : "border-black/10 bg-white text-ink hover:border-[#C79A54]/50"
+                    ].join(" ")}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-semibold">{partnerCategoryLocked ? "邀请好友" : category.title}</span>
+                      {partnerCategoryLocked ? <LockKeyhole className={activeCategoryButton ? "size-4 text-[#C79A54]" : "size-4 text-ink/35"} /> : null}
+                    </div>
+                    <p className={activeCategoryButton ? "mt-1 text-xs leading-5 text-white/58" : "mt-1 text-xs leading-5 text-ink/50"}>
+                      {partnerCategoryLocked ? "推荐码、分享链接；创业中心购买配套后开放" : category.desc}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 rounded border border-black/10 bg-white p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-semibold text-[#063F4A]">{activeCategoryConfig.title}</h3>
+                  <p className="mt-1 text-sm text-ink/55">{activeCategoryConfig.desc}</p>
+                </div>
+                <StatusPill>{visibleModules.length} 个入口</StatusPill>
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {visibleModules.map((module) => {
                 const partnerLocked = module.id === "partner" && !hasPartnerAccess;
 
                 return (
@@ -7024,6 +7605,7 @@ export default function DashboardPage() {
                   />
                 );
               })}
+              </div>
             </div>
           </section>
 
@@ -7038,8 +7620,10 @@ export default function DashboardPage() {
                 tier={currentTier}
                 tierName={currentPlan.name}
                 aiMode={currentPlan.positioning}
+                initialPrompt={aiStarterPrompt}
                 profile={memberProfile}
                 points={pointBalance}
+                onNextAction={handleChatNextAction}
                 onSpendPoints={spendPoints}
                 onRefundPoints={earnPoints}
               />
@@ -7070,6 +7654,7 @@ export default function DashboardPage() {
                 memberProfile={memberProfile}
                 points={pointBalance}
                 onCreditBalanceChange={setPointBalance}
+                reportPreset={reportPreset}
               />
             ) : null}
             {activeModule === "shop" ? <ProductModule /> : null}
