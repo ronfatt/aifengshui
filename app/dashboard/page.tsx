@@ -119,7 +119,7 @@ const modules: {
   },
   {
     id: "ai",
-    title: "AI 风水师",
+    title: "AI 风水命理师",
     desc: "紫微 + 梅花",
     metric: "24/7",
     icon: Bot
@@ -204,7 +204,7 @@ const dashboardCategories: {
   {
     id: "ai",
     title: "AI 问答",
-    desc: "风水师、问卦、一字与符印",
+    desc: "命理师、问卦、一字与符印",
     modules: ["ai", "divination", "hexagram64", "sigil"]
   },
   {
@@ -235,6 +235,15 @@ const dashboardCategories: {
 
 const memberDashboardCategories = dashboardCategories.slice(0, 5);
 const partnerDashboardCategory = dashboardCategories[5]!;
+
+const defaultModuleByCategory: Record<DashboardCategory, DashboardModule> = {
+  today: "fortune",
+  ai: "ai",
+  reports: "wallet",
+  wallet: "wallet",
+  profile: "profile",
+  partner: "partner"
+};
 
 const aiQuestionPrompts: {
   title: string;
@@ -660,7 +669,7 @@ const moodOptions = [
 ] as const;
 
 const favoriteItems = [
-  { type: "AI 回复", title: "开新店前先确认选址与预算", desc: "来自 AI 风水师对开业问题的初步建议。" },
+  { type: "AI 回复", title: "开新店前先确认选址与预算", desc: "来自 AI 风水命理师对开业问题的初步建议。" },
   { type: "报告", title: "财运报告 · 守正现金流", desc: "正财稳定，偏财不宜冒进。" },
   { type: "运势", title: "05/04 宜签约", desc: "适合发布、合作、签约与客户邀约。" },
   { type: "产品", title: "办公室布局套装", desc: "适合把事业运势落到空间调整。" },
@@ -789,6 +798,8 @@ type BaziReportInput = {
   birthTime: string;
   birthLocation: string;
   calendarType: "Gregorian" | "Lunar";
+  lunarDate?: string;
+  birthHourBranch?: string;
   focus: "career" | "wealth" | "relationship" | "health" | "business" | "yearly luck";
 };
 
@@ -808,6 +819,8 @@ type MeihuaReportInput = {
   birthDate: string;
   birthTime: string;
   birthLocation: string;
+  lunarDate?: string;
+  birthHourBranch?: string;
   questionCategory: "career" | "wealth" | "relationship" | "health" | "business" | "legal" | "travel";
   specificQuestion: string;
   divinationDateTime: string;
@@ -822,6 +835,8 @@ type ZiweiReportInput = {
   birthTime: string;
   birthLocation: string;
   calendarType: "Gregorian" | "Lunar";
+  lunarDate?: string;
+  birthHourBranch?: string;
   focus: "career" | "wealth" | "relationship" | "health" | "business" | "annual luck";
 };
 
@@ -830,6 +845,8 @@ type NumerologyReportInput = {
   gender: string;
   birthDate: string;
   birthTime: string;
+  lunarDate?: string;
+  birthHourBranch?: string;
   focus: "career" | "wealth" | "relationship" | "personal growth" | "business" | "yearly luck";
 };
 
@@ -840,6 +857,8 @@ type IntegratedReportInput = {
   birthTime: string;
   birthLocation: string;
   calendarType: "Gregorian" | "Lunar";
+  lunarDate?: string;
+  birthHourBranch?: string;
   focus: "career" | "wealth" | "relationship" | "health" | "business" | "yearly luck";
   questionCategory: MeihuaReportInput["questionCategory"];
   specificQuestion: string;
@@ -1031,6 +1050,151 @@ const divinationCheckInKey = "ai-fengshui-jiuyun-checkins";
 const divinationCost = 36;
 const hexagram64StorageKey = "ai-fengshui-hexagram64-one-word";
 const hexagram64Cost = 8;
+const placeholderBirthDates = new Set(["2000-01-01"]);
+const placeholderBirthTimes = new Set(["08:30", "08:30 AM", "--:--"]);
+
+function parseHourFromTime(time?: string) {
+  const trimmed = (time || "").trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  const amPmMatch = trimmed.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)$/i);
+  if (amPmMatch) {
+    let hour = Number(amPmMatch[1]);
+    const period = amPmMatch[3].toUpperCase();
+
+    if (period === "PM" && hour < 12) hour += 12;
+    if (period === "AM" && hour === 12) hour = 0;
+
+    return hour;
+  }
+
+  const match = trimmed.match(/^(\d{1,2})(?::\d{2})?/);
+  if (!match) {
+    return null;
+  }
+
+  const hour = Number(match[1]);
+  return Number.isFinite(hour) ? hour : null;
+}
+
+function getChineseHourBranch(time?: string) {
+  const hour = parseHourFromTime(time);
+
+  if (hour === null) {
+    return "时辰未填写";
+  }
+
+  if (hour >= 23 || hour < 1) return "子时";
+  if (hour < 3) return "丑时";
+  if (hour < 5) return "寅时";
+  if (hour < 7) return "卯时";
+  if (hour < 9) return "辰时";
+  if (hour < 11) return "巳时";
+  if (hour < 13) return "午时";
+  if (hour < 15) return "未时";
+  if (hour < 17) return "申时";
+  if (hour < 19) return "酉时";
+  if (hour < 21) return "戌时";
+  return "亥时";
+}
+
+function normalizeDateForInput(date?: string) {
+  const trimmed = (date || "").trim();
+
+  if (!trimmed) {
+    return "";
+  }
+
+  const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (slashMatch) {
+    const [, day, month, year] = slashMatch;
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  return trimmed;
+}
+
+function buildLocalDate(birthDate?: string, birthTime?: string) {
+  const normalizedDate = normalizeDateForInput(birthDate);
+  const [year, month, day] = normalizedDate.split("-").map(Number);
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const hour = parseHourFromTime(birthTime) ?? 12;
+  const minuteMatch = (birthTime || "").match(/:(\d{2})/);
+  const minute = minuteMatch ? Number(minuteMatch[1]) : 0;
+
+  return new Date(year, month - 1, day, hour, minute);
+}
+
+function getAutoLunarDate(birthDate?: string, birthTime?: string, calendarType: "Gregorian" | "Lunar" = "Gregorian") {
+  if (calendarType === "Lunar") {
+    return `${birthDate || "农历日期未填写"} ${getChineseHourBranch(birthTime)}`;
+  }
+
+  const date = buildLocalDate(birthDate, birthTime);
+
+  if (!date) {
+    return "农历待换算";
+  }
+
+  try {
+    const lunarDate = new Intl.DateTimeFormat("zh-CN-u-ca-chinese", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }).format(date);
+
+    return `${lunarDate} ${getChineseHourBranch(birthTime)}`;
+  } catch {
+    return `农历待换算 ${getChineseHourBranch(birthTime)}`;
+  }
+}
+
+function attachLunarFields<T extends { birthDate: string; birthTime: string; calendarType?: "Gregorian" | "Lunar"; lunarDate?: string; birthHourBranch?: string }>(input: T): T {
+  const birthDate = normalizeDateForInput(input.birthDate);
+  const birthTime = input.birthTime;
+  const calendarType = input.calendarType || "Gregorian";
+
+  return {
+    ...input,
+    birthDate,
+    lunarDate: getAutoLunarDate(birthDate, birthTime, calendarType),
+    birthHourBranch: getChineseHourBranch(birthTime)
+  };
+}
+
+function preferProfileDate(current: string, profileValue: string) {
+  const normalizedCurrent = normalizeDateForInput(current);
+  const normalizedProfile = normalizeDateForInput(profileValue);
+
+  if (!normalizedProfile) {
+    return normalizedCurrent;
+  }
+
+  if (!normalizedCurrent || placeholderBirthDates.has(normalizedCurrent)) {
+    return normalizedProfile;
+  }
+
+  return normalizedCurrent;
+}
+
+function preferProfileTime(current: string, profileValue: string) {
+  if (!profileValue) {
+    return current;
+  }
+
+  if (!current || placeholderBirthTimes.has(current)) {
+    return profileValue;
+  }
+
+  return current;
+}
 
 type SigilArtifact = {
   id: string;
@@ -1146,22 +1310,22 @@ function createSavedReport(report: (typeof reportTypes)[number]): SavedReport {
 }
 
 function defaultBaziReportInput(memberProfile: MemberProfile): BaziReportInput {
-  return {
+  return attachLunarFields({
     fullName: memberProfile.name,
     gender: memberProfile.gender,
-    birthDate: memberProfile.birthDate,
+    birthDate: normalizeDateForInput(memberProfile.birthDate),
     birthTime: memberProfile.birthTime,
     birthLocation: memberProfile.region,
     calendarType: "Gregorian",
     focus: "career"
-  };
+  });
 }
 
 function defaultMeihuaReportInput(memberProfile: MemberProfile): MeihuaReportInput {
-  return {
+  return attachLunarFields({
     fullName: memberProfile.name,
     gender: memberProfile.gender,
-    birthDate: memberProfile.birthDate,
+    birthDate: normalizeDateForInput(memberProfile.birthDate),
     birthTime: memberProfile.birthTime,
     birthLocation: memberProfile.region,
     questionCategory: "business",
@@ -1169,36 +1333,36 @@ function defaultMeihuaReportInput(memberProfile: MemberProfile): MeihuaReportInp
     divinationDateTime: new Date().toISOString().slice(0, 16),
     manualNumbers: "8, 6, 3",
     mode: "time"
-  };
+  });
 }
 
 function defaultZiweiReportInput(memberProfile: MemberProfile): ZiweiReportInput {
-  return {
+  return attachLunarFields({
     fullName: memberProfile.name,
     gender: memberProfile.gender,
-    birthDate: memberProfile.birthDate,
+    birthDate: normalizeDateForInput(memberProfile.birthDate),
     birthTime: memberProfile.birthTime,
     birthLocation: memberProfile.region,
     calendarType: "Gregorian",
     focus: "career"
-  };
+  });
 }
 
 function defaultNumerologyReportInput(memberProfile: MemberProfile): NumerologyReportInput {
-  return {
+  return attachLunarFields({
     fullName: memberProfile.name,
     gender: memberProfile.gender,
-    birthDate: memberProfile.birthDate,
+    birthDate: normalizeDateForInput(memberProfile.birthDate),
     birthTime: memberProfile.birthTime,
     focus: "personal growth"
-  };
+  });
 }
 
 function defaultIntegratedReportInput(memberProfile: MemberProfile): IntegratedReportInput {
-  return {
+  return attachLunarFields({
     fullName: memberProfile.name,
     gender: memberProfile.gender,
-    birthDate: memberProfile.birthDate,
+    birthDate: normalizeDateForInput(memberProfile.birthDate),
     birthTime: memberProfile.birthTime,
     birthLocation: memberProfile.region,
     calendarType: "Gregorian",
@@ -1208,7 +1372,7 @@ function defaultIntegratedReportInput(memberProfile: MemberProfile): IntegratedR
     divinationDateTime: new Date().toISOString().slice(0, 16),
     manualNumbers: "8, 6, 3",
     mode: "time"
-  };
+  });
 }
 
 function focusForGeneralReport(title: string): IntegratedReportInput["focus"] {
@@ -1274,6 +1438,7 @@ function applySubjectProfileToIntegratedInput(current: IntegratedReportInput, pr
 }
 
 function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const normalizedInput = attachLunarFields(input);
   const focusLabel = focusLabels[input.focus];
 
   return {
@@ -1283,7 +1448,7 @@ function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedR
     points: baziReportCost,
     metadata: {
       kind: "bazi_destiny",
-      baziInput: input
+      baziInput: normalizedInput
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1292,13 +1457,13 @@ function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedR
       hour: "2-digit",
       minute: "2-digit"
     }).format(new Date()),
-    summary: aiContent?.summary || `${input.fullName} 的八字报告已围绕「${focusLabel}」生成。整体命局重视稳定、规划与长期累积，适合先建立标准，再借流动资源打开机会。`,
+    summary: aiContent?.summary || `${normalizedInput.fullName} 的八字报告已围绕「${focusLabel}」生成。整体命局重视稳定、规划与长期累积，适合先建立标准，再借流动资源打开机会。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
           {
             title: "命局总论",
-            content: `以 ${input.birthDate} ${input.birthTime || "未提供时辰"}、${input.birthLocation || "未提供出生地"} 为基础，报告从四柱、十神、五行强弱、大运与流年综合判断，重点观察${focusLabel}相关趋势。`
+            content: `以公历 ${normalizedInput.birthDate} ${normalizedInput.birthTime || "未提供时辰"}（${normalizedInput.lunarDate || "农历待换算"}）、${normalizedInput.birthLocation || "未提供出生地"} 为基础，报告从四柱、十神、五行强弱、大运与流年综合判断，重点观察${focusLabel}相关趋势。`
           },
           {
             title: "重点方向",
@@ -1313,6 +1478,7 @@ function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedR
 }
 
 function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const normalizedInput = attachLunarFields(input);
   const category = meihuaCategoryLabels[input.questionCategory];
 
   return {
@@ -1322,7 +1488,7 @@ function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick
     points: meihuaReportCost,
     metadata: {
       kind: "meihua_divination",
-      meihuaInput: input
+      meihuaInput: normalizedInput
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1333,11 +1499,11 @@ function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick
     }).format(new Date()),
     summary:
       aiContent?.summary ||
-      `${input.fullName} 的梅花易数报告已围绕「${category}」问题生成。本卦看现状，动爻看转折，变卦看趋势，重点是选择合适时机和行动方式。`,
+      `${normalizedInput.fullName} 的梅花易数报告已围绕「${category}」问题生成。本卦看现状，动爻看转折，变卦看趋势，重点是选择合适时机和行动方式。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
-          { title: "现状判断", content: `问题：${input.specificQuestion || category}。当前宜先观局势，确认体用关系，不宜急于硬推。` },
+          { title: "现状判断", content: `问题：${normalizedInput.specificQuestion || category}。当前宜先观局势，确认体用关系，不宜急于硬推。` },
           { title: "转折趋势", content: "动爻提示事情会在沟通、时间或资源配置上出现变化，先守后动更稳。" },
           { title: "行动建议", content: "先整理资料与边界，选择有利时间窗口推进；若遇冲突，以缓和沟通和证据整理为先。" }
         ]
@@ -1345,6 +1511,7 @@ function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick
 }
 
 function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const normalizedInput = attachLunarFields(input);
   const focusLabel = ziweiFocusLabels[input.focus];
 
   return {
@@ -1354,7 +1521,7 @@ function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<Save
     points: ziweiReportCost,
     metadata: {
       kind: "ziwei_destiny",
-      ziweiInput: input
+      ziweiInput: normalizedInput
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1365,7 +1532,7 @@ function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<Save
     }).format(new Date()),
     summary:
       aiContent?.summary ||
-      `${input.fullName} 的紫微斗数命盘已围绕「${focusLabel}」生成。报告重点读取命宫、身宫、官禄宫、财帛宫、大限与流年触发。`,
+      `${normalizedInput.fullName} 的紫微斗数命盘已围绕「${focusLabel}」生成。报告重点读取命宫、身宫、官禄宫、财帛宫、大限与流年触发。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
@@ -1377,6 +1544,7 @@ function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<Save
 }
 
 function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+  const normalizedInput = attachLunarFields(input);
   const focusLabel = numerologyFocusLabels[input.focus];
 
   return {
@@ -1386,7 +1554,7 @@ function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?
     points: numerologyReportCost,
     metadata: {
       kind: "numerology_life_path",
-      numerologyInput: input
+      numerologyInput: normalizedInput
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1397,7 +1565,7 @@ function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?
     }).format(new Date()),
     summary:
       aiContent?.summary ||
-      `${input.fullName} 的数字命理报告已围绕「${focusLabel}」生成。报告重点读取生命路径数、命运数、灵魂渴望数、人格数、生日数、成熟数与个人年数。`,
+      `${normalizedInput.fullName} 的数字命理报告已围绕「${focusLabel}」生成。报告重点读取生命路径数、命运数、灵魂渴望数、人格数、生日数、成熟数与个人年数。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
@@ -1409,6 +1577,7 @@ function createNumerologyLifePathReport(input: NumerologyReportInput, aiContent?
 }
 
 function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?: IntegratedAiContent): SavedReport {
+  const normalizedInput = attachLunarFields(input);
   const focusLabel = integratedFocusLabels[input.focus];
   const ziweiFocus = input.focus === "yearly luck" ? "annual luck" : input.focus;
   const numerologyFocus = input.focus === "health" ? "personal growth" : input.focus;
@@ -1420,31 +1589,37 @@ function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?:
     points: integratedReportCost,
     metadata: {
       kind: "integrated_destiny",
-      integratedInput: input,
+      integratedInput: normalizedInput,
       baziInput: {
-        fullName: input.fullName,
-        gender: input.gender,
-        birthDate: input.birthDate,
-        birthTime: input.birthTime,
-        birthLocation: input.birthLocation,
-        calendarType: input.calendarType,
+        fullName: normalizedInput.fullName,
+        gender: normalizedInput.gender,
+        birthDate: normalizedInput.birthDate,
+        birthTime: normalizedInput.birthTime,
+        birthLocation: normalizedInput.birthLocation,
+        calendarType: normalizedInput.calendarType,
+        lunarDate: normalizedInput.lunarDate,
+        birthHourBranch: normalizedInput.birthHourBranch,
         focus: input.focus
       },
       ziweiInput: {
-        fullName: input.fullName,
-        gender: input.gender,
-        birthDate: input.birthDate,
-        birthTime: input.birthTime,
-        birthLocation: input.birthLocation,
-        calendarType: input.calendarType,
+        fullName: normalizedInput.fullName,
+        gender: normalizedInput.gender,
+        birthDate: normalizedInput.birthDate,
+        birthTime: normalizedInput.birthTime,
+        birthLocation: normalizedInput.birthLocation,
+        calendarType: normalizedInput.calendarType,
+        lunarDate: normalizedInput.lunarDate,
+        birthHourBranch: normalizedInput.birthHourBranch,
         focus: ziweiFocus
       } as ZiweiReportInput,
       meihuaInput: {
-        fullName: input.fullName,
-        gender: input.gender,
-        birthDate: input.birthDate,
-        birthTime: input.birthTime,
-        birthLocation: input.birthLocation,
+        fullName: normalizedInput.fullName,
+        gender: normalizedInput.gender,
+        birthDate: normalizedInput.birthDate,
+        birthTime: normalizedInput.birthTime,
+        birthLocation: normalizedInput.birthLocation,
+        lunarDate: normalizedInput.lunarDate,
+        birthHourBranch: normalizedInput.birthHourBranch,
         questionCategory: input.questionCategory,
         specificQuestion: input.specificQuestion,
         divinationDateTime: input.divinationDateTime,
@@ -1452,10 +1627,12 @@ function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?:
         mode: input.mode
       },
       numerologyInput: {
-        fullName: input.fullName,
-        gender: input.gender,
-        birthDate: input.birthDate,
-        birthTime: input.birthTime,
+        fullName: normalizedInput.fullName,
+        gender: normalizedInput.gender,
+        birthDate: normalizedInput.birthDate,
+        birthTime: normalizedInput.birthTime,
+        lunarDate: normalizedInput.lunarDate,
+        birthHourBranch: normalizedInput.birthHourBranch,
         focus: numerologyFocus
       } as NumerologyReportInput,
       integratedScores: aiContent?.scores,
@@ -1470,7 +1647,7 @@ function createIntegratedDestinyReport(input: IntegratedReportInput, aiContent?:
     }).format(new Date()),
     summary:
       aiContent?.summary ||
-      `${input.fullName} 的个人命理综合报告已围绕「${focusLabel}」生成。报告会从个人底层性格、当前阶段、关键问题、风险处理、通关方式、产品与仪式建议等角度给出完整拆解。`,
+      `${normalizedInput.fullName} 的个人命理综合报告已围绕「${focusLabel}」生成。报告会从个人底层性格、当前阶段、关键问题、风险处理、通关方式、产品与仪式建议等角度给出完整拆解。`,
     sections: aiContent?.sections?.length
       ? aiContent.sections
       : [
@@ -1501,6 +1678,114 @@ function reportSubjectName(report: SavedReport) {
     report.metadata?.numerologyInput?.fullName ||
     "未命名对象"
   );
+}
+
+function reportExecutiveSummary(report: SavedReport) {
+  const sections = visibleReportSections(report);
+  const firstSection = sections[0]?.content || report.summary;
+  const secondSection = sections[1]?.content || "建议先稳住节奏，整理资源、边界和行动次序，再判断是否扩大投入。";
+
+  return [
+    ["核心判断", report.summary],
+    ["当前关键", firstSection],
+    ["行动方向", secondSection]
+  ] as const;
+}
+
+function reportProfessionalMetrics(report: SavedReport) {
+  const scores = report.metadata?.integratedScores;
+
+  if (scores) {
+    return [
+      ["整体格局", scores.overall ?? 86],
+      ["事业", scores.career ?? 84],
+      ["财运", scores.wealth ?? 82],
+      ["感情", scores.relationship ?? 78],
+      ["健康", scores.health ?? 76],
+      ["时机", scores.timing ?? 80]
+    ] as const;
+  }
+
+  return [
+    ["整体格局", 86],
+    ["事业", 84],
+    ["财运", 82],
+    ["感情", 78],
+    ["健康", 76],
+    ["时机", 80]
+  ] as const;
+}
+
+function reportTableOfContents(report: SavedReport) {
+  const fixedItems = ["个人资料", "报告核心摘要", "命理指标", "重点结论", "7 日通关计划"];
+  const sectionItems = visibleReportSections(report).map((section) =>
+    section.title.replace(/^[一二三四五六七八九十]+、/, "")
+  );
+
+  return [...fixedItems, ...sectionItems].slice(0, 12);
+}
+
+function reportKeyConclusionCards(report: SavedReport) {
+  const actions = report.metadata?.integratedActions;
+  const summary = report.summary || "先看清当前节奏，再决定下一步行动。";
+
+  return [
+    ["核心判断", summary],
+    ["现在适合", actions?.now?.[0] || "先整理目标、资源、预算与合作边界，再做小范围验证。"],
+    ["暂不适合", actions?.avoid?.[0] || "避免冲动签约、过度承诺、同时推进太多方向。"],
+    ["关键风险", "现金流压力、沟通误解、节奏过急与资源分散，是近期最需要先处理的地方。"]
+  ] as const;
+}
+
+function reportSevenDayPlan(report: SavedReport) {
+  const actions = report.metadata?.integratedActions;
+
+  return [
+    ["Day 1", "整理资料", "把当前目标、资金、合作对象与待办事项写成清单，先看清现实盘面。"],
+    ["Day 2", "复盘现金流", "列出收入、支出、应收款与未来 30 天预算，避免情绪化投入。"],
+    ["Day 3", "确认人和", actions?.now?.[0] || "联系关键客户、合作方或贵人，确认下一步是否有真实支持。"],
+    ["Day 4", "调整空间", "整理办公桌、文件和财位；以青绿、蓝色或金色小物提醒自己稳定行动。"],
+    ["Day 5", "静心定向", actions?.ritual?.[0] || "静坐或点香 9 分钟，写下一件最重要但最容易逃避的行动。"],
+    ["Day 6", "小步验证", "选择一个低风险动作先执行，例如邀约、报价、测试服务或确认合作条款。"],
+    ["Day 7", "总结取舍", "检查这一周的阻力、成果与情绪变化，决定继续推进、调整或暂缓。"]
+  ] as const;
+}
+
+function reportRiskRadar(report: SavedReport) {
+  const scores = report.metadata?.integratedScores;
+  const wealthRisk = scores?.wealth && scores.wealth < 70 ? "高" : "中";
+  const timingRisk = scores?.timing && scores.timing < 70 ? "高" : "中";
+  const relationshipRisk = scores?.relationship && scores.relationship < 72 ? "中高" : "中";
+
+  return [
+    ["现金流风险", wealthRisk, "先看预算、回款、合约与固定支出，避免为了机会过早放大投入。"],
+    ["决策时机", timingRisk, "重大决定先等信息齐全；适合用小范围验证取代一次性押注。"],
+    ["人际合作", relationshipRisk, "合作前先谈清角色、分账、责任边界与退出机制。"],
+    ["身心消耗", "中", "近期不宜长期熬夜或高压硬撑，稳定作息会直接影响判断质量。"]
+  ] as const;
+}
+
+function reportDecisionChecklist(report: SavedReport) {
+  const actions = report.metadata?.integratedActions;
+
+  return [
+    ["优先处理", actions?.now?.[0] || "确认当前最重要目标，只保留 1-2 个主线推进。"],
+    ["需要等待", "涉及大额投入、长期合约或复杂合作时，先等资料、条件与人和更完整。"],
+    ["可以推进", "低成本测试、邀约沟通、内部整理、产品优化、客户复盘与学习升级。"],
+    ["必须避开", actions?.avoid?.[0] || "情绪化承诺、冲动签约、借钱扩张、边界不清的合作。"]
+  ] as const;
+}
+
+function reportSolutionStack(report: SavedReport) {
+  const actions = report.metadata?.integratedActions;
+
+  return [
+    ["空间", "整理东南或北方工作区，保留文件、计划表、收纳盒与一个稳定光源。"],
+    ["颜色", "主用青绿、蓝、金；若压力大，减少大面积红色和强烈橙色。"],
+    ["仪式", actions?.ritual?.[0] || "每日固定 9 分钟静心，写下一件最重要行动，完成后整理桌面。"],
+    ["产品", "适合搭配九运香、白水晶、五行饰品或办公室布局用品；以提醒行动为主，不夸大功效。"],
+    ["课程/咨询", "若问题涉及事业转型、开业、合作或长期布局，建议升级为深度报告或预约大师咨询。"]
+  ] as const;
 }
 
 function getBaziPillars(): BaziPillar[] {
@@ -2397,6 +2682,147 @@ function downloadSigil(artifact: SigilArtifact) {
   URL.revokeObjectURL(url);
 }
 
+function isProfileReady(profile: MemberProfile) {
+  return Boolean(
+    profile.name &&
+      profile.name !== "未填写" &&
+      profile.birthDate &&
+      profile.birthDate !== "2000-01-01" &&
+      profile.gender &&
+      profile.gender !== "未填写"
+  );
+}
+
+function MemberOnboardingGuide({
+  memberProfile,
+  onOpenModule,
+  onSelectPrompt,
+  onSelectReport,
+  onDismiss
+}: {
+  memberProfile: MemberProfile;
+  onOpenModule: (module: DashboardModule) => void;
+  onSelectPrompt: (prompt: string, module: DashboardModule) => void;
+  onSelectReport: (preset: ReportDemandPreset) => void;
+  onDismiss: () => void;
+}) {
+  const profileReady = isProfileReady(memberProfile);
+  const steps = [
+    {
+      title: "建立个人命理资料",
+      desc: profileReady ? "资料已建立，AI 和报告会读取这份档案。" : "先填写姓名、生日、时辰、性别与地区，让分析更像专属建议。",
+      action: "去填写",
+      done: profileReady,
+      onClick: () => onOpenModule("profile")
+    },
+    {
+      title: "查看今日运势",
+      desc: "先看今日评分、宜忌、吉时与吉方，再决定今天先做什么。",
+      action: "看今日",
+      done: false,
+      onClick: () => onOpenModule("fortune")
+    },
+    {
+      title: "问 AI 一个关键问题",
+      desc: "用一句具体问题开始，例如事业、财运、感情或合作判断。",
+      action: "开始问",
+      done: false,
+      onClick: () => onSelectPrompt("请根据我的资料，帮我判断今天最应该先处理的一个事业、财运或关系问题。", "ai")
+    },
+    {
+      title: "生成第一份报告",
+      desc: "当你需要做决定时，把分析保存成可回看的完整报告。",
+      action: "生成报告",
+      done: false,
+      onClick: () => onSelectReport(demandReportCards[4].preset)
+    }
+  ];
+
+  return (
+    <section className="mt-6 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">First Visit Guide</p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">第一次使用，从这 4 步开始</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
+            不需要一次看完所有功能。先建立资料、看今日、问一个问题，再生成一份报告。
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="rounded border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/55 transition hover:border-[#C79A54]"
+        >
+          暂时隐藏
+        </button>
+      </div>
+      <div className="mt-5 grid gap-3 md:grid-cols-4">
+        {steps.map((step, index) => (
+          <button
+            key={step.title}
+            type="button"
+            onClick={step.onClick}
+            className="rounded border border-[#C79A54]/25 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54] hover:shadow-sm"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="grid size-8 place-items-center rounded-full bg-[#063F4A] text-sm font-semibold text-white">{index + 1}</span>
+              {step.done ? <CheckCircle2 className="size-5 text-[#1495A0]" /> : <ChevronRight className="size-5 text-[#C79A54]" />}
+            </div>
+            <h3 className="mt-4 font-semibold text-[#063F4A]">{step.title}</h3>
+            <p className="mt-2 min-h-12 text-xs leading-5 text-ink/55">{step.desc}</p>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#7A1F16]">
+              {step.done ? "已完成" : step.action} <ChevronRight className="size-3.5" />
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MobileBottomNav({
+  categories,
+  activeCategory,
+  onOpenCategory
+}: {
+  categories: typeof dashboardCategories;
+  activeCategory: DashboardCategory;
+  onOpenCategory: (category: DashboardCategory) => void;
+}) {
+  const iconMap: Record<DashboardCategory, typeof CalendarDays> = {
+    today: CalendarDays,
+    ai: Bot,
+    reports: FileText,
+    wallet: WalletCards,
+    profile: UserRound,
+    partner: Trophy
+  };
+  const navItems = categories.map((category) => ({ ...category, icon: iconMap[category.id] }));
+
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-10px_30px_rgba(16,47,56,0.12)] backdrop-blur md:hidden">
+      <div className={`grid gap-1 ${navItems.length > 5 ? "grid-cols-6" : "grid-cols-5"}`}>
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const active = activeCategory === item.id;
+
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => onOpenCategory(item.id)}
+              className={`rounded px-1.5 py-2 text-center text-[11px] font-semibold transition ${active ? "bg-[#063F4A] text-white" : "text-ink/55"}`}
+            >
+              <Icon className={`mx-auto mb-1 size-4 ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`} />
+              {item.title}
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
 function ModuleCard({
   module,
   active,
@@ -2542,7 +2968,7 @@ function TodayActionCenter({
             onClick={() => onOpenModule("ai")}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A]"
           >
-            问 AI 风水师 <Bot className="size-4" />
+            问 AI 风水命理师 <Bot className="size-4" />
           </button>
           <button
             type="button"
@@ -3514,7 +3940,7 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
             <p className="text-sm text-white/55">Personal Destiny Profile</p>
             <h2 className="mt-2 text-3xl font-semibold">{memberProfile.name} 的个人命盘</h2>
             <p className="mt-3 max-w-xl text-sm leading-6 text-white/65">
-              会员注册后必须填写基础资料。今日运势、AI 风水师和报告中心都会读取这份档案来做命理分析。
+              会员注册后必须填写基础资料。今日运势、AI 风水命理师和报告中心都会读取这份档案来做命理分析。
             </p>
           </div>
           <UserRound className="size-9 text-[#C79A54]" />
@@ -4218,6 +4644,9 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
 function IntegratedReportPanel({ report }: { report: SavedReport }) {
   const input = report.metadata?.integratedInput;
   const meihuaInput = report.metadata?.meihuaInput;
+  const baziInput = report.metadata?.baziInput;
+  const ziweiInput = report.metadata?.ziweiInput;
+  const numerologyInput = report.metadata?.numerologyInput;
   const scoreRows = [
     ["长期格局", report.metadata?.integratedScores?.overall ?? 86],
     ["事业机会", report.metadata?.integratedScores?.career ?? 88],
@@ -4232,6 +4661,18 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
     ["仪式建议", report.metadata?.integratedActions?.ritual],
     ["产品建议", report.metadata?.integratedActions?.products]
   ].filter(([, items]) => Array.isArray(items) && items.length > 0) as [string, string[]][];
+  const systemMatrix = [
+    ["命盘底盘", `${baziInput?.birthDate || input?.birthDate || "未填生日"} · ${baziInput?.birthHourBranch || input?.birthHourBranch || "时辰待定"}`, "判断先天性格、五行承载、资源结构与长期运势底色。"],
+    ["宫位阶段", ziweiInput?.focus ? ziweiFocusLabels[ziweiInput.focus] : "人生阶段", "观察事业、财富、人际、家庭与当前阶段的触发重点。"],
+    ["当下问事", meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键问题", "看现状、阻力、转折与短期行动窗口。"],
+    ["行为节奏", numerologyInput?.focus ? numerologyFocusLabels[numerologyInput.focus] : "个人节奏", "校准执行方式、沟通习惯、年度主题与成长课题。"]
+  ] as const;
+  const destinyChecklist = [
+    ["先天格局", "看性格底盘、优势、弱点与承载能力。"],
+    ["当前运势", "看近期是否适合推进、等待、修复或调整。"],
+    ["现实决策", "把命理信号转成可执行的工作、财务、关系建议。"],
+    ["通关方法", "用空间、颜色、行为、仪式和复盘降低阻力。"]
+  ] as const;
 
   return (
     <div className="grid gap-4">
@@ -4259,14 +4700,47 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         </div>
       </section>
 
+      <section className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、四术合参矩阵</h4>
+          <div className="mt-4 grid gap-3">
+            {systemMatrix.map(([label, value, desc]) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="font-semibold text-[#063F4A]">{label}</p>
+                  <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{value}</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-ink/62">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">二、专业判断流程</h4>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {destinyChecklist.map(([label, desc], index) => (
+              <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">Step {index + 1}</p>
+                <p className="mt-2 font-semibold text-[#063F4A]">{label}</p>
+                <p className="mt-2 text-sm leading-6 text-ink/62">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 rounded bg-[#fff4d6] p-3 text-sm leading-6 text-ink/65">
+            本报告不是单一术数的碎片解读，而是先看底层命格，再看阶段触发，最后落到现实行动。重点是帮助你知道“现在该做什么、不该做什么、何时再推进”。
+          </p>
+        </div>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {[
-          ["命格总论", "读取个人底层性格、优势、弱点与人生主线，判断适合用什么方式累积成果。"],
-          ["阶段判断", "判断当前处于扩张、整理、等待、转向或修复状态，避免误用力。"],
-          ["关键问题", `围绕「${meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键决策"}」拆解现状、阻力与下一步。`],
-          ["通关方法", "提供颜色、方位、空间整理、日常行为与心法建议，把分析转成行动。"],
-          ["危机处理", "给出遇到冲突、破财、误判、情绪波动时的处理步骤。"],
-          ["产品仪式", "结合九运香、水晶、五行饰品、办公室布局或课程咨询，给出克制建议。"]
+          ["三、命格总论", "读取个人底层性格、优势、弱点与人生主线，判断适合用什么方式累积成果。"],
+          ["四、阶段判断", "判断当前处于扩张、整理、等待、转向或修复状态，避免误用力。"],
+          ["五、关键问题", `围绕「${meihuaInput?.specificQuestion || input?.specificQuestion || "当前关键决策"}」拆解现状、阻力与下一步。`],
+          ["六、通关方法", "提供颜色、方位、空间整理、日常行为与心法建议，把分析转成行动。"],
+          ["七、危机处理", "给出遇到冲突、破财、误判、情绪波动时的处理步骤。"],
+          ["八、产品仪式", "结合九运香、水晶、五行饰品、办公室布局或课程咨询，给出克制建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
             <h4 className="font-semibold text-[#063F4A]">{title}</h4>
@@ -4278,7 +4752,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
       <section className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
         <div className="grid gap-4">
           <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">六、综合评分</h4>
+          <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">九、综合评分</h4>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
@@ -4290,7 +4764,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           </div>
           {actionGroups.length > 0 ? (
             <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-              <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">行动清单</h4>
+              <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">十、行动清单</h4>
               <div className="mt-4 grid gap-3">
                 {actionGroups.map(([label, items]) => (
                   <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
@@ -4307,12 +4781,12 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           ) : null}
         </div>
         <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">完整个人分析与建议</h4>
-          <div className="mt-4 grid gap-3">
+          <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">十一、完整个人分析与建议</h4>
+          <div className="mt-4 grid gap-4">
             {visibleReportSections(report).map((section) => (
-              <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-                <p className="font-semibold text-[#063F4A]">{section.title}</p>
-                <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
+              <div key={section.title} className="rounded border-l-4 border-[#C79A54] bg-[#F5FAFA] p-4">
+                <p className="text-lg font-semibold text-[#063F4A]">{section.title}</p>
+                <p className="mt-3 text-sm leading-7 text-ink/68">{section.content}</p>
               </div>
             ))}
           </div>
@@ -4606,22 +5080,46 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
   const meihuaInput = report.metadata?.meihuaInput;
   const ziweiInput = report.metadata?.ziweiInput;
   const numerologyInput = report.metadata?.numerologyInput;
-  const displayName = baziInput?.fullName || memberProfile.name;
-  const displayGender = baziInput?.gender || memberProfile.gender;
-  const displayBirthDate = baziInput?.birthDate || memberProfile.birthDate;
-  const displayBirthTime = baziInput?.birthTime || memberProfile.birthTimeLabel;
+  const integratedInput = report.metadata?.integratedInput;
+  const displayName = baziInput?.fullName && baziInput.fullName !== "未填写" ? baziInput.fullName : memberProfile.name;
+  const displayGender = baziInput?.gender && baziInput.gender !== "未填写" ? baziInput.gender : memberProfile.gender;
+  const displayBirthDate = preferProfileDate(baziInput?.birthDate || "", memberProfile.birthDate);
+  const displayBirthTime = preferProfileTime(baziInput?.birthTime || "", memberProfile.birthTime || memberProfile.birthTimeLabel);
   const displayBirthLocation = baziInput?.birthLocation || memberProfile.region;
   const headerName = meihuaInput?.fullName || displayName;
   const headerGender = meihuaInput?.gender || displayGender;
-  const headerBirthDate = meihuaInput?.birthDate || displayBirthDate;
-  const headerBirthTime = meihuaInput?.birthTime || displayBirthTime;
+  const headerBirthDate = preferProfileDate(meihuaInput?.birthDate || displayBirthDate, memberProfile.birthDate);
+  const headerBirthTime = preferProfileTime(meihuaInput?.birthTime || displayBirthTime, memberProfile.birthTime || memberProfile.birthTimeLabel);
   const headerBirthLocation = meihuaInput?.birthLocation || displayBirthLocation;
   const finalName = numerologyInput?.fullName || ziweiInput?.fullName || headerName;
   const finalGender = numerologyInput?.gender || ziweiInput?.gender || headerGender;
-  const finalBirthDate = numerologyInput?.birthDate || ziweiInput?.birthDate || headerBirthDate;
-  const finalBirthTime = numerologyInput?.birthTime || ziweiInput?.birthTime || headerBirthTime;
+  const finalBirthDate = preferProfileDate(numerologyInput?.birthDate || ziweiInput?.birthDate || integratedInput?.birthDate || headerBirthDate, memberProfile.birthDate);
+  const finalBirthTime = preferProfileTime(numerologyInput?.birthTime || ziweiInput?.birthTime || integratedInput?.birthTime || headerBirthTime, memberProfile.birthTime || memberProfile.birthTimeLabel);
   const finalBirthLocation = ziweiInput?.birthLocation || headerBirthLocation;
+  const finalCalendarType = baziInput?.calendarType || ziweiInput?.calendarType || integratedInput?.calendarType || "Gregorian";
+  const finalLunarDate =
+    integratedInput?.lunarDate ||
+    baziInput?.lunarDate ||
+    ziweiInput?.lunarDate ||
+    meihuaInput?.lunarDate ||
+    numerologyInput?.lunarDate ||
+    getAutoLunarDate(finalBirthDate, finalBirthTime, finalCalendarType);
+  const finalHourBranch =
+    integratedInput?.birthHourBranch ||
+    baziInput?.birthHourBranch ||
+    ziweiInput?.birthHourBranch ||
+    meihuaInput?.birthHourBranch ||
+    numerologyInput?.birthHourBranch ||
+    getChineseHourBranch(finalBirthTime);
   const reportHeading = report.title.includes("完整报告") ? report.title : `${report.title} 完整报告`;
+  const executiveSummary = reportExecutiveSummary(report);
+  const professionalMetrics = reportProfessionalMetrics(report);
+  const tableOfContents = reportTableOfContents(report);
+  const keyConclusionCards = reportKeyConclusionCards(report);
+  const sevenDayPlan = reportSevenDayPlan(report);
+  const riskRadar = reportRiskRadar(report);
+  const decisionChecklist = reportDecisionChecklist(report);
+  const solutionStack = reportSolutionStack(report);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 backdrop-blur-sm md:p-6">
@@ -4641,17 +5139,24 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
           </div>
         </div>
 
-        <article className="report-print-area rounded border-4 border-[#C79A54] bg-[#fffaf0] p-5 text-[#102F38] shadow-2xl md:p-8">
-          <header className="grid gap-5 border-b-2 border-[#C79A54]/45 pb-5 md:grid-cols-[0.75fr_1.1fr_0.8fr] md:items-center">
+        <article
+          className="report-print-area rounded border-4 border-[#C79A54] bg-[#fffaf0] p-5 text-[#102F38] shadow-2xl md:p-8"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 12% 8%, rgba(199,154,84,.12), transparent 26%), radial-gradient(circle at 88% 12%, rgba(6,63,74,.08), transparent 25%), linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,250,240,.92))"
+          }}
+        >
+          <header className="grid gap-5 border-b-2 border-[#C79A54]/45 pb-5 md:grid-cols-[0.72fr_1.15fr_0.78fr] md:items-center">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#C79A54]">AI Feng Shui Master</p>
               <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{finalName}</h1>
+              <p className="mt-3 text-sm leading-6 text-ink/55">专业命理合参 · 趋势判断 · 行动建议</p>
             </div>
             <div className="text-sm leading-7">
               <h2 className="text-center text-4xl font-semibold tracking-[0.12em] text-[#063F4A]">{reportHeading}</h2>
               <div className="mt-4 grid gap-1 rounded border border-[#C79A54]/25 bg-white/70 p-4">
-                <p>公历：{finalBirthDate}　{finalBirthTime}</p>
-                <p>农历：一九八零年 五月 初二日 酉时</p>
+                <p>公历：{finalBirthDate || "未填写"}　{finalBirthTime || "未填写"}　{finalHourBranch}</p>
+                <p>农历：{finalLunarDate}</p>
                 <p>性别：{finalGender}　地区：{finalBirthLocation}</p>
                 {meihuaInput ? <p>起卦：{meihuaInput.divinationDateTime}　问题：{meihuaInput.specificQuestion}</p> : null}
                 <p>Email：{memberProfile.email}</p>
@@ -4663,6 +5168,127 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
               <p className="mt-2 text-ink/65">命由天定，运由己造。知命而乐，修身而行，趋吉避凶，福慧双修。</p>
             </div>
           </header>
+
+          <section className="mt-5 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded border border-[#C79A54]/35 bg-white/80 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-[#063F4A]">报告核心摘要</h3>
+                <span className="rounded bg-[#C79A54]/18 px-3 py-1 text-xs font-semibold text-[#063F4A]">Professional Reading</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {executiveSummary.map(([label, content]) => (
+                  <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{label}</p>
+                    <p className="mt-2 line-clamp-5 text-sm leading-6 text-ink/68">{content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded border border-[#C79A54]/35 bg-[#063F4A] p-4 text-white">
+              <h3 className="text-xl font-semibold">命理指标</h3>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {professionalMetrics.map(([label, score]) => (
+                  <div key={label} className="rounded border border-white/10 bg-white/8 p-3">
+                    <p className="text-xs text-white/50">{label}</p>
+                    <p className="mt-1 text-2xl font-semibold text-[#E8D4A8]">{score}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-5 grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
+            <div className="rounded border border-[#C79A54]/35 bg-white/80 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-[#063F4A]">报告目录</h3>
+                <span className="rounded bg-[#F5FAFA] px-3 py-1 text-xs font-semibold text-ink/55">阅读路径</span>
+              </div>
+              <div className="mt-4 grid gap-2">
+                {tableOfContents.map((item, index) => (
+                  <div key={`${item}-${index}`} className="flex items-center gap-3 rounded border border-[#C79A54]/18 bg-[#F5FAFA] px-3 py-2">
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#063F4A] text-xs font-semibold text-white">{index + 1}</span>
+                    <span className="text-sm font-semibold text-[#063F4A]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded border border-[#C79A54]/35 bg-white/80 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-[#063F4A]">重点结论页</h3>
+                <span className="rounded bg-[#C79A54]/18 px-3 py-1 text-xs font-semibold text-[#063F4A]">先看结论，再看细节</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {keyConclusionCards.map(([label, content]) => (
+                  <div key={label} className="rounded border-l-4 border-[#C79A54] bg-[#F5FAFA] p-4">
+                    <p className="text-sm font-semibold text-[#7A1F16]">{label}</p>
+                    <p className="mt-2 line-clamp-4 text-sm leading-6 text-ink/68">{content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-5 rounded border border-[#C79A54]/35 bg-white/80 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-xl font-semibold text-[#063F4A]">7 日通关计划</h3>
+              <span className="rounded bg-[#fff4d6] px-3 py-1 text-xs font-semibold text-[#7A1F16]">把建议变成每天可做的动作</span>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-7">
+              {sevenDayPlan.map(([day, title, content]) => (
+                <div key={day} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{day}</p>
+                  <p className="mt-2 font-semibold text-[#063F4A]">{title}</p>
+                  <p className="mt-2 text-xs leading-5 text-ink/60">{content}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-5 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+            <div className="rounded border border-[#C79A54]/35 bg-white/80 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-[#063F4A]">风险雷达</h3>
+                <span className="rounded bg-[#7A1F16] px-3 py-1 text-xs font-semibold text-white">先避凶，再取势</span>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {riskRadar.map(([label, level, content]) => (
+                  <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-[#063F4A]">{label}</p>
+                      <span className="rounded bg-[#fff4d6] px-2 py-1 text-xs font-semibold text-[#7A1F16]">风险 {level}</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-ink/62">{content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded border border-[#C79A54]/35 bg-[#063F4A] p-4 text-white">
+              <h3 className="text-xl font-semibold">行动优先级</h3>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {decisionChecklist.map(([label, content]) => (
+                  <div key={label} className="rounded border border-white/10 bg-white/8 p-4">
+                    <p className="text-sm font-semibold text-[#E8D4A8]">{label}</p>
+                    <p className="mt-2 text-sm leading-6 text-white/70">{content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-5 rounded border border-[#C79A54]/35 bg-white/80 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-xl font-semibold text-[#063F4A]">开运解决方案</h3>
+              <span className="rounded bg-[#C79A54]/18 px-3 py-1 text-xs font-semibold text-[#063F4A]">空间 · 颜色 · 仪式 · 产品 · 咨询</span>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-5">
+              {solutionStack.map(([label, content]) => (
+                <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                  <p className="font-semibold text-[#7A1F16]">{label}</p>
+                  <p className="mt-2 text-xs leading-5 text-ink/62">{content}</p>
+                </div>
+              ))}
+            </div>
+          </section>
 
           <div className="mt-5">
             {template === "八字命理" ? <BaziReportPanel report={report} memberProfile={memberProfile} /> : null}
@@ -4754,40 +5380,50 @@ function WalletAndReports({
       ...current,
       fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
       gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
+      birthDate: preferProfileDate(current.birthDate, memberProfile.birthDate),
+      birthTime: preferProfileTime(current.birthTime, memberProfile.birthTime),
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation,
+      lunarDate: getAutoLunarDate(preferProfileDate(current.birthDate, memberProfile.birthDate), preferProfileTime(current.birthTime, memberProfile.birthTime), current.calendarType),
+      birthHourBranch: getChineseHourBranch(preferProfileTime(current.birthTime, memberProfile.birthTime))
     }));
     setMeihuaInput((current) => ({
       ...current,
       fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
       gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
+      birthDate: preferProfileDate(current.birthDate, memberProfile.birthDate),
+      birthTime: preferProfileTime(current.birthTime, memberProfile.birthTime),
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation,
+      lunarDate: getAutoLunarDate(preferProfileDate(current.birthDate, memberProfile.birthDate), preferProfileTime(current.birthTime, memberProfile.birthTime)),
+      birthHourBranch: getChineseHourBranch(preferProfileTime(current.birthTime, memberProfile.birthTime))
     }));
     setZiweiInput((current) => ({
       ...current,
       fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
       gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
+      birthDate: preferProfileDate(current.birthDate, memberProfile.birthDate),
+      birthTime: preferProfileTime(current.birthTime, memberProfile.birthTime),
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation,
+      lunarDate: getAutoLunarDate(preferProfileDate(current.birthDate, memberProfile.birthDate), preferProfileTime(current.birthTime, memberProfile.birthTime), current.calendarType),
+      birthHourBranch: getChineseHourBranch(preferProfileTime(current.birthTime, memberProfile.birthTime))
     }));
     setNumerologyInput((current) => ({
       ...current,
       fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
       gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime
+      birthDate: preferProfileDate(current.birthDate, memberProfile.birthDate),
+      birthTime: preferProfileTime(current.birthTime, memberProfile.birthTime),
+      lunarDate: getAutoLunarDate(preferProfileDate(current.birthDate, memberProfile.birthDate), preferProfileTime(current.birthTime, memberProfile.birthTime)),
+      birthHourBranch: getChineseHourBranch(preferProfileTime(current.birthTime, memberProfile.birthTime))
     }));
     setIntegratedInput((current) => ({
       ...current,
       fullName: !current.fullName || current.fullName === emptyMemberProfile.name ? memberProfile.name : current.fullName,
       gender: !current.gender || current.gender === emptyMemberProfile.gender ? memberProfile.gender : current.gender,
-      birthDate: !current.birthDate || current.birthDate === emptyMemberProfile.birthDate ? memberProfile.birthDate : current.birthDate,
-      birthTime: !current.birthTime || current.birthTime === emptyMemberProfile.birthTime ? memberProfile.birthTime : current.birthTime,
-      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation
+      birthDate: preferProfileDate(current.birthDate, memberProfile.birthDate),
+      birthTime: preferProfileTime(current.birthTime, memberProfile.birthTime),
+      birthLocation: !current.birthLocation || current.birthLocation === emptyMemberProfile.region ? memberProfile.region : current.birthLocation,
+      lunarDate: getAutoLunarDate(preferProfileDate(current.birthDate, memberProfile.birthDate), preferProfileTime(current.birthTime, memberProfile.birthTime), current.calendarType),
+      birthHourBranch: getChineseHourBranch(preferProfileTime(current.birthTime, memberProfile.birthTime))
     }));
   }, [memberProfile]);
 
@@ -5019,7 +5655,7 @@ function WalletAndReports({
     setGeneratingReportTitle(report.title);
     setReportMessage(`AI 正在用八字、紫微、梅花与数字命理生成${report.title}，请稍候。`);
 
-    const subject = generalReportInputFromMember(report.title, memberProfile);
+    const subject = attachLunarFields(generalReportInputFromMember(report.title, memberProfile));
     const baziSubject: BaziReportInput = {
       fullName: subject.fullName,
       gender: subject.gender,
@@ -5027,6 +5663,8 @@ function WalletAndReports({
       birthTime: subject.birthTime,
       birthLocation: subject.birthLocation,
       calendarType: subject.calendarType,
+      lunarDate: subject.lunarDate,
+      birthHourBranch: subject.birthHourBranch,
       focus: subject.focus
     };
     const ziweiSubject: ZiweiReportInput = {
@@ -5036,6 +5674,8 @@ function WalletAndReports({
       birthTime: subject.birthTime,
       birthLocation: subject.birthLocation,
       calendarType: subject.calendarType,
+      lunarDate: subject.lunarDate,
+      birthHourBranch: subject.birthHourBranch,
       focus: subject.focus === "yearly luck" ? "annual luck" : subject.focus
     };
     const numerologySubject: NumerologyReportInput = {
@@ -5043,6 +5683,8 @@ function WalletAndReports({
       gender: subject.gender,
       birthDate: subject.birthDate,
       birthTime: subject.birthTime,
+      lunarDate: subject.lunarDate,
+      birthHourBranch: subject.birthHourBranch,
       focus: subject.focus === "health" ? "personal growth" : subject.focus
     };
     const meihuaSubject: MeihuaReportInput = {
@@ -5051,6 +5693,8 @@ function WalletAndReports({
       birthDate: subject.birthDate,
       birthTime: subject.birthTime,
       birthLocation: subject.birthLocation,
+      lunarDate: subject.lunarDate,
+      birthHourBranch: subject.birthHourBranch,
       questionCategory: subject.questionCategory,
       specificQuestion: subject.specificQuestion,
       divinationDateTime: subject.divinationDateTime,
@@ -5146,7 +5790,7 @@ function WalletAndReports({
       const response = await fetch("/api/bazi-report", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(baziInput)
+        body: JSON.stringify(attachLunarFields(baziInput))
       });
       const payload = await response.json();
 
@@ -5160,7 +5804,7 @@ function WalletAndReports({
       aiContent = undefined;
     }
 
-    const generated = createBaziDestinyReport(baziInput, aiContent);
+    const generated = createBaziDestinyReport(attachLunarFields(baziInput), aiContent);
     const persistedReport = await persistGeneratedReport(generated, "bazi_destiny_report", "生成八字命理测算完整报告", accessToken);
 
     if (!persistedReport) {
@@ -5209,7 +5853,7 @@ function WalletAndReports({
       const response = await fetch("/api/meihua-report", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(meihuaInput)
+        body: JSON.stringify(attachLunarFields(meihuaInput))
       });
       const payload = await response.json();
       if (payload.summary && Array.isArray(payload.sections)) {
@@ -5219,7 +5863,7 @@ function WalletAndReports({
       aiContent = undefined;
     }
 
-    const generated = createMeihuaDivinationReport(meihuaInput, aiContent);
+    const generated = createMeihuaDivinationReport(attachLunarFields(meihuaInput), aiContent);
     const persistedReport = await persistGeneratedReport(generated, "meihua_divination_report", "生成梅花易数测算完整报告", accessToken);
 
     if (!persistedReport) {
@@ -5268,7 +5912,7 @@ function WalletAndReports({
       const response = await fetch("/api/ziwei-report", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(ziweiInput)
+        body: JSON.stringify(attachLunarFields(ziweiInput))
       });
       const payload = await response.json();
       if (payload.summary && Array.isArray(payload.sections)) {
@@ -5278,7 +5922,7 @@ function WalletAndReports({
       aiContent = undefined;
     }
 
-    const generated = createZiweiDestinyReport(ziweiInput, aiContent);
+    const generated = createZiweiDestinyReport(attachLunarFields(ziweiInput), aiContent);
     const persistedReport = await persistGeneratedReport(generated, "ziwei_destiny_report", "生成紫微斗数命盘详细解析报告", accessToken);
 
     if (!persistedReport) {
@@ -5327,7 +5971,7 @@ function WalletAndReports({
       const response = await fetch("/api/numerology-report", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(numerologyInput)
+        body: JSON.stringify(attachLunarFields(numerologyInput))
       });
       const payload = await response.json();
       if (payload.summary && Array.isArray(payload.sections)) {
@@ -5337,7 +5981,7 @@ function WalletAndReports({
       aiContent = undefined;
     }
 
-    const generated = createNumerologyLifePathReport(numerologyInput, aiContent);
+    const generated = createNumerologyLifePathReport(attachLunarFields(numerologyInput), aiContent);
     const persistedReport = await persistGeneratedReport(generated, "numerology_life_path_report", "生成数字命理测算完整报告", accessToken);
 
     if (!persistedReport) {
@@ -5435,7 +6079,7 @@ function WalletAndReports({
       const response = await fetch("/api/integrated-report", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(integratedInput)
+        body: JSON.stringify(attachLunarFields(integratedInput))
       });
       const payload = await response.json();
       if (payload.summary && Array.isArray(payload.sections)) {
@@ -5450,7 +6094,7 @@ function WalletAndReports({
       aiContent = undefined;
     }
 
-    const generated = createIntegratedDestinyReport(integratedInput, aiContent);
+    const generated = createIntegratedDestinyReport(attachLunarFields(integratedInput), aiContent);
     const persistedReport = await persistGeneratedReport(generated, "integrated_destiny_report", "生成综合命理决策报告", accessToken);
 
     if (!persistedReport) {
@@ -5669,23 +6313,27 @@ function WalletAndReports({
                     </select>
                   </label>
                   <label className="text-sm font-semibold">
-                    出生日期
+                    出生日期（公历）
                     <input type="date" value={integratedInput.birthDate} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
                   </label>
                   <label className="text-sm font-semibold">
                     出生时间
                     <input type="time" value={integratedInput.birthTime} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
                   </label>
+                  <div className="rounded border border-[#C79A54]/25 bg-white/75 p-3 text-sm font-semibold text-[#063F4A] md:col-span-2">
+                    系统自动换算：农历 {getAutoLunarDate(integratedInput.birthDate, integratedInput.birthTime, integratedInput.calendarType)}
+                  </div>
                   <label className="text-sm font-semibold md:col-span-2">
                     出生地点
                     <input value={integratedInput.birthLocation} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
                   </label>
                   <label className="text-sm font-semibold">
-                    历法
+                    输入历法
                     <select value={integratedInput.calendarType} onChange={(event) => setIntegratedInput((current) => ({ ...current, calendarType: event.target.value as IntegratedReportInput["calendarType"] }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]">
                       <option value="Gregorian">Gregorian 公历</option>
                       <option value="Lunar">Lunar 农历</option>
                     </select>
+                    <span className="mt-1 block text-xs font-medium text-ink/45">一般请选择公历，系统会自动换算农历与时辰。</span>
                   </label>
                   <label className="text-sm font-semibold">
                     综合重点
@@ -7482,6 +8130,7 @@ export default function DashboardPage() {
   const [membershipMessage, setMembershipMessage] = useState("正式模式：会员等级只会在付款成功后由系统升级。");
   const [aiStarterPrompt, setAiStarterPrompt] = useState("");
   const [reportPreset, setReportPreset] = useState<ReportDemandPreset | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const hasPartnerAccess = partnerPackage !== "none";
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const availableDashboardCategories = hasPartnerAccess ? [...memberDashboardCategories, partnerDashboardCategory] : memberDashboardCategories;
@@ -7552,6 +8201,13 @@ export default function DashboardPage() {
     };
   }, [router]);
 
+  useEffect(() => {
+    if (authStatus !== "authenticated") return;
+
+    const dismissed = window.localStorage.getItem("aifengshui-onboarding-dismissed");
+    setShowOnboarding(!dismissed);
+  }, [authStatus]);
+
   function syncCreditDelta(delta: number, source: string, description: string) {
     const supabase = createBrowserSupabaseClient();
 
@@ -7619,6 +8275,25 @@ export default function DashboardPage() {
     }, 80);
   }
 
+  function openCategory(category: DashboardCategory) {
+    if (category === "partner" && !hasPartnerAccess) {
+      setMembershipMessage("创业会员经营中心只开放给已购买 8888 / 16888 / 38888 创业配套的会员。普通会员可先使用邀请好友功能。");
+      openModule("invite");
+      return;
+    }
+
+    setActiveCategory(category);
+    setActiveModule(defaultModuleByCategory[category]);
+    window.setTimeout(() => {
+      moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  }
+
+  function dismissOnboarding() {
+    window.localStorage.setItem("aifengshui-onboarding-dismissed", "1");
+    setShowOnboarding(false);
+  }
+
   function handleSelectAiPrompt(prompt: string, module: DashboardModule) {
     setAiStarterPrompt(prompt);
     openModule(module);
@@ -7662,9 +8337,18 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <main className="px-5 py-8">
+      <main className="px-5 pb-24 pt-8 md:pb-8">
         <div className="mx-auto max-w-7xl">
           <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} hasPartnerAccess={hasPartnerAccess} onOpenModule={openModule} />
+          {showOnboarding ? (
+            <MemberOnboardingGuide
+              memberProfile={memberProfile}
+              onOpenModule={openModule}
+              onSelectPrompt={handleSelectAiPrompt}
+              onSelectReport={handleSelectReportDemand}
+              onDismiss={dismissOnboarding}
+            />
+          ) : null}
           <AiQuestionStarter onSelectPrompt={handleSelectAiPrompt} />
           <ReportDemandPanel onSelectReport={handleSelectReportDemand} />
           <ProfileOverviewPanel memberProfile={memberProfile} onOpenProfile={() => openModule("profile")} />
@@ -7697,7 +8381,7 @@ export default function DashboardPage() {
                   <button
                     key={category.id}
                     type="button"
-                    onClick={() => setActiveCategory(category.id)}
+                    onClick={() => openCategory(category.id)}
                     className={[
                       "rounded border p-3 text-left transition hover:-translate-y-0.5",
                       activeCategoryButton
@@ -7799,6 +8483,7 @@ export default function DashboardPage() {
           </section>
         </div>
       </main>
+      <MobileBottomNav categories={availableDashboardCategories} activeCategory={activeCategory} onOpenCategory={openCategory} />
     </AppShell>
   );
 }

@@ -14,6 +14,8 @@ type GeneralReportBody = {
     birthTime?: string;
     birthLocation?: string;
     calendarType?: "Gregorian" | "Lunar";
+    lunarDate?: string;
+    birthHourBranch?: string;
     focus?: string;
     questionCategory?: string;
     specificQuestion?: string;
