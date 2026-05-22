@@ -1,0 +1,501 @@
+{
+  "generatedAt": "2026-05-22T12:06:09.290Z",
+  "total": 32,
+  "files": [
+    {
+      "id": "2a002a177553",
+      "relativePath": "梅花易数/梅花易数工作坊/13.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 8376,
+      "sha256": "cdba59820d4e2ee8610a2d1c0b0716b815d4e0b9b7d183088680d86d4917a011",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 25,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "714642d245f6",
+      "relativePath": "梅花易数/梅花易数工作坊/2018052502353c9620.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 90331,
+      "sha256": "a45d03775ce9670c22697102a10a1a2caf0b7aea590a1da93fb4584700cb187b",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 67,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "bc93f99d34d9",
+      "relativePath": "梅花易数/梅花易数工作坊/243335214_4908181229201834_8430970566941834591_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 111611,
+      "sha256": "7c0254c5d7d85923898b5cd1d5a546f501f5d90df60d0f7389294b23ba983d0d",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "a6ecbfbd996e",
+      "relativePath": "梅花易数/梅花易数工作坊/245036762_555289825695571_3370840628600519794_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 75456,
+      "sha256": "1887d047d9e6baa83acaaf9f5adb327c40d3f0a051d0a6756ed0032ba1dec4f7",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 77,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "ca8e3a69d738",
+      "relativePath": "梅花易数/梅花易数工作坊/6d34948990234199889a4af8a0635d3b.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 176799,
+      "sha256": "b56ba40b803bccd28f003f48bad160aa089942cf024d85ebd127e5ea16b80b71",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 62,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "ef9a59c77da8",
+      "relativePath": "梅花易数/梅花易数工作坊/H9302d931fe794b04ac1294963cfa6ac5v.wdp.jxr",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jxr",
+      "sizeBytes": 27592,
+      "sha256": "68546afa0c0ad85564f8f7a4d79d9270d741afb5685f7633350886d7cdf7873b",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "0e7317e53c18",
+      "relativePath": "梅花易数/梅花易数工作坊/Hbc2e6b9ca05b487fbe9bfe977dff6e97m.bmp",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".bmp",
+      "sizeBytes": 1932270,
+      "sha256": "ee5a17a66272259bb82a0ba420a14e6c4421ffe10b17e48a6394c704105fd2b7",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 1,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "865e26a103b0",
+      "relativePath": "梅花易数/梅花易数工作坊/Hbc2e6b9ca05b487fbe9bfe977dff6e97m.wdp.jxr",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jxr",
+      "sizeBytes": 45805,
+      "sha256": "e1ffe32fc77117c1844fc06cadb171e3592899aac56ea8894c76dec2ac80a293",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "4cc3e2506673",
+      "relativePath": "梅花易数/梅花易数工作坊/imagesOHM1WHWQ.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 8327,
+      "sha256": "4c116550b0cafb624b5758fad6796f9d49f6463105bbaf2264ed6ea3bed6f7d3",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 79,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "a1dd701e622e",
+      "relativePath": "梅花易数/梅花易数工作坊/p.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 44109,
+      "sha256": "f28314f408e0d443baee5fdcc4051d8601336f9597bcfc7569ef2417970cdf89",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 3,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "c2f08250ce17",
+      "relativePath": "梅花易数/梅花易数工作坊/taiji.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 93201,
+      "sha256": "4e0555405d5122e08c5372b09999365f7440c25d27be048fee911d5ea3f8a1d4",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 1,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "0aaf0741dfb0",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 23430,
+      "sha256": "ca3daf1f30cbf3fc5b6bd6b137f97d56dbc611c32f0c38fbbd6e51ae825e5dc9",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "c147fa4c8314",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 8481,
+      "sha256": "6ea579fda8c1ec1689b8d0df317fe8a17a1a6bdb3bf5ece07757526c4e48c418",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "2d73fecfcf8c",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.psd",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": ".psd",
+      "sizeBytes": 50851,
+      "sha256": "4b63ef1770f458b4f0c27f5c85cce420f4fc59e8a7fe804c95ee88311bb15f3c",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e28f5d1bde5f",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/2.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 25537,
+      "sha256": "cdfafd8ec475426a6e68b7317f022a600785e3d7d08d8e0f603229a4111f1c69",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "4d6e6d6e8432",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/2.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10645,
+      "sha256": "d2cf6e4cbb0f242839ace3cf3e4f28b7a2e2430c85dfa5f1991dc78a400be735",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "c659c1ccde30",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 27085,
+      "sha256": "b5274203ecbeea7acfc1e34c4f7d47a7a34aa786b35fd5fe7dd71373d7f74362",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "92a5e12988ff",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 11728,
+      "sha256": "de121f90e379e0cc0b2dc83f403384fbdc16a06a336b4e6e5dd9d3039e4285ae",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "ea31ed618735",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3a.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 9259,
+      "sha256": "4ae620a7fa6f317d50a759220bba22cfbd172a0bd54439f047bd71c40f89c96e",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e721f53c7a88",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/4.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26332,
+      "sha256": "b6a7dc8491ee5b315d18fc660d3953a5c174a85564a305ba8ccfd8d4ff18ffcc",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "b0fe82ad1323",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/4.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10887,
+      "sha256": "6e4f4d1e92afef52fad2a5ad81ee54d25b5d682fe0bc820b85d978818d55624a",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "bc2da45a0ad9",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/5.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 25869,
+      "sha256": "7ef7a738ce959c843ec46832c793b2a1a1522a92e59b59ea3b57b366341e5f9c",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e0569875bfc9",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/5.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10888,
+      "sha256": "aaa98e10ac055d99bfad5b7592c7bd6b5d5bd956c59ec0ad83dcc17625e2a5b6",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "dff625f570d0",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/6.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26867,
+      "sha256": "3b9a2b3f729cddf484b4f5f706fbd8b0d0161b21f87d251f9bbc6cd6d3fa309f",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "781a8f8e5672",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/6.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12055,
+      "sha256": "4238603aa182b50dea910d97602b25670150a1ce77981240abc8d78056615c44",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "31c43ddbbf8b",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/7.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26989,
+      "sha256": "f34e46695caaa80e9755b138ddfc7cccb193478cbebd2e6014a4f5adeb198138",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "56a5b91856bd",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/7.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12149,
+      "sha256": "d461ffc742ce7c615f00e5a737b3dd8688214eefac1048f69e288bb1373eb23e",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "4675ebe0321a",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/8.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 28574,
+      "sha256": "a4af9e6e74ca9de5d80c8ccc43ea0e06a942504e58a2ae0d732f5156bcb8da52",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "9b58cc63f56f",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/8.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12674,
+      "sha256": "480a08c62d4c8f28be1ac0884323849d542a3d3d3370c9cb9ae6f40f6894ddaa",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "06faff0337e8",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/a.psd",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": ".psd",
+      "sizeBytes": 35338,
+      "sha256": "d6b7d04a5794bb23b8880c74cf8e258ca85c3a78b1fe4a823f3e910828aa1604",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "f36901407bab",
+      "relativePath": "梅花易数/梅花易数工作坊/卦气衰旺.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 12390,
+      "sha256": "a29689c5cc284c7f66375bc9ffe055463c3857beacc7338514dfeeb124c7efed",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 66,
+      "quality": "low",
+      "topics": [
+        "八卦类象",
+        "九运"
+      ]
+    },
+    {
+      "id": "65efdbdd652d",
+      "relativePath": "紫微斗数/飞星紫微斗数十二宫六七二象.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 228659,
+      "sha256": "6fda539ff5acd2d3695f5002af71b01aea4685b9eb046b2a63e6eb57548a76b0",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "四化飞星"
+      ]
+    }
+  ]
+}

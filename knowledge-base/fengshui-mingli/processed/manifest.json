@@ -1,0 +1,4365 @@
+{
+  "generatedAt": "2026-05-22T12:06:09.282Z",
+  "files": [
+    {
+      "id": "eaa3d84cb77d",
+      "relativePath": ".DS_Store",
+      "category": "general",
+      "type": "unknown",
+      "extension": "none",
+      "sizeBytes": 8196,
+      "sha256": "30a0cc2011addf9696909ebd1b5340e117ac4b35d56c01538299dc838560a05e",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "11c535ca4704",
+      "relativePath": "六爻/08、张成达-八卦取数断病法.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 334375,
+      "sha256": "38de944e7d670ac50e5f07fcdc3823d6a3dce0dd6e54c2bb88ade71752dd5b3f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/11c535ca4704__六爻__08_张成达-八卦取数断病法.txt",
+      "charCount": 2515,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期"
+      ]
+    },
+    {
+      "id": "97d75b10a26b",
+      "relativePath": "六爻/09、张成达-从六爻里查《送五鬼》秘法.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 291548,
+      "sha256": "eb8fdd4af729a31ec33c8a4963c00ec1843011e92fcb190ba2fa81f830b5402f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/97d75b10a26b__六爻__09_张成达-从六爻里查_送五鬼_秘法.txt",
+      "charCount": 2340,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期"
+      ]
+    },
+    {
+      "id": "e1e42bcfc204",
+      "relativePath": "六爻/10、张成达-六爻活断点窍.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 7618502,
+      "sha256": "4acdf9862fc7901b84b92d8807a60ed2e35ebecb54805584cf134bedecd579bf",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e1e42bcfc204__六爻__10_张成达-六爻活断点窍.txt",
+      "charCount": 84741,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "74e5c8e3e3de",
+      "relativePath": "六爻/11、张成达-六爻快速断卦法.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 280309,
+      "sha256": "f3f838d501b13572700a9a9c50254ba9121e820abfdbf17d558de29d745245c6",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/74e5c8e3e3de__六爻__11_张成达-六爻快速断卦法.txt",
+      "charCount": 4912,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "ddb7a25f111e",
+      "relativePath": "六爻/12、张成达-六爻卦例说明.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 9938016,
+      "sha256": "f0b395cf34f5a0b2d6f96a7eceec26ff130665043e012176ae7e43e81e58c739",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ddb7a25f111e__六爻__12_张成达-六爻卦例说明.txt",
+      "charCount": 51804,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "5c31133e7339",
+      "relativePath": "六爻/五行所属行业/五行所属行业.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1435,
+      "sha256": "9333815f250983a0d75c309ba1a365cff1593bd6839e40780e621c139d7d8c87",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5c31133e7339__六爻__五行所属行业__五行所属行业.txt",
+      "charCount": 1143,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "2e48b966e941",
+      "relativePath": "六爻/五行所属行业/传统六爻断卦步骤.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 107520,
+      "sha256": "8d2454469a2901ef2590baff33a17edbd007c83f3344f0301ad13da3f29b4be1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2e48b966e941__六爻__五行所属行业__传统六爻断卦步骤.txt",
+      "charCount": 37192,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "a654dc92f3ff",
+      "relativePath": "六爻/五行所属行业/六爻取用神之辩证看法.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 3319,
+      "sha256": "08862b06aea969661316c04da39e0bd45150dfd6969aeea4c44a9b529a2b792f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/a654dc92f3ff__六爻__五行所属行业__六爻取用神之辩证看法.txt",
+      "charCount": 2462,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "c3ef2ed85042",
+      "relativePath": "六爻/五行所属行业/六爻取用神诀窍.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1687,
+      "sha256": "31cafa8c2634259cb7a5f693f2ce440a47a56bb3aa3a07818023f1dc4eefa604",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c3ef2ed85042__六爻__五行所属行业__六爻取用神诀窍.txt",
+      "charCount": 1316,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "2df845b1bce3",
+      "relativePath": "六爻/五行所属行业/六爻妙断必杀技.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 149504,
+      "sha256": "5cb2f086bbb11c0aa0f94f8e80917c67051b7f55a384654a300102c83c60602f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2df845b1bce3__六爻__五行所属行业__六爻妙断必杀技.txt",
+      "charCount": 43881,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "e9092895338b",
+      "relativePath": "六爻/五行所属行业/六爻常用直断用语.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 5249,
+      "sha256": "739342dbf9276dc12e71dbe04c40992480da4c492cac973d49c27cfd627143ce",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e9092895338b__六爻__五行所属行业__六爻常用直断用语.txt",
+      "charCount": 4266,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "c141fe7bf740",
+      "relativePath": "六爻/五行所属行业/六爻断事提纲.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1918,
+      "sha256": "05384017ab75a62ee4e0d5776cb014da4ce3db7e1e5a97d1622227ac2d329614",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c141fe7bf740__六爻__五行所属行业__六爻断事提纲.txt",
+      "charCount": 1439,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "f69c8da12b89",
+      "relativePath": "六爻/五行所属行业/六爻断卦取数.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1818,
+      "sha256": "f6c786e84ccf2ef9b56861a389a09523b150b64d548ee926184380754353c03a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f69c8da12b89__六爻__五行所属行业__六爻断卦取数.txt",
+      "charCount": 1533,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "71201af334da",
+      "relativePath": "六爻/五行所属行业/六爻爻象详解.docx",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 16895,
+      "sha256": "946795472cd65832c30fe631c7fc3e4e89f55554b6d008798a736eb937db2a06",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/71201af334da__六爻__五行所属行业__六爻爻象详解.txt",
+      "charCount": 3465,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "1399b074f37e",
+      "relativePath": "六爻/五行所属行业/六爻的思维误区.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1700,
+      "sha256": "eb1f450003c22f669740aa1ee770534908ccc17ca859ad82e0c31b6474771232",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1399b074f37e__六爻__五行所属行业__六爻的思维误区.txt",
+      "charCount": 1349,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "227c6c6db08a",
+      "relativePath": "六爻/五行所属行业/六爻金典十招（断卦必看）.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 3797,
+      "sha256": "d54ea6f2f6effa811662353fd9dc3b22184ba0486bb0f75a37a978e70acf0d09",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/227c6c6db08a__六爻__五行所属行业__六爻金典十招_断卦必看_.txt",
+      "charCount": 3078,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "00913f8e2d52",
+      "relativePath": "六爻/五行所属行业/六爻预测法的断卦核心.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 2244,
+      "sha256": "8cf2f31ac90fd1d17248ee31b3bae1e88033b885352770c5ef550623dabcbb4a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/00913f8e2d52__六爻__五行所属行业__六爻预测法的断卦核心.txt",
+      "charCount": 1689,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "b2a3502836f5",
+      "relativePath": "六爻/五行所属行业/六爻高层理论卦身的应用.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 30208,
+      "sha256": "7db1d0805efe4578e66c946494586e38ffb3541a4594b0b4fd16f00770e51a96",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b2a3502836f5__六爻__五行所属行业__六爻高层理论卦身的应用.txt",
+      "charCount": 2491,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "9127fc9b0406",
+      "relativePath": "六爻/五行所属行业/六神临六亲取象.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 10109,
+      "sha256": "777319b69476a3b19c5585ddbea7a9637ffcdf893c5cb6de2603ec1d06a2f348",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9127fc9b0406__六爻__五行所属行业__六神临六亲取象.txt",
+      "charCount": 8072,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "d976db4be931",
+      "relativePath": "六爻/五行所属行业/十天干长生十二宫真诀点窍.docx",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 41734,
+      "sha256": "0049414a28a5552ce35838c644306ba06008af71f62e909b0d5b6aec33b03d7e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d976db4be931__六爻__五行所属行业__十天干长生十二宫真诀点窍.txt",
+      "charCount": 13156,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "9ee35989d7b8",
+      "relativePath": "六爻/五行所属行业/卦技二十法.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 442880,
+      "sha256": "7fe4486b8a2dae22296e67840e4ea9ba8d82f7600c43e182e762c0c2881660d1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9ee35989d7b8__六爻__五行所属行业__卦技二十法.txt",
+      "charCount": 104006,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "6ac2087876c4",
+      "relativePath": "六爻/五行所属行业/怎么算终身卦.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 35840,
+      "sha256": "c2a310a1a553ef812ae74cba5a3212b75e565e068da36765467b16699dd2f949",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6ac2087876c4__六爻__五行所属行业__怎么算终身卦.txt",
+      "charCount": 4958,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "婚姻关系",
+        "九运"
+      ]
+    },
+    {
+      "id": "0d1dbe6c84b3",
+      "relativePath": "六爻/五行所属行业/断卦定准应期决窍.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1660,
+      "sha256": "2ca10161e8898b663eb31a8c2ded4d975762bbb06a54cb31c3f84b012c09d61b",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/0d1dbe6c84b3__六爻__五行所属行业__断卦定准应期决窍.txt",
+      "charCount": 1313,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦",
+        "旺衰应期"
+      ]
+    },
+    {
+      "id": "7a7901e25ed4",
+      "relativePath": "六爻/五行所属行业/爻位取象.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 2078,
+      "sha256": "3332982ea276a7c090e6520c953e27e445c45db9af6bc92be4aa9a03a9c7d58e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7a7901e25ed4__六爻__五行所属行业__爻位取象.txt",
+      "charCount": 1582,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "0ac59bde3e69",
+      "relativePath": "六爻/五行所属行业/玄空子谈卦中怎样取数字.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 43520,
+      "sha256": "5ef2714a047ae2ec8bbbc8933e4c5a6db340f3dfe283c30f96a041b14b9133b8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/0ac59bde3e69__六爻__五行所属行业__玄空子谈卦中怎样取数字.txt",
+      "charCount": 3595,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "婚姻关系",
+        "九运"
+      ]
+    },
+    {
+      "id": "d8314f5c4159",
+      "relativePath": "六爻/五行所属行业/王虎应--六爻指迷.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 455680,
+      "sha256": "9e8a1381436dfaf735e92f67bf78b188d4e862c5ccac8490a0b52506b74e0390",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d8314f5c4159__六爻__五行所属行业__王虎应--六爻指迷.txt",
+      "charCount": 90705,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "b9c695ec8cfb",
+      "relativePath": "六爻/五行所属行业/生克冲合信息.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 29696,
+      "sha256": "33fdac95dc3ceb163240e1504c0eba6598581443e4c4c2b911d1c408d2b9373e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b9c695ec8cfb__六爻__五行所属行业__生克冲合信息.txt",
+      "charCount": 2318,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "5fced2455260",
+      "relativePath": "六爻/五行所属行业/终身卦集.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 74752,
+      "sha256": "56bf5dffe26e765e0017c2991998c475666fa5f6032afb5fad40a6234d695ebb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5fced2455260__六爻__五行所属行业__终身卦集.txt",
+      "charCount": 15643,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "56bb2360a5f4",
+      "relativePath": "六爻/五行所属行业.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1435,
+      "sha256": "9333815f250983a0d75c309ba1a365cff1593bd6839e40780e621c139d7d8c87",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/56bb2360a5f4__六爻__五行所属行业.txt",
+      "charCount": 1143,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "923d0264062f",
+      "relativePath": "六爻/传统六爻断卦步骤.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 107520,
+      "sha256": "8d2454469a2901ef2590baff33a17edbd007c83f3344f0301ad13da3f29b4be1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/923d0264062f__六爻__传统六爻断卦步骤.txt",
+      "charCount": 37192,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "4c3311d1def4",
+      "relativePath": "六爻/六爻取用神之辩证看法.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 3319,
+      "sha256": "08862b06aea969661316c04da39e0bd45150dfd6969aeea4c44a9b529a2b792f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/4c3311d1def4__六爻__六爻取用神之辩证看法.txt",
+      "charCount": 2462,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "7d8822c57841",
+      "relativePath": "六爻/六爻取用神诀窍.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1687,
+      "sha256": "31cafa8c2634259cb7a5f693f2ce440a47a56bb3aa3a07818023f1dc4eefa604",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7d8822c57841__六爻__六爻取用神诀窍.txt",
+      "charCount": 1316,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "f145674f89a9",
+      "relativePath": "六爻/六爻妙断必杀技.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 149504,
+      "sha256": "5cb2f086bbb11c0aa0f94f8e80917c67051b7f55a384654a300102c83c60602f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f145674f89a9__六爻__六爻妙断必杀技.txt",
+      "charCount": 43881,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "197dfed9adfa",
+      "relativePath": "六爻/六爻常用直断用语.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 5249,
+      "sha256": "739342dbf9276dc12e71dbe04c40992480da4c492cac973d49c27cfd627143ce",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/197dfed9adfa__六爻__六爻常用直断用语.txt",
+      "charCount": 4266,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "3c7b9a3a27a2",
+      "relativePath": "六爻/六爻断事提纲.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1918,
+      "sha256": "05384017ab75a62ee4e0d5776cb014da4ce3db7e1e5a97d1622227ac2d329614",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3c7b9a3a27a2__六爻__六爻断事提纲.txt",
+      "charCount": 1439,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "b6f0e4cca004",
+      "relativePath": "六爻/六爻断卦取数.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1818,
+      "sha256": "f6c786e84ccf2ef9b56861a389a09523b150b64d548ee926184380754353c03a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b6f0e4cca004__六爻__六爻断卦取数.txt",
+      "charCount": 1533,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "928e665740e5",
+      "relativePath": "六爻/六爻爻象详解.docx",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 16895,
+      "sha256": "946795472cd65832c30fe631c7fc3e4e89f55554b6d008798a736eb937db2a06",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/928e665740e5__六爻__六爻爻象详解.txt",
+      "charCount": 3465,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "48f669d4865a",
+      "relativePath": "六爻/六爻特训班j讲义..doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 717824,
+      "sha256": "9fffd417895ff03a7b7b398739a4ddd2a61967a0a838f0c9f6de585bf34cbf61",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/48f669d4865a__六爻__六爻特训班j讲义..txt",
+      "charCount": 140562,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "a9bfc480a408",
+      "relativePath": "六爻/六爻特训班讲义 曲炜1)  ..doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 954368,
+      "sha256": "f775e7d0de46b2ccfe574b5210d087ed8b95595dc22d9f876bd910c201e4cd48",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/a9bfc480a408__六爻__六爻特训班讲义_曲炜1_..txt",
+      "charCount": 144169,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "8871b9130efe",
+      "relativePath": "六爻/六爻的思维误区.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1700,
+      "sha256": "eb1f450003c22f669740aa1ee770534908ccc17ca859ad82e0c31b6474771232",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/8871b9130efe__六爻__六爻的思维误区.txt",
+      "charCount": 1349,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "e1e3217b1ad5",
+      "relativePath": "六爻/六爻秘法点窍 贾秉然著.pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 50524998,
+      "sha256": "94608b7d2338c00b37a78068b6c15816d12ec01e05a9de09a8befb0a95ec21fe",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e1e3217b1ad5__六爻__六爻秘法点窍_贾秉然著.txt",
+      "charCount": 104777,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "bb78649e0c8c",
+      "relativePath": "六爻/六爻金典十招（断卦必看）.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 3797,
+      "sha256": "d54ea6f2f6effa811662353fd9dc3b22184ba0486bb0f75a37a978e70acf0d09",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/bb78649e0c8c__六爻__六爻金典十招_断卦必看_.txt",
+      "charCount": 3078,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "dd6cffb56b60",
+      "relativePath": "六爻/六爻阳宅风水断解讲义..txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 63364,
+      "sha256": "fb3f0f6b3885b2f42b56685dddda20ce763ffbf05211c7c0a641f77b37258adb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/dd6cffb56b60__六爻__六爻阳宅风水断解讲义..txt",
+      "charCount": 50190,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "3b365c99040c",
+      "relativePath": "六爻/六爻面授课堂笔记 张鼎..pdf",
+      "category": "liuyao",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2543229,
+      "sha256": "4c5606470933a19b5cacac912ac48af15f1a8429313edd1e1ee30c09446a7310",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3b365c99040c__六爻__六爻面授课堂笔记_张鼎..txt",
+      "charCount": 9277,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "8754245473c4",
+      "relativePath": "六爻/六爻预测法的断卦核心.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 2244,
+      "sha256": "8cf2f31ac90fd1d17248ee31b3bae1e88033b885352770c5ef550623dabcbb4a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/8754245473c4__六爻__六爻预测法的断卦核心.txt",
+      "charCount": 1689,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "2ff258fa401f",
+      "relativePath": "六爻/六爻高层理论卦身的应用.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 30208,
+      "sha256": "7db1d0805efe4578e66c946494586e38ffb3541a4594b0b4fd16f00770e51a96",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2ff258fa401f__六爻__六爻高层理论卦身的应用.txt",
+      "charCount": 2491,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "8b69d60e77a4",
+      "relativePath": "六爻/六神临六亲取象.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 10109,
+      "sha256": "777319b69476a3b19c5585ddbea7a9637ffcdf893c5cb6de2603ec1d06a2f348",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/8b69d60e77a4__六爻__六神临六亲取象.txt",
+      "charCount": 8072,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "fb616ed55b5c",
+      "relativePath": "六爻/十天干长生十二宫真诀点窍.docx",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 41734,
+      "sha256": "0049414a28a5552ce35838c644306ba06008af71f62e909b0d5b6aec33b03d7e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/fb616ed55b5c__六爻__十天干长生十二宫真诀点窍.txt",
+      "charCount": 13156,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "ad80ec55ac1f",
+      "relativePath": "六爻/卦技二十法.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 442880,
+      "sha256": "7fe4486b8a2dae22296e67840e4ea9ba8d82f7600c43e182e762c0c2881660d1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ad80ec55ac1f__六爻__卦技二十法.txt",
+      "charCount": 104006,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "f4c1d7820256",
+      "relativePath": "六爻/怎么算终身卦.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 35840,
+      "sha256": "c2a310a1a553ef812ae74cba5a3212b75e565e068da36765467b16699dd2f949",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f4c1d7820256__六爻__怎么算终身卦.txt",
+      "charCount": 4958,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "婚姻关系",
+        "九运"
+      ]
+    },
+    {
+      "id": "f63d2f2603c1",
+      "relativePath": "六爻/断卦定准应期决窍.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 1660,
+      "sha256": "2ca10161e8898b663eb31a8c2ded4d975762bbb06a54cb31c3f84b012c09d61b",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f63d2f2603c1__六爻__断卦定准应期决窍.txt",
+      "charCount": 1313,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦",
+        "旺衰应期"
+      ]
+    },
+    {
+      "id": "b21cdfc68034",
+      "relativePath": "六爻/爻位取象.txt",
+      "category": "liuyao",
+      "type": "text",
+      "extension": ".txt",
+      "sizeBytes": 2078,
+      "sha256": "3332982ea276a7c090e6520c953e27e445c45db9af6bc92be4aa9a03a9c7d58e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b21cdfc68034__六爻__爻位取象.txt",
+      "charCount": 1582,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "ec917fd70d2c",
+      "relativePath": "六爻/玄空子谈卦中怎样取数字.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 43520,
+      "sha256": "5ef2714a047ae2ec8bbbc8933e4c5a6db340f3dfe283c30f96a041b14b9133b8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ec917fd70d2c__六爻__玄空子谈卦中怎样取数字.txt",
+      "charCount": 3595,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "婚姻关系",
+        "九运"
+      ]
+    },
+    {
+      "id": "76719fc3515e",
+      "relativePath": "六爻/王虎应--六爻指迷.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 455680,
+      "sha256": "9e8a1381436dfaf735e92f67bf78b188d4e862c5ccac8490a0b52506b74e0390",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/76719fc3515e__六爻__王虎应--六爻指迷.txt",
+      "charCount": 90705,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "5339ffc33ca6",
+      "relativePath": "六爻/生克冲合信息.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 29696,
+      "sha256": "33fdac95dc3ceb163240e1504c0eba6598581443e4c4c2b911d1c408d2b9373e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5339ffc33ca6__六爻__生克冲合信息.txt",
+      "charCount": 2318,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "9285e7993328",
+      "relativePath": "六爻/终身卦集.doc",
+      "category": "liuyao",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 74752,
+      "sha256": "56bf5dffe26e765e0017c2991998c475666fa5f6032afb5fad40a6234d695ebb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9285e7993328__六爻__终身卦集.txt",
+      "charCount": 15643,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "12a31b63aa37",
+      "relativePath": "梅花易数/.DS_Store",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": "none",
+      "sizeBytes": 10244,
+      "sha256": "ef362df6e22fbc58febe71071312be60e6bf0c39b86277d72b65e97578ecd300",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "f55dfb1dc2fa",
+      "relativePath": "梅花易数/171117-梅花易数入门[1C05潘文欽梅花].pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 0,
+      "sha256": "",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "78d85823ddce",
+      "relativePath": "梅花易数/E339梅花易数体用大全。李科儒著。392页！.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 11100996,
+      "sha256": "d92ff4fdf2bc309acae76ee205a78b1175863a8bbd570a2af99746c68faa61b4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/78d85823ddce__梅花易数__E339梅花易数体用大全_李科儒著_392页_.txt",
+      "charCount": 62867,
+      "quality": "good",
+      "topics": [
+        "体用生克"
+      ]
+    },
+    {
+      "id": "7749be172ed0",
+      "relativePath": "梅花易数/梅花心易.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1612569,
+      "sha256": "92aadcc2afa93aebe6b9ad4c801e2ae751d8de251dbe47101a2c82990265d138",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7749be172ed0__梅花易数__梅花心易.txt",
+      "charCount": 26371,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "fecd3dd080aa",
+      "relativePath": "梅花易数/梅花心易大成秘诀实战合集/《梅花心易大成》韩海军著.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3058076,
+      "sha256": "8d65ebd5f333b908438b0c79b4f21276dbfe42037e625cc9052de0faba8374ab",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/fecd3dd080aa__梅花易数__梅花心易大成秘诀实战合集___梅花心易大成_韩海军著.txt",
+      "charCount": 573746,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "0db4105099b1",
+      "relativePath": "梅花易数/梅花心易大成秘诀实战合集/《梅花心易实战详解》繁体竖版 梁湘润著 中国哲学文化协会出版.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 21552023,
+      "sha256": "f5dfe28d58a0f7680fe45d188f4a970a2b980c86ca1c8dd62fb9747ac14a3f19",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/0db4105099b1__梅花易数__梅花心易大成秘诀实战合集___梅花心易实战详解_繁体竖版_梁湘润著_中国哲学文化协会出版.txt",
+      "charCount": 439,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "5349010ad981",
+      "relativePath": "梅花易数/梅花心易大成秘诀实战合集/《梅花心易秘诀》邵康节著 岳荣注 广西民族出版社1991.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 9219034,
+      "sha256": "62b76dbca30cdaddaebc36d243592020572b9f4d4b8cd98660583191ea55554e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5349010ad981__梅花易数__梅花心易大成秘诀实战合集___梅花心易秘诀_邵康节著_岳荣注_广西民族出版社1991.txt",
+      "charCount": 21605,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "48d4f94558fb",
+      "relativePath": "梅花易数/梅花心易工作坊/64卦顺序.doc",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 47616,
+      "sha256": "1d87e0ae4fd8baa8742fe36d659f8a889bacc65ff626cc9bef4978452406a123",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/48d4f94558fb__梅花易数__梅花心易工作坊__64卦顺序.txt",
+      "charCount": 360,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "06ac1af8efcb",
+      "relativePath": "梅花易数/梅花心易工作坊/64卦顺序.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 109527,
+      "sha256": "d011a2bba4fbc71e97c5a43579f11160272051e00990249e2c1eb4d8dd2fc196",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/06ac1af8efcb__梅花易数__梅花心易工作坊__64卦顺序.txt",
+      "charCount": 349,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "1cd23753cc85",
+      "relativePath": "梅花易数/梅花心易工作坊/【福利】《明抄真本梅花易数》.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2302555,
+      "sha256": "a5aeb6f6fe7b22a02ffa86aad85b7533998e74ffdfd456d0a64ccb3c0321657e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1cd23753cc85__梅花易数__梅花心易工作坊___福利_明抄真本梅花易数_.txt",
+      "charCount": 100663,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "638d75af2b56",
+      "relativePath": "梅花易数/梅花心易工作坊/八卦与万物类象.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 172825,
+      "sha256": "64da1856d96c56386ea8a0436e61aa2d4f1899fc6640c34c4247a75a04b1abc2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/638d75af2b56__梅花易数__梅花心易工作坊__八卦与万物类象.txt",
+      "charCount": 3908,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "11f99327b981",
+      "relativePath": "梅花易数/梅花心易工作坊/梅花心易工作坊.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 920360,
+      "sha256": "445441ab67f4fefd6ce9465e5a1e63343a54f860914ac88c8669b1065b82c1c9",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/11f99327b981__梅花易数__梅花心易工作坊__梅花心易工作坊.txt",
+      "charCount": 1591,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "6cdec7a73b35",
+      "relativePath": "梅花易数/梅花心易工作坊/梅花易数预测学贾双萍.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 51395451,
+      "sha256": "9c227ad3fc740c0e7602a756776e14652927b8fd295a47fc0f2cbcf9a3c9fdd1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6cdec7a73b35__梅花易数__梅花心易工作坊__梅花易数预测学贾双萍.txt",
+      "charCount": 32317,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "2a002a177553",
+      "relativePath": "梅花易数/梅花易数工作坊/13.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 8376,
+      "sha256": "cdba59820d4e2ee8610a2d1c0b0716b815d4e0b9b7d183088680d86d4917a011",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 25,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "63b712d4c169",
+      "relativePath": "梅花易数/梅花易数工作坊/181992892.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 581608,
+      "sha256": "bb059799449ceeb11620d82cd2f121ff5d7b12c7243033b9890beede8b0727b3",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/63b712d4c169__梅花易数__梅花易数工作坊__181992892.txt",
+      "charCount": 2060,
+      "quality": "good",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "714642d245f6",
+      "relativePath": "梅花易数/梅花易数工作坊/2018052502353c9620.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 90331,
+      "sha256": "a45d03775ce9670c22697102a10a1a2caf0b7aea590a1da93fb4584700cb187b",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 67,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "bc93f99d34d9",
+      "relativePath": "梅花易数/梅花易数工作坊/243335214_4908181229201834_8430970566941834591_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 111611,
+      "sha256": "7c0254c5d7d85923898b5cd1d5a546f501f5d90df60d0f7389294b23ba983d0d",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "ee1fc47429e4",
+      "relativePath": "梅花易数/梅花易数工作坊/243348205_4908181762535114_4708438801913927924_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 353521,
+      "sha256": "13af77e6e9f4c16e458c115e823ff3cc8891c8cb3d0504e6be9fdaf4277203cc",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ee1fc47429e4__梅花易数__梅花易数工作坊__243348205_4908181762535114_4708438801913927924_n.txt",
+      "charCount": 106,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "d5dd43e5b697",
+      "relativePath": "梅花易数/梅花易数工作坊/244783364_591588108939859_4797001552721550186_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 102311,
+      "sha256": "7ac6512275813cca58f3ec1dc46f68a3711eec214b4c691116f2692885881b4a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d5dd43e5b697__梅花易数__梅花易数工作坊__244783364_591588108939859_4797001552721550186_n.txt",
+      "charCount": 174,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "7810234549f2",
+      "relativePath": "梅花易数/梅花易数工作坊/245011952_928546994397143_7832128606831535676_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 204261,
+      "sha256": "ae26f86db9437d594796d9e0b10eb02dc03ca4cd59b91f3231ac14e119ed2476",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7810234549f2__梅花易数__梅花易数工作坊__245011952_928546994397143_7832128606831535676_n.txt",
+      "charCount": 601,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "a6ecbfbd996e",
+      "relativePath": "梅花易数/梅花易数工作坊/245036762_555289825695571_3370840628600519794_n.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 75456,
+      "sha256": "1887d047d9e6baa83acaaf9f5adb327c40d3f0a051d0a6756ed0032ba1dec4f7",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 77,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "54a63fe53567",
+      "relativePath": "梅花易数/梅花易数工作坊/2eb155e43b7741698043d4f2fa735ef8.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 324081,
+      "sha256": "c6c0ba5395cceac8453578187ee84352568f72bd921f68fcfe3f49f5353e86ae",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/54a63fe53567__梅花易数__梅花易数工作坊__2eb155e43b7741698043d4f2fa735ef8.txt",
+      "charCount": 368,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "6b0382418309",
+      "relativePath": "梅花易数/梅花易数工作坊/640.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 149886,
+      "sha256": "5ddad93a47a79786b9299551a1e6c9417eb100e15ca3fc6b6f9a2fe375687eff",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6b0382418309__梅花易数__梅花易数工作坊__640.txt",
+      "charCount": 944,
+      "quality": "partial",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "9b4e2e7fea9f",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦 2.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 575776,
+      "sha256": "5c843bc3712d53393886de42e2d60126cb7c345d37aa94b10c0fa2cd4093b07e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9b4e2e7fea9f__梅花易数__梅花易数工作坊__64卦_2.txt",
+      "charCount": 217,
+      "quality": "needs_ocr",
+      "topics": [
+        "六十四卦"
+      ]
+    },
+    {
+      "id": "f1dd4ee26998",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 105136,
+      "sha256": "86f7a30b7bc1754b37e479dd46b402af4e35d0ac1ea9d4daf6b830b051091984",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f1dd4ee26998__梅花易数__梅花易数工作坊__64卦.txt",
+      "charCount": 846,
+      "quality": "partial",
+      "topics": [
+        "六十四卦"
+      ]
+    },
+    {
+      "id": "7b0ffa14d5c3",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦图.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 253392,
+      "sha256": "b20ffb89bd883e130945e8ee11e864bc51dc4c8d8937daf948ba3277240fa0b5",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7b0ffa14d5c3__梅花易数__梅花易数工作坊__64卦图.txt",
+      "charCount": 286,
+      "quality": "needs_ocr",
+      "topics": [
+        "六十四卦"
+      ]
+    },
+    {
+      "id": "543ab89ac83c",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦辞.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 14496,
+      "sha256": "f3d126bdb77c18ba41db3078b030c766ac7a53b1ef699b7b6fae572aa11434db",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/543ab89ac83c__梅花易数__梅花易数工作坊__64卦辞.txt",
+      "charCount": 395,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "03706f69749d",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦顺序.doc",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 47616,
+      "sha256": "1d87e0ae4fd8baa8742fe36d659f8a889bacc65ff626cc9bef4978452406a123",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/03706f69749d__梅花易数__梅花易数工作坊__64卦顺序.txt",
+      "charCount": 360,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "5026714ab0da",
+      "relativePath": "梅花易数/梅花易数工作坊/64卦顺序.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 109527,
+      "sha256": "d011a2bba4fbc71e97c5a43579f11160272051e00990249e2c1eb4d8dd2fc196",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5026714ab0da__梅花易数__梅花易数工作坊__64卦顺序.txt",
+      "charCount": 349,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "ca8e3a69d738",
+      "relativePath": "梅花易数/梅花易数工作坊/6d34948990234199889a4af8a0635d3b.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 176799,
+      "sha256": "b56ba40b803bccd28f003f48bad160aa089942cf024d85ebd127e5ea16b80b71",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 62,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "784970587d70",
+      "relativePath": "梅花易数/梅花易数工作坊/9e786f34b19449d6a379014660a183c5.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 128059,
+      "sha256": "5bcf2f54dab631fd22ea4315b3548b8bf158c3f2c46655aab50a77d801202a55",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/784970587d70__梅花易数__梅花易数工作坊__9e786f34b19449d6a379014660a183c5.txt",
+      "charCount": 351,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "33b5a8c76c47",
+      "relativePath": "梅花易数/梅花易数工作坊/C222刘扑生-八卦象数风水学30.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 7413996,
+      "sha256": "8aa0f5ee6258b3bfe7b77e74d3dc6b254233b03d338c1323f7ce6472425849ec",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/33b5a8c76c47__梅花易数__梅花易数工作坊__C222刘扑生-八卦象数风水学30.txt",
+      "charCount": 83219,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "体用生克",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "ef9a59c77da8",
+      "relativePath": "梅花易数/梅花易数工作坊/H9302d931fe794b04ac1294963cfa6ac5v.wdp.jxr",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jxr",
+      "sizeBytes": 27592,
+      "sha256": "68546afa0c0ad85564f8f7a4d79d9270d741afb5685f7633350886d7cdf7873b",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "0e7317e53c18",
+      "relativePath": "梅花易数/梅花易数工作坊/Hbc2e6b9ca05b487fbe9bfe977dff6e97m.bmp",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".bmp",
+      "sizeBytes": 1932270,
+      "sha256": "ee5a17a66272259bb82a0ba420a14e6c4421ffe10b17e48a6394c704105fd2b7",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 1,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "865e26a103b0",
+      "relativePath": "梅花易数/梅花易数工作坊/Hbc2e6b9ca05b487fbe9bfe977dff6e97m.wdp.jxr",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jxr",
+      "sizeBytes": 45805,
+      "sha256": "e1ffe32fc77117c1844fc06cadb171e3592899aac56ea8894c76dec2ac80a293",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "9311e4feb9b5",
+      "relativePath": "梅花易数/梅花易数工作坊/ajNVdqHZLLDvEp8ZDYDlPbDZ9QaFTQFYwltCaN6yorRscGOkwoBBVDMyyldLSnOicwTrhBewyZss.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 19804,
+      "sha256": "1da64e2d0ebffddb6ccb5b16289abefd333ea044762eddbea23b02c001f96db8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9311e4feb9b5__梅花易数__梅花易数工作坊__ajNVdqHZLLDvEp8ZDYDlPbDZ9QaFTQFYwltCaN6yorRscGOkwoBBVDMyyldLSnOicwTrhBewyZss.txt",
+      "charCount": 182,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象",
+        "六爻断卦"
+      ]
+    },
+    {
+      "id": "2fd6d4f9e604",
+      "relativePath": "梅花易数/梅花易数工作坊/cdbee4623f244458b732875685dbf2e4.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 130717,
+      "sha256": "9b1ee251e5c4ee603f6da51b8aecdc72527bdb1e1067a3f64592fe96eee289ee",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2fd6d4f9e604__梅花易数__梅花易数工作坊__cdbee4623f244458b732875685dbf2e4.txt",
+      "charCount": 104,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "4cc3e2506673",
+      "relativePath": "梅花易数/梅花易数工作坊/imagesOHM1WHWQ.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 8327,
+      "sha256": "4c116550b0cafb624b5758fad6796f9d49f6463105bbaf2264ed6ea3bed6f7d3",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 79,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "a1dd701e622e",
+      "relativePath": "梅花易数/梅花易数工作坊/p.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 44109,
+      "sha256": "f28314f408e0d443baee5fdcc4051d8601336f9597bcfc7569ef2417970cdf89",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 3,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "4435c7c84b4a",
+      "relativePath": "梅花易数/梅花易数工作坊/shenics gua.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 86312,
+      "sha256": "85c12851fd972e99f481d52af1aef4e7ac36d331f05d4b6751badeb510f551ee",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/4435c7c84b4a__梅花易数__梅花易数工作坊__shenics_gua.txt",
+      "charCount": 394,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦"
+      ]
+    },
+    {
+      "id": "e58dc734b1e6",
+      "relativePath": "梅花易数/梅花易数工作坊/shenics gua.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 246379,
+      "sha256": "bc9e3259fdca8aeaf2ad6926ccc6d7e4d52f7a028bba4194a6dff64417bc5f8e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e58dc734b1e6__梅花易数__梅花易数工作坊__shenics_gua.txt",
+      "charCount": 411,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦"
+      ]
+    },
+    {
+      "id": "c2f08250ce17",
+      "relativePath": "梅花易数/梅花易数工作坊/taiji.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 93201,
+      "sha256": "4e0555405d5122e08c5372b09999365f7440c25d27be048fee911d5ea3f8a1d4",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 1,
+      "quality": "needs_ocr",
+      "topics": []
+    },
+    {
+      "id": "e850e53d1bbb",
+      "relativePath": "梅花易数/梅花易数工作坊/unnamed.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 37531,
+      "sha256": "5df68520c6d5acecb4ce1ee188c5650eaa78bd26ca0a55cd849afd4df795e2c4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e850e53d1bbb__梅花易数__梅花易数工作坊__unnamed.txt",
+      "charCount": 93,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "ba4491f98e2a",
+      "relativePath": "梅花易数/梅花易数工作坊/~$64卦辞.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 162,
+      "sha256": "a5dc98741cc6f0543c8745890f0df95e182b83d9dea60655d5598f3ce88a8e4e",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "8151ab047c4f",
+      "relativePath": "梅花易数/梅花易数工作坊/~$八卦万物类.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 162,
+      "sha256": "0ede5de2a758989ea62673f3b2e9b750431d7b5e9e132ad8bf845db5b2437efc",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "0e9fb4a43739",
+      "relativePath": "梅花易数/梅花易数工作坊/~$八卦万物类象2.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 162,
+      "sha256": "bb9e9662f017091ecd7931545ad0b319f9a022c68e477ccb234851c712fa0c3a",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "32dc4d827d6f",
+      "relativePath": "梅花易数/梅花易数工作坊/~$梅花心易.doc",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 162,
+      "sha256": "bc3395fd975f5ed4bd78bf529fd535e76286d5b3ab9fd12cb6fb2634643e2181",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "c9821624e033",
+      "relativePath": "梅花易数/梅花易数工作坊/~WRL0071.tmp",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": ".tmp",
+      "sizeBytes": 1964544,
+      "sha256": "33c4c2ef1f66f70f85542d4422baf8bbd074a2fc637eb608c2e71387c4932b4b",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "c43212255cd6",
+      "relativePath": "梅花易数/梅花易数工作坊/九运的时代红利.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 94325327,
+      "sha256": "98ec2bd4abf960550af871acfaf0a9f885d571613489e27a7b33b924e5cc02ed",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c43212255cd6__梅花易数__梅花易数工作坊__九运的时代红利.txt",
+      "charCount": 6808,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "四化飞星",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "0aaf0741dfb0",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 23430,
+      "sha256": "ca3daf1f30cbf3fc5b6bd6b137f97d56dbc611c32f0c38fbbd6e51ae825e5dc9",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "c147fa4c8314",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 8481,
+      "sha256": "6ea579fda8c1ec1689b8d0df317fe8a17a1a6bdb3bf5ece07757526c4e48c418",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "2d73fecfcf8c",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/1.psd",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": ".psd",
+      "sizeBytes": 50851,
+      "sha256": "4b63ef1770f458b4f0c27f5c85cce420f4fc59e8a7fe804c95ee88311bb15f3c",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e28f5d1bde5f",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/2.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 25537,
+      "sha256": "cdfafd8ec475426a6e68b7317f022a600785e3d7d08d8e0f603229a4111f1c69",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "4d6e6d6e8432",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/2.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10645,
+      "sha256": "d2cf6e4cbb0f242839ace3cf3e4f28b7a2e2430c85dfa5f1991dc78a400be735",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "c659c1ccde30",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 27085,
+      "sha256": "b5274203ecbeea7acfc1e34c4f7d47a7a34aa786b35fd5fe7dd71373d7f74362",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "92a5e12988ff",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 11728,
+      "sha256": "de121f90e379e0cc0b2dc83f403384fbdc16a06a336b4e6e5dd9d3039e4285ae",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "ea31ed618735",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/3a.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 9259,
+      "sha256": "4ae620a7fa6f317d50a759220bba22cfbd172a0bd54439f047bd71c40f89c96e",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e721f53c7a88",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/4.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26332,
+      "sha256": "b6a7dc8491ee5b315d18fc660d3953a5c174a85564a305ba8ccfd8d4ff18ffcc",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "b0fe82ad1323",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/4.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10887,
+      "sha256": "6e4f4d1e92afef52fad2a5ad81ee54d25b5d682fe0bc820b85d978818d55624a",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "bc2da45a0ad9",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/5.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 25869,
+      "sha256": "7ef7a738ce959c843ec46832c793b2a1a1522a92e59b59ea3b57b366341e5f9c",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "e0569875bfc9",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/5.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 10888,
+      "sha256": "aaa98e10ac055d99bfad5b7592c7bd6b5d5bd956c59ec0ad83dcc17625e2a5b6",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "dff625f570d0",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/6.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26867,
+      "sha256": "3b9a2b3f729cddf484b4f5f706fbd8b0d0161b21f87d251f9bbc6cd6d3fa309f",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "781a8f8e5672",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/6.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12055,
+      "sha256": "4238603aa182b50dea910d97602b25670150a1ce77981240abc8d78056615c44",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "31c43ddbbf8b",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/7.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 26989,
+      "sha256": "f34e46695caaa80e9755b138ddfc7cccb193478cbebd2e6014a4f5adeb198138",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "56a5b91856bd",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/7.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12149,
+      "sha256": "d461ffc742ce7c615f00e5a737b3dd8688214eefac1048f69e288bb1373eb23e",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "4675ebe0321a",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/8.jpg",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".jpg",
+      "sizeBytes": 28574,
+      "sha256": "a4af9e6e74ca9de5d80c8ccc43ea0e06a942504e58a2ae0d732f5156bcb8da52",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "9b58cc63f56f",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/8.png",
+      "category": "meihua",
+      "type": "image",
+      "extension": ".png",
+      "sizeBytes": 12674,
+      "sha256": "480a08c62d4c8f28be1ac0884323849d542a3d3d3370c9cb9ae6f40f6894ddaa",
+      "status": "image_indexed",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "needs_ocr",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "06faff0337e8",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦/a.psd",
+      "category": "meihua",
+      "type": "unknown",
+      "extension": ".psd",
+      "sizeBytes": 35338,
+      "sha256": "d6b7d04a5794bb23b8880c74cf8e258ca85c3a78b1fe4a823f3e910828aa1604",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "6c6380524311",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦万物类.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 25604,
+      "sha256": "7a6c5f360641a8cfac57bad459c547052685ea6535355b15b710de9e725d48fc",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6c6380524311__梅花易数__梅花易数工作坊__八卦万物类.txt",
+      "charCount": 4759,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "012e55b2739e",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦与万物类象.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 172825,
+      "sha256": "64da1856d96c56386ea8a0436e61aa2d4f1899fc6640c34c4247a75a04b1abc2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/012e55b2739e__梅花易数__梅花易数工作坊__八卦与万物类象.txt",
+      "charCount": 3908,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "1a84540c9dbf",
+      "relativePath": "梅花易数/梅花易数工作坊/八卦类象2.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 2045770,
+      "sha256": "6f78065052d1a680f92ca92710a089777875efe30f6a70410ffb902b7ba2b535",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1a84540c9dbf__梅花易数__梅花易数工作坊__八卦类象2.txt",
+      "charCount": 7278,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "f36901407bab",
+      "relativePath": "梅花易数/梅花易数工作坊/卦气衰旺.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 12390,
+      "sha256": "a29689c5cc284c7f66375bc9ffe055463c3857beacc7338514dfeeb124c7efed",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 66,
+      "quality": "low",
+      "topics": [
+        "八卦类象",
+        "九运"
+      ]
+    },
+    {
+      "id": "50f548e84433",
+      "relativePath": "梅花易数/梅花易数工作坊/新建 DOC 文档 (2).doc",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 47616,
+      "sha256": "1d87e0ae4fd8baa8742fe36d659f8a889bacc65ff626cc9bef4978452406a123",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/50f548e84433__梅花易数__梅花易数工作坊__新建_DOC_文档_2_.txt",
+      "charCount": 360,
+      "quality": "partial",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "035747b1cdb6",
+      "relativePath": "梅花易数/梅花易数工作坊/新建 DOC 文档 (2).pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 91180,
+      "sha256": "7a151526d268ffd4d3732827d8e545c08d0ad68b7f5c2e966909c85a906bb191",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/035747b1cdb6__梅花易数__梅花易数工作坊__新建_DOC_文档_2_.txt",
+      "charCount": 414,
+      "quality": "partial",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "59abf9ddd2fd",
+      "relativePath": "梅花易数/梅花易数工作坊/易经八卦万物类象2.docx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".docx",
+      "sizeBytes": 36371,
+      "sha256": "84b65545191f13ef079f5d3db721ed2208e477ec322b6f28c6848be0dcdb5cb4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/59abf9ddd2fd__梅花易数__梅花易数工作坊__易经八卦万物类象2.txt",
+      "charCount": 15148,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "0d7c0d32642f",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易.doc",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".doc",
+      "sizeBytes": 1964544,
+      "sha256": "95f80c3dcd2c4af45465df8aae4519374b44b1b410e77feddcb1e0feb8e2f3e8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/0d7c0d32642f__梅花易数__梅花易数工作坊__梅花心易.txt",
+      "charCount": 21418,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "5776c5aba27a",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1612569,
+      "sha256": "92aadcc2afa93aebe6b9ad4c801e2ae751d8de251dbe47101a2c82990265d138",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5776c5aba27a__梅花易数__梅花易数工作坊__梅花心易.txt",
+      "charCount": 26371,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "10f193d13e37",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊 1.2.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 1624244,
+      "sha256": "eab5596131b81a8dae44955c2e32a5b336ae9108862254c793f5e1e40822f0b8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/10f193d13e37__梅花易数__梅花易数工作坊__梅花心易工作坊_1.2.txt",
+      "charCount": 4356,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "2d9cd427bfb5",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊 1.3.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 1655308,
+      "sha256": "36a300615cb9f429235da515f69cbb164d28e822dab56e052643697e15c90547",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2d9cd427bfb5__梅花易数__梅花易数工作坊__梅花心易工作坊_1.3.txt",
+      "charCount": 5303,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "f8e30479cfe7",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊 1.4.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 1658367,
+      "sha256": "841287fa809565907a47072bc9c66c2f6b3d211aca61e61f2ff7e6e6addc7a1d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f8e30479cfe7__梅花易数__梅花易数工作坊__梅花心易工作坊_1.4.txt",
+      "charCount": 5340,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "c91e37a1eb32",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊 1.5.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 1890596,
+      "sha256": "8d4f51d31869b886517e836a6ff06454bed70153ec4d7eacf14da17593d96db0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c91e37a1eb32__梅花易数__梅花易数工作坊__梅花心易工作坊_1.5.txt",
+      "charCount": 6460,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "10c3febb10b6",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊 1.6.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 2049197,
+      "sha256": "2c9168d20ac3f0288dc65774ff26ba30e51dcb45fc9ffc139fcb1e089d4e86d9",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/10c3febb10b6__梅花易数__梅花易数工作坊__梅花心易工作坊_1.6.txt",
+      "charCount": 8161,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "5cdb93118c54",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花心易工作坊.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 1015959,
+      "sha256": "90990c091aa3a36141b49571a37e0cd68e200ccea0b5e0d8e37871b02bea07c8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5cdb93118c54__梅花易数__梅花易数工作坊__梅花心易工作坊.txt",
+      "charCount": 2970,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "c44bdb7b0e82",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花易数第六天课程.pptx",
+      "category": "meihua",
+      "type": "office",
+      "extension": ".pptx",
+      "sizeBytes": 94340531,
+      "sha256": "fedb1a5e4885501a24f2f9865c735e9b5d6f7e5d3ce31842666320bb53c6dcde",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c44bdb7b0e82__梅花易数__梅花易数工作坊__梅花易数第六天课程.txt",
+      "charCount": 8475,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "四化飞星",
+        "事业财运",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "085b4ac9c59f",
+      "relativePath": "梅花易数/梅花易数工作坊/梅花紫微课程.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3238035,
+      "sha256": "dc01368cb02a5a77da123545e36651bd1df5fb1d6d5f15e6ff2cd59395a11912",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/085b4ac9c59f__梅花易数__梅花易数工作坊__梅花紫微课程.txt",
+      "charCount": 2180,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "旺衰应期",
+        "四化飞星",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "1a1034514705",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《图解梅花易数》 易经中的数学 破解天地玄秘的大智慧 (宋)邵康节著 汤行易编著 陕西师范大学出版社2008.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 73163765,
+      "sha256": "c7829e7391e8e07ed8cc1ba898fdeaa4c6955734d3ab80d1dfe8273c7d6d67ff",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1a1034514705__梅花易数__梅花易数珍藏合集___图解梅花易数_易经中的数学_破解天地玄秘的大智慧_宋_邵康节著_汤行易编著_陕西师范大学出版社2008.txt",
+      "charCount": 116483,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "3ff3ef7d5715",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《梅花易数》(宋)邵雍著 陈阳整理 九州出版社2015.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 25909299,
+      "sha256": "fffbc6afef238152dc3371cc62fdeb704a313475f2dfcbc1a8226e070aaf1332",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3ff3ef7d5715__梅花易数__梅花易数珍藏合集___梅花易数_宋_邵雍著_陈阳整理_九州出版社2015.txt",
+      "charCount": 55546,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "4399777bb0b3",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《梅花易数》故宫珍本丛刊精选整理本丛书 术数 (宋)邵康节著 (清)秣陵德聚堂刻本 李峰注解 海南出版社2012.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 53249294,
+      "sha256": "9f8b9d2a631fc77925cb030e7b52d2900037692c6b622115d5f6bc586e68ad05",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/4399777bb0b3__梅花易数__梅花易数珍藏合集___梅花易数_故宫珍本丛刊精选整理本丛书_术数_宋_邵康节著_清_秣陵德聚堂刻本_李峰注解_海南出版社2012.txt",
+      "charCount": 52831,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "f89bd3bab107",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《梅花易数》故宫珍藏善本 (宋)邵康节著 周浩良整理 九州出版社2011.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 10143676,
+      "sha256": "7df4a9509f2ebe504ca976c6bc9af7c21a7ac53b7b3173476473782b733d58e2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f89bd3bab107__梅花易数__梅花易数珍藏合集___梅花易数_故宫珍藏善本_宋_邵康节著_周浩良整理_九州出版社2011.txt",
+      "charCount": 69738,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "3e202f534c62",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《梅花易数》文白对照 白话全译 康节说易全书 邵雍著 陈明校 学林出版社 2003.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 15021747,
+      "sha256": "64f905b199427edd34eca487317848c15be18a7e6a7db954b708d52386c7c94e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3e202f534c62__梅花易数__梅花易数珍藏合集___梅花易数_文白对照_白话全译_康节说易全书_邵雍著_陈明校_学林出版社_2003.txt",
+      "charCount": 1952,
+      "quality": "partial",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "六爻断卦",
+        "旺衰应期",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "9d2722d6b6c8",
+      "relativePath": "梅花易数/梅花易数珍藏合集/《梅花易数》简体横排 周易邵氏学下部 (宋)邵雍撰 李一忻校 王从心整理 九州出版社2003.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 15843813,
+      "sha256": "8f6afaa86eeca5db1ebaa01d7f4b4fcbef2952e3f8bcb5d523c28d51bbeb38b0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9d2722d6b6c8__梅花易数__梅花易数珍藏合集___梅花易数_简体横排_周易邵氏学下部_宋_邵雍撰_李一忻校_王从心整理_九州出版社2003.txt",
+      "charCount": 8573,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "4d03c322485c",
+      "relativePath": "梅花易数/梅花易数白话合集/《梅花易数白话解》(宋)邵雍著 六光本 荣益译 中国广播电视出版社2005.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 17767404,
+      "sha256": "989c675550e9869d036a6b6b753878c382dce163acf297c4b4d067b6d9c109a8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/4d03c322485c__梅花易数__梅花易数白话合集___梅花易数白话解_宋_邵雍著_六光本_荣益译_中国广播电视出版社2005.txt",
+      "charCount": 136986,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "旺衰应期",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "c544961dfad6",
+      "relativePath": "梅花易数/梅花易数白话合集/《梅花易数白话解》(宋)邵雍著 六光本 荣益译 山东人民出版社1994.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 17507037,
+      "sha256": "45f85b07b03e565f064d4e62f54d92138f83a0ffadec692eca0000246d85ed42",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c544961dfad6__梅花易数__梅花易数白话合集___梅花易数白话解_宋_邵雍著_六光本_荣益译_山东人民出版社1994.txt",
+      "charCount": 89231,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "80fd89371403",
+      "relativePath": "梅花易数/梅花易数白话合集/《白话梅花易数》21世纪易学家书系 邵雍原著 郑同著 华龄出版社2011.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 77788909,
+      "sha256": "575d85b814dc1db2c7bdd84e162b78a92d83497ee2bfe05254c3eda06134e704",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/80fd89371403__梅花易数__梅花易数白话合集___白话梅花易数_21世纪易学家书系_邵雍原著_郑同著_华龄出版社2011.txt",
+      "charCount": 125661,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶",
+        "九运"
+      ]
+    },
+    {
+      "id": "1c5f4a76a121",
+      "relativePath": "梅花易数/黄鉴-梅花象数预测学应用讲义《中级速成班》《易理》编辑部整编_20231106180851.pdf",
+      "category": "meihua",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 709531,
+      "sha256": "37b6e869daf84243fd2d04e965b3ba0050b45b1b8112aaa06f8f475e0f8338a0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1c5f4a76a121__梅花易数__黄鉴-梅花象数预测学应用讲义_中级速成班_易理_编辑部整编_20231106180851.txt",
+      "charCount": 51423,
+      "quality": "good",
+      "topics": [
+        "六十四卦",
+        "八卦类象",
+        "体用生克",
+        "起卦断卦",
+        "旺衰应期",
+        "婚姻关系",
+        "九运"
+      ]
+    },
+    {
+      "id": "8e994d4af967",
+      "relativePath": "紫微斗数/.DS_Store",
+      "category": "ziwei",
+      "type": "unknown",
+      "extension": "none",
+      "sizeBytes": 8196,
+      "sha256": "3dbea71321333df7a7e16dc97e9bf2f10724fba79c5ededcf6b318ade20dfc0b",
+      "status": "skipped",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "none",
+      "topics": []
+    },
+    {
+      "id": "708be4afa347",
+      "relativePath": "紫微斗数/210909-楚皇-紫微斗数高级理论大全-蔡明宏視頻 (2).pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5779342,
+      "sha256": "52704550292a4f3ee5f28a95fc3ee9d4137e806210d1bddfa9df2efc990abfce",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/708be4afa347__紫微斗数__210909-楚皇-紫微斗数高级理论大全-蔡明宏視頻_2_.txt",
+      "charCount": 38839,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "596dffb4a43e",
+      "relativePath": "紫微斗数/211014-劉金府象数心学紫微斗数.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 11050999,
+      "sha256": "aadd2df7dded3bf67430ed8370d2f863f35a38a25692a5f491014a5f39f35184",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/596dffb4a43e__紫微斗数__211014-劉金府象数心学紫微斗数.txt",
+      "charCount": 149770,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "体用生克",
+        "六爻断卦",
+        "旺衰应期",
+        "十二宫",
+        "四化飞星",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "d21c64b68fd0",
+      "relativePath": "紫微斗数/传通职业班-密断文字/A先生命例.自殺.12.19po.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 254862,
+      "sha256": "6caefde31afa1aa6b283fd4f4c8a3a21a82415446a2e589420e73d89cfa17ddb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d21c64b68fd0__紫微斗数__传通职业班-密断文字__A先生命例.自殺.12.19po.txt",
+      "charCount": 1955,
+      "quality": "partial",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "3c2ef0f3b698",
+      "relativePath": "紫微斗数/传通职业班-密断文字/一般平凡格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2167543,
+      "sha256": "bcf018de3349b03f6c8e36f5d44f5021e0bd39be6632d024048a965028054cfa",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3c2ef0f3b698__紫微斗数__传通职业班-密断文字__一般平凡格.txt",
+      "charCount": 531,
+      "quality": "partial",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "926d656445f5",
+      "relativePath": "紫微斗数/传通职业班-密断文字/主管老板格.竹女.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 112767,
+      "sha256": "3cf87665f59d2ea631ecd22f56be2a243782757492eb43ff47ce47d19cb24297",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/926d656445f5__紫微斗数__传通职业班-密断文字__主管老板格.竹女.txt",
+      "charCount": 1172,
+      "quality": "partial",
+      "topics": [
+        "旺衰应期",
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "e3ec804dda9f",
+      "relativePath": "紫微斗数/传通职业班-密断文字/主管老闆格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2505692,
+      "sha256": "a99fb405fec461c29188df2f635e73286598fc7f3ccbe644169d10f3c0ea9985",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e3ec804dda9f__紫微斗数__传通职业班-密断文字__主管老闆格.txt",
+      "charCount": 614,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "7c6f22ff47bc",
+      "relativePath": "紫微斗数/传通职业班-密断文字/伯萬兄公教服務.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 104168,
+      "sha256": "c484452aa14fc0c450acc789b884334f95bad46007139cf60201b6507a629c32",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7c6f22ff47bc__紫微斗数__传通职业班-密断文字__伯萬兄公教服務.txt",
+      "charCount": 840,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "5b8d78174fad",
+      "relativePath": "紫微斗数/传通职业班-密断文字/倒限往生.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1488778,
+      "sha256": "5d6bc68296c793b2bd7aa96b4eee4b8fb3fca99e8d1968ebf6a30ffcc4000640",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5b8d78174fad__紫微斗数__传通职业班-密断文字__倒限往生.txt",
+      "charCount": 215,
+      "quality": "low",
+      "topics": []
+    },
+    {
+      "id": "41b516ffa7e9",
+      "relativePath": "紫微斗数/传通职业班-密断文字/偏財格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3353304,
+      "sha256": "41f2cbc5637a884df582c67d797b4b9dd67a718812d7df780a213efa509f0fe4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/41b516ffa7e9__紫微斗数__传通职业班-密断文字__偏財格.txt",
+      "charCount": 848,
+      "quality": "partial",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "29024ed1033a",
+      "relativePath": "紫微斗数/传通职业班-密断文字/僧道之流.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2973824,
+      "sha256": "af70de391fb39c0c03eeabdfba74a1cce1ba0cd90ae9a3da1f93b92658ef7f34",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/29024ed1033a__紫微斗数__传通职业班-密断文字__僧道之流.txt",
+      "charCount": 399,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "08db560e308e",
+      "relativePath": "紫微斗数/传通职业班-密断文字/公教服務格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3595104,
+      "sha256": "514df4d0e276e8db5606c978d309ce96367e8caa8450ac3a1974abf251c53e07",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/08db560e308e__紫微斗数__传通职业班-密断文字__公教服務格.txt",
+      "charCount": 601,
+      "quality": "partial",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "1163102591d4",
+      "relativePath": "紫微斗数/传通职业班-密断文字/公教服務格.隆.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 123402,
+      "sha256": "869233b7e1cbaa56ab16a9e402d93b08ea9a1f606a19eb2c66d406fac313ac80",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1163102591d4__紫微斗数__传通职业班-密断文字__公教服務格.隆.txt",
+      "charCount": 1258,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "751c52c99cc9",
+      "relativePath": "紫微斗数/传通职业班-密断文字/具命理哲學緣.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4427763,
+      "sha256": "022a915b46f9361c407cdde81b6a767f73759f3ac788ac12ed5d2e51a4f7b97f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/751c52c99cc9__紫微斗数__传通职业班-密断文字__具命理哲學緣.txt",
+      "charCount": 581,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "d54674c3df2b",
+      "relativePath": "紫微斗数/传通职业班-密断文字/十喻歌及棋譜.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1736856,
+      "sha256": "858d3414bb0de4e9ec357eda5519cacaa8be20df16d7fea0180b0a8b78fecdd7",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d54674c3df2b__紫微斗数__传通职业班-密断文字__十喻歌及棋譜.txt",
+      "charCount": 4049,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "fd2636435edb",
+      "relativePath": "紫微斗数/传通职业班-密断文字/十喻歌命盤.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1210027,
+      "sha256": "8ccb93c6c8f2cf9f35ee88dfb10d64b87fb8aed23c06ef03e69dc9851ef02917",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/fd2636435edb__紫微斗数__传通职业班-密断文字__十喻歌命盤.txt",
+      "charCount": 395,
+      "quality": "partial",
+      "topics": [
+        "八卦类象"
+      ]
+    },
+    {
+      "id": "287918120562",
+      "relativePath": "紫微斗数/传通职业班-密断文字/古籍談十喻歌.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 150543,
+      "sha256": "0abfc1d6a8949a6e2ab1a520ca42d5e42fad72a6c12bc8e934e85d3e72d5a0ef",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/287918120562__紫微斗数__传通职业班-密断文字__古籍談十喻歌.txt",
+      "charCount": 1997,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "f1ccadcc4656",
+      "relativePath": "紫微斗数/传通职业班-密断文字/合婚看法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3688248,
+      "sha256": "c4bd916bc6b9dd898660284affda911017929b3bd30e85a561483b55b15bf0d8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f1ccadcc4656__紫微斗数__传通职业班-密断文字__合婚看法.txt",
+      "charCount": 487,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "cfcec2871995",
+      "relativePath": "紫微斗数/传通职业班-密断文字/同志.二.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 267528,
+      "sha256": "3586069cecaedca8495ab1a938e01f4a7c0d06a7bef1693c611ca1c46c718b5e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/cfcec2871995__紫微斗数__传通职业班-密断文字__同志.二.txt",
+      "charCount": 1059,
+      "quality": "partial",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "76ce24de3085",
+      "relativePath": "紫微斗数/传通职业班-密断文字/同性戀.靠爸族pptx.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2747417,
+      "sha256": "efd41689249a6dfa1cef11dc8d7f6ba3b50c03564dac5958f6383bec692b93a4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/76ce24de3085__紫微斗数__传通职业班-密断文字__同性戀.靠爸族pptx.txt",
+      "charCount": 617,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "8a1e981c2e40",
+      "relativePath": "紫微斗数/传通职业班-密断文字/命例.證嚴.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 193694,
+      "sha256": "56b128b56f5d260b52e7d8e313ba4968abce85ac8957d160b3e8fb9569e273b1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/8a1e981c2e40__紫微斗数__传通职业班-密断文字__命例.證嚴.txt",
+      "charCount": 1765,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "f4c4bf3298fc",
+      "relativePath": "紫微斗数/传通职业班-密断文字/命例2.扁.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 295051,
+      "sha256": "1c4377a5015c9a29bfb8970d4e3530bd613542cb2ac83504e52cbc54c53b75da",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f4c4bf3298fc__紫微斗数__传通职业班-密断文字__命例2.扁.txt",
+      "charCount": 4339,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "旺衰应期",
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "e775eaf977ea",
+      "relativePath": "紫微斗数/传通职业班-密断文字/命例3.金平.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 117365,
+      "sha256": "4ed4e0ae3a1d9957a17344aafdadc03ca485c99649e8dc674fb68229a8e086c7",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/e775eaf977ea__紫微斗数__传通职业班-密断文字__命例3.金平.txt",
+      "charCount": 1062,
+      "quality": "partial",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "1cbacca992f3",
+      "relativePath": "紫微斗数/传通职业班-密断文字/命例參考.命天梁身巨門.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 105088,
+      "sha256": "e2a0e7cfb6b283f2a6c22ccbd2b5bd006bb775b09271c789093080ce796cfc8d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1cbacca992f3__紫微斗数__传通职业班-密断文字__命例參考.命天梁身巨門.txt",
+      "charCount": 896,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "07d28fd79807",
+      "relativePath": "紫微斗数/传通职业班-密断文字/外出遠行格pptx.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4989074,
+      "sha256": "532b68c890f7d67f9929220ccae357099ddbb7601c84eaa215f328f168e71375",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/07d28fd79807__紫微斗数__传通职业班-密断文字__外出遠行格pptx.txt",
+      "charCount": 1112,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "7f2e1935993e",
+      "relativePath": "紫微斗数/传通职业班-密断文字/外出遠行格局看法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 83271,
+      "sha256": "e40bdbd9b633db64302f9b71d709d01b1ce756db1d8407117feda713922979ef",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7f2e1935993e__紫微斗数__传通职业班-密断文字__外出遠行格局看法.txt",
+      "charCount": 381,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "f1455cbd75e2",
+      "relativePath": "紫微斗数/传通职业班-密断文字/天機案例.病.賭.往生.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 130257,
+      "sha256": "af92640b9e15e14d6af5be378297aad7b76c91b57b4d13edca0d54cb555796df",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f1455cbd75e2__紫微斗数__传通职业班-密断文字__天機案例.病.賭.往生.txt",
+      "charCount": 126,
+      "quality": "low",
+      "topics": []
+    },
+    {
+      "id": "21d41db035c2",
+      "relativePath": "紫微斗数/传通职业班-密断文字/女兒身男人命.同志.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 139192,
+      "sha256": "2bb9f5921687f088e37f46eee99cd3e99e595e0518723242f09c178440c1be3b",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/21d41db035c2__紫微斗数__传通职业班-密断文字__女兒身男人命.同志.txt",
+      "charCount": 1450,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "b66cac8c1999",
+      "relativePath": "紫微斗数/传通职业班-密断文字/官訟12.16.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 82389,
+      "sha256": "edbd17ca91ba237dfb48e218be4691e5dcb41780dbefe5473638a5bac9548538",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b66cac8c1999__紫微斗数__传通职业班-密断文字__官訟12.16.txt",
+      "charCount": 368,
+      "quality": "partial",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "ca71aa783809",
+      "relativePath": "紫微斗数/传通职业班-密断文字/官訟坐牢.工作中斷.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5167192,
+      "sha256": "f2e8920d1026b7d9b76d072630ef38d714c453278ab632670c2a73ef16fe9b9d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ca71aa783809__紫微斗数__传通职业班-密断文字__官訟坐牢.工作中斷.txt",
+      "charCount": 700,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "a52172e2aecf",
+      "relativePath": "紫微斗数/传通职业班-密断文字/富貴格精典案例.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3934341,
+      "sha256": "5e4db78bba0d4e87e25502bc8341d435d3b13d87d4cb89f6329968045d92a156",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/a52172e2aecf__紫微斗数__传通职业班-密断文字__富貴格精典案例.txt",
+      "charCount": 518,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "7b63477c70c0",
+      "relativePath": "紫微斗数/传通职业班-密断文字/師字格(命理師.教師.醫師.律師).pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 11613554,
+      "sha256": "de9f922f3709d330b456dcae72df2a42088299303500a701e2383158f4d8154c",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7b63477c70c0__紫微斗数__传通职业班-密断文字__師字格_命理師.教師.醫師.律師_.txt",
+      "charCount": 2863,
+      "quality": "good",
+      "topics": [
+        "旺衰应期",
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "c4bc0b8121d3",
+      "relativePath": "紫微斗数/传通职业班-密断文字/帶刀命格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4806910,
+      "sha256": "5339fea9278b437e35a2384b8e1f7797c8b1ac8222d446c971f7d36586f865aa",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c4bc0b8121d3__紫微斗数__传通职业班-密断文字__帶刀命格.txt",
+      "charCount": 683,
+      "quality": "partial",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "4c07cd72410e",
+      "relativePath": "紫微斗数/传通职业班-密断文字/截空圖示.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 37055,
+      "sha256": "4217887ce94ff5e4a497076c102253976703b7d411f3d8754c63a249aa24c621",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/4c07cd72410e__紫微斗数__传通职业班-密断文字__截空圖示.txt",
+      "charCount": 180,
+      "quality": "low",
+      "topics": []
+    },
+    {
+      "id": "90b0df637d0a",
+      "relativePath": "紫微斗数/传通职业班-密断文字/房產與財富.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4099166,
+      "sha256": "fa9c0fcfee0749d91eb5118f7cbbcc9c8754ca79d9dd85741bb61267591cb89d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/90b0df637d0a__紫微斗数__传通职业班-密断文字__房產與財富.txt",
+      "charCount": 566,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "059f3e351c04",
+      "relativePath": "紫微斗数/传通职业班-密断文字/掌中排盤.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3327708,
+      "sha256": "56abda6a4697893ed00eb2742177b93a42295af4f8905831e3ee963a565817e6",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/059f3e351c04__紫微斗数__传通职业班-密断文字__掌中排盤.txt",
+      "charCount": 5499,
+      "quality": "good",
+      "topics": [
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "48256d015696",
+      "relativePath": "紫微斗数/传通职业班-密断文字/星曜.四化.時辰.攸關命運.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2312477,
+      "sha256": "4e83ff28411e3f1c3a3be59de79c707ec95a16411769eec294ed5c64cbc84875",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/48256d015696__紫微斗数__传通职业班-密断文字__星曜.四化.時辰.攸關命運.txt",
+      "charCount": 673,
+      "quality": "partial",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "6569621dac56",
+      "relativePath": "紫微斗数/传通职业班-密断文字/有命理宗教哲學緣份.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 245694,
+      "sha256": "4bf967522692097ccffbe43437c79ae253ae6f86c428575d44130138c1996027",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6569621dac56__紫微斗数__传通职业班-密断文字__有命理宗教哲學緣份.txt",
+      "charCount": 1158,
+      "quality": "partial",
+      "topics": [
+        "旺衰应期",
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "f4aae34c21f7",
+      "relativePath": "紫微斗数/传通职业班-密断文字/清貴格局&讀書考試.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3954489,
+      "sha256": "7953ca6cc49220a6169d48123e8e3317936b24aea2f6f3408a04fe16c82fa2a9",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f4aae34c21f7__紫微斗数__传通职业班-密断文字__清貴格局_讀書考試.txt",
+      "charCount": 510,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "7dede51cd5c0",
+      "relativePath": "紫微斗数/传通职业班-密断文字/牢獄之災.韜光養晦.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 280636,
+      "sha256": "35d8850144424ee35f21baea284d597e5a4de806ea2a5c7a04957d9adaa335a0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7dede51cd5c0__紫微斗数__传通职业班-密断文字__牢獄之災.韜光養晦.txt",
+      "charCount": 941,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "20d5788f092b",
+      "relativePath": "紫微斗数/传通职业班-密断文字/疾病.開刀.化療.染毒.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2236202,
+      "sha256": "f5aad287daa85d88c7cf848073591d71d80ff5a9f99bf32b858a0dfaf3624764",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/20d5788f092b__紫微斗数__传通职业班-密断文字__疾病.開刀.化療.染毒.txt",
+      "charCount": 314,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "c5835a02a106",
+      "relativePath": "紫微斗数/传通职业班-密断文字/第二章 斗數飛星棋譜秘儀.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 91276,
+      "sha256": "6b2444d9af9111f5165aaa0e9297d23902353f33d658b01800dac1d2ec1f3d94",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c5835a02a106__紫微斗数__传通职业班-密断文字__第二章_斗數飛星棋譜秘儀.txt",
+      "charCount": 665,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "3aa848ebfe27",
+      "relativePath": "紫微斗数/传通职业班-密断文字/紫微斗數12宮與人相12宮合參.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 172481,
+      "sha256": "7442bd32633e2aeef2feaf9084ebf099f86d8ee13e48ebf35ee97e499dd04cc2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3aa848ebfe27__紫微斗数__传通职业班-密断文字__紫微斗數12宮與人相12宮合參.txt",
+      "charCount": 1252,
+      "quality": "partial",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "32e549f1ca7f",
+      "relativePath": "紫微斗数/传通职业班-密断文字/紫斗與人相合參.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 880886,
+      "sha256": "c462cc3b05b4bf000e6615688cc9accc20f4586101614e5fa1247d8e925acfe1",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/32e549f1ca7f__紫微斗数__传通职业班-密断文字__紫斗與人相合參.txt",
+      "charCount": 2325,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "9fe181c0321b",
+      "relativePath": "紫微斗数/传通职业班-密断文字/續前文.牢獄之災.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 161905,
+      "sha256": "ed17b4d5ff28df8e18ff43893e50f994b8f1d663b095a17034f7f1931d1fc3fe",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9fe181c0321b__紫微斗数__传通职业班-密断文字__續前文.牢獄之災.txt",
+      "charCount": 743,
+      "quality": "partial",
+      "topics": [
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "97ddd5eea4bc",
+      "relativePath": "紫微斗数/传通职业班-密断文字/自閉.憂鬱.殘障.自殘...pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5152016,
+      "sha256": "782cb7268665b0c76f7cd8012a2d2a13a7a8ee94b7aceffeb1a23e8fe0eb8749",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/97ddd5eea4bc__紫微斗数__传通职业班-密断文字__自閉.憂鬱.殘障.自殘...txt",
+      "charCount": 1011,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "355474f7e6f6",
+      "relativePath": "紫微斗数/传通职业班-密断文字/詐騙是非.官訴.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2596295,
+      "sha256": "c26f2485b3ba8ff9b5ad847988b84a0f35c65a9117449ee81e2e62ea541d2e0e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/355474f7e6f6__紫微斗数__传通职业班-密断文字__詐騙是非.官訴.txt",
+      "charCount": 563,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "ba4f03944e28",
+      "relativePath": "紫微斗数/传通职业班-密断文字/談偏財格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 24732,
+      "sha256": "d67817a89bdc265b4f26bb4b3d586e5fb11f95aa04c13cb360397d9fdae63a8f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ba4f03944e28__紫微斗数__传通职业班-密断文字__談偏財格.txt",
+      "charCount": 328,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "1b9b90457ba7",
+      "relativePath": "紫微斗数/传通职业班-密断文字/談帶刀命格.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 58935,
+      "sha256": "0bbf0c15fe832bd6a7bd6468b53f1b132b44d608e68ae8e31b272eea3b6f96bb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1b9b90457ba7__紫微斗数__传通职业班-密断文字__談帶刀命格.txt",
+      "charCount": 275,
+      "quality": "low",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "31048f72f29c",
+      "relativePath": "紫微斗数/传通职业班-密断文字/談馬英九命例.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 239312,
+      "sha256": "cb2c84e69b1e3ded8a35f7d987cf87659a25191a0ec81c09c64ae0ebacab0adb",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/31048f72f29c__紫微斗数__传通职业班-密断文字__談馬英九命例.txt",
+      "charCount": 3822,
+      "quality": "good",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "5ec52ec51780",
+      "relativePath": "紫微斗数/传通职业班-密断文字/車禍意外.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2593169,
+      "sha256": "58a775ee20f11dde655b409ac7203efd1b7bbede8f9ad016237cf3f061c1bf6a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5ec52ec51780__紫微斗数__传通职业班-密断文字__車禍意外.txt",
+      "charCount": 348,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "3e09c034c319",
+      "relativePath": "紫微斗数/传通职业班-密断文字/靈異體質→命理.宗教.哲學.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2605868,
+      "sha256": "4bba00fdda2cb6ccfb39b83a345dfcaad934bcced2b6cbd599aacb52d1c45d71",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3e09c034c319__紫微斗数__传通职业班-密断文字__靈異體質_命理.宗教.哲學.txt",
+      "charCount": 360,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "30918cd43c5c",
+      "relativePath": "紫微斗数/传通职业班-密断文字/靠爸族.巨機.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 86533,
+      "sha256": "ccc3c3d1aab8ec2b5171dc49238b643cca5f15f18ef5e5fff28f9e98810d9605",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/30918cd43c5c__紫微斗数__传通职业班-密断文字__靠爸族.巨機.txt",
+      "charCount": 592,
+      "quality": "partial",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "7171e4ebd924",
+      "relativePath": "紫微斗数/传通职业班-密断文字/靠爸族.破軍星.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 138833,
+      "sha256": "13a72c63be15975b41e1fe7858460c68cb3c85f45953e31377435d8e6a8b4e6d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7171e4ebd924__紫微斗数__传通职业班-密断文字__靠爸族.破軍星.txt",
+      "charCount": 1250,
+      "quality": "partial",
+      "topics": [
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "fc1d7f404fc6",
+      "relativePath": "紫微斗数/大耕老师【紫微斗数课程讲义：入门、初阶、进阶】套装/YW81♥大耕老师【紫微斗数课程讲义：入门班】繁体横版黑白扫描.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 15504335,
+      "sha256": "d77407964dd7a664b5db686becf09c4db7d7e89f4577851ec57d7680f6158ff5",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/fc1d7f404fc6__紫微斗数__大耕老师_紫微斗数课程讲义_入门_初阶_进阶_套装__YW81_大耕老师_紫微斗数课程讲义_入门班_繁体横版黑白扫描.txt",
+      "charCount": 5360,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "eee383e86ac9",
+      "relativePath": "紫微斗数/大耕老师【紫微斗数课程讲义：入门、初阶、进阶】套装/YW82♥大耕老师【紫微斗数课程讲义：初阶班】繁体横版黑白扫描.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 18416882,
+      "sha256": "5cd5aada320025c7442e4d021c358c7b787b0a4b5ddff880ace203a4dc93b458",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/eee383e86ac9__紫微斗数__大耕老师_紫微斗数课程讲义_入门_初阶_进阶_套装__YW82_大耕老师_紫微斗数课程讲义_初阶班_繁体横版黑白扫描.txt",
+      "charCount": 523,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "558e440d5d5d",
+      "relativePath": "紫微斗数/大耕老师【紫微斗数课程讲义：入门、初阶、进阶】套装/YW83♥大耕老师【紫微斗数课程讲义：进阶班】繁体横版黑白扫描.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 9040936,
+      "sha256": "14825671fad2b7d3e9a29a91e864be5336b1d967c79e813446bfc9ac5316057a",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/558e440d5d5d__紫微斗数__大耕老师_紫微斗数课程讲义_入门_初阶_进阶_套装__YW83_大耕老师_紫微斗数课程讲义_进阶班_繁体横版黑白扫描.txt",
+      "charCount": 4239,
+      "quality": "good",
+      "topics": [
+        "起卦断卦",
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "1a6403fd9e68",
+      "relativePath": "紫微斗数/实例篇(1).pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 125795649,
+      "sha256": "bd03f53f228dd7ad2b3778d6a44081d3034f3e2f2fd9fa14fe03b59b7fcb4bcc",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1a6403fd9e68__紫微斗数__实例篇_1_.txt",
+      "charCount": 154262,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "四化飞星",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "806653d25a04",
+      "relativePath": "紫微斗数/实例篇.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 125795649,
+      "sha256": "bd03f53f228dd7ad2b3778d6a44081d3034f3e2f2fd9fa14fe03b59b7fcb4bcc",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/806653d25a04__紫微斗数__实例篇.txt",
+      "charCount": 154262,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "四化飞星",
+        "事业财运",
+        "婚姻关系",
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "435dcaeaae6e",
+      "relativePath": "紫微斗数/慧心斋主-紫微斗数上乘心法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3153620,
+      "sha256": "407703825060b39a9a61b1149e8b498929396192c734c7a5cabaabe93b55a901",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/435dcaeaae6e__紫微斗数__慧心斋主-紫微斗数上乘心法.txt",
+      "charCount": 1879,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "533109dcf76d",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-如何推算命运-紫微斗数与四化星.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2260785,
+      "sha256": "60e94609250b54ec619c94aa71f1a4efd8673eb1db48f32429a73249ed54eec4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/533109dcf76d__紫微斗数__慧心斋主紫微斗数__慧心斋主-如何推算命运-紫微斗数与四化星.txt",
+      "charCount": 22014,
+      "quality": "good",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "cfefb1a6bb6a",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数与四化星.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6191979,
+      "sha256": "c51c8d146f96b85d7095949d72f5b7696660d113d469b6ac166a4e1fd572ffa8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/cfefb1a6bb6a__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数与四化星.txt",
+      "charCount": 3196,
+      "quality": "good",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "bc74f3c660af",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数导读.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1911874,
+      "sha256": "5cdb9b686455ae3b0d0c6f0c6776e48890e1e1b1db4b30c88d727400c48cd8a7",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/bc74f3c660af__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数导读.txt",
+      "charCount": 1414,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "db42db2e3279",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数开发潜能（一）.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4100106,
+      "sha256": "06f36fe0cc6f7977e25d38ae47ae71acbe5a14d5689f2081e54bb8e552659b0b",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/db42db2e3279__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数开发潜能_一_.txt",
+      "charCount": 7124,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "99c0c5be5418",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数开发潜能（二）.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4381985,
+      "sha256": "269c36b2b2cd68adbd8f61d647445571152a638effbb34e8e5a47662f1bf80de",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/99c0c5be5418__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数开发潜能_二_.txt",
+      "charCount": 13914,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "625d64765459",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数新诠.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5704833,
+      "sha256": "6847cc4dbd4b71df0c9d2949bde0e5978c896546519e25d9a765c587cba77148",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/625d64765459__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数新诠.txt",
+      "charCount": 38495,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "0a06a0b0cc49",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看事业宫.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4336755,
+      "sha256": "43ffda0c497181a1579ca79303029fe8bd1fd752a6fc054faba136b1e0b2f6b5",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/0a06a0b0cc49__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看事业宫.txt",
+      "charCount": 30625,
+      "quality": "good",
+      "topics": [
+        "事业财运"
+      ]
+    },
+    {
+      "id": "de9a73fb2a84",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看命宫.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5727823,
+      "sha256": "c71abd9dade5df1e6153308a68d072a1343a3bfd5182bac3d6df485f0af0812d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/de9a73fb2a84__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看命宫.txt",
+      "charCount": 7194,
+      "quality": "good",
+      "topics": [
+        "十二宫"
+      ]
+    },
+    {
+      "id": "99c8d0a147e2",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看婚姻.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6619755,
+      "sha256": "917d5183b4bce7370e8ba0e0de289d893d63b0ee37b8b433e846d7e1ccbd5fe0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/99c8d0a147e2__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看婚姻.txt",
+      "charCount": 2229,
+      "quality": "good",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "912667f17328",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看工商人（又名紫微斗数营商篇）.PDF",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6625621,
+      "sha256": "03b341e8183c4b6e062e4cebea267b1348f97cd51cb86455d1043b1577a325a6",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/912667f17328__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看工商人_又名紫微斗数营商篇_.txt",
+      "charCount": 9130,
+      "quality": "good",
+      "topics": [
+        "事业财运"
+      ]
+    },
+    {
+      "id": "36c2a6332a3c",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看钱财.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5810285,
+      "sha256": "797e8d76b02f660aac56be6a969917885c92a582d40ca4d686ebea209e7b7a49",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/36c2a6332a3c__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看钱财.txt",
+      "charCount": 7879,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "事业财运"
+      ]
+    },
+    {
+      "id": "6ca1563a9bb2",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数趋吉避凶法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6797661,
+      "sha256": "6967a403847726b7485f5136bcb96d9f5e0e29fc760fb332736fd8af5e062c3c",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/6ca1563a9bb2__紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数趋吉避凶法.txt",
+      "charCount": 9915,
+      "quality": "good",
+      "topics": [
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "f650c9fb3433",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-如何推算命运-紫微斗数与四化星.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 2260785,
+      "sha256": "60e94609250b54ec619c94aa71f1a4efd8673eb1db48f32429a73249ed54eec4",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/f650c9fb3433__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-如何推算命运-紫微斗数与四化星.txt",
+      "charCount": 22014,
+      "quality": "good",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "b79ba5aa3fab",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数上乘心法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 3153620,
+      "sha256": "407703825060b39a9a61b1149e8b498929396192c734c7a5cabaabe93b55a901",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/b79ba5aa3fab__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数上乘心法.txt",
+      "charCount": 1879,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "a33975fbb507",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数与四化星.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6191979,
+      "sha256": "c51c8d146f96b85d7095949d72f5b7696660d113d469b6ac166a4e1fd572ffa8",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/a33975fbb507__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数与四化星.txt",
+      "charCount": 3196,
+      "quality": "good",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "1022ae269426",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数导读.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 1911874,
+      "sha256": "5cdb9b686455ae3b0d0c6f0c6776e48890e1e1b1db4b30c88d727400c48cd8a7",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/1022ae269426__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数导读.txt",
+      "charCount": 1414,
+      "quality": "partial",
+      "topics": []
+    },
+    {
+      "id": "9fade0396aca",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数开发潜能（一）.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4100106,
+      "sha256": "06f36fe0cc6f7977e25d38ae47ae71acbe5a14d5689f2081e54bb8e552659b0b",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9fade0396aca__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数开发潜能_一_.txt",
+      "charCount": 7124,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "a8f45897c1c6",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数开发潜能（二）.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4381985,
+      "sha256": "269c36b2b2cd68adbd8f61d647445571152a638effbb34e8e5a47662f1bf80de",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/a8f45897c1c6__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数开发潜能_二_.txt",
+      "charCount": 13914,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "3d38a9669445",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数新诠.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5704833,
+      "sha256": "6847cc4dbd4b71df0c9d2949bde0e5978c896546519e25d9a765c587cba77148",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3d38a9669445__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数新诠.txt",
+      "charCount": 38495,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "51016e2e292f",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看事业宫.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 4336755,
+      "sha256": "43ffda0c497181a1579ca79303029fe8bd1fd752a6fc054faba136b1e0b2f6b5",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/51016e2e292f__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看事业宫.txt",
+      "charCount": 30625,
+      "quality": "good",
+      "topics": [
+        "事业财运"
+      ]
+    },
+    {
+      "id": "9ee00d99b0f3",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看命宫.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5727823,
+      "sha256": "c71abd9dade5df1e6153308a68d072a1343a3bfd5182bac3d6df485f0af0812d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/9ee00d99b0f3__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看命宫.txt",
+      "charCount": 7194,
+      "quality": "good",
+      "topics": [
+        "十二宫"
+      ]
+    },
+    {
+      "id": "ed3f516ee120",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看婚姻.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6619755,
+      "sha256": "917d5183b4bce7370e8ba0e0de289d893d63b0ee37b8b433e846d7e1ccbd5fe0",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/ed3f516ee120__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看婚姻.txt",
+      "charCount": 2229,
+      "quality": "good",
+      "topics": [
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "feefd3099f1d",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看工商人（又名紫微斗数营商篇）.PDF",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6625621,
+      "sha256": "03b341e8183c4b6e062e4cebea267b1348f97cd51cb86455d1043b1577a325a6",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/feefd3099f1d__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看工商人_又名紫微斗数营商篇_.txt",
+      "charCount": 9130,
+      "quality": "good",
+      "topics": [
+        "事业财运"
+      ]
+    },
+    {
+      "id": "7a4bc65fb368",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数看钱财.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 5810285,
+      "sha256": "797e8d76b02f660aac56be6a969917885c92a582d40ca4d686ebea209e7b7a49",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7a4bc65fb368__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数看钱财.txt",
+      "charCount": 7879,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "事业财运"
+      ]
+    },
+    {
+      "id": "33bd51568efd",
+      "relativePath": "紫微斗数/慧心斋主紫微斗数/慧心斋主紫微斗数/慧心斋主-紫微斗数趋吉避凶法.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 6797661,
+      "sha256": "6967a403847726b7485f5136bcb96d9f5e0e29fc760fb332736fd8af5e062c3c",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/33bd51568efd__紫微斗数__慧心斋主紫微斗数__慧心斋主紫微斗数__慧心斋主-紫微斗数趋吉避凶法.txt",
+      "charCount": 9915,
+      "quality": "good",
+      "topics": [
+        "趋吉避凶"
+      ]
+    },
+    {
+      "id": "18475d0ebc6e",
+      "relativePath": "紫微斗数/由理气原则学习飞宫紫微斗数  392P.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 169533802,
+      "sha256": "4ebde6e9b9825504ea105018d11fd1e9fa51a764bdb3fed947a54c06da2f0428",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/18475d0ebc6e__紫微斗数__由理气原则学习飞宫紫微斗数_392P.txt",
+      "charCount": 107341,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "四化飞星",
+        "事业财运",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "930c22308428",
+      "relativePath": "紫微斗数/紫微探真  徐曾生著 330页.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 9389349,
+      "sha256": "501f85545595cb5a908f21ab485594bb4f99f88bef62253dc25af7178f97bd8f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/930c22308428__紫微斗数__紫微探真_徐曾生著_330页.txt",
+      "charCount": 81944,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "29f33dc7124d",
+      "relativePath": "紫微斗数/紫微攻略1.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 46121515,
+      "sha256": "14f7217d83abea12b0f4fc035d4a5de28c68027ba4088c6513b3dc9234d1c32f",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/29f33dc7124d__紫微斗数__紫微攻略1.txt",
+      "charCount": 14833,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "c68ce54e40d2",
+      "relativePath": "紫微斗数/紫微攻略2.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 49750026,
+      "sha256": "3fb42c8ddde8accd4ae4d2657ca4d7b7cf284b0c3e2ef673d6d162c8834258a2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/c68ce54e40d2__紫微斗数__紫微攻略2.txt",
+      "charCount": 17456,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "7242832b0a26",
+      "relativePath": "紫微斗数/紫微攻略3上册.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 42027011,
+      "sha256": "499f7ad1cd891653bf86cfee8151f9d620b10910c465a150215835edca9c74f6",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/7242832b0a26__紫微斗数__紫微攻略3上册.txt",
+      "charCount": 14755,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "3b8694af9522",
+      "relativePath": "紫微斗数/紫微攻略3下册.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 45145844,
+      "sha256": "c9268f678dd3e2f079aba5ac881f9124d5589560651a4a03d196722e0a96a45e",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/3b8694af9522__紫微斗数__紫微攻略3下册.txt",
+      "charCount": 19267,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "5bbde9f699f9",
+      "relativePath": "紫微斗数/紫微攻略4财富.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 321338600,
+      "sha256": "7ebef2eec063e9c718fe1e7e4761171ee122195224752eb48414236c29d7828d",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/5bbde9f699f9__紫微斗数__紫微攻略4财富.txt",
+      "charCount": 88103,
+      "quality": "good",
+      "topics": [
+        "四化飞星"
+      ]
+    },
+    {
+      "id": "2a416483777f",
+      "relativePath": "紫微斗数/紫微攻略5愛情.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 63783831,
+      "sha256": "48f53f0a36a53fb6e9af6fb30404fa61ff0157642b7d931a951935be423f00d3",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/2a416483777f__紫微斗数__紫微攻略5愛情.txt",
+      "charCount": 16880,
+      "quality": "good",
+      "topics": []
+    },
+    {
+      "id": "bb3814a4c0c7",
+      "relativePath": "紫微斗数/紫微斗数命运分析- 徐曾生(台湾).pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 9082967,
+      "sha256": "df239ff5fff42eea0061112ad9eda3324e95db39ccf0d527de3366f670daf4f2",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/bb3814a4c0c7__紫微斗数__紫微斗数命运分析-_徐曾生_台湾_.txt",
+      "charCount": 101604,
+      "quality": "good",
+      "topics": [
+        "八卦类象",
+        "十二宫",
+        "四化飞星",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "d128c5434145",
+      "relativePath": "紫微斗数/紫微斗数命运分析格局篇 徐曾生.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 15493782,
+      "sha256": "08ee390f5570ef5fcc8431f1fee43c0bdcec2883744ed99fe9743f5dbd847666",
+      "status": "extracted",
+      "extractedPath": "processed/extracted/d128c5434145__紫微斗数__紫微斗数命运分析格局篇_徐曾生.txt",
+      "charCount": 72711,
+      "quality": "good",
+      "topics": [
+        "十二宫",
+        "婚姻关系"
+      ]
+    },
+    {
+      "id": "65efdbdd652d",
+      "relativePath": "紫微斗数/飞星紫微斗数十二宫六七二象.pdf",
+      "category": "ziwei",
+      "type": "pdf",
+      "extension": ".pdf",
+      "sizeBytes": 228659,
+      "sha256": "6fda539ff5acd2d3695f5002af71b01aea4685b9eb046b2a63e6eb57548a76b0",
+      "status": "needs_manual_ocr_or_pdf_parser",
+      "extractedPath": "",
+      "charCount": 0,
+      "quality": "low",
+      "topics": [
+        "四化飞星"
+      ]
+    }
+  ]
+}

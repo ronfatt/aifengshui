@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { getMingliKnowledgeContext } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type IntegratedReportBody = {
@@ -98,9 +99,22 @@ function parseReportPayload(text: string, body: IntegratedReportBody): Integrate
 }
 
 function buildReportInput(body: IntegratedReportBody, retry = false) {
+  const knowledgeQuery = `${body.focus || ""} ${body.questionCategory || ""} ${body.specificQuestion || ""} ${body.manualNumbers || ""}`;
+  const knowledgeCategory = knowledgeQuery.includes("六爻") || knowledgeQuery.includes("用神") || knowledgeQuery.includes("世爻") || knowledgeQuery.includes("应爻")
+    ? "liuyao"
+    : body.questionCategory
+      ? "meihua"
+      : undefined;
+  const knowledgeContext = getMingliKnowledgeContext({
+    query: knowledgeQuery,
+    category: knowledgeCategory,
+    maxChars: 5600
+  });
+
   return `
 用户资料：
 ${JSON.stringify(body, null, 2)}
+${knowledgeContext}
 
 底层推演要求：
 - 用出生年月日时推演个人底盘、五行倾向、性格承载、事业财运基础与长期周期。

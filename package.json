@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev -p 5001",
     "build": "next build",
-    "lint": "next lint"
+    "lint": "next lint",
+    "knowledge:build": "node scripts/build-mingli-knowledge.mjs",
+    "knowledge:ocr": "KNOWLEDGE_OCR=1 node scripts/build-mingli-knowledge.mjs",
+    "knowledge:ocr:sample": "KNOWLEDGE_OCR=1 KNOWLEDGE_OCR_MAX_PAGES=20 node scripts/build-mingli-knowledge.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",

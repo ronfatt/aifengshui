@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { emptyMemberProfile } from "@/lib/member-profile";
+import { getMingliKnowledgeContext } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type ChatRequest = {
@@ -32,6 +33,16 @@ function buildPrompt({ message, memberLevel, points, profile }: Required<ChatReq
   const isPaidTier = !memberLevel.toLowerCase().includes("free");
   const isStrategicTier = isStrategicTierForResponse(memberLevel);
   const targetLength = isStrategicTier ? "1400-1800 字" : isPaidTier ? "950-1300 字" : "320-450 字";
+  const knowledgeCategory = message.includes("六爻") || message.includes("用神") || message.includes("世爻") || message.includes("应爻")
+    ? "liuyao"
+    : message.includes("梅花") || message.includes("卦")
+      ? "meihua"
+      : undefined;
+  const knowledgeContext = getMingliKnowledgeContext({
+    query: message,
+    category: knowledgeCategory,
+    maxChars: isPaidTier ? 5200 : 2600
+  });
 
   return `
 用户问题：${message}
@@ -67,6 +78,7 @@ function buildPrompt({ message, memberLevel, points, profile }: Required<ChatReq
 - 财运：财帛宫有武曲/禄意象，但地空地劫风险需保守处理
 - 关系：交友宫适合客户沟通，但夫妻/亲密关系宜放慢语速
 - 今日策略：先整理资料、确认边界，再推进合作
+${knowledgeContext}
 
 回答风格要求：
 - 开头称呼用户为“易玺老师”或“从这个问题来看”，语气稳重、专业、有温度。

@@ -16,3 +16,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 tsconfig.tsbuildinfo
+
+# Local metaphysics source library. Keep raw books/slides/images out of git;
+# only commit processed indexes/prompts that the app needs.
+knowledge-base/fengshui-mingli/raw/**

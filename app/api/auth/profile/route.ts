@@ -18,6 +18,18 @@ type ProfilePayload = {
 
 const referralReward = 30;
 
+function cleanProfilePayload(body: ProfilePayload, fallbackEmail?: string) {
+  return {
+    name: (body.name || "").trim(),
+    birthDate: (body.birthDate || "").trim(),
+    birthTime: (body.birthTime || "").trim(),
+    gender: (body.gender || "").trim(),
+    email: fallbackEmail || (body.email || "").trim(),
+    phone: (body.phone || "").trim(),
+    region: (body.region || "Malaysia / Kuala Lumpur").trim()
+  };
+}
+
 async function generateUniqueReferralCode(
   supabase: NonNullable<ReturnType<typeof createServerSupabaseClient>>,
   userId: string,
@@ -76,25 +88,32 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "不能替其他会员建立或修改资料。" }, { status: 403 });
   }
 
-  const verifiedEmail = user.email || body.email;
+  const cleanProfile = cleanProfilePayload(body, user.email || body.email);
+  const verifiedEmail = cleanProfile.email;
   const currentReferralCode = normalizeReferralCode(user.user_metadata?.referral_code as string | undefined);
   const referralCode = currentReferralCode.length === 6
     ? currentReferralCode
     : await generateUniqueReferralCode(supabase, body.userId, verifiedEmail);
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("membership_tier,credit_balance")
+    .eq("id", body.userId)
+    .maybeSingle();
+  const isNewProfile = !existingProfile;
 
   const { data, error } = await supabase
     .from("profiles")
     .upsert({
       id: body.userId,
-      full_name: body.name,
-      birth_date: body.birthDate,
-      birth_time: body.birthTime || null,
-      gender: body.gender,
+      full_name: cleanProfile.name,
+      birth_date: cleanProfile.birthDate,
+      birth_time: cleanProfile.birthTime || null,
+      gender: cleanProfile.gender,
       email: verifiedEmail,
-      phone: body.phone || null,
-      region: body.region || "Malaysia / Kuala Lumpur",
-      membership_tier: "free",
-      credit_balance: referralReward,
+      phone: cleanProfile.phone || null,
+      region: cleanProfile.region || "Malaysia / Kuala Lumpur",
+      membership_tier: existingProfile?.membership_tier || "free",
+      credit_balance: existingProfile?.credit_balance ?? referralReward,
       updated_at: new Date().toISOString()
     })
     .select()
@@ -106,6 +125,7 @@ export async function POST(request: Request) {
 
   await supabase.auth.admin.updateUserById(body.userId, {
     user_metadata: {
+      ...user.user_metadata,
       full_name: body.name,
       referral_code: referralCode,
       sponsor_code: sponsorCode,
@@ -113,14 +133,16 @@ export async function POST(request: Request) {
     }
   });
 
-  await supabase.from("credit_transactions").insert({
-    user_id: body.userId,
-    amount: referralReward,
-    source: "registration_bonus",
-    description: "完成会员注册赠送点数"
-  });
+  if (isNewProfile) {
+    await supabase.from("credit_transactions").insert({
+      user_id: body.userId,
+      amount: referralReward,
+      source: "registration_bonus",
+      description: "完成会员注册赠送点数"
+    });
+  }
 
-  if (requestedSponsorCode && requestedSponsorCode !== companySponsorCode && requestedSponsorCode !== referralCode) {
+  if (isNewProfile && requestedSponsorCode && requestedSponsorCode !== companySponsorCode && requestedSponsorCode !== referralCode) {
     const { data: authUsers } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
     const sponsorUser = authUsers.users.find(
       (user) => normalizeReferralCode(user.user_metadata?.referral_code as string | undefined) === requestedSponsorCode
@@ -151,6 +173,68 @@ export async function POST(request: Request) {
       }
     }
   }
+
+  return NextResponse.json({ profile: data });
+}
+
+export async function PATCH(request: Request) {
+  const { supabase, user, errorResponse } = await requireAuthenticatedUser(request);
+
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "会员系统暂时维护中，请稍后再试。" },
+      { status: 503 }
+    );
+  }
+
+  if (errorResponse || !user) {
+    return errorResponse;
+  }
+
+  if (!isSupabaseServiceConfigured) {
+    return NextResponse.json(
+      { error: "会员资料服务暂时维护中，请稍后再试。" },
+      { status: 503 }
+    );
+  }
+
+  const body = (await request.json()) as ProfilePayload;
+  const cleanProfile = cleanProfilePayload(body, user.email || body.email);
+
+  if (!cleanProfile.name || !cleanProfile.birthDate || !cleanProfile.gender) {
+    return NextResponse.json({ error: "姓名、生日与性别为必填。" }, { status: 400 });
+  }
+
+  if (body.userId && body.userId !== user.id) {
+    return NextResponse.json({ error: "不能替其他会员修改资料。" }, { status: 403 });
+  }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      full_name: cleanProfile.name,
+      birth_date: cleanProfile.birthDate,
+      birth_time: cleanProfile.birthTime || null,
+      gender: cleanProfile.gender,
+      email: cleanProfile.email,
+      phone: cleanProfile.phone || null,
+      region: cleanProfile.region || "Malaysia / Kuala Lumpur",
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: "会员资料更新失败，请稍后再试。" }, { status: 500 });
+  }
+
+  await supabase.auth.admin.updateUserById(user.id, {
+    user_metadata: {
+      ...user.user_metadata,
+      full_name: cleanProfile.name
+    }
+  });
 
   return NextResponse.json({ profile: data });
 }

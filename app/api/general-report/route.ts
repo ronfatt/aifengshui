@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
+import { getMingliKnowledgeContext } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type GeneralReportBody = {
@@ -95,6 +96,17 @@ export async function POST(request: Request) {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 45000 });
     const title = body.reportTitle || "AI 命理报告";
     const focus = reportFocusMap[title] || title;
+    const knowledgeQuery = `${title} ${focus} ${body.subject?.specificQuestion || ""} ${body.subject?.questionCategory || ""}`;
+    const knowledgeCategory = knowledgeQuery.includes("六爻") || knowledgeQuery.includes("用神") || knowledgeQuery.includes("世爻") || knowledgeQuery.includes("应爻")
+      ? "liuyao"
+      : title.includes("梅花") || body.subject?.questionCategory
+        ? "meihua"
+        : undefined;
+    const knowledgeContext = getMingliKnowledgeContext({
+      query: knowledgeQuery,
+      category: knowledgeCategory,
+      maxChars: 4200
+    });
 
     const response = await client.responses.create({
       model,
@@ -107,6 +119,7 @@ export async function POST(request: Request) {
 报告重点：${focus}
 用户与问题资料：
 ${JSON.stringify(body.subject || {}, null, 2)}
+${knowledgeContext}
 
 必须覆盖：
 1. 八字命理：五行强弱、十神倾向、日主承载、大运流年基础，如何影响「${title}」

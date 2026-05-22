@@ -3929,8 +3929,98 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
   );
 }
 
-function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile }) {
+function DestinyProfileModule({
+  memberProfile,
+  onProfileUpdated
+}: {
+  memberProfile: MemberProfile;
+  onProfileUpdated: (profile: MemberProfile) => void;
+}) {
   const [selectedPalace, setSelectedPalace] = useState<(typeof palaceExplanations)[number] | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [profileMessage, setProfileMessage] = useState("");
+  const [draftProfile, setDraftProfile] = useState({
+    name: memberProfile.name,
+    gender: memberProfile.gender,
+    birthDate: memberProfile.birthDate,
+    birthTime: memberProfile.birthTime,
+    email: memberProfile.email,
+    phone: memberProfile.phone,
+    region: memberProfile.region
+  });
+
+  useEffect(() => {
+    if (!isEditing) {
+      setDraftProfile({
+        name: memberProfile.name,
+        gender: memberProfile.gender,
+        birthDate: memberProfile.birthDate,
+        birthTime: memberProfile.birthTime,
+        email: memberProfile.email,
+        phone: memberProfile.phone,
+        region: memberProfile.region
+      });
+    }
+  }, [isEditing, memberProfile]);
+
+  async function getMemberAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      return "";
+    }
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
+  async function saveProfile() {
+    setProfileMessage("");
+
+    if (!draftProfile.name.trim() || !draftProfile.birthDate || !draftProfile.gender) {
+      setProfileMessage("请填写姓名、出生日期与性别。");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const accessToken = await getMemberAccessToken();
+
+      if (!accessToken) {
+        setProfileMessage("登录状态已过期，请重新登录后再保存。");
+        return;
+      }
+
+      const response = await fetch("/api/auth/profile", {
+        method: "PATCH",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(draftProfile)
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        setProfileMessage(result.error || "资料保存失败，请稍后再试。");
+        return;
+      }
+
+      onProfileUpdated(profileRowToMemberProfile(result.profile));
+      setIsEditing(false);
+      setProfileMessage("资料已更新，今日运势、AI 风水命理师和报告会读取新资料。");
+    } catch {
+      setProfileMessage("资料保存失败，请检查网络后再试。");
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
@@ -3943,26 +4033,131 @@ function DestinyProfileModule({ memberProfile }: { memberProfile: MemberProfile 
               会员注册后必须填写基础资料。今日运势、AI 风水命理师和报告中心都会读取这份档案来做命理分析。
             </p>
           </div>
-          <UserRound className="size-9 text-[#C79A54]" />
+          <button
+            type="button"
+            onClick={() => {
+              setProfileMessage("");
+              setIsEditing((current) => !current);
+            }}
+            className="rounded bg-white px-4 py-2 text-sm font-semibold text-[#063F4A] transition hover:bg-[#E8D4A8]"
+          >
+            {isEditing ? "取消编辑" : "编辑资料"}
+          </button>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          {[
-            ["姓名", memberProfile.name],
-            ["性别", memberProfile.gender],
-            ["出生日期", memberProfile.birthDate],
-            ["出生时辰", memberProfile.birthTimeLabel],
-            ["Email", memberProfile.email],
-            ["手机号", memberProfile.phone || "选填"],
-            ["地区", memberProfile.region],
-            ["年度关键词", "稳中扩张"]
-          ].map(([label, value]) => (
-            <div key={label} className="rounded border border-white/12 bg-white/8 p-3">
-              <p className="text-xs text-white/45">{label}</p>
-              <p className="mt-1 font-semibold">{value}</p>
+        {isEditing ? (
+          <div className="mt-6 grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="text-sm font-semibold text-white/75">
+                姓名
+                <input
+                  value={draftProfile.name}
+                  onChange={(event) => setDraftProfile((current) => ({ ...current, name: event.target.value }))}
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                />
+              </label>
+              <label className="text-sm font-semibold text-white/75">
+                性别
+                <select
+                  value={draftProfile.gender}
+                  onChange={(event) => setDraftProfile((current) => ({ ...current, gender: event.target.value }))}
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                >
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                  <option value="未填写">未填写</option>
+                </select>
+              </label>
+              <label className="text-sm font-semibold text-white/75">
+                出生日期
+                <input
+                  type="date"
+                  value={draftProfile.birthDate}
+                  onChange={(event) => setDraftProfile((current) => ({ ...current, birthDate: event.target.value }))}
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                />
+              </label>
+              <label className="text-sm font-semibold text-white/75">
+                出生时辰
+                <input
+                  type="time"
+                  value={draftProfile.birthTime}
+                  onChange={(event) => setDraftProfile((current) => ({ ...current, birthTime: event.target.value }))}
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                />
+              </label>
+              <label className="text-sm font-semibold text-white/75">
+                Email
+                <input
+                  value={draftProfile.email}
+                  disabled
+                  className="mt-2 w-full rounded border border-white/20 bg-white/75 px-3 py-3 text-[#102F38] outline-none"
+                />
+              </label>
+              <label className="text-sm font-semibold text-white/75">
+                手机号
+                <input
+                  value={draftProfile.phone}
+                  onChange={(event) => setDraftProfile((current) => ({ ...current, phone: event.target.value }))}
+                  placeholder="选填"
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                />
+              </label>
             </div>
-          ))}
-        </div>
+            <label className="text-sm font-semibold text-white/75">
+              地区
+              <input
+                value={draftProfile.region}
+                onChange={(event) => setDraftProfile((current) => ({ ...current, region: event.target.value }))}
+                className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+              />
+            </label>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={saveProfile}
+                disabled={isSaving}
+                className="rounded bg-[#C79A54] px-5 py-3 text-sm font-semibold text-[#063F4A] disabled:opacity-60"
+              >
+                {isSaving ? "保存中..." : "保存资料"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setProfileMessage("");
+                }}
+                className="rounded border border-white/20 px-5 py-3 text-sm font-semibold text-white"
+              >
+                取消
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            {[
+              ["姓名", memberProfile.name],
+              ["性别", memberProfile.gender],
+              ["出生日期", memberProfile.birthDate || "未填写"],
+              ["出生时辰", memberProfile.birthTimeLabel],
+              ["Email", memberProfile.email],
+              ["手机号", memberProfile.phone || "选填"],
+              ["地区", memberProfile.region],
+              ["年度关键词", "稳中扩张"]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded border border-white/12 bg-white/8 p-3">
+                <p className="text-xs text-white/45">{label}</p>
+                <p className="mt-1 font-semibold">{value}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {profileMessage ? (
+          <div className="mt-4 rounded border border-[#C79A54]/35 bg-white/10 p-3 text-sm leading-6 text-white/78">
+            {profileMessage}
+          </div>
+        ) : null}
 
         <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
           <p className="text-sm font-semibold text-[#C79A54]">专属建议</p>
@@ -8432,7 +8627,9 @@ export default function DashboardPage() {
           <section ref={moduleContentRef} className="scroll-mt-28 mt-6">
             {activeModule === "fortune" ? <TodayFortune currentTier={currentTier} memberProfile={memberProfile} /> : null}
             {activeModule === "calendar" ? <FortuneCalendarModule currentTier={currentTier} /> : null}
-            {activeModule === "profile" ? <DestinyProfileModule memberProfile={memberProfile} /> : null}
+            {activeModule === "profile" ? (
+              <DestinyProfileModule memberProfile={memberProfile} onProfileUpdated={setMemberProfile} />
+            ) : null}
             {activeModule === "growth" ? <GrowthPlaybookModule /> : null}
             {activeModule === "vault" ? <FavoritesVaultModule /> : null}
             {activeModule === "ai" ? (
