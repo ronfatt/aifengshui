@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { emptyMemberProfile } from "@/lib/member-profile";
-import { getMingliKnowledgeContext } from "@/lib/mingli-knowledge";
+import { getMingliKnowledgeContext, hexagramOneWordPromptRules, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type ChatRequest = {
@@ -79,6 +79,8 @@ function buildPrompt({ message, memberLevel, points, profile }: Required<ChatReq
 - 关系：交友宫适合客户沟通，但夫妻/亲密关系宜放慢语速
 - 今日策略：先整理资料、确认边界，再推进合作
 ${knowledgeContext}
+${message.includes("卦") || message.includes("梅花") || isPaidTier ? `\n梅花易数输出过滤器：\n${meihuaPromptGuardrails}` : ""}
+${message.includes("64") || message.includes("六十四") || message.includes("一字") ? `\n64卦一字输出过滤器：\n${hexagramOneWordPromptRules}` : ""}
 
 回答风格要求：
 - 开头称呼用户为“易玺老师”或“从这个问题来看”，语气稳重、专业、有温度。

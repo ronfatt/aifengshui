@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
-import { getMingliKnowledgeContext } from "@/lib/mingli-knowledge";
+import { getMingliKnowledgeContext, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type GeneralReportBody = {
@@ -120,6 +120,7 @@ export async function POST(request: Request) {
 用户与问题资料：
 ${JSON.stringify(body.subject || {}, null, 2)}
 ${knowledgeContext}
+${meihuaPromptGuardrails}
 
 必须覆盖：
 1. 八字命理：五行强弱、十神倾向、日主承载、大运流年基础，如何影响「${title}」

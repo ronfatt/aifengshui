@@ -1050,6 +1050,18 @@ const divinationCheckInKey = "ai-fengshui-jiuyun-checkins";
 const divinationCost = 36;
 const hexagram64StorageKey = "ai-fengshui-hexagram64-one-word";
 const hexagram64Cost = 8;
+type Hexagram64Mode = "daily" | "question" | "deep";
+const hexagram64ModeOptions: Array<{
+  id: Hexagram64Mode;
+  title: string;
+  desc: string;
+  cost: number;
+  badge: string;
+}> = [
+  { id: "daily", title: "今日一字", desc: "每日状态提醒", cost: 8, badge: "高频" },
+  { id: "question", title: "问事一字", desc: "针对一个具体问题", cost: 18, badge: "精准" },
+  { id: "deep", title: "深度解字", desc: "一字 + 线索 + 行动策略", cost: 36, badge: "推荐" }
+];
 const placeholderBirthDates = new Set(["2000-01-01"]);
 const placeholderBirthTimes = new Set(["08:30", "08:30 AM", "--:--"]);
 
@@ -1232,7 +1244,24 @@ type DivinationReading = {
   useTrigram: Trigram;
   movingLine: number;
   passElement: Trigram["element"];
+  bodyUseRelation: string;
+  finalRelation: string;
   score: number;
+  energyBoard: {
+    stage: string;
+    status: string;
+    value: number;
+    note: string;
+  }[];
+  clues: {
+    trigram: string;
+    title: string;
+    people: string;
+    behavior: string;
+    space: string;
+    bodyHint: string;
+    prompt: string;
+  }[];
   situation: string;
   process: string;
   outcome: string;
@@ -1261,13 +1290,20 @@ type Hexagram64Reading = {
   createdAt: string;
   dateKey: string;
   timeKey: string;
+  mode: Hexagram64Mode;
+  modeLabel: string;
+  question: string;
+  cost: number;
   hexagram: string;
+  hexagramTitle: string;
   upper: Trigram;
   lower: Trigram;
   word: string;
   theme: string;
   explanation: string;
   action: string;
+  oracle: string;
+  clue: string;
   element: Trigram["element"];
   score: number;
 };
@@ -1788,6 +1824,55 @@ function reportSolutionStack(report: SavedReport) {
   ] as const;
 }
 
+function reportWealthRadar(report: SavedReport) {
+  const scores = report.metadata?.integratedScores;
+  const wealth = scores?.wealth ?? 82;
+  const career = scores?.career ?? 84;
+  const timing = scores?.timing ?? 79;
+  const relationship = scores?.relationship ?? 80;
+  const riskControl = scores?.risk ?? 78;
+  const overall = scores?.overall ?? 84;
+
+  return [
+    ["正财运", Math.min(96, Math.round((career + overall) / 2)), "主业与稳定收入能力"],
+    ["偏财运", Math.max(58, Math.round((wealth + timing) / 2) - 4), "投资、机会财与外部项目"],
+    ["守财力", Math.max(52, riskControl), "现金流留存与预算纪律"],
+    ["资源整合", Math.min(95, Math.round((relationship + overall) / 2)), "人脉、客户与合作变现"],
+    ["行动爆发", Math.min(94, Math.round((career + timing) / 2)), "执行速度与落地能力"],
+    ["抗险能力", Math.max(55, Math.round((riskControl + timing) / 2)), "防破财、防误判能力"]
+  ] as const;
+}
+
+function reportTimingBoard(report: SavedReport) {
+  const focus = report.metadata?.integratedInput?.focus || "business";
+  const focusText = integratedFocusLabels[focus] || "综合方向";
+
+  return [
+    ["红榜", "未来 2-4 周", `适合整理报价、回收账款、确认合作条款，并把「${focusText}」相关资源做成清单。`],
+    ["黑榜", "情绪压力高峰日", "不宜冲动签约、借钱扩张或答应模糊分账；凡是催你马上决定的人，先缓一晚。"],
+    ["观察窗", "未来 30 天", "若连续两次出现同一类阻力，说明问题不在运气，而在流程、边界或预算结构。"]
+  ] as const;
+}
+
+function reportPeopleGuide(report: SavedReport) {
+  const actions = report.metadata?.integratedActions;
+
+  return [
+    ["财富贵人", "留意做事直接、重视规则、愿意把条件讲清楚的人；他们能帮你把模糊机会变成可执行方案。"],
+    ["风险对象", "远离画大饼、不断制造焦虑、催你立刻掏钱或不愿写清责任边界的人。"],
+    ["借力动作", actions?.now?.[0] || "本周主动联系一位专业人士或稳定客户，请对方帮你看一次方案风险。"]
+  ] as const;
+}
+
+function formatStructuredReportContent(content: string) {
+  const lines = content
+    .split(/(?=【[^】]+】)|\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return lines.length > 1 ? lines : [content];
+}
+
 function getBaziPillars(): BaziPillar[] {
   return [
     { label: "年柱", stem: "庚", branch: "申", hiddenStems: "庚 / 壬 / 戊", tenGods: "食神 / 偏财 / 比肩", naYin: "石榴木", emptyBranch: "子丑" },
@@ -2277,6 +2362,81 @@ const elementBridge: Record<Trigram["element"], Trigram["element"]> = {
   土: "金"
 };
 
+const elementControls: Record<Trigram["element"], Trigram["element"]> = {
+  金: "木",
+  木: "土",
+  土: "水",
+  水: "火",
+  火: "金"
+};
+
+const trigramClues: Record<string, Omit<DivinationReading["clues"][number], "trigram">> = {
+  乾: {
+    title: "权威与规则",
+    people: "父亲、老板、长辈、制度制定者、专业顾问、掌权者。",
+    behavior: "定规则、签署文件、授权、审批、决断、建立标准。",
+    space: "西北方、高处、办公室主位、会议室、金属物较多的位置。",
+    bodyHint: "留意头部、压力、睡眠紧绷与过度承担。",
+    prompt: "这件事是否卡在权责不清、上级未拍板，或你需要先把规则讲明？"
+  },
+  兑: {
+    title: "沟通与缺口",
+    people: "年轻女性、下属、销售、讲师、律师、靠表达吃饭的人。",
+    behavior: "沟通、谈判、饭局、口舌、承诺、娱乐、带有缺口或破损的物品。",
+    space: "正西方、水泽旁、湿地、餐桌、低洼处、谈话频繁的位置。",
+    bodyHint: "留意口腔、牙齿、呼吸道与表面开心、内心空虚的情绪。",
+    prompt: "这个转机或阻碍，是否和一位善言辞的人有关，或需要通过请客、沟通、说服来破局？"
+  },
+  离: {
+    title: "曝光与判断",
+    people: "中年女性、文化教育者、媒体人、设计师、看重形象与名声的人。",
+    behavior: "曝光、发布、看清真相、文件审阅、传播、包装、名声与舆论。",
+    space: "正南方、明亮处、屏幕前、灯光强的位置、展示区。",
+    bodyHint: "留意眼睛、心火、血压、焦虑与急于证明自己的状态。",
+    prompt: "这件事是否需要先公开表达，或先把隐藏信息照亮，而不是继续模糊推进？"
+  },
+  震: {
+    title: "启动与震动",
+    people: "长男、行动派、创业者、主动开口的人、容易急躁的人。",
+    behavior: "启动、宣布、冲刺、搬动、争执、惊动、快速变化。",
+    space: "正东方、门口、走廊、声音大的地方、正在施工或移动的位置。",
+    bodyHint: "留意肝胆、筋骨、惊恐、冲动和突发压力。",
+    prompt: "你是否太急着启动？现在要分清是机会发动，还是情绪被惊动。"
+  },
+  巽: {
+    title: "资源与渗透",
+    people: "长女、顾问、媒介、合作介绍人、温和但影响力持续的人。",
+    behavior: "谈资源、引荐、渗透、传播、跟进、文件与合约细节。",
+    space: "东南方、通风处、花草植物旁、文件柜、网络渠道。",
+    bodyHint: "留意神经紧绷、肠胃风气、犹豫不决与反复沟通。",
+    prompt: "这件事的入口是否不是硬攻，而是通过资源、介绍、长期跟进慢慢打开？"
+  },
+  坎: {
+    title: "风险与流动",
+    people: "中男、流动行业者、财务人员、物流、技术、隐藏信息较多的人。",
+    behavior: "现金流、隐藏风险、流动、等待、陷入、反复确认。",
+    space: "正北方、水边、暗处、仓库、后台系统、低温或湿冷处。",
+    bodyHint: "留意肾水、泌尿、恐惧感、拖延和安全感不足。",
+    prompt: "你是否忽略了现金流、暗账、隐藏条款或情绪上的不安全感？"
+  },
+  艮: {
+    title: "停止与门槛",
+    people: "少男、保安、宗教人士、内向谨慎的人、守门人。",
+    behavior: "停止、阻隔、审批、守住边界、靠山、不动产、制度门槛。",
+    space: "东北方、山、门槛、柜子、墙角、静止不动的位置。",
+    bodyHint: "留意脾胃、肩颈、背部、固执和迟迟不动的状态。",
+    prompt: "你目前是否遇到无法逾越的大山、制度门槛或一个关键守门人？"
+  },
+  坤: {
+    title: "承载与积累",
+    people: "母亲、年长女性、团队后勤、执行支持者、稳定型伙伴。",
+    behavior: "承接、整理、等待、照顾、务实落地、长期积累。",
+    space: "西南方、土地、仓储、厨房、后勤区、稳定厚重的位置。",
+    bodyHint: "留意脾胃、疲累、水肿、过度迁就与承担过多。",
+    prompt: "这件事是否需要先补后勤、补资源、补耐心，而不是急着冲结果？"
+  }
+};
+
 const elementRituals: Record<Trigram["element"], Omit<DivinationReading["actionPlan"], "timing" | "mantra">> = {
   金: {
     direction: "西北方",
@@ -2364,6 +2524,93 @@ function composeHexagramName(upper: Trigram, lower: Trigram) {
   return `${upper.symbol}${lower.symbol} ${upper.name}上${lower.name}下`;
 }
 
+function getElementRelation(bodyElement: Trigram["element"], useElement: Trigram["element"]) {
+  if (bodyElement === useElement) {
+    return {
+      key: "比和",
+      label: "体用比和（次吉）",
+      score: 76,
+      status: "次吉",
+      meaning: "谋事可成，局势平稳，多得朋友或身边资源助力，但仍要明确下一步。"
+    };
+  }
+
+  if (elementBridge[bodyElement] === useElement) {
+    return {
+      key: "体生用",
+      label: "体生用（小凶/耗）",
+      score: 55,
+      status: "小凶/耗",
+      meaning: "主泄气、破耗、多做少成、为人作嫁，精力容易被事件分散。"
+    };
+  }
+
+  if (elementBridge[useElement] === bodyElement) {
+    return {
+      key: "用生体",
+      label: "用生体（大吉）",
+      score: 84,
+      status: "大吉",
+      meaning: "主有进益、顺遂、贵人相助，外部环境或事件本身对你有助力。"
+    };
+  }
+
+  if (elementControls[bodyElement] === useElement) {
+    return {
+      key: "体克用",
+      label: "体克用（小吉/平）",
+      score: 62,
+      status: "小吉/平",
+      meaning: "事情在掌控中，但求谋劳碌、诸事多迟延，属于克得辛苦。"
+    };
+  }
+
+  return {
+    key: "用克体",
+    label: "用克体（大凶）",
+    score: 38,
+    status: "大凶",
+    meaning: "主压力极大、官非、阻碍、疾病或事情败坏，外部局势正在压制自己。"
+  };
+}
+
+function getPassElementForRelation(bodyElement: Trigram["element"], useElement: Trigram["element"]) {
+  const relation = getElementRelation(bodyElement, useElement).key;
+
+  if (relation === "体克用") return elementBridge[bodyElement];
+  if (relation === "用克体") return elementBridge[useElement];
+  if (relation === "体生用") return bodyElement;
+  if (relation === "用生体") return useElement;
+
+  return elementBridge[bodyElement];
+}
+
+function getHexagramTheme(upper: Trigram, lower: Trigram) {
+  const key = `${upper.name}${lower.name}`;
+  const themes: Record<string, string> = {
+    震艮: "小过之象：宜小不宜大，先处理细节与门槛，不可贪快。",
+    兑巽: "大过之象：压力过重、结构承载不足，中段会有高压或方向剧烈调整。",
+    震离: "丰卦之象：声势变大、信息曝光，但易名高利微，需防虚火和内耗。",
+    乾坤: "泰否之间：天地定位，重点在权责、制度和上下是否通气。",
+    坎离: "水火相冲：情绪与判断拉扯，必须先降噪再决策。",
+    离坎: "既济未济：看似有结果，但细节仍需补齐。"
+  };
+
+  return themes[key] || `${upper.name}${lower.name}之象：上卦代表外显趋势，下卦代表根基与执行场景，需结合体用生克判断吉凶。`;
+}
+
+function createDivinationClues(trigramsInChart: Trigram[]) {
+  const uniqueNames = Array.from(new Set(trigramsInChart.map((trigram) => trigram.name)));
+
+  return uniqueNames
+    .map((name) => {
+      const clue = trigramClues[name];
+      return clue ? { trigram: name, ...clue } : null;
+    })
+    .filter(Boolean)
+    .slice(0, 4) as DivinationReading["clues"];
+}
+
 function createDivinationDate(dateValue: string, timeValue: string) {
   const now = new Date();
   const date = dateValue || now.toISOString().slice(0, 10);
@@ -2392,9 +2639,34 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
   const changingUpper = getTrigramByLines(changingLines.slice(3, 6));
   const bodyTrigram = movingLine <= 3 ? upper : lower;
   const useTrigram = movingLine <= 3 ? lower : upper;
-  const passElement = bodyTrigram.element === useTrigram.element ? elementBridge[bodyTrigram.element] : useTrigram.element;
+  const originalRelation = getElementRelation(bodyTrigram.element, useTrigram.element);
+  const changingUseTrigram = movingLine <= 3 ? changingLower : changingUpper;
+  const changingRelation = getElementRelation(bodyTrigram.element, changingUseTrigram.element);
+  const mutualRelation = getElementRelation(mutualUpper.element, mutualLower.element);
+  const passElement = getPassElementForRelation(bodyTrigram.element, useTrigram.element);
   const ritual = elementRituals[passElement];
-  const score = 68 + ((numbers[0] * 7 + numbers[1] * 5 + numbers[2] * 3 + hourSeed) % 24);
+  const score = Math.max(36, Math.min(92, Math.round((originalRelation.score + mutualRelation.score + changingRelation.score) / 3)));
+  const energyBoard = [
+    {
+      stage: "当下（本卦）",
+      status: originalRelation.status,
+      value: originalRelation.score,
+      note: `${originalRelation.label}：${originalRelation.meaning}`
+    },
+    {
+      stage: "过程（互卦）",
+      status: mutualRelation.status,
+      value: Math.max(30, mutualRelation.score - 6),
+      note: `${getHexagramTheme(mutualUpper, mutualLower)} ${mutualRelation.label}，中段需防暗线压力。`
+    },
+    {
+      stage: "结果（变卦）",
+      status: changingRelation.status,
+      value: changingRelation.score,
+      note: `${getHexagramTheme(changingUpper, changingLower)} ${changingRelation.label}，看最后是否值得继续投入。`
+    }
+  ];
+  const clues = createDivinationClues([upper, lower, mutualUpper, mutualLower, changingUpper, changingLower]);
 
   return {
     id: `jiuyun-${Date.now()}`,
@@ -2414,11 +2686,15 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
     useTrigram,
     movingLine,
     passElement,
+    bodyUseRelation: originalRelation.label,
+    finalRelation: changingRelation.label,
     score,
-    situation: `本卦显示当下的核心是“${bodyTrigram.name}体遇${useTrigram.name}用”。你现在不是没有机会，而是需要先分清主次，避免被外部节奏牵着走。`,
-    process: `互卦落在${mutualUpper.name}${mutualLower.name}，过程会出现资源重新组合的信号。中段最怕急着证明自己，越稳越容易看见真正的入口。`,
-    outcome: `变卦转为${changingUpper.name}${changingLower.name}，最终走向偏向“先调整方法，再打开结果”。今天适合小步推进，不适合一次性押注。`,
-    mindset: `今日战略心法：从“我要马上得到答案”转为“我先让局势显露结构”。换位看问题，先处理${useTrigram.element}的外部压力，再补足${passElement}来通关。`,
+    energyBoard,
+    clues,
+    situation: `本卦为${composeHexagramName(upper, lower)}，核心是「${bodyTrigram.name}体遇${useTrigram.name}用」，五行关系为${originalRelation.label}。白话说：${originalRelation.meaning} ${getHexagramTheme(upper, lower)}`,
+    process: `互卦为${composeHexagramName(mutualUpper, mutualLower)}，它代表事情中段的隐秘夹层与不可控因素。${getHexagramTheme(mutualUpper, mutualLower)} 五行上呈${mutualRelation.label}，说明过程不是直线推进，需防资源承载、沟通压力或方向调整。`,
+    outcome: `变卦为${composeHexagramName(changingUpper, changingLower)}，代表最终演变。用卦由${useTrigram.name}转向${changingUseTrigram.name}，与体卦形成${changingRelation.label}：${changingRelation.meaning} 不宜只看表面热闹，要评估实际回报。`,
+    mindset: `整体定局：${energyBoard[0].status}起局，${energyBoard[1].status}过关，${energyBoard[2].status}收尾。今日战略心法是：先承认现实压力，再用「${passElement}」通关，把克制、泄气或压迫转成可执行的步骤。`,
     actionPlan: {
       timing: `${hourBranch}时后 1 个时辰内，或今天第一个不被打扰的 20 分钟`,
       direction: ritual.direction,
@@ -2430,38 +2706,129 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
   };
 }
 
-const hexagramOneWordMap: Record<Trigram["element"], string[]> = {
-  金: ["断", "清", "界", "决", "守", "律", "锋", "简"],
-  木: ["生", "启", "伸", "长", "仁", "策", "萌", "进"],
-  水: ["静", "观", "藏", "润", "听", "缓", "流", "省"],
-  火: ["明", "燃", "显", "照", "发", "醒", "耀", "动"],
-  土: ["稳", "定", "承", "厚", "蓄", "基", "安", "实"]
+type HexagramOneWordMeta = {
+  title: string;
+  word: string;
+  theme: string;
+  situation: string;
+  keyPoint: string;
+  action: string;
+  clue: string;
 };
 
-const hexagramThemeMap: Record<Trigram["element"], string> = {
-  金: "边界、规则、取舍与判断力",
-  木: "成长、启动、学习与长期规划",
-  水: "冷静、观察、隐藏信息与情绪流动",
-  火: "曝光、表达、热度与关键行动",
-  土: "稳定、承载、资源整合与现实基础"
+const hexagram64Dictionary: Record<string, HexagramOneWordMeta> = {
+  "qian-qian": { title: "乾为天", word: "破茧", theme: "主导权、上升、出手时机", situation: "你已经站在临界点，心里知道自己不能再躲在幕后。", keyPoint: "真正的卡点不是能力不足，而是你还在等别人允许你开始。", action: "今天主动开口争取一次资源，把主导权拿回来。", clue: "留意高处、金色或负责人" },
+  "qian-dui": { title: "天泽履", word: "试探", theme: "谨慎前行、礼数、边界", situation: "你正踩在一条细线之上，机会在前，但一步错就容易失分。", keyPoint: "最大隐患是太急于证明自己，忽略了规矩和对方感受。", action: "今天先确认规则，再推进请求；说话留三分余地。", clue: "留意饭局中的一句提醒" },
+  "qian-li": { title: "天火同人", word: "结盟", theme: "公开合作、共同目标、圈层", situation: "你需要的不是单打独斗，而是找到同频的人站到同一边。", keyPoint: "卡点在于目标还不够公开，别人看不懂你要往哪里去。", action: "今天把你的计划讲清楚，主动约一个关键伙伴。", clue: "留意屏幕、会议或南方消息" },
+  "qian-zhen": { title: "天雷无妄", word: "止妄", theme: "真实动机、突发变化、不乱求", situation: "事情正在提醒你回到真实，不要被一时冲动带偏。", keyPoint: "隐患在于你把焦虑误认为机会，越急越容易走错。", action: "今天暂停一个临时决定，只做已经验证过的事。", clue: "留意突然响起的电话" },
+  "qian-xun": { title: "天风姤", word: "相遇", theme: "意外人事、诱惑、入口", situation: "一个突然出现的人或机会正在搅动你的判断。", keyPoint: "转机是真的，但其中也夹着诱惑和不对等条件。", action: "今天先听对方说完，不马上承诺，留下查证时间。", clue: "留意介绍人或东南方讯息" },
+  "qian-kan": { title: "天水讼", word: "争界", theme: "争议、合约、立场", situation: "你心里已有不服，只是还没把边界说清楚。", keyPoint: "最大的风险是口头承诺太多，后面变成责任争执。", action: "今天把条件写下来，所有重要沟通留下记录。", clue: "留意黑色文件或聊天记录" },
+  "qian-gen": { title: "天山遯", word: "撤身", theme: "退场、止损、远离消耗", situation: "你正在面对一个看似还能撑、其实正在消耗你的局。", keyPoint: "真正的智慧不是硬赢，而是及时从不值得的战场抽身。", action: "今天减少解释，先撤出一个低回报承诺。", clue: "留意门口、墙角或山形物" },
+  "qian-kun": { title: "天地否", word: "闭塞", theme: "上下不通、停滞、错频", situation: "你感觉明明做了很多，但回应迟迟不到位。", keyPoint: "卡点在于上下不同频，继续硬推只会增加误会。", action: "今天先换沟通对象或渠道，不要在原地重复解释。", clue: "留意沉默的年长女性" },
+  "dui-qian": { title: "泽天夬", word: "决断", theme: "切割、公告、临门一刀", situation: "你已经忍到极限，内心其实知道必须做一个明确切割。", keyPoint: "隐患是拖延会让问题继续发酵，最后由别人替你决定。", action: "今天删掉一个模糊选项，只保留最重要的路径。", clue: "留意白色金属物或通知" },
+  "dui-dui": { title: "兑为泽", word: "开口", theme: "沟通、喜悦、口舌", situation: "事情的转机藏在一句话里，但风险也藏在一句话里。", keyPoint: "最大卡点是你想讨好所有人，反而让真正立场变模糊。", action: "今天只说事实和需求，避免玩笑式试探。", clue: "留意年轻女性或饭局" },
+  "dui-li": { title: "泽火革", word: "换皮", theme: "改革、更新、换身份", situation: "旧的角色已经装不下你，新局正在逼你换一种活法。", keyPoint: "卡点不是变化本身，而是你还想用旧方法解决新问题。", action: "今天改掉一个旧流程，公开一个新标准。", clue: "留意红色招牌或证件" },
+  "dui-zhen": { title: "泽雷随", word: "跟势", theme: "顺势、跟随、关系节奏", situation: "你现在不适合硬带方向，反而要先观察势头往哪里走。", keyPoint: "转机在于顺势借力，隐患在于盲目跟风。", action: "今天跟进一个已经有动能的人或项目，但保留判断。", clue: "留意群组里最先行动的人" },
+  "dui-xun": { title: "泽风大过", word: "重负", theme: "压力超载、硬撑、减负", situation: "你撑得太久，表面还能笑，内部结构却已经吃力。", keyPoint: "最大隐患是继续把别人的责任背在自己身上。", action: "今天拒绝一个额外请求，把最重的任务拆小。", clue: "留意梁柱、肩颈或长桌" },
+  "dui-kan": { title: "泽水困", word: "卡局", theme: "资源受限、困住、低谷", situation: "你不是没有能力，而是眼前资源被锁住，越挣扎越耗。", keyPoint: "卡点在现金流、情绪低谷或对方不回应。", action: "今天先求小通，不求大成；解决一个最现实的缺口。", clue: "留意水边、账目或黑色物品" },
+  "dui-gen": { title: "泽山咸", word: "电光", theme: "感应、吸引、第一反应", situation: "你对某个人或某件事已有强烈直觉，身体比理性更早知道答案。", keyPoint: "转机在感应，隐患在把短暂心动误当长期承诺。", action: "今天相信第一反应，但先用小行动验证。", clue: "留意微笑、香气或西方消息" },
+  "dui-kun": { title: "泽地萃", word: "聚场", theme: "聚集、人脉、资源汇合", situation: "你身边资源正在聚拢，但还缺一个清楚的中心。", keyPoint: "卡点是人多意见多，热闹不等于成交。", action: "今天定一个共同目标，让大家围绕结果而不是情绪发言。", clue: "留意聚会或团队群讯息" },
+  "li-qian": { title: "火天大有", word: "显丰", theme: "拥有、曝光、收获", situation: "你的资源并不少，只是需要被看见、被整理、被使用。", keyPoint: "隐患是太在意表面成绩，忽略后续承接能力。", action: "今天盘点可用资源，选一个最有把握的公开展示。", clue: "留意灯光下的贵人" },
+  "li-dui": { title: "火泽睽", word: "错频", theme: "分歧、各看各的、误解", situation: "你和对方都觉得自己有理，但看的其实不是同一件事。", keyPoint: "最大卡点不是谁对谁错，而是频道不同。", action: "今天先复述对方立场，再表达你的底线。", clue: "留意争论、屏幕或女性意见" },
+  "li-li": { title: "离为火", word: "聚焦", theme: "看清、曝光、断舍离", situation: "你的心思太散，太多声音正在分走你的注意力。", keyPoint: "转机在聚焦，隐患在热度过高导致判断失真。", action: "今天只做一件能被看见的关键事，其余先放下。", clue: "留意红色、灯光或眼睛疲劳" },
+  "li-zhen": { title: "火雷噬嗑", word: "破障", theme: "咬断阻碍、执行、纪律", situation: "你面前有一个硬结，不处理就一直卡住。", keyPoint: "卡点在规则、责任或某个必须面对的难题。", action: "今天直接处理最难开口的部分，不再绕路。", clue: "留意合同、牙齿或突发声响" },
+  "li-xun": { title: "火风鼎", word: "炼成", theme: "升级、重组、成器", situation: "你正在被重新调配，旧材料要经过火候才能成新局。", keyPoint: "转机在重组资源，隐患是急着出成果而火候不足。", action: "今天优化流程或包装，不急着对外承诺。", clue: "留意厨房、香气或三脚器物" },
+  "li-kan": { title: "火水未济", word: "未竟", theme: "未完成、冷热冲突、临门差一步", situation: "事情看似快完成，但关键环节还没有真正闭合。", keyPoint: "最大风险是以为已经稳了，提前放松或庆祝。", action: "今天补上最后一个检查清单，别急着宣布结果。", clue: "留意冷热交替或未读消息" },
+  "li-gen": { title: "火山旅", word: "漂泊", theme: "外地、临时、无根感", situation: "你像站在别人的场域里，能发挥但不宜久留。", keyPoint: "卡点是缺少根基，短期机会不能当长期归宿。", action: "今天明确临时目标，不把临时关系过度投入。", clue: "留意旅途、酒店或陌生场地" },
+  "li-kun": { title: "火地晋", word: "晋升", theme: "被看见、上升、推进", situation: "你正在被推到更亮的位置，之前的积累开始有回声。", keyPoint: "转机在曝光，隐患是基础没跟上名声。", action: "今天主动提交成果，让正确的人看见。", clue: "留意日出、证书或上级目光" },
+  "zhen-qian": { title: "雷天大壮", word: "壮行", theme: "力量上升、冲劲、慎勇", situation: "你现在气势很强，内心想立刻冲出去证明自己。", keyPoint: "隐患是力量大于耐心，容易因过猛而折损。", action: "今天可以推进，但必须先设边界和刹车。", clue: "留意运动、车辆或高声争执" },
+  "zhen-dui": { title: "雷泽归妹", word: "错位", theme: "关系错位、名分不稳、急嫁急合", situation: "这件事有吸引力，却可能不是最稳的组合。", keyPoint: "卡点在位置不正或承诺太快，后续容易失衡。", action: "今天不要急着定名分，先看责任是否对等。", clue: "留意临时邀约或年轻女性" },
+  "zhen-li": { title: "雷火丰", word: "虚盛", theme: "表面繁荣、虚火、防盛极必衰", situation: "眼前看起来热闹、机会多，但内部消耗也正在上升。", keyPoint: "最大隐患是名声有了，实际回报未必跟上。", action: "今天只选能产生实际现金流或成果的事。", clue: "留意闪光、广告或热闹场面" },
+  "zhen-zhen": { title: "震为雷", word: "惊动", theme: "突发、启动、震荡", situation: "某个变化正在敲醒你，拖延已经不再舒服。", keyPoint: "转机在启动，隐患在被情绪推着乱跑。", action: "今天先做第一个动作，但不要连开三条战线。", clue: "留意雷声、消息提示或东方" },
+  "zhen-xun": { title: "雷风恒", word: "恒守", theme: "长期关系、持续、守节奏", situation: "你正在问一件需要长期经营的事，不能只看今天的情绪。", keyPoint: "卡点在忽冷忽热，缺少稳定节奏。", action: "今天设定一个可持续的小习惯，坚持七天。", clue: "留意重复出现的名字" },
+  "zhen-kan": { title: "雷水解", word: "松绑", theme: "解除、破冰、脱困", situation: "你正处于长期内耗与捆绑中，进退两难。", keyPoint: "转机已至，真正卡点是你过度留恋过去的沉没成本。", action: "今天斩断一个不再滋养你的关系或任务，动作越快越好。", clue: "留意黑衣人或东方消息" },
+  "zhen-gen": { title: "雷山小过", word: "低飞", theme: "小有过度、宜下不宜上、注意细节", situation: "你想冲高，但现实提醒你先把脚边的小事处理好。", keyPoint: "隐患在小处失分，尤其是细节、礼数和时间点。", action: "今天不做大承诺，只修正一个最明显的小错误。", clue: "留意门槛、车声或东北方" },
+  "zhen-kun": { title: "雷地豫", word: "预热", theme: "准备、动员、情绪带动", situation: "机会还没完全打开，但氛围已经可以先被你带起来。", keyPoint: "转机在提前布局，隐患是沉迷兴奋而不落地。", action: "今天先做预告、邀约或排练，把团队情绪调动起来。", clue: "留意音乐、活动或群众反应" },
+  "xun-qian": { title: "风天小畜", word: "蓄势", theme: "小积累、未可大成、等待风口", situation: "你已经有想法，但力量还没积到可以一次突破。", keyPoint: "卡点在资源未满，急推会被现实拉回。", action: "今天先补一个资料、一个联系人或一个预算缺口。", clue: "留意风、文件或云层" },
+  "xun-dui": { title: "风泽中孚", word: "取信", theme: "信任、诚意、口碑", situation: "事情能不能成，关键不在技巧，而在对方信不信你。", keyPoint: "转机在真诚表达，隐患是包装过度。", action: "今天拿出一个真实证据，比说十句好听话更有用。", clue: "留意鸟声、合约或推荐人" },
+  "xun-li": { title: "风火家人", word: "内修", theme: "家宅、内部秩序、角色", situation: "外面的局要顺，先要把内部关系和分工理清。", keyPoint: "卡点在自己人之间的期待没有说开。", action: "今天处理一个家里或团队内部的小矛盾。", clue: "留意厨房、女性长辈或群聊" },
+  "xun-zhen": { title: "风雷益", word: "增益", theme: "增长、帮助、互利", situation: "你正进入一个越付出越有回流的窗口。", keyPoint: "转机在先给价值，隐患是只想拿不想投入。", action: "今天主动帮一个关键人解决小问题。", clue: "留意东南方的合作邀请" },
+  "xun-xun": { title: "巽为风", word: "渗透", theme: "柔进、传播、影响", situation: "这件事不能硬攻，需要像风一样慢慢进入对方系统。", keyPoint: "卡点是你想一次说服，但对方需要持续感受。", action: "今天做一次温和跟进，不逼单、不施压。", clue: "留意风口、植物或顾问" },
+  "xun-kan": { title: "风水涣", word: "散结", theme: "分散、释怀、重组", situation: "原本纠结的能量正在散开，但也容易人心不齐。", keyPoint: "转机在释放旧情绪，隐患在团队散掉。", action: "今天把问题摊开讲清楚，再重新分配责任。", clue: "留意水雾、旅行或远方消息" },
+  "xun-gen": { title: "风山渐", word: "渐进", theme: "循序、成长、慢成", situation: "这件事有前景，但它不会因为你急就立刻成熟。", keyPoint: "卡点在节奏，过快会破坏本来能成的关系。", action: "今天只推进一个阶段目标，留足观察空间。", clue: "留意阶梯、山路或学习资料" },
+  "xun-kun": { title: "风地观", word: "观局", theme: "观察、品牌、被观察", situation: "你以为自己在看别人，其实别人也正在看你。", keyPoint: "转机在形象与站位，隐患是动作太多显得不稳。", action: "今天少说多看，整理你的对外呈现。", clue: "留意公众场合或西南方" },
+  "kan-qian": { title: "水天需", word: "待机", theme: "等待、补给、时机未到", situation: "你已经准备往前，但眼前仍需要等一个合适窗口。", keyPoint: "卡点不是不能做，而是补给和时机还没到齐。", action: "今天先补资源，不急着冲结果。", clue: "留意饮品、雨水或贵人约饭" },
+  "kan-dui": { title: "水泽节", word: "节制", theme: "限度、预算、规则", situation: "你的能量正在提醒你：不是所有欲望都值得满足。", keyPoint: "隐患在支出、承诺或情绪表达失去节制。", action: "今天设一个上限，钱、时间、话都要收住。", clue: "留意杯子、账单或西方" },
+  "kan-li": { title: "水火既济", word: "成局", theme: "完成、平衡、收尾风险", situation: "事情看似已经成形，最容易在收尾时松懈。", keyPoint: "最大隐患是完成感太早，细节却还没锁死。", action: "今天做复盘和确认，不再新增变量。", clue: "留意冷热交替或完成通知" },
+  "kan-zhen": { title: "水雷屯", word: "初难", theme: "开局艰难、混乱、萌芽", situation: "你正在新局开端，混乱不是失败，而是生长前的阻力。", keyPoint: "卡点在基础秩序未成，急着扩大会更乱。", action: "今天先建立最小可行步骤，不求完美。", clue: "留意新项目、婴儿或车辆" },
+  "kan-xun": { title: "水风井", word: "源头", theme: "资源井、长期供给、系统", situation: "答案不在表面热闹，而在你长期取水的源头。", keyPoint: "转机在修复系统，隐患是只换包装不清井。", action: "今天整理客户池、知识库或现金流来源。", clue: "留意井、水槽或老客户" },
+  "kan-kan": { title: "坎为水", word: "暗流", theme: "陷阱、隐藏风险、反复试炼", situation: "你脚下有看不见的暗流，直觉已经提醒你不要冒进。", keyPoint: "最大隐患是盲目信任、冲动投资或低估风险。", action: "今天先踩刹车，查证一项关键资料。", clue: "留意黑色、夜晚或水声" },
+  "kan-gen": { title: "水山蹇", word: "险阻", theme: "路难、受阻、求助", situation: "你不是不努力，而是这条路本身暂时不好走。", keyPoint: "卡点在外部阻力，硬闯只会消耗更多。", action: "今天换路线，向有经验的人求一个具体建议。", clue: "留意坡道、腿脚或东北方" },
+  "kan-kun": { title: "水地比", word: "靠拢", theme: "结伴、归属、联盟", situation: "你现在需要找到可信赖的队伍，而不是独自承受。", keyPoint: "转机在靠近正确的人，隐患是为了归属感选错圈子。", action: "今天筛选伙伴，只靠近价值观稳定的人。", clue: "留意团队合照或年长女性" },
+  "gen-qian": { title: "山天大畜", word: "厚蓄", theme: "储备、克制、大资源", situation: "你的力量正在积累，但还没到完全释放的时候。", keyPoint: "转机在蓄养实力，隐患是太早亮牌。", action: "今天把资源藏好、计划写深，不急着公开。", clue: "留意仓库、证照或高墙" },
+  "gen-dui": { title: "山泽损", word: "减法", theme: "舍弃、减负、换取更大", situation: "你拥有的太多反而拖慢了你，删减才会带来清明。", keyPoint: "卡点在舍不得，尤其是不再产生价值的关系或支出。", action: "今天砍掉一个低效成本，换回专注。", clue: "留意破损物或账单" },
+  "gen-li": { title: "山火贲", word: "修饰", theme: "包装、形象、外美内实", situation: "你需要被看见，但不能只靠外表撑场。", keyPoint: "隐患是包装大于内容，容易让人期待落空。", action: "今天优化呈现，同时补一项真实能力证明。", clue: "留意照片、衣着或灯光" },
+  "gen-zhen": { title: "山雷颐", word: "养口", theme: "饮食、语言、滋养", situation: "你最近吸收了太多杂讯，身心都需要重新喂养。", keyPoint: "卡点在口：说错话、吃错东西、听错信息。", action: "今天少争辩，吃一顿干净的饭，输入高质量内容。", clue: "留意餐桌、牙齿或一句话" },
+  "gen-xun": { title: "山风蛊", word: "清腐", theme: "旧问题、腐败、整理根源", situation: "眼前的问题不是今天才有，而是旧结构积久成疾。", keyPoint: "转机在清理根源，隐患是继续粉饰太平。", action: "今天处理一个拖了很久的历史问题。", clue: "留意旧文件、霉味或长辈" },
+  "gen-kan": { title: "山水蒙", word: "启蒙", theme: "不明、学习、请教", situation: "你现在并非没有路，而是信息还不足以做成熟判断。", keyPoint: "卡点在认知盲区，装懂会让你付学费。", action: "今天向专业人士问一个具体问题。", clue: "留意老师、儿童或书本" },
+  "gen-gen": { title: "艮为山", word: "止步", theme: "停止、边界、静观", situation: "所有信号都在提醒你先停下来，不是每个门都要推开。", keyPoint: "转机在停止，隐患是固执地把停滞误判成失败。", action: "今天不新增承诺，先守住边界。", clue: "留意门槛、山形或安静的人" },
+  "gen-kun": { title: "山地剥", word: "剥落", theme: "削弱、旧壳脱落、保核心", situation: "外层资源正在剥落，留下来的才是真正核心。", keyPoint: "隐患是想保住所有东西，反而连根基都被拖累。", action: "今天保护最重要的人、钱和信用，其余让它掉。", clue: "留意脱落、墙皮或西南方" },
+  "kun-qian": { title: "地天泰", word: "通达", theme: "上下相通、顺流、开局", situation: "阻塞正在打开，你会发现上下之间开始有了回应。", keyPoint: "转机在顺势连接，隐患是太舒服后忘了巩固。", action: "今天推进一个早已准备好的合作。", clue: "留意桥、通道或好消息" },
+  "kun-dui": { title: "地泽临", word: "靠近", theme: "临近、指导、机会靠近", situation: "机会正在走近你，但它会先观察你的态度和稳定度。", keyPoint: "转机在主动靠近，隐患是姿态过高或准备不足。", action: "今天拜访一个关键人，带着方案而不是空手。", clue: "留意上级、老师或西方" },
+  "kun-li": { title: "地火明夷", word: "藏光", theme: "受伤、低调、隐藏锋芒", situation: "你的光暂时不适合太亮，越显眼越容易受伤。", keyPoint: "隐患在被误解、被压制或过早暴露底牌。", action: "今天低调完成关键事，不争一时名声。", clue: "留意黄昏、伤痕或暗灯" },
+  "kun-zhen": { title: "地雷复", word: "回春", theme: "复苏、回归、重新开始", situation: "沉寂之后，新的动能正在从底层慢慢回来。", keyPoint: "转机在回到初心，隐患是急着一次恢复全部。", action: "今天重启一个小习惯，让身体先动起来。", clue: "留意旧人回讯或东方" },
+  "kun-xun": { title: "地风升", word: "升阶", theme: "上升、累积、被提拔", situation: "你正处在可以往上走的阶段，但必须一步一步搭梯子。", keyPoint: "卡点在基础，不稳的上升会很快回落。", action: "今天完成一个能证明专业度的交付。", clue: "留意楼梯、植物或推荐" },
+  "kun-kan": { title: "地水师", word: "整队", theme: "团队、纪律、带兵", situation: "事情已经不是个人情绪，而是需要组织和纪律。", keyPoint: "转机在整队，隐患是人多但没有统一号令。", action: "今天明确负责人、目标和期限。", clue: "留意制服、群组或北方" },
+  "kun-gen": { title: "地山谦", word: "低身", theme: "谦逊、低姿态、稳胜", situation: "你越低调，越容易获得真正的支持。", keyPoint: "卡点在面子；放下面子，事情反而更容易成。", action: "今天主动请教或道谢，把姿态放柔。", clue: "留意安静的贵人或东北方" },
+  "kun-kun": { title: "坤为地", word: "承载", theme: "守成、包容、厚积", situation: "现在不宜强攻，真正的力量来自稳定承接。", keyPoint: "转机在耐心与配合，隐患是委屈自己承担过量。", action: "今天整理资源和后勤，先把基础铺稳。", clue: "留意土地、母亲或米色物品" }
 };
 
-function createHexagram64Reading(selectedDate = new Date()): Hexagram64Reading {
+function getHexagram64Meta(upper: Trigram, lower: Trigram) {
+  return (
+    hexagram64Dictionary[`${upper.key}-${lower.key}`] || {
+      title: `${upper.name}${lower.name}合象`,
+      word: "观局",
+      theme: "观察局势、收束行动、等待清晰信号",
+      situation: "你正站在一段信息未明的路口，直觉已经提醒你不要急着下结论。",
+      keyPoint: "真正的卡点在于你还没有看清谁是助力、谁是消耗。",
+      action: "今天先收集事实，暂停冲动承诺，再做一个可逆的小决定。",
+      clue: "留意重复出现的名字"
+    }
+  );
+}
+
+function buildHexagramOracle(meta: HexagramOneWordMeta, mode: Hexagram64Mode, question: string) {
+  const questionPrefix = mode === "daily" || !question.trim() ? "" : `你问的是「${question.trim()}」。`;
+  const depth =
+    mode === "deep"
+      ? "不要急着求一个漂亮答案，先确认自己是否愿意为真正的转变付出代价。"
+      : "";
+
+  return `${questionPrefix}${meta.situation}${meta.keyPoint}${meta.action}${depth}【今日线索】：${meta.clue}`;
+}
+
+function createHexagram64Reading(selectedDate = new Date(), mode: Hexagram64Mode = "daily", question = ""): Hexagram64Reading {
+  const modeOption = hexagram64ModeOptions.find((item) => item.id === mode) || hexagram64ModeOptions[0];
   const hourBranch = getCurrentHourBranch(selectedDate);
+  const questionSeed = question
+    .trim()
+    .split("")
+    .reduce((total, char) => total + char.charCodeAt(0), 0);
   const dateSeed =
     selectedDate.getFullYear() * 10000 +
     (selectedDate.getMonth() + 1) * 100 +
     selectedDate.getDate() +
     selectedDate.getHours() * 7 +
-    selectedDate.getMinutes();
+    selectedDate.getMinutes() +
+    questionSeed;
   const randomSeed = Math.floor(Math.random() * 64) + 1;
   const upper = trigrams[(dateSeed + randomSeed) % 8];
   const lower = trigrams[(Math.floor(dateSeed / 3) + randomSeed * 2) % 8];
   const dominantElement = upper.element === lower.element ? upper.element : lower.element;
-  const words = hexagramOneWordMap[dominantElement];
-  const word = words[(dateSeed + randomSeed + hourBranches.indexOf(hourBranch)) % words.length];
+  const meta = getHexagram64Meta(upper, lower);
   const hexagram = composeHexagramName(upper, lower);
   const score = 64 + ((dateSeed + randomSeed * 5) % 28);
+  const oracle = buildHexagramOracle(meta, mode, question);
 
   return {
     id: `hexagram64-${Date.now()}`,
@@ -2474,13 +2841,20 @@ function createHexagram64Reading(selectedDate = new Date()): Hexagram64Reading {
     }).format(selectedDate),
     dateKey: selectedDate.toISOString().slice(0, 10),
     timeKey: `${String(selectedDate.getHours()).padStart(2, "0")}:${String(selectedDate.getMinutes()).padStart(2, "0")}`,
+    mode,
+    modeLabel: modeOption.title,
+    question: question.trim(),
+    cost: modeOption.cost,
     hexagram,
+    hexagramTitle: meta.title,
     upper,
     lower,
-    word,
-    theme: hexagramThemeMap[dominantElement],
-    explanation: `此刻抽得「${hexagram}」，上卦为${upper.name}，下卦为${lower.name}。系统以当下日期、时辰与随机卦象合参，取「${word}」作为此刻命理关键字。它不是完整断事，而是提醒你今天最应该抓住的一个状态。`,
-    action: `今日围绕「${word}」行动：先处理${hexagramThemeMap[dominantElement]}，把一件模糊的事情写清楚，再做一个可逆的小决定。`,
+    word: meta.word,
+    theme: meta.theme,
+    explanation: `此刻抽得「${meta.title}」，系统以当下日期、时辰与随机卦象合参，取「${meta.word}」作为此刻命理关键字。这个字不是卦名，而是这卦在现代生活里的核心显化现象。`,
+    action: meta.action,
+    oracle,
+    clue: meta.clue,
     element: dominantElement,
     score
   };
@@ -4850,6 +5224,9 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
     ["人和资源", report.metadata?.integratedScores?.relationship ?? 84],
     ["风险控制", report.metadata?.integratedScores?.risk ?? 81]
   ] as const;
+  const wealthRadar = reportWealthRadar(report);
+  const timingBoard = reportTimingBoard(report);
+  const peopleGuide = reportPeopleGuide(report);
   const actionGroups = [
     ["现在先做", report.metadata?.integratedActions?.now],
     ["需要避免", report.metadata?.integratedActions?.avoid],
@@ -4928,6 +5305,58 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         </div>
       </section>
 
+      <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">财富六维体检</h4>
+            <span className="rounded bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A]">Radar Preview</span>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {wealthRadar.map(([label, value, desc]) => (
+              <div key={label} className="grid gap-2 rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 sm:grid-cols-[96px_1fr_42px] sm:items-center">
+                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white">
+                    <div className="h-full rounded-full bg-[#C79A54]" style={{ width: `${value}%` }} />
+                  </div>
+                  <p className="mt-1 text-xs text-ink/50">{desc}</p>
+                </div>
+                <p className="text-right text-lg font-semibold text-[#063F4A]">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+            <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">财运红黑榜</h4>
+            <div className="mt-4 grid gap-3">
+              {timingBoard.map(([label, window, desc]) => (
+                <div key={label} className="rounded border border-[#C79A54]/20 bg-[#fffaf0] p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-semibold text-[#063F4A]">{label}</p>
+                    <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{window}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+            <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">贵人与防小人指南</h4>
+            <div className="mt-4 grid gap-3">
+              {peopleGuide.map(([label, desc]) => (
+                <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
+                  <p className="font-semibold text-[#063F4A]">{label}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {[
           ["三、命格总论", "读取个人底层性格、优势、弱点与人生主线，判断适合用什么方式累积成果。"],
@@ -4981,7 +5410,24 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
             {visibleReportSections(report).map((section) => (
               <div key={section.title} className="rounded border-l-4 border-[#C79A54] bg-[#F5FAFA] p-4">
                 <p className="text-lg font-semibold text-[#063F4A]">{section.title}</p>
-                <p className="mt-3 text-sm leading-7 text-ink/68">{section.content}</p>
+                <div className="mt-3 grid gap-2">
+                  {formatStructuredReportContent(section.content).map((line, index) => {
+                    const match = line.match(/^(【[^】]+】)(.*)$/);
+
+                    return (
+                      <p key={`${section.title}-${index}`} className="text-sm leading-7 text-ink/68">
+                        {match ? (
+                          <>
+                            <span className="font-semibold text-[#7A1F16]">{match[1]}</span>
+                            {match[2]}
+                          </>
+                        ) : (
+                          line
+                        )}
+                      </p>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
@@ -7628,7 +8074,11 @@ function SigilModule({
 function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPoints: (amount: number) => boolean }) {
   const [readings, setReadings] = useState<Hexagram64Reading[]>([]);
   const [selectedReading, setSelectedReading] = useState<Hexagram64Reading | null>(null);
+  const [mode, setMode] = useState<Hexagram64Mode>("daily");
+  const [question, setQuestion] = useState("");
   const [error, setError] = useState("");
+  const selectedMode = hexagram64ModeOptions.find((item) => item.id === mode) || hexagram64ModeOptions[0];
+  const todayReading = readings.find((reading) => reading.mode === "daily" && reading.dateKey === new Date().toISOString().slice(0, 10));
 
   useEffect(() => {
     const stored = window.localStorage.getItem(hexagram64StorageKey);
@@ -7645,12 +8095,23 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
   }, []);
 
   function handleGenerate() {
-    if (points < hexagram64Cost || !onSpendPoints(hexagram64Cost)) {
-      setError(`点数不足，64卦一字需要 ${hexagram64Cost} 点。`);
+    if (mode !== "daily" && !question.trim()) {
+      setError("问事一字和深度解字需要先输入一个具体问题。");
       return;
     }
 
-    const reading = createHexagram64Reading(new Date());
+    if (mode === "daily" && todayReading) {
+      setSelectedReading(todayReading);
+      setError("今日一字已经生成。若要重新问具体事情，请选择「问事一字」或「深度解字」。");
+      return;
+    }
+
+    if (points < selectedMode.cost || !onSpendPoints(selectedMode.cost)) {
+      setError(`点数不足，${selectedMode.title}需要 ${selectedMode.cost} 点。`);
+      return;
+    }
+
+    const reading = createHexagram64Reading(new Date(), mode, question);
     const nextReadings = [reading, ...readings].slice(0, 12);
     setReadings(nextReadings);
     setSelectedReading(reading);
@@ -7667,10 +8128,30 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">64 Hexagram One Word</p>
               <h2 className="mt-2 text-2xl font-semibold">64卦一字</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-ink/58">
-                根据当下日期、时间与随机抽取的一个卦，生成一个总结你此刻命理状态的关键字。轻量、高频，适合每日打开。
+                根据当下日期、时间与随机抽取的一个卦，生成一个 2-4 字命理关键字与 80-120 字神谕断语。轻量、高频，适合每日打开。
               </p>
             </div>
-            <StatusPill>一次 {hexagram64Cost} 点</StatusPill>
+            <StatusPill>低点数入口</StatusPill>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {hexagram64ModeOptions.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setMode(item.id)}
+                className={`rounded border p-3 text-left transition ${
+                  mode === item.id ? "border-[#C79A54] bg-[#fffaf0] shadow-sm" : "border-black/10 bg-[#F5FAFA] hover:border-[#C79A54]/45"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-semibold text-[#063F4A]">{item.title}</span>
+                  <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{item.cost} 点</span>
+                </div>
+                <p className="mt-2 text-xs leading-5 text-ink/50">{item.desc}</p>
+                <p className="mt-3 inline-flex rounded bg-[#DDEFF2] px-2 py-1 text-[11px] font-semibold text-[#063F4A]">{item.badge}</p>
+              </button>
+            ))}
           </div>
 
           <div className="mt-5 grid gap-3 rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4 sm:grid-cols-3">
@@ -7688,14 +8169,26 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             </div>
           </div>
 
+          <label className="mt-5 block">
+            <span className="text-sm font-semibold text-[#063F4A]">默想或输入一个问题</span>
+            <textarea
+              value={question}
+              onChange={(event) => setQuestion(event.target.value)}
+              className="mt-2 min-h-24 w-full rounded border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#1495A0]"
+              placeholder={mode === "daily" ? "今日一字可留空；也可以写下你今天最在意的一件事。" : "例如：我现在适合换工作吗？这个合作要不要推进？"}
+            />
+          </label>
+
           <button
             type="button"
             onClick={handleGenerate}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#052F38]"
           >
-            消耗 {hexagram64Cost} 点抽取一字 <Sparkles className="size-4" />
+            消耗 {selectedMode.cost} 点抽取{selectedMode.title} <Sparkles className="size-4" />
           </button>
-          <p className="mt-2 text-xs leading-5 text-ink/45">当前为 MVP 版：后续可替换为你提供的完整 64 卦取字规则。</p>
+          <p className="mt-2 text-xs leading-5 text-ink/45">
+            今日一字每日只生成一次；问事与深度解字可针对具体问题生成，更适合决策前使用。
+          </p>
           {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#7A1F16]">{error}</p> : null}
         </div>
 
@@ -7717,9 +8210,10 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-xl font-semibold text-[#063F4A]">{reading.word}</span>
-                    <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.score}</span>
+                    <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.modeLabel || "一字"}</span>
                   </div>
-                  <p className="mt-1 text-xs text-ink/45">{reading.createdAt} · {reading.hexagram}</p>
+                  <p className="mt-1 text-xs text-ink/45">{reading.createdAt} · {reading.hexagramTitle || reading.hexagram}</p>
+                  {reading.question ? <p className="mt-1 line-clamp-1 text-xs text-ink/50">问：{reading.question}</p> : null}
                 </button>
               ))
             ) : (
@@ -7734,20 +8228,30 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
       <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
         {selectedReading ? (
           <div>
-            <div className="rounded bg-[#063F4A] p-6 text-white">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">今日一字</p>
+            <div className="relative overflow-hidden rounded bg-[#063F4A] p-6 text-white shadow-sm">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full border border-[#C79A54]/25" />
+              <div className="pointer-events-none absolute -bottom-20 left-8 h-52 w-52 rounded-full border border-white/10" />
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">{selectedReading.modeLabel || "今日一字"}</p>
+                  {selectedReading.question ? <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">所问：{selectedReading.question}</p> : null}
+                </div>
+                <span className="rounded bg-white/10 px-3 py-1 text-sm font-semibold text-[#C79A54]">{selectedReading.cost || hexagram64Cost} 点</span>
+              </div>
               <div className="mt-5 grid gap-5 md:grid-cols-[0.75fr_1fr] md:items-center">
-                <div className="grid aspect-square place-items-center rounded-full border border-[#C79A54]/45 bg-white/8">
-                  <span className="text-8xl font-semibold text-[#C79A54]">{selectedReading.word}</span>
+                <div className="grid aspect-square place-items-center rounded-full border border-[#C79A54]/45 bg-white/8 p-8">
+                  <div className="grid h-full w-full place-items-center rounded-full border border-[#C79A54]/25 bg-black/10">
+                    <span className="text-center text-6xl font-semibold leading-none text-[#C79A54] md:text-7xl">{selectedReading.word}</span>
+                  </div>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-semibold">{selectedReading.hexagram}</h3>
+                  <h3 className="text-2xl font-semibold">{selectedReading.hexagramTitle || selectedReading.hexagram}</h3>
                   <p className="mt-3 text-sm leading-6 text-white/72">{selectedReading.explanation}</p>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {[
                       ["上卦", `${selectedReading.upper.symbol} ${selectedReading.upper.name}`],
                       ["下卦", `${selectedReading.lower.symbol} ${selectedReading.lower.name}`],
-                      ["元素", selectedReading.element],
+                      ["神谕", selectedReading.word],
                       ["指数", `${selectedReading.score}/100`]
                     ].map(([label, value]) => (
                       <div key={label} className="rounded bg-white/8 p-3">
@@ -7761,16 +8265,39 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4 md:col-span-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Oracle</p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">神谕断语</h4>
+                <p className="mt-2 text-sm leading-7 text-ink/70">{selectedReading.oracle || selectedReading.action}</p>
+              </div>
               <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Theme</p>
                 <h4 className="mt-2 font-semibold text-[#063F4A]">此刻主题</h4>
                 <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.theme}</p>
               </div>
               <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Action</p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">今日行动</h4>
-                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.action}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">宇宙显化线索</h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">留意：{selectedReading.clue || "今天重复出现的名字或方向"}</p>
               </div>
+              {selectedReading.mode === "deep" ? (
+                <div className="rounded border border-[#1495A0]/20 bg-[#EAF7F7] p-4 md:col-span-2">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Deep Reading</p>
+                  <h4 className="mt-2 font-semibold text-[#063F4A]">深度解字行动表</h4>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    {[
+                      ["马上做", selectedReading.action],
+                      ["先避免", "不要为了求快而临时加码承诺，先守住边界。"],
+                      ["再观察", selectedReading.clue ? `今天反复出现的「${selectedReading.clue}」。` : "重复出现的人、方向或颜色。"]
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded bg-white p-3">
+                        <p className="text-xs font-semibold text-[#1495A0]">{label}</p>
+                        <p className="mt-1 text-sm leading-6 text-ink/65">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <p className="mt-5 rounded border border-black/10 bg-rice p-4 text-xs leading-5 text-ink/55">
@@ -8031,13 +8558,44 @@ function DivinationModule({
                 ["本卦", selectedReading.originalHexagram],
                 ["互卦", selectedReading.mutualHexagram],
                 ["变卦", selectedReading.changingHexagram],
-                ["今日体卦", `${selectedReading.bodyTrigram.symbol} ${selectedReading.bodyTrigram.name} · ${selectedReading.bodyTrigram.element}`]
+                ["体用关系", `${selectedReading.bodyUseRelation || "体用待判"} · 需${selectedReading.passElement}通关`]
               ].map(([label, value]) => (
                 <div key={label} className="rounded border border-black/10 bg-rice p-4">
                   <p className="text-xs text-ink/45">{label}</p>
                   <p className="mt-2 font-semibold text-[#063F4A]">{value}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#FDF8EA] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Energy Board</p>
+                  <h4 className="mt-1 text-xl font-semibold text-[#063F4A]">三阶段吉凶能量看板</h4>
+                </div>
+                <StatusPill>本卦 · 互卦 · 变卦</StatusPill>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {(selectedReading.energyBoard || [
+                  { stage: "当下（本卦）", status: "参考", value: selectedReading.score, note: selectedReading.situation },
+                  { stage: "过程（互卦）", status: "参考", value: Math.max(30, selectedReading.score - 15), note: selectedReading.process },
+                  { stage: "结果（变卦）", status: "参考", value: Math.max(30, selectedReading.score - 8), note: selectedReading.outcome }
+                ]).map((stage) => (
+                  <div key={stage.stage} className="rounded border border-black/10 bg-white p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-[#063F4A]">{stage.stage}</p>
+                        <p className="mt-1 text-xs font-semibold text-[#C79A54]">{stage.status}</p>
+                      </div>
+                      <span className="rounded bg-[#DDEFF2] px-2 py-1 text-sm font-semibold text-[#063F4A]">{stage.value}%</span>
+                    </div>
+                    <div className="mt-3 h-2 rounded-full bg-[#DDEFF2]">
+                      <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${stage.value}%` }} />
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-ink/62">{stage.note}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -8059,6 +8617,34 @@ function DivinationModule({
                 <p className="font-semibold text-[#C79A54]">今日战略心法</p>
               </div>
               <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReading.mindset}</p>
+            </div>
+
+            <div className="mt-5 rounded border border-black/10 bg-white p-4 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
+                  <h4 className="mt-1 text-xl font-semibold">核心时空线索</h4>
+                  <p className="mt-1 text-sm text-ink/55">这些不是直接答案，而是让你对照现实生活的“密码锁”。</p>
+                </div>
+                <StatusPill>万物类象</StatusPill>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {(selectedReading.clues || createDivinationClues([selectedReading.bodyTrigram, selectedReading.useTrigram])).map((clue) => (
+                  <div key={clue.trigram} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-[#063F4A]">{clue.trigram}卦 · {clue.title}</p>
+                      <span className="text-xl">{trigrams.find((trigram) => trigram.name === clue.trigram)?.symbol}</span>
+                    </div>
+                    <div className="mt-3 grid gap-2 text-sm leading-6 text-ink/62">
+                      <p><span className="font-semibold text-ink">人物：</span>{clue.people}</p>
+                      <p><span className="font-semibold text-ink">行为：</span>{clue.behavior}</p>
+                      <p><span className="font-semibold text-ink">空间：</span>{clue.space}</p>
+                      <p><span className="font-semibold text-ink">身心提醒：</span>{clue.bodyHint}</p>
+                    </div>
+                    <p className="mt-3 rounded bg-white p-3 text-sm font-semibold leading-6 text-[#063F4A]">{clue.prompt}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-5 rounded bg-[#063F4A] p-5 text-white">
