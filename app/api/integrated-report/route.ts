@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { getMingliKnowledgeContext, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
+import { normalizeAiReportPayload } from "@/lib/report-json";
+import { getMingliCalendar } from "@/lib/mingli-calendar";
+import { getZiweiChart } from "@/lib/ziwei-engine";
 
 type IntegratedReportBody = {
   fullName?: string;
@@ -88,17 +91,12 @@ function hasReportQualityIssues(sections: IntegratedReportSection[]) {
 }
 
 function parseReportPayload(text: string, body: IntegratedReportBody): IntegratedReportPayload {
-  try {
-    return JSON.parse(text) as IntegratedReportPayload;
-  } catch {
-    return {
-      summary: text.slice(0, 360) || fallbackReport(body).summary,
-      sections: [{ title: "AI 综合解析", content: text.slice(0, 1800) || fallbackReport(body).sections[0].content }]
-    };
-  }
+  return normalizeAiReportPayload(text, fallbackReport(body), 12) as IntegratedReportPayload;
 }
 
 function buildReportInput(body: IntegratedReportBody, retry = false) {
+  const calendar = getMingliCalendar(body.birthDate, body.birthTime, body.calendarType || "Gregorian");
+  const ziweiChart = getZiweiChart(body);
   const knowledgeQuery = `${body.focus || ""} ${body.questionCategory || ""} ${body.specificQuestion || ""} ${body.manualNumbers || ""}`;
   const knowledgeCategory = knowledgeQuery.includes("六爻") || knowledgeQuery.includes("用神") || knowledgeQuery.includes("世爻") || knowledgeQuery.includes("应爻")
     ? "liuyao"
@@ -114,6 +112,12 @@ function buildReportInput(body: IntegratedReportBody, retry = false) {
   return `
 用户资料：
 ${JSON.stringify(body, null, 2)}
+
+真实万年历与四柱基础资料（必须优先采用，不要自行猜测；报告正文不需要逐项公开底层系统名称）：
+${JSON.stringify(calendar, null, 2)}
+
+紫微十二宫排盘资料（只作为底层判断依据，正文不要机械罗列整张盘）：
+${JSON.stringify(ziweiChart, null, 2)}
 ${knowledgeContext}
 ${meihuaPromptGuardrails}
 

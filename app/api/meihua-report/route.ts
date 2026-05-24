@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
 import { rateLimitRequest } from "@/lib/rate-limit";
+import { normalizeAiReportPayload } from "@/lib/report-json";
 
 type MeihuaReportBody = {
   fullName?: string;
@@ -96,16 +97,7 @@ ${JSON.stringify(body, null, 2)}
 `
     });
     const rawText = response.output_text?.trim() || "";
-    let parsed: { summary?: string; sections?: { title: string; content: string }[] };
-
-    try {
-      parsed = JSON.parse(rawText) as { summary?: string; sections?: { title: string; content: string }[] };
-    } catch {
-      parsed = {
-        summary: rawText.slice(0, 320) || fallbackReport(body).summary,
-        sections: [{ title: "AI 综合解析", content: rawText.slice(0, 1400) || fallbackReport(body).sections[0].content }]
-      };
-    }
+    const parsed = normalizeAiReportPayload(rawText, fallbackReport(body), 10);
 
     return NextResponse.json({
       configured: true,

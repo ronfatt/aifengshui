@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
+import { normalizeAiReportPayload } from "@/lib/report-json";
 
 type NumerologyReportBody = {
   fullName?: string;
@@ -71,19 +72,7 @@ ${JSON.stringify(body, null, 2)}
 `
     });
     const rawText = response.output_text?.trim() || "";
-    let parsed: { summary?: string; sections?: { title: string; content: string }[] };
-
-    try {
-      parsed = JSON.parse(rawText) as { summary?: string; sections?: { title: string; content: string }[] };
-    } catch {
-      const looksLikeBrokenJson = rawText.trim().startsWith("{") || rawText.includes('"summary"') || rawText.includes('"sections"');
-      parsed = {
-        summary: looksLikeBrokenJson ? fallbackReport(body).summary : rawText.slice(0, 320) || fallbackReport(body).summary,
-        sections: looksLikeBrokenJson
-          ? fallbackReport(body).sections
-          : [{ title: "AI 综合解析", content: rawText.slice(0, 1400) || fallbackReport(body).sections[0].content }]
-      };
-    }
+    const parsed = normalizeAiReportPayload(rawText, fallbackReport(body), 6);
 
     return NextResponse.json({
       configured: true,

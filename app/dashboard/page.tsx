@@ -47,6 +47,7 @@ import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { profileRowToMemberProfile } from "@/lib/profile-adapter";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
+import { getAutoLunarDateText, getMingliCalendar } from "@/lib/mingli-calendar";
 
 type DashboardModule =
   | "fortune"
@@ -198,8 +199,8 @@ const dashboardCategories: {
   {
     id: "today",
     title: "今日",
-    desc: "每日运势、日历、打卡与收藏",
-    modules: ["fortune", "calendar", "growth", "vault"]
+    desc: "每日运势、符印、日历与收藏",
+    modules: ["fortune", "sigil", "calendar", "growth", "vault"]
   },
   {
     id: "ai",
@@ -746,6 +747,7 @@ type SavedReport = {
     baziInput?: BaziReportInput;
     meihuaInput?: MeihuaReportInput;
     ziweiInput?: ZiweiReportInput;
+    ziweiChart?: ZiweiChartSnapshot;
     numerologyInput?: NumerologyReportInput;
     integratedInput?: IntegratedReportInput;
     integratedScores?: Record<string, number>;
@@ -838,6 +840,36 @@ type ZiweiReportInput = {
   lunarDate?: string;
   birthHourBranch?: string;
   focus: "career" | "wealth" | "relationship" | "health" | "business" | "annual luck";
+};
+
+type ZiweiChartSnapshot = {
+  engine?: string;
+  mainPalaceBranch?: string;
+  bodyPalaceBranch?: string;
+  fiveElementName?: string;
+  fiveElementNum?: number | string;
+  ziweiBranch?: string;
+  horoscopeDirection?: 1 | -1;
+  lunarDate?: string;
+  fourPillarsText?: string;
+  zodiac?: string;
+  chartNotes?: string;
+  palaces?: Array<{
+    index: number;
+    palace: string;
+    palaceName: string;
+    branch: string;
+    stem: string;
+    age: string;
+    majorStars: string[];
+    minorStars: string[];
+    stars: string;
+    minor: string;
+    transform: string;
+    flying: string[];
+    summary: string;
+  }>;
+  currentHoroscope?: Array<{ palaceName: string; age: number; yearly: number; yearlyText: string }>;
 };
 
 type NumerologyReportInput = {
@@ -1145,27 +1177,7 @@ function buildLocalDate(birthDate?: string, birthTime?: string) {
 }
 
 function getAutoLunarDate(birthDate?: string, birthTime?: string, calendarType: "Gregorian" | "Lunar" = "Gregorian") {
-  if (calendarType === "Lunar") {
-    return `${birthDate || "农历日期未填写"} ${getChineseHourBranch(birthTime)}`;
-  }
-
-  const date = buildLocalDate(birthDate, birthTime);
-
-  if (!date) {
-    return "农历待换算";
-  }
-
-  try {
-    const lunarDate = new Intl.DateTimeFormat("zh-CN-u-ca-chinese", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    }).format(date);
-
-    return `${lunarDate} ${getChineseHourBranch(birthTime)}`;
-  } catch {
-    return `农历待换算 ${getChineseHourBranch(birthTime)}`;
-  }
+  return getAutoLunarDateText(birthDate, birthTime, calendarType);
 }
 
 function attachLunarFields<T extends { birthDate: string; birthTime: string; calendarType?: "Gregorian" | "Lunar"; lunarDate?: string; birthHourBranch?: string }>(input: T): T {
@@ -1177,7 +1189,7 @@ function attachLunarFields<T extends { birthDate: string; birthTime: string; cal
     ...input,
     birthDate,
     lunarDate: getAutoLunarDate(birthDate, birthTime, calendarType),
-    birthHourBranch: getChineseHourBranch(birthTime)
+    birthHourBranch: getMingliCalendar(birthDate, birthTime, calendarType)?.birthHourBranch || getChineseHourBranch(birthTime)
   };
 }
 
@@ -1213,6 +1225,7 @@ type SigilArtifact = {
   title: string;
   hash: string;
   path: string;
+  gridPath?: string;
   ornamentPath: string;
   dots: { x: number; y: number }[];
   createdAt: string;
@@ -1309,6 +1322,8 @@ type Hexagram64Reading = {
 };
 
 function formatReportText(report: SavedReport, memberProfile: MemberProfile) {
+  const content = normalizedReportContent(report);
+
   return [
     `AI Feng Shui Master - ${report.title}`,
     `分析对象：${memberProfile.name}`,
@@ -1318,9 +1333,9 @@ function formatReportText(report: SavedReport, memberProfile: MemberProfile) {
     `类型：${report.tag}`,
     "",
     "报告摘要",
-    report.summary,
+    content.summary,
     "",
-    ...visibleReportSections(report).flatMap((section) => [section.title, section.content, ""]),
+    ...content.sections.flatMap((section) => [section.title, section.content, ""]),
     "免责声明：本报告为 AI 命理与风水辅助建议，仅供参考，不构成投资、医疗、法律或重大人生决策的唯一依据。"
   ].join("\n");
 }
@@ -1546,7 +1561,7 @@ function createMeihuaDivinationReport(input: MeihuaReportInput, aiContent?: Pick
   };
 }
 
-function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">, ziweiChart?: ZiweiChartSnapshot): SavedReport {
   const normalizedInput = attachLunarFields(input);
   const focusLabel = ziweiFocusLabels[input.focus];
 
@@ -1557,7 +1572,8 @@ function createZiweiDestinyReport(input: ZiweiReportInput, aiContent?: Pick<Save
     points: ziweiReportCost,
     metadata: {
       kind: "ziwei_destiny",
-      ziweiInput: normalizedInput
+      ziweiInput: normalizedInput,
+      ziweiChart
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -1705,6 +1721,68 @@ function visibleReportSections(report: SavedReport) {
   return report.sections.filter((section) => section.title !== "__metadata");
 }
 
+function parseEmbeddedReportPayload(text?: string) {
+  if (!text || !text.includes("{") || !text.includes("summary")) {
+    return null;
+  }
+
+  const candidates = [
+    text.trim(),
+    text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim(),
+    text.match(/\{[\s\S]*\}/)?.[0] || ""
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    try {
+      let parsed = JSON.parse(candidate) as unknown;
+
+      if (typeof parsed === "string") {
+        parsed = JSON.parse(parsed.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim()) as unknown;
+      }
+
+      if (parsed && typeof parsed === "object") {
+        const payload = parsed as { summary?: unknown; sections?: unknown };
+        const sections = Array.isArray(payload.sections)
+          ? payload.sections
+              .map((section) => {
+                if (!section || typeof section !== "object") {
+                  return null;
+                }
+
+                const item = section as { title?: unknown; content?: unknown };
+                const title = typeof item.title === "string" ? item.title.trim() : "";
+                const content = typeof item.content === "string" ? item.content.trim() : "";
+
+                return title && content ? { title, content } : null;
+              })
+              .filter((section): section is SavedReport["sections"][number] => Boolean(section))
+          : [];
+
+        return {
+          summary: typeof payload.summary === "string" ? payload.summary.trim() : "",
+          sections
+        };
+      }
+    } catch {
+      // Existing saved reports may contain raw JSON fragments; try the next candidate.
+    }
+  }
+
+  return null;
+}
+
+function normalizedReportContent(report: SavedReport) {
+  const directSections = visibleReportSections(report);
+  const embedded =
+    parseEmbeddedReportPayload(report.summary) ||
+    parseEmbeddedReportPayload(directSections[0]?.content);
+
+  return {
+    summary: embedded?.summary || report.summary,
+    sections: embedded?.sections?.length ? embedded.sections : directSections
+  };
+}
+
 function reportSubjectName(report: SavedReport) {
   return (
     report.metadata?.integratedInput?.fullName ||
@@ -1717,12 +1795,12 @@ function reportSubjectName(report: SavedReport) {
 }
 
 function reportExecutiveSummary(report: SavedReport) {
-  const sections = visibleReportSections(report);
-  const firstSection = sections[0]?.content || report.summary;
-  const secondSection = sections[1]?.content || "建议先稳住节奏，整理资源、边界和行动次序，再判断是否扩大投入。";
+  const content = normalizedReportContent(report);
+  const firstSection = content.sections[0]?.content || content.summary;
+  const secondSection = content.sections[1]?.content || "建议先稳住节奏，整理资源、边界和行动次序，再判断是否扩大投入。";
 
   return [
-    ["核心判断", report.summary],
+    ["核心判断", content.summary],
     ["当前关键", firstSection],
     ["行动方向", secondSection]
   ] as const;
@@ -1754,7 +1832,7 @@ function reportProfessionalMetrics(report: SavedReport) {
 
 function reportTableOfContents(report: SavedReport) {
   const fixedItems = ["个人资料", "报告核心摘要", "命理指标", "重点结论", "7 日通关计划"];
-  const sectionItems = visibleReportSections(report).map((section) =>
+  const sectionItems = normalizedReportContent(report).sections.map((section) =>
     section.title.replace(/^[一二三四五六七八九十]+、/, "")
   );
 
@@ -1763,7 +1841,7 @@ function reportTableOfContents(report: SavedReport) {
 
 function reportKeyConclusionCards(report: SavedReport) {
   const actions = report.metadata?.integratedActions;
-  const summary = report.summary || "先看清当前节奏，再决定下一步行动。";
+  const summary = normalizedReportContent(report).summary || "先看清当前节奏，再决定下一步行动。";
 
   return [
     ["核心判断", summary],
@@ -1873,23 +1951,215 @@ function formatStructuredReportContent(content: string) {
   return lines.length > 1 ? lines : [content];
 }
 
-function getBaziPillars(): BaziPillar[] {
-  return [
-    { label: "年柱", stem: "庚", branch: "申", hiddenStems: "庚 / 壬 / 戊", tenGods: "食神 / 偏财 / 比肩", naYin: "石榴木", emptyBranch: "子丑" },
-    { label: "月柱", stem: "壬", branch: "午", hiddenStems: "丁 / 己", tenGods: "偏财 / 正印 / 劫财", naYin: "杨柳木", emptyBranch: "申酉" },
-    { label: "日柱", stem: "戊", branch: "戌", hiddenStems: "戊 / 辛 / 丁", tenGods: "日主 / 伤官 / 正印", naYin: "平地木", emptyBranch: "辰巳" },
-    { label: "时柱", stem: "辛", branch: "酉", hiddenStems: "辛", tenGods: "伤官 / 金旺", naYin: "石榴木", emptyBranch: "子丑" }
-  ];
+const baziStems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"] as const;
+const baziBranches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
+const baziStemElements: Record<string, Trigram["element"]> = {
+  甲: "木",
+  乙: "木",
+  丙: "火",
+  丁: "火",
+  戊: "土",
+  己: "土",
+  庚: "金",
+  辛: "金",
+  壬: "水",
+  癸: "水"
+};
+const baziBranchHiddenStems: Record<string, string[]> = {
+  子: ["癸"],
+  丑: ["己", "癸", "辛"],
+  寅: ["甲", "丙", "戊"],
+  卯: ["乙"],
+  辰: ["戊", "乙", "癸"],
+  巳: ["丙", "戊", "庚"],
+  午: ["丁", "己"],
+  未: ["己", "丁", "乙"],
+  申: ["庚", "壬", "戊"],
+  酉: ["辛"],
+  戌: ["戊", "辛", "丁"],
+  亥: ["壬", "甲"]
+};
+const naYinPairs = [
+  "海中金",
+  "炉中火",
+  "大林木",
+  "路旁土",
+  "剑锋金",
+  "山头火",
+  "涧下水",
+  "城头土",
+  "白蜡金",
+  "杨柳木",
+  "泉中水",
+  "屋上土",
+  "霹雳火",
+  "松柏木",
+  "长流水",
+  "砂中金",
+  "山下火",
+  "平地木",
+  "壁上土",
+  "金箔金",
+  "佛灯火",
+  "天河水",
+  "大驿土",
+  "钗钏金",
+  "桑柘木",
+  "大溪水",
+  "沙中土",
+  "天上火",
+  "石榴木",
+  "大海水"
+];
+
+function normalizeCycleIndex(index: number) {
+  return ((index % 60) + 60) % 60;
 }
 
-function getBaziElementRows() {
-  return [
-    { element: "金", value: 30, tone: "表达、规则、专业输出明显，适合顾问、系统与品牌标准化。" },
-    { element: "木", value: 8, tone: "成长与学习需要主动补足，可通过课程、规划和长期项目提升。" },
-    { element: "水", value: 15, tone: "财流与流动性有机会，但要避免资金过散或情绪型决策。" },
-    { element: "火", value: 20, tone: "名气、曝光与执行热度足，需控制急躁和过度消耗。" },
-    { element: "土", value: 27, tone: "承载力强，适合稳盘、管理、资源整合和长期责任。" }
-  ];
+function getStemBranchFromIndex(index: number) {
+  const normalized = normalizeCycleIndex(index);
+  return {
+    stem: baziStems[normalized % 10],
+    branch: baziBranches[normalized % 12],
+    index: normalized
+  };
+}
+
+function getCycleIndexFromStemBranch(stem: string, branch: string) {
+  return Array.from({ length: 60 }, (_, index) => index).find((index) => baziStems[index % 10] === stem && baziBranches[index % 12] === branch) ?? 0;
+}
+
+function getApproxSolarYear(date: Date) {
+  const year = date.getFullYear();
+  const beforeLiChun = date.getMonth() === 0 || (date.getMonth() === 1 && date.getDate() < 4);
+  return beforeLiChun ? year - 1 : year;
+}
+
+function getApproxSolarMonthIndex(date: Date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  if (month === 2 && day >= 4) return 0;
+  if (month === 3 && day >= 6) return 1;
+  if (month === 4 && day >= 5) return 2;
+  if (month === 5 && day >= 6) return 3;
+  if (month === 6 && day >= 6) return 4;
+  if (month === 7 && day >= 7) return 5;
+  if (month === 8 && day >= 8) return 6;
+  if (month === 9 && day >= 8) return 7;
+  if (month === 10 && day >= 8) return 8;
+  if (month === 11 && day >= 7) return 9;
+  if (month === 12 && day >= 7) return 10;
+  if (month === 1 && day >= 6) return 11;
+
+  return month === 1 ? 10 : Math.max(0, month - 3);
+}
+
+function getMonthStemStart(yearStem: string) {
+  if (yearStem === "甲" || yearStem === "己") return 2;
+  if (yearStem === "乙" || yearStem === "庚") return 4;
+  if (yearStem === "丙" || yearStem === "辛") return 6;
+  if (yearStem === "丁" || yearStem === "壬") return 8;
+  return 0;
+}
+
+function getJulianDayNumber(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const a = Math.floor((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+
+  return day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+}
+
+function getTenGod(dayStem: string, targetStem: string) {
+  if (dayStem === targetStem) return "日主";
+
+  const stemPolarity: Record<string, "阳" | "阴"> = {
+    甲: "阳",
+    乙: "阴",
+    丙: "阳",
+    丁: "阴",
+    戊: "阳",
+    己: "阴",
+    庚: "阳",
+    辛: "阴",
+    壬: "阳",
+    癸: "阴"
+  };
+  const elementCreates: Record<Trigram["element"], Trigram["element"]> = { 木: "火", 火: "土", 土: "金", 金: "水", 水: "木" };
+  const elementControls: Record<Trigram["element"], Trigram["element"]> = { 木: "土", 土: "水", 水: "火", 火: "金", 金: "木" };
+  const dayElement = baziStemElements[dayStem];
+  const targetElement = baziStemElements[targetStem];
+  const samePolarity = stemPolarity[dayStem] === stemPolarity[targetStem];
+
+  if (dayElement === targetElement) return samePolarity ? "比肩" : "劫财";
+  if (elementCreates[targetElement] === dayElement) return samePolarity ? "偏印" : "正印";
+  if (elementCreates[dayElement] === targetElement) return samePolarity ? "食神" : "伤官";
+  if (elementControls[dayElement] === targetElement) return samePolarity ? "偏财" : "正财";
+  return samePolarity ? "七杀" : "正官";
+}
+
+function getNaYin(index: number) {
+  return naYinPairs[Math.floor(normalizeCycleIndex(index) / 2)] || "纳音待校准";
+}
+
+function getEmptyBranch(index: number) {
+  return ["戌亥", "申酉", "午未", "辰巳", "寅卯", "子丑"][Math.floor(normalizeCycleIndex(index) / 10)] || "待校准";
+}
+
+function getBaziPillars(input?: BaziReportInput): BaziPillar[] {
+  const calendar = getMingliCalendar(input?.birthDate, input?.birthTime, input?.calendarType || "Gregorian");
+
+  if (!calendar) {
+    return [
+      { label: "年柱", stem: "待", branch: "定", hiddenStems: "请填写出生日期", tenGods: "待排盘", naYin: "待校准", emptyBranch: "待校准" },
+      { label: "月柱", stem: "待", branch: "定", hiddenStems: "请填写出生日期", tenGods: "待排盘", naYin: "待校准", emptyBranch: "待校准" },
+      { label: "日柱", stem: "待", branch: "定", hiddenStems: "请填写出生日期", tenGods: "待排盘", naYin: "待校准", emptyBranch: "待校准" },
+      { label: "时柱", stem: "待", branch: "定", hiddenStems: "请填写出生时间", tenGods: "待排盘", naYin: "待校准", emptyBranch: "待校准" }
+    ];
+  }
+
+  return calendar.pillars.map((pillar) => ({
+    label: pillar.label,
+    stem: pillar.stem,
+    branch: pillar.branch,
+    hiddenStems: pillar.hiddenStems.join(" / ") || "无",
+    tenGods: [pillar.stemTenGod, ...pillar.branchTenGods].filter(Boolean).join(" / ") || (pillar.label === "日柱" ? "日主" : "待排盘"),
+    naYin: pillar.naYin,
+    emptyBranch: pillar.emptyBranch
+  }));
+}
+
+function getBaziElementRows(pillars: BaziPillar[]) {
+  const totals: Record<Trigram["element"], number> = { 金: 0, 木: 0, 水: 0, 火: 0, 土: 0 };
+
+  pillars.forEach((pillar) => {
+    const stemElement = baziStemElements[pillar.stem];
+    if (stemElement) totals[stemElement] += 1;
+
+    (baziBranchHiddenStems[pillar.branch] || []).forEach((stem, index) => {
+      const element = baziStemElements[stem];
+      if (element) totals[element] += index === 0 ? 0.8 : 0.35;
+    });
+  });
+
+  const total = Object.values(totals).reduce((sum, value) => sum + value, 0) || 1;
+  const tones: Record<Trigram["element"], string> = {
+    金: "表达、规则、专业输出与制度感。",
+    木: "成长、学习、规划与长期项目。",
+    水: "财流、智慧、沟通与流动资源。",
+    火: "曝光、行动力、热度与名声。",
+    土: "承载、稳定、管理与现实基础。"
+  };
+
+  return (["金", "木", "水", "火", "土"] as const).map((element) => ({
+    element,
+    value: Math.round((totals[element] / total) * 100),
+    tone: tones[element]
+  }));
 }
 
 function getTenYearLuckRows() {
@@ -1948,23 +2218,54 @@ function getMeihuaScoreRows() {
   ] as const;
 }
 
-function getZiweiPalaceRows() {
-  const palaces = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "交友宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
-  const stars = ["紫微 天府", "天机 太阴", "贪狼 红鸾", "天同 天梁", "武曲 禄存", "巨门 天刑", "太阳 文昌", "七杀 左辅", "廉贞 天相", "破军 右弼", "太阴 天魁", "天梁 天钺"];
+function getZiweiPalaceRows(input?: ZiweiReportInput) {
+  const calendar = getMingliCalendar(input?.birthDate, input?.birthTime, input?.calendarType || "Gregorian");
+  const palaceNames = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "交友宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
+  const branchOrder = ["寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥", "子", "丑"];
+  const mingBranch = (calendar?.mingGong || "寅").slice(-1);
+  const mingIndex = Math.max(0, branchOrder.indexOf(mingBranch));
+  const palaces = Array.from({ length: 12 }, (_, index) => {
+    const branch = branchOrder[(mingIndex + index) % branchOrder.length];
+    return `${palaceNames[index]} · ${branch}`;
+  });
+  const starSeed = Math.max(0, baziBranches.indexOf((calendar?.pillars[2].branch || "午") as (typeof baziBranches)[number]));
+  const starGroups = ["紫微 天府", "天机 太阴", "贪狼 红鸾", "天同 天梁", "武曲 禄存", "巨门 天刑", "太阳 文昌", "七杀 左辅", "廉贞 天相", "破军 右弼", "太阴 天魁", "天梁 天钺"];
+  const stars = Array.from({ length: 12 }, (_, index) => starGroups[(index + starSeed) % starGroups.length]);
   const minor = ["文昌", "文曲", "红鸾", "天喜", "禄存", "陀罗", "天马", "左辅", "右弼", "地空", "天魁", "天钺"];
   const transforms = ["化禄", "", "化科", "", "化权", "化忌", "", "", "化禄", "", "化科", ""];
+  const summaries = [
+    "观察自我定位、性格底盘与人生主轴。",
+    "观察手足同辈、同侪资源与合作分寸。",
+    "观察伴侣关系、长期合作与亲密沟通。",
+    "观察子女、作品、下属与延伸成果。",
+    "观察收入模式、现金流与财富承载。",
+    "观察健康倾向、压力来源与生活节律。",
+    "观察外出发展、迁移机会与市场连接。",
+    "观察朋友团队、客户群与人脉品质。",
+    "观察事业定位、职场角色与经营能力。",
+    "观察资产、空间、家庭基础与稳定度。",
+    "观察内在满足、福气来源与精神状态。",
+    "观察长辈支持、制度资源与早年影响。"
+  ];
 
   return palaces.map((palace, index) => ({
+    index,
     palace,
+    palaceName: palaceNames[index],
+    branch: palace.split(" · ")[1] || branchOrder[index],
+    stem: calendar?.pillars[index % 4]?.stem || "待",
     age: `${index * 10 + 3}-${index * 10 + 12}`,
+    majorStars: stars[index].split(" "),
+    minorStars: [minor[index]],
     stars: stars[index],
     minor: minor[index],
     transform: transforms[index] || "平",
-    summary: index % 3 === 0 ? "主轴明确，宜稳中推进。" : index % 3 === 1 ? "重视资源整合与边界。" : "先观察，再择机行动。"
+    flying: [],
+    summary: summaries[index] || "先观察，再择机行动。"
   }));
 }
 
-function getZiweiLuckRows() {
+function getZiweiLuckRows(input?: ZiweiReportInput) {
   return [
     ["3-12", "命宫", "紫微 天府", "基础稳定，重视学习与家庭影响。"],
     ["13-22", "兄弟宫", "天机 太阴", "思维活跃，人际与学习变化多。"],
@@ -1977,13 +2278,13 @@ function getZiweiLuckRows() {
   ];
 }
 
-function getZiweiAnnualRows() {
+function getZiweiAnnualRows(input?: ZiweiReportInput) {
   const startYear = new Date().getFullYear();
   const palaces = ["官禄宫", "财帛宫", "夫妻宫", "迁移宫", "福德宫", "命宫", "田宅宫", "交友宫", "父母宫", "疾厄宫", "子女宫"];
 
   return Array.from({ length: 11 }, (_, index) => ({
     year: startYear + index,
-    palace: palaces[index],
+    palace: palaces[index % palaces.length],
     theme: index % 3 === 0 ? "事业布局" : index % 3 === 1 ? "财务整理" : "关系调整",
     career: index % 2 === 0 ? "利规划与升维" : "宜稳守执行",
     wealth: index % 2 === 0 ? "正财稳进" : "投资需保守",
@@ -2206,9 +2507,10 @@ function reportTemplateType(report: SavedReport) {
 
 function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
   const template = reportTemplateType(report);
+  const content = normalizedReportContent(report);
   const lines = [
-    report.summary,
-    ...visibleReportSections(report).map((section) => `${section.title}：${section.content}`)
+    content.summary,
+    ...content.sections.map((section) => `${section.title}：${section.content}`)
   ].join(" ").slice(0, 260);
   const safe = (value: string) =>
     value
@@ -2234,7 +2536,7 @@ function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
   <rect x="560" y="500" width="544" height="420" fill="#fff" stroke="#C79A54" stroke-width="2"/>
   <text x="592" y="565" font-size="32" font-weight="700" fill="#063F4A">核心摘要</text>
   <foreignObject x="592" y="600" width="480" height="250"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:24px;line-height:1.65;color:#102F38;font-family:Arial,'Microsoft YaHei',sans-serif;">${safe(lines)}</div></foreignObject>
-  ${visibleReportSections(report)
+  ${content.sections
     .map((section, index) => {
       const y = 980 + index * 180;
       return `<rect x="96" y="${y}" width="1008" height="140" rx="12" fill="#F5FAFA" stroke="#C79A54" stroke-width="1.5"/>
@@ -2931,88 +3233,93 @@ function svgCirclePath(cx: number, cy: number, radius: number) {
   return `M ${cx + radius} ${cy} A ${radius} ${radius} 0 1 1 ${cx - radius} ${cy} A ${radius} ${radius} 0 1 1 ${cx + radius} ${cy}`;
 }
 
+function polarPoint(cx: number, cy: number, radius: number, degree: number) {
+  const radian = (degree * Math.PI) / 180;
+
+  return {
+    x: Number((cx + Math.cos(radian) * radius).toFixed(2)),
+    y: Number((cy + Math.sin(radian) * radius).toFixed(2))
+  };
+}
+
+function svgPolygonPath(points: { x: number; y: number }[], close = true) {
+  return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + (close ? " Z" : "");
+}
+
 function buildSigilPath(distilled: string, hash: string) {
   const chars = Array.from(distilled);
   const seed = parseInt(hash.slice(0, 8), 16) || 1;
   const centerX = 120;
   const centerY = 120;
-  const sourceChars = chars.length >= 3 ? chars : Array.from(`${distilled}SIGIL`).slice(0, 8);
-  const sacredSlots = [
-    { x: centerX, y: 42 },
-    { x: 168, y: 72 },
-    { x: 184, y: centerY },
-    { x: 168, y: 168 },
-    { x: centerX, y: 198 },
-    { x: 72, y: 168 },
-    { x: 56, y: centerY },
-    { x: 72, y: 72 },
-    { x: centerX, y: 78 },
-    { x: 154, y: centerY },
-    { x: centerX, y: 162 },
-    { x: 86, y: centerY }
-  ];
-  const picked = sourceChars.slice(0, 8).map((char, index) => {
+  const sourceChars = chars.length >= 3 ? chars : Array.from(`${distilled}SACREDGEOMETRY`).slice(0, 10);
+  const radii = [34, 56, 78];
+  const sectors = [-90, -60, -30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270];
+  const leftDegrees = [150, 180, 210, 240];
+  const start = polarPoint(centerX, centerY, 78, -90);
+  const finish = polarPoint(centerX, centerY, 78, 90);
+  const leftDots = sourceChars.slice(0, 3).map((char, index) => {
     const code = char.charCodeAt(0);
-    const slot = sacredSlots[(code + seed + index * 3) % sacredSlots.length];
-    const snap = ((code + seed + index) % 3) - 1;
-
-    return {
-      x: slot.x + snap * 4,
-      y: slot.y + (((code >> 2) + index) % 3 - 1) * 4,
-      code
-    };
+    return polarPoint(centerX, centerY, radii[(code + index + seed) % radii.length], leftDegrees[(code + seed + index) % leftDegrees.length]);
   });
-  const uniqueDots = picked.reduce<{ x: number; y: number; code: number }[]>((items, dot) => {
-    const exists = items.some((item) => Math.abs(item.x - dot.x) < 8 && Math.abs(item.y - dot.y) < 8);
+  const rightDots = leftDots
+    .map((dot) => ({
+      x: Number((centerX + (centerX - dot.x)).toFixed(2)),
+      y: dot.y
+    }))
+    .reverse();
+  const centerGate = sourceChars[3]
+    ? polarPoint(centerX, centerY, radii[(sourceChars[3].charCodeAt(0) + seed) % radii.length], sectors[(sourceChars[3].charCodeAt(0) + seed) % sectors.length])
+    : { x: centerX, y: centerY };
+  const lowerGate = sourceChars[4]
+    ? polarPoint(centerX, centerY, 56, sectors[(sourceChars[4].charCodeAt(0) + seed + 5) % sectors.length])
+    : { x: centerX, y: centerY + 56 };
+  const dots = [start, ...leftDots, centerGate, ...rightDots, lowerGate, finish].reduce<{ x: number; y: number }[]>((items, dot) => {
+    const exists = items.some((item) => Math.abs(item.x - dot.x) < 4 && Math.abs(item.y - dot.y) < 4);
     return exists ? items : [...items, dot];
   }, []);
-  const motif = seed % 4;
-  const anchorSets = [
-    [
-      { x: centerX, y: 46 },
-      { x: centerX, y: centerY },
-      { x: 74, y: 82 },
-      { x: 166, y: 158 },
-      { x: centerX, y: 194 }
-    ],
-    [
-      { x: 72, y: centerY },
-      { x: centerX, y: 76 },
-      { x: 168, y: centerY },
-      { x: centerX, y: 164 },
-      { x: centerX, y: 46 }
-    ],
-    [
-      { x: centerX, y: 46 },
-      { x: 166, y: 86 },
-      { x: 74, y: centerY },
-      { x: 166, y: 154 },
-      { x: centerX, y: 194 }
-    ],
-    [
-      { x: centerX, y: 46 },
-      { x: 82, y: 112 },
-      { x: centerX, y: 194 },
-      { x: 158, y: 112 },
-      { x: centerX, y: 78 }
-    ]
-  ];
-  const dots = [...anchorSets[motif], ...uniqueDots].slice(0, 9);
   const linePath = dots.map((dot, index) => `${index === 0 ? "M" : "L"} ${dot.x} ${dot.y}`).join(" ");
   const end = dots[dots.length - 1];
   const endMark = `M ${end.x - 13} ${end.y} L ${end.x + 13} ${end.y}`;
-  const topCircle = svgCirclePath(dots[0].x, dots[0].y, 9);
-  const centerCircle = svgCirclePath(centerX, centerY, 13 + (seed % 3) * 3);
-  const lowerCircle = seed % 2 === 0 ? svgCirclePath(centerX, 178, 11) : "";
-  const crossBar = seed % 3 === 0 ? `M ${centerX - 42} ${centerY} L ${centerX + 42} ${centerY}` : `M ${centerX} 66 L ${centerX} 188`;
-  const sideArc =
+  const outerStar = svgPolygonPath(Array.from({ length: 12 }, (_, index) => polarPoint(centerX, centerY, index % 2 === 0 ? 101 : 88, -90 + index * 30)));
+  const hexagon = svgPolygonPath(Array.from({ length: 6 }, (_, index) => polarPoint(centerX, centerY, 78, -90 + index * 60)));
+  const triangleUp = svgPolygonPath([polarPoint(centerX, centerY, 64, -90), polarPoint(centerX, centerY, 64, 30), polarPoint(centerX, centerY, 64, 150)]);
+  const triangleDown = svgPolygonPath([polarPoint(centerX, centerY, 64, 90), polarPoint(centerX, centerY, 64, 210), polarPoint(centerX, centerY, 64, 330)]);
+  const vesicaCircles = Array.from({ length: 6 }, (_, index) => {
+    const point = polarPoint(centerX, centerY, 34, -90 + index * 60);
+    return svgCirclePath(point.x, point.y, 34);
+  }).join(" ");
+  const radialLines = Array.from({ length: 12 }, (_, index) => {
+    const inner = polarPoint(centerX, centerY, 22, -90 + index * 30);
+    const outer = polarPoint(centerX, centerY, 96, -90 + index * 30);
+    return `M ${inner.x} ${inner.y} L ${outer.x} ${outer.y}`;
+  }).join(" ");
+  const gridPath = [
+    svgCirclePath(centerX, centerY, 34),
+    svgCirclePath(centerX, centerY, 56),
+    svgCirclePath(centerX, centerY, 78),
+    svgCirclePath(centerX, centerY, 96),
+    vesicaCircles,
+    outerStar,
+    hexagon,
+    radialLines
+  ].join(" ");
+  const topCircle = svgCirclePath(dots[0].x, dots[0].y, 8.5);
+  const centerCircle = svgCirclePath(centerX, centerY, 18);
+  const lowerCircle = svgCirclePath(centerX, centerY + 56, 13);
+  const sideCircles = [polarPoint(centerX, centerY, 66, 180), polarPoint(centerX, centerY, 66, 0)]
+    .map((point) => svgCirclePath(point.x, point.y, 15))
+    .join(" ");
+  const verticalAxis = `M ${centerX} 42 L ${centerX} 198`;
+  const horizontalAxis = `M ${centerX - 78} ${centerY} L ${centerX + 78} ${centerY}`;
+  const goldenArc =
     seed % 2 === 0
-      ? `M 75 92 A 38 38 0 0 0 75 148 M 165 92 A 38 38 0 0 1 165 148`
-      : `M 88 78 A 34 34 0 0 1 152 78 M 88 162 A 34 34 0 0 0 152 162`;
+      ? `M 74 155 A 72 72 0 0 1 166 85 M 74 85 A 72 72 0 0 0 166 155`
+      : `M 88 62 A 62 62 0 0 1 152 62 M 88 178 A 62 62 0 0 0 152 178`;
 
   return {
     path: `${linePath} ${endMark}`,
-    ornamentPath: `${topCircle} ${centerCircle} ${lowerCircle} ${crossBar} ${sideArc}`,
+    gridPath,
+    ornamentPath: `${triangleUp} ${triangleDown} ${topCircle} ${centerCircle} ${lowerCircle} ${sideCircles} ${verticalAxis} ${horizontalAxis} ${goldenArc}`,
     dots
   };
 }
@@ -3020,13 +3327,14 @@ function buildSigilPath(distilled: string, hash: string) {
 function createSigilArtifact(intent: string): SigilArtifact {
   const distilled = distillSigilIntent(intent);
   const hash = hashIntent(`${intent}-${Date.now()}`);
-  const { path, ornamentPath, dots } = buildSigilPath(distilled, hash);
+  const { path, gridPath, ornamentPath, dots } = buildSigilPath(distilled, hash);
 
   return {
     id: `sigil-${Date.now()}`,
     title: `符印 ${hash.slice(0, 4)}`,
     hash,
     path,
+    gridPath,
     ornamentPath,
     dots,
     createdAt: new Intl.DateTimeFormat("zh-MY", {
@@ -3041,9 +3349,9 @@ function createSigilArtifact(intent: string): SigilArtifact {
 }
 
 function downloadSigil(artifact: SigilArtifact) {
-  const nodeDots = [artifact.dots[0], artifact.dots[artifact.dots.length - 1]].filter(Boolean);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="240" height="240" fill="#ffffff"/><circle cx="120" cy="120" r="94" fill="none" stroke="#C79A54" stroke-opacity=".8" stroke-width="2.6"/><circle cx="120" cy="120" r="64" fill="none" stroke="#C79A54" stroke-opacity=".28" stroke-width="2.2"/><path d="${artifact.ornamentPath || ""}" fill="none" stroke="#C79A54" stroke-opacity=".88" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="${artifact.path}" fill="none" stroke="#C79A54" stroke-opacity=".98" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#goldGlow)"/>${nodeDots
-    .map((dot) => `<circle cx="${dot.x}" cy="${dot.y}" r="8.5" fill="#ffffff" stroke="#C79A54" stroke-width="2.6"/>`)
+  const nodeDots = artifact.dots.filter((_, index) => index === 0 || index === artifact.dots.length - 1 || index % 2 === 0);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.05" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="goldAura" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#E8D4A8" stop-opacity=".22"/><stop offset="70%" stop-color="#C79A54" stop-opacity=".06"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient></defs><rect width="240" height="240" fill="#ffffff"/><rect width="240" height="240" fill="url(#goldAura)"/><path d="${artifact.gridPath || ""}" fill="none" stroke="#C79A54" stroke-opacity=".16" stroke-width=".75" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="120" r="96" fill="none" stroke="#C79A54" stroke-opacity=".74" stroke-width="2.4"/><circle cx="120" cy="120" r="78" fill="none" stroke="#C79A54" stroke-opacity=".32" stroke-width="1.2"/><path d="${artifact.ornamentPath || ""}" fill="none" stroke="#C79A54" stroke-opacity=".74" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="${artifact.path}" fill="none" stroke="#9B741C" stroke-opacity=".98" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#goldGlow)"/>${nodeDots
+    .map((dot) => `<circle cx="${dot.x}" cy="${dot.y}" r="5.3" fill="#C79A54" stroke="#ffffff" stroke-width="1.8"/>`)
     .join("")}</svg>`;
   const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -3350,6 +3658,13 @@ function TodayActionCenter({
             className="mt-2 flex w-full items-center justify-center gap-2 rounded border border-white/15 px-4 py-3 text-sm font-semibold text-white"
           >
             生成今日建议报告 <FileText className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpenModule("sigil")}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded border border-[#C79A54]/45 bg-white/8 px-4 py-3 text-sm font-semibold text-[#C79A54]"
+          >
+            生成 Sigil 符印 <Sparkles className="size-4" />
           </button>
         </div>
       </div>
@@ -4827,19 +5142,29 @@ function FavoritesVaultModule() {
 }
 
 function BaziReportPanel({ report, memberProfile }: { report: SavedReport; memberProfile: MemberProfile }) {
-  const pillars = getBaziPillars();
-  const elements = getBaziElementRows();
+  const baziInput = report.metadata?.baziInput;
+  const pillars = getBaziPillars(baziInput);
+  const elements = getBaziElementRows(pillars);
   const luckRows = getTenYearLuckRows();
   const annualRows = getAnnualLuckRows();
   const scoreRows = getBaziScoreRows();
-  const baziInput = report.metadata?.baziInput;
   const displayName = baziInput?.fullName || memberProfile.name;
   const displayBirthDate = baziInput?.birthDate || memberProfile.birthDate;
   const displayBirthTime = baziInput?.birthTime || memberProfile.birthTimeLabel;
   const displayBirthLocation = baziInput?.birthLocation || memberProfile.region;
+  const dayMaster = `${pillars[2]?.stem || "待"}${baziStemElements[pillars[2]?.stem] || ""}`;
+  const conicStops = elements.reduce(
+    (state, item, index) => {
+      const colors = ["#C79A54", "#1495A0", "#9ED8DF", "#B91C1C", "#E8D4A8"];
+      const next = state.current + item.value;
+      state.parts.push(`${colors[index]} ${state.current}% ${next}%`);
+      state.current = next;
+      return state;
+    },
+    { current: 0, parts: [] as string[] }
+  );
   const pieStyle = {
-    background:
-      "conic-gradient(#C79A54 0 30%, #1495A0 30% 38%, #9ED8DF 38% 53%, #B91C1C 53% 73%, #E8D4A8 73% 100%)"
+    background: `conic-gradient(${conicStops.parts.join(", ")})`
   };
 
   return (
@@ -4848,7 +5173,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
         <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
           <div className="flex items-center justify-between gap-3">
             <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、八字排盘</h4>
-            <span className="text-sm font-semibold text-[#063F4A]">日主：戊土 · 命盘核心</span>
+            <span className="text-sm font-semibold text-[#063F4A]">日主：{dayMaster} · 命盘核心</span>
           </div>
           <div className="mt-4 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/35 text-center">
             {pillars.map((pillar) => (
@@ -4867,6 +5192,9 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
           </div>
           <p className="mt-3 text-center text-sm leading-6 text-ink/58">
             分析对象：{displayName} · 公历 {displayBirthDate} {displayBirthTime} · 出生地：{displayBirthLocation}
+          </p>
+          <p className="mt-2 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/55">
+            当前四柱由系统按公历日期、约略节气切换和出生时辰自动推算；若出生地涉及真太阳时或节气交界日，建议以专业万年历复核。
           </p>
         </section>
 
@@ -5198,7 +5526,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
         <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十一、AI 综合解析</h4>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {visibleReportSections(report).map((section) => (
+          {normalizedReportContent(report).sections.map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
               <p className="font-semibold text-[#3B1B66]">{section.title}</p>
               <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
@@ -5407,7 +5735,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
           <h4 className="rounded bg-[#063F4A] px-4 py-2 font-semibold text-white">十一、完整个人分析与建议</h4>
           <div className="mt-4 grid gap-4">
-            {visibleReportSections(report).map((section) => (
+            {normalizedReportContent(report).sections.map((section) => (
               <div key={section.title} className="rounded border-l-4 border-[#C79A54] bg-[#F5FAFA] p-4">
                 <p className="text-lg font-semibold text-[#063F4A]">{section.title}</p>
                 <div className="mt-3 grid gap-2">
@@ -5442,10 +5770,74 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
 
 function ZiweiReportPanel({ report }: { report: SavedReport }) {
   const input = report.metadata?.ziweiInput;
-  const palaceRows = getZiweiPalaceRows();
-  const luckRows = getZiweiLuckRows();
-  const annualRows = getZiweiAnnualRows();
+  const reportContent = normalizedReportContent(report);
+  const calendar = getMingliCalendar(input?.birthDate, input?.birthTime, input?.calendarType || "Gregorian");
+  const chart = report.metadata?.ziweiChart;
+  const palaceRows = chart?.palaces?.length ? chart.palaces : getZiweiPalaceRows(input);
+  const luckRows = chart?.palaces?.length
+    ? chart.palaces
+        .slice()
+        .sort((a, b) => {
+          const first = Number(String(a.age).split("-")[0]);
+          const next = Number(String(b.age).split("-")[0]);
+          return (Number.isFinite(first) ? first : 999) - (Number.isFinite(next) ? next : 999);
+        })
+        .map((palace) => [palace.age, palace.palaceName, palace.stars, palace.summary])
+    : getZiweiLuckRows(input);
+  const annualRows = getZiweiAnnualRows(input).map((row, index) => {
+    const palace = chart?.currentHoroscope?.[index]?.palaceName?.replace(/^大/, "");
+    return palace ? { ...row, palace } : row;
+  });
   const scoreRows = getZiweiScoreRows();
+  const palaceByBranch = (branch: string) => palaceRows.find((row) => row.branch === branch) || palaceRows[0];
+  const chartPalaceRows = ["巳", "午", "未", "申", "辰", "酉", "卯", "戌", "寅", "丑", "子", "亥"].map(palaceByBranch);
+  const findPalace = (keyword: string) => palaceRows.find((row) => row.palaceName.includes(keyword));
+  const keyPalaceCards = [
+    { title: "命宫核心", badge: "人格底盘", palace: findPalace("命宫"), note: "看自我定位、判断方式、格局强弱与长期人生主轴。" },
+    { title: "官禄宫", badge: "事业路径", palace: findPalace("官禄"), note: "看职业定位、工作方式、领导潜力与适合经营的赛道。" },
+    { title: "财帛宫", badge: "财富模式", palace: findPalace("财帛"), note: "看收入结构、现金流、守财能力和资源变现方式。" },
+    { title: "夫妻宫", badge: "关系合作", palace: findPalace("夫妻"), note: "看亲密关系、长期合作、沟通节奏与承诺模式。" },
+    { title: "疾厄宫", badge: "身心节律", palace: findPalace("疾厄"), note: "看压力来源、作息提醒和生活习惯风险，不作医疗判断。" },
+    { title: "福德宫", badge: "内在能量", palace: findPalace("福德"), note: "看精神状态、抗压能力、内在满足与福气来源。" }
+  ];
+  const structuredSections = reportContent.sections.length ? reportContent.sections : [];
+  const renderReportParagraphs = (content: string) =>
+    content
+      .split(/(?=【(?:盘面依据|白话判断|优势|潜在卡点|警示|行动|红榜|黑榜|节奏|风水调理|色彩建议|仪式建议)】)/)
+      .filter(Boolean)
+      .map((paragraph) => {
+        const isAction = paragraph.startsWith("【行动】") || paragraph.startsWith("【风水调理】") || paragraph.startsWith("【仪式建议】");
+        const isWarning = paragraph.startsWith("【警示】") || paragraph.startsWith("【黑榜】");
+        const isBasis = paragraph.startsWith("【盘面依据】");
+        const toneClass = isAction
+          ? "border-[#C79A54]/25 bg-[#FBF7EE] text-ink/72"
+          : isWarning
+            ? "border-[#7A1F16]/20 bg-[#FFF7F4] text-[#7A1F16]"
+            : isBasis
+              ? "border-[#3B1B66]/15 bg-[#F7F4FF] text-[#3B1B66]"
+              : "border-transparent bg-transparent text-ink/68";
+
+        return (
+          <p key={paragraph} className={`rounded border px-3 py-2 text-sm leading-7 ${toneClass}`}>
+            {paragraph}
+          </p>
+        );
+      });
+  const renderPalaceCell = (row: (typeof palaceRows)[number], index: number) => (
+    <div key={`${row.palace}-${index}`} className="min-h-44 border border-[#C79A54]/25 bg-white p-3 text-sm shadow-[inset_0_0_0_1px_rgba(199,154,84,0.08)]">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-base font-semibold text-[#3B1B66]">{row.palace}</p>
+          <p className="mt-1 text-xs font-semibold text-[#C79A54]">{row.age}</p>
+        </div>
+        <span className="rounded bg-[#3B1B66]/8 px-2 py-1 text-[11px] font-semibold text-[#3B1B66]">{row.transform}</span>
+      </div>
+      <p className="mt-3 text-lg font-semibold leading-6 text-[#7A1F16]">{row.stars}</p>
+      <p className="mt-2 text-xs leading-5 text-ink/55">辅曜：{row.minor}</p>
+      {row.flying?.length ? <p className="mt-2 text-[11px] leading-5 text-[#3B1B66]/70">飞化：{row.flying.slice(0, 4).join(" · ")}</p> : null}
+      <p className="mt-2 text-xs leading-5 text-ink/60">{row.summary}</p>
+    </div>
+  );
 
   return (
     <div className="grid gap-4">
@@ -5455,13 +5847,13 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
             <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">一、命盘基础资料</h4>
             <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
               {[
-                ["命宫", "寅宫"],
-                ["身宫", "申宫"],
-                ["五行局", "阳男土五局"],
+                ["命宫", chart?.mainPalaceBranch ? `${chart.mainPalaceBranch}宫` : calendar?.mingGong || "待排盘"],
+                ["身宫", chart?.bodyPalaceBranch ? `${chart.bodyPalaceBranch}宫` : calendar?.shenGong || "待排盘"],
+                ["五行局", chart?.fiveElementName || calendar?.mingGongNaYin || "待校准"],
                 ["阴阳性别", input?.gender === "女" ? "阴女" : "阳男"],
-                ["主星", "紫微 · 天府"],
-                ["命主", "廉贞星"],
-                ["身主", "火星"],
+                ["四柱", calendar?.fourPillarsText || "待排盘"],
+                ["日主", calendar?.dayMaster || "待排盘"],
+                ["紫微落宫", chart?.ziweiBranch ? `${chart.ziweiBranch}宫` : "待校准"],
                 ["重点", input ? ziweiFocusLabels[input.focus] : "综合命盘"]
               ].map(([label, value]) => (
                 <p key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
@@ -5481,28 +5873,140 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
 
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
         <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">二、十二宫命盘</h4>
-        <div className="mt-4 grid grid-cols-2 overflow-hidden rounded border border-[#C79A54]/35 md:grid-cols-4">
-          {palaceRows.map((row) => (
-            <div key={row.palace} className="min-h-40 border-b border-r border-[#C79A54]/20 p-3 text-sm">
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-semibold text-[#3B1B66]">{row.palace}</p>
-                <span className="rounded bg-[#F5FAFA] px-2 py-0.5 text-xs text-ink/50">{row.age}</span>
+        <div className="mt-4 rounded border border-[#C79A54]/35 bg-[#FBF7EE] p-3">
+          <div className="mb-3 grid gap-2 text-xs font-semibold text-[#3B1B66] sm:grid-cols-4">
+            {["正南方", "南偏西", "正西方", "北偏西"].map((direction) => (
+              <span key={direction} className="rounded bg-white px-3 py-2 text-center">{direction}</span>
+            ))}
+          </div>
+          <div className="grid overflow-hidden rounded border border-[#C79A54]/45 md:grid-cols-4">
+            {chartPalaceRows.slice(0, 4).map(renderPalaceCell)}
+            {renderPalaceCell(chartPalaceRows[4], 4)}
+            <div className="grid min-h-72 place-items-center border border-[#C79A54]/25 bg-gradient-to-br from-white via-[#FBF7EE] to-[#EFE6FF] p-5 text-center md:col-span-2 md:row-span-2">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Zi Wei Core</p>
+                <h5 className="mt-3 text-2xl font-semibold text-[#3B1B66]">{input?.fullName || reportSubjectName(report)}</h5>
+                <div className="mx-auto mt-4 grid max-w-md gap-2 text-sm text-ink/65 sm:grid-cols-2">
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">命宫：{chart?.mainPalaceBranch ? `${chart.mainPalaceBranch}宫` : calendar?.mingGong || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">身宫：{chart?.bodyPalaceBranch ? `${chart.bodyPalaceBranch}宫` : calendar?.shenGong || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">日主：{calendar?.dayMaster || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">生肖：{calendar?.zodiac || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">五行局：{chart?.fiveElementName || "待校准"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">重点：{input ? ziweiFocusLabels[input.focus] : "综合命盘"}</span>
+                </div>
+                <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-ink/62">
+                  十二宫以命宫为主轴，交叉读取官禄、财帛、夫妻、疾厄与福德宫。中心信息用于校准个人格局，外围宫位用于判断人生领域的强弱与流年触发点。
+                </p>
               </div>
-              <p className="mt-2 text-base font-semibold text-[#C79A54]">{row.stars}</p>
-              <p className="mt-1 text-xs text-ink/55">辅星：{row.minor}</p>
-              <p className="mt-1 text-xs text-[#7A1F16]">四化：{row.transform}</p>
-              <p className="mt-2 text-xs leading-5 text-ink/56">{row.summary}</p>
             </div>
+            {renderPalaceCell(chartPalaceRows[5], 5)}
+            {renderPalaceCell(chartPalaceRows[6], 6)}
+            {renderPalaceCell(chartPalaceRows[7], 7)}
+            {chartPalaceRows.slice(8, 12).map(renderPalaceCell)}
+          </div>
+          <p className="mt-3 rounded bg-white p-3 text-xs leading-5 text-ink/55">
+            注：{chart?.chartNotes || "当前已接入真实万年历与八字基础引擎，命宫/身宫依据出生资料换算。主星、辅星与四化层已模块化。"} 报告用于文化参考与自我规划，不构成专业建议。
+          </p>
+        </div>
+      </section>
+
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">三、关键宫位专业拆解</h4>
+            <p className="mt-3 text-sm leading-6 text-ink/58">以下内容直接读取本盘十二宫星曜与四化，不使用固定示例文案。</p>
+          </div>
+          <span className="rounded bg-[#EFE6FF] px-3 py-2 text-xs font-semibold text-[#3B1B66]">{chart?.engine ? "真实排盘" : "基础预览"}</span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {keyPalaceCards.map(({ title, badge, palace, note }) => (
+            <article key={title} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">{badge}</p>
+                  <h5 className="mt-2 text-lg font-semibold text-[#3B1B66]">{title}</h5>
+                </div>
+                <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#3B1B66]">{palace?.branch || "待"}</span>
+              </div>
+              <div className="mt-4 rounded border border-white bg-white/85 p-3">
+                <p className="text-sm font-semibold text-[#7A1F16]">{palace?.stars || "星曜待排盘"}</p>
+                <p className="mt-1 text-xs leading-5 text-ink/55">辅曜：{palace?.minor || "待会照"} · 四化：{palace?.transform || "平"}</p>
+                {palace?.flying?.length ? <p className="mt-1 text-xs leading-5 text-[#3B1B66]/70">飞化：{palace.flying.slice(0, 4).join(" · ")}</p> : null}
+              </div>
+              <p className="mt-3 text-sm leading-6 text-ink/65">{palace?.summary || note}</p>
+              <p className="mt-3 rounded bg-white px-3 py-2 text-xs leading-5 text-ink/52">{note}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
+        <div className="overflow-hidden rounded border border-[#C79A54]/40 bg-[#FFFDF7]">
+          <div className="grid gap-5 bg-[#3B1B66] p-5 text-white lg:grid-cols-[1fr_0.8fr]">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Zi Wei Strategy Report</p>
+              <h4 className="mt-3 text-3xl font-semibold">四、AI 逐宫策略解读</h4>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">
+                以下 10 节根据本盘十二宫、星曜、四化与大限节奏整理，采用“盘面依据 → 白话判断 → 风险警示 → 行动清单”的正式报告结构。
+              </p>
+            </div>
+            <div className="rounded border border-white/15 bg-white/8 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">Report Index</p>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                {structuredSections.slice(0, 10).map((section, index) => (
+                  <span key={`${section.title}-index`} className="rounded bg-white/10 px-3 py-2 text-white/78">
+                    {String(index + 1).padStart(2, "0")} · {section.title.replace(/^[一二三四五六七八九十]+、/, "")}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {structuredSections[0] ? (
+            <article className="border-b border-[#C79A54]/25 bg-[#FBF7EE] p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Core Reading</p>
+                  <h5 className="mt-2 text-2xl font-semibold text-[#3B1B66]">{structuredSections[0].title}</h5>
+                </div>
+                <span className="rounded-full border border-[#C79A54]/40 bg-white px-4 py-2 text-xs font-semibold text-[#3B1B66]">命盘主轴</span>
+              </div>
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">{renderReportParagraphs(structuredSections[0].content)}</div>
+            </article>
+          ) : null}
+
+          <div className="grid gap-0 lg:grid-cols-2">
+            {structuredSections.slice(1).map((section, index) => {
+              const sectionNo = index + 2;
+              const isWide = sectionNo === 8 || sectionNo === 9 || sectionNo === 10;
+
+              return (
+                <article
+                  key={`${section.title}-${index}`}
+                  className={`border-b border-[#C79A54]/20 p-5 ${isWide ? "lg:col-span-2" : index % 2 === 0 ? "lg:border-r lg:border-[#C79A54]/20" : ""}`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="grid h-12 w-12 shrink-0 place-items-center rounded bg-[#3B1B66] text-sm font-semibold text-white shadow-sm">
+                      {String(sectionNo).padStart(2, "0")}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">Palace Analysis</p>
+                      <h5 className="mt-1 text-xl font-semibold text-[#3B1B66]">{section.title}</h5>
+                    </div>
+                  </div>
+                  <div className={`mt-4 grid gap-2 ${isWide ? "lg:grid-cols-2" : ""}`}>{renderReportParagraphs(section.content)}</div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
         {[
-          ["三、命宫分析", "命宫紫微天府，重格局、责任与管理能力。优势是稳、能承载、愿意做长期布局；弱点是容易想太多、行动慢半拍。"],
-          ["四、事业宫分析", "官禄宫利顾问、管理、教育、系统化服务、品牌与商业运营。适合带团队或打造标准化产品。"],
-          ["五、财帛宫分析", "武曲禄存守财帛，财运宜走正财、专业收入、长期合作和资产配置，投资需避开高杠杆。"],
-          ["六、感情健康", "夫妻宫重沟通与节奏，感情宜慢热稳定。疾厄宫提醒压力、睡眠、消化与规律作息。"]
+          ["专业依据", `${chart?.chartNotes || "真实万年历与紫微排盘资料会写入报告 metadata，供报告中心复查。"} 报告不再依赖固定假星曜。`],
+          ["阅读顺序", "先看命宫定人格，再看官禄与财帛定事业财务，最后看夫妻、疾厄、福德与大限节奏。"],
+          ["使用提醒", "紫微报告适合做长期规划和自我觉察；重大投资、医疗、法律事项仍应咨询对应专业人士。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
             <h4 className="font-semibold text-[#3B1B66]">{title}</h4>
@@ -5512,7 +6016,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
       </section>
 
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">七、大限运势表</h4>
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">五、大限运势表</h4>
         <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
           <table className="w-full min-w-[840px] text-left text-sm">
             <thead className="bg-[#F5FAFA] text-[#3B1B66]">
@@ -5528,7 +6032,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
       </section>
 
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">八、未来十年流年</h4>
+        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">六、未来十年流年</h4>
         <div className="mt-4 overflow-x-auto rounded border border-[#C79A54]/25">
           <table className="w-full min-w-[980px] text-left text-sm">
             <thead className="bg-[#F5FAFA] text-[#3B1B66]">
@@ -5553,7 +6057,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
 
       <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
         <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">九、评分摘要</h4>
+          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">七、评分摘要</h4>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
@@ -5564,7 +6068,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
           </div>
         </div>
         <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十、重点星曜与建议</h4>
+          <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">八、重点星曜与建议</h4>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {[
               ["紫微", "格局、领导、责任，适合做长期品牌。"],
@@ -5583,18 +6087,6 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
             ))}
           </div>
           <p className="mt-4 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/60">{ziweiDisclaimer}</p>
-        </div>
-      </section>
-
-      <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-        <h4 className="rounded bg-[#3B1B66] px-4 py-2 font-semibold text-white">十一、AI 综合解析</h4>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {visibleReportSections(report).map((section) => (
-            <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-              <p className="font-semibold text-[#3B1B66]">{section.title}</p>
-              <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>
@@ -5670,7 +6162,7 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
         <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">八、综合解读</h4>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {visibleReportSections(report).map((section) => (
+          {normalizedReportContent(report).sections.map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
               <p className="font-semibold text-[#063F4A]">{section.title}</p>
               <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
@@ -6548,6 +7040,7 @@ function WalletAndReports({
     setZiweiActionMessage("AI 正在排盘生成报告，通常需要 10-30 秒。");
     setReportMessage("AI 正在生成紫微斗数命盘详细解析报告，请稍候。");
     let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+    let ziweiChart: ZiweiChartSnapshot | undefined;
 
     try {
       const response = await fetch("/api/ziwei-report", {
@@ -6559,11 +7052,14 @@ function WalletAndReports({
       if (payload.summary && Array.isArray(payload.sections)) {
         aiContent = { summary: payload.summary, sections: payload.sections };
       }
+      if (payload.chart) {
+        ziweiChart = payload.chart;
+      }
     } catch {
       aiContent = undefined;
     }
 
-    const generated = createZiweiDestinyReport(attachLunarFields(ziweiInput), aiContent);
+    const generated = createZiweiDestinyReport(attachLunarFields(ziweiInput), aiContent, ziweiChart);
     const persistedReport = await persistGeneratedReport(generated, "ziwei_destiny_report", "生成紫微斗数命盘详细解析报告", accessToken);
 
     if (!persistedReport) {
@@ -7405,6 +7901,11 @@ function WalletAndReports({
           <div className="rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
             {selectedReport ? (
               <div>
+                {(() => {
+                  const selectedReportContent = normalizedReportContent(selectedReport);
+
+                  return (
+                    <>
                 <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
                   <div className="bg-[#102F38] p-5 text-white">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Premium Report Preview</p>
@@ -7419,7 +7920,7 @@ function WalletAndReports({
 
                   <div className="grid gap-3 p-4 sm:grid-cols-3">
                     {[
-                      ["完整内容", `${visibleReportSections(selectedReport).length} 节`],
+                      ["完整内容", `${selectedReportContent.sections.length} 节`],
                       ["报告类型", selectedReport.tag],
                       ["可下载", "PDF / SVG / TXT"]
                     ].map(([label, value]) => (
@@ -7459,11 +7960,11 @@ function WalletAndReports({
 
                 <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
                   <p className="text-sm font-semibold text-[#063F4A]">报告摘要</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReport.summary}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReportContent.summary}</p>
                 </div>
 
                 <div className="mt-5 grid gap-3">
-                  {visibleReportSections(selectedReport).map((section) => (
+                  {selectedReportContent.sections.map((section) => (
                     <div key={section.title} className="rounded border border-black/10 bg-rice p-4">
                       <p className="font-semibold">{section.title}</p>
                       <p className="mt-2 text-sm leading-6 text-ink/62">{section.content}</p>
@@ -7474,6 +7975,9 @@ function WalletAndReports({
                 <p className="mt-5 rounded bg-[#F5FAFA] p-3 text-xs leading-5 text-ink/50">
                   免责声明：本报告为 AI 命理与风水辅助建议，仅供参考，不构成投资、医疗、法律或重大人生决策的唯一依据。
                 </p>
+                    </>
+                  );
+                })()}
               </div>
             ) : (
               <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
@@ -7824,13 +8328,13 @@ function PartnerCommandCenter({
 }
 
 function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
-  const nodeDots = [artifact.dots[0], artifact.dots[artifact.dots.length - 1]].filter(Boolean);
+  const nodeDots = artifact.dots.filter((_, index) => index === 0 || index === artifact.dots.length - 1 || index % 2 === 0);
 
   return (
     <svg viewBox="0 0 240 240" className="size-full">
       <defs>
         <filter id={`gold-glow-${artifact.id}`} x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="0.7" result="blur" />
+          <feGaussianBlur stdDeviation="1.05" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
@@ -7844,23 +8348,32 @@ function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
       </defs>
       <rect width="240" height="240" fill="#ffffff" />
       <rect width="240" height="240" fill={`url(#gold-aura-${artifact.id})`} />
-      <circle cx="120" cy="120" r="94" fill="none" stroke="#C79A54" strokeOpacity="0.8" strokeWidth="2.6" />
-      <circle cx="120" cy="120" r="64" fill="none" stroke="#C79A54" strokeOpacity="0.28" strokeWidth="2.2" />
+      <path
+        d={artifact.gridPath || ""}
+        fill="none"
+        stroke="#C79A54"
+        strokeOpacity="0.16"
+        strokeWidth="0.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="120" cy="120" r="96" fill="none" stroke="#C79A54" strokeOpacity="0.74" strokeWidth="2.4" />
+      <circle cx="120" cy="120" r="78" fill="none" stroke="#C79A54" strokeOpacity="0.32" strokeWidth="1.2" />
       <path
         d={artifact.ornamentPath || ""}
         fill="none"
         stroke="#C79A54"
-        strokeOpacity="0.88"
-        strokeWidth="2.6"
+        strokeOpacity="0.74"
+        strokeWidth="2.1"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d={artifact.path}
         fill="none"
-        stroke="#C79A54"
+        stroke="#9B741C"
         strokeOpacity="0.98"
-        strokeWidth="2.6"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
         filter={`url(#gold-glow-${artifact.id})`}
@@ -7870,10 +8383,10 @@ function SigilPreview({ artifact }: { artifact: SigilArtifact }) {
           key={`${artifact.id}-node-${index}`}
           cx={dot.x}
           cy={dot.y}
-          r="8.5"
-          fill="#ffffff"
-          stroke="#C79A54"
-          strokeWidth="2.6"
+          r="5.3"
+          fill="#C79A54"
+          stroke="#ffffff"
+          strokeWidth="1.8"
         />
       ))}
     </svg>

@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",
+    "@ziweijs/core": "^0.3.0",
     "lucide-react": "^0.468.0",
+    "lunar-javascript": "^1.7.7",
     "next": "^15.0.0",
     "openai": "^6.34.0",
     "react": "^19.0.0",

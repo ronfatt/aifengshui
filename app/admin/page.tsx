@@ -2737,6 +2737,80 @@ function SystemModule() {
 export default function AdminPage() {
   const [activeModule, setActiveModule] = useState<ActiveModule>("ceo");
   const [inventoryList, setInventoryList] = useState<InventoryProduct[]>(inventoryProducts);
+  const [adminGate, setAdminGate] = useState<"checking" | "authorized" | "denied">("checking");
+  const [adminGateMessage, setAdminGateMessage] = useState("正在验证管理员权限。");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function verifyAdminAccess() {
+      const supabase = createBrowserSupabaseClient();
+      const {
+        data: { session }
+      } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+
+      if (!session?.access_token) {
+        if (mounted) {
+          setAdminGate("denied");
+          setAdminGateMessage("请先使用管理员账号登录后再进入后台。");
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/admin/credits?emails=ronfatt%40gmail.com", {
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        });
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(payload.error || "没有后台访问权限。");
+        }
+
+        if (mounted) {
+          setAdminGate("authorized");
+          setAdminGateMessage("管理员权限已验证。");
+        }
+      } catch (error) {
+        if (mounted) {
+          setAdminGate("denied");
+          setAdminGateMessage(error instanceof Error ? error.message : "没有后台访问权限。");
+        }
+      }
+    }
+
+    verifyAdminAccess();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (adminGate !== "authorized") {
+    return (
+      <AppShell>
+        <main className="px-5 py-8">
+          <div className="mx-auto max-w-3xl rounded border border-black/10 bg-white p-8 shadow-sm">
+            <StatusPill>{adminGate === "checking" ? "Checking" : "Admin Protected"}</StatusPill>
+            <h1 className="mt-4 text-3xl font-semibold text-[#063F4A]">
+              {adminGate === "checking" ? "正在验证后台权限" : "后台只开放给管理员"}
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-ink/60">{adminGateMessage}</p>
+            {adminGate === "denied" ? (
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href="/auth" className="rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white">
+                  前往登录
+                </a>
+                <a href="/" className="rounded border border-black/10 px-5 py-3 text-sm font-semibold text-[#063F4A]">
+                  返回首页
+                </a>
+              </div>
+            ) : null}
+          </div>
+        </main>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>

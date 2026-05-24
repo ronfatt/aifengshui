@@ -32,6 +32,40 @@ function visibleSections(report: ReportPayload) {
   return [{ title: "__metadata", content: JSON.stringify(report.metadata) }, ...sections];
 }
 
+export async function GET(request: Request) {
+  const limited = rateLimitRequest(request, { scope: "reports-read", limit: 30, windowMs: 60_000 });
+
+  if (limited) {
+    return limited;
+  }
+
+  const { supabase, user, errorResponse } = await requireAuthenticatedUser(request);
+
+  if (errorResponse) {
+    return errorResponse;
+  }
+
+  if (!supabase || !user) {
+    return NextResponse.json({ error: "请先登录会员账号。" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit") || 12)));
+
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    return NextResponse.json({ error: "报告档案读取失败。" }, { status: 500 });
+  }
+
+  return NextResponse.json({ reports: data || [] });
+}
+
 export async function POST(request: Request) {
   const limited = rateLimitRequest(request, { scope: "reports", limit: 10, windowMs: 60_000 });
 

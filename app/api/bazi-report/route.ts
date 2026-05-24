@@ -2,6 +2,8 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
+import { normalizeAiReportPayload } from "@/lib/report-json";
+import { getMingliCalendar } from "@/lib/mingli-calendar";
 
 type BaziReportBody = {
   fullName?: string;
@@ -20,6 +22,7 @@ const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 function fallbackReport(body: BaziReportBody) {
   const focus = body.focus || "career";
   const name = body.fullName || "用户";
+  const calendar = getMingliCalendar(body.birthDate, body.birthTime, body.calendarType || "Gregorian");
 
   return {
     configured: false,
@@ -28,7 +31,7 @@ function fallbackReport(body: BaziReportBody) {
     sections: [
       {
         title: "命局总论",
-        content: `以 ${body.birthDate || "未提供日期"} ${body.birthTime || "未提供时辰"}、${body.birthLocation || "未提供出生地"} 为基础，报告从四柱、十神、五行强弱、大运与流年综合判断。`
+        content: `以公历 ${calendar?.solarDate || body.birthDate || "未提供日期"} ${calendar?.solarTime || body.birthTime || "未提供时辰"}、农历 ${calendar?.lunarDateText || "待换算"}、四柱 ${calendar?.fourPillarsText || "待排盘"} 为基础，报告从四柱、十神、五行强弱、大运与流年综合判断。`
       },
       {
         title: "重点方向",
@@ -56,6 +59,7 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json().catch(() => ({}))) as BaziReportBody;
+  const calendar = getMingliCalendar(body.birthDate, body.birthTime, body.calendarType || "Gregorian");
 
   if (!hasOpenAIKey) {
     return NextResponse.json(fallbackReport(body));
@@ -77,6 +81,9 @@ export async function POST(request: Request) {
 用户资料：
 ${JSON.stringify(body, null, 2)}
 
+真实万年历与四柱资料（必须优先采用，不要自行猜测）：
+${JSON.stringify(calendar, null, 2)}
+
 报告必须覆盖：
 1. 命局总论
 2. 性格与五行倾向
@@ -89,16 +96,7 @@ ${JSON.stringify(body, null, 2)}
     });
 
     const text = response.output_text?.trim() || "";
-    let parsed: { summary?: string; sections?: { title: string; content: string }[] };
-
-    try {
-      parsed = JSON.parse(text) as { summary?: string; sections?: { title: string; content: string }[] };
-    } catch {
-      parsed = {
-        summary: text.slice(0, 320) || fallbackReport(body).summary,
-        sections: [{ title: "AI 综合解析", content: text.slice(0, 1400) || fallbackReport(body).sections[0].content }]
-      };
-    }
+    const parsed = normalizeAiReportPayload(text, fallbackReport(body), 5);
 
     return NextResponse.json({
       configured: true,
