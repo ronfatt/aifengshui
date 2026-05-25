@@ -48,6 +48,8 @@ import { profileRowToMemberProfile } from "@/lib/profile-adapter";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 import { getAutoLunarDateText, getMingliCalendar } from "@/lib/mingli-calendar";
+import type { BaziAnalysis } from "@/lib/bazi-engine";
+import { buildDailyFortuneMatrix, type DailyFortuneMatrix } from "@/lib/daily-fortune-engine";
 
 type DashboardModule =
   | "fortune"
@@ -745,6 +747,7 @@ type SavedReport = {
   metadata?: {
     kind?: "bazi_destiny" | "meihua_divination" | "ziwei_destiny" | "numerology_life_path" | "integrated_destiny";
     baziInput?: BaziReportInput;
+    baziAnalysis?: BaziAnalysis;
     meihuaInput?: MeihuaReportInput;
     ziweiInput?: ZiweiReportInput;
     ziweiChart?: ZiweiChartSnapshot;
@@ -768,29 +771,7 @@ type DailyFortuneResponse = {
   configured: boolean;
   model: string;
   reading: string;
-  matrix: {
-    date: string;
-    overall: number;
-    wealth: {
-      score: number;
-      palace: string;
-      signals: string[];
-      risks: string[];
-    };
-    career: {
-      score: number;
-      palace: string;
-      signals: string[];
-      risks: string[];
-    };
-    relationship: {
-      score: number;
-      palace: string;
-      signals: string[];
-      risks: string[];
-    };
-    method: string;
-  };
+  matrix: DailyFortuneMatrix;
 };
 
 type BaziReportInput = {
@@ -1488,7 +1469,7 @@ function applySubjectProfileToIntegratedInput(current: IntegratedReportInput, pr
   };
 }
 
-function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">): SavedReport {
+function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedReport, "summary" | "sections">, baziAnalysis?: BaziAnalysis): SavedReport {
   const normalizedInput = attachLunarFields(input);
   const focusLabel = focusLabels[input.focus];
 
@@ -1499,7 +1480,8 @@ function createBaziDestinyReport(input: BaziReportInput, aiContent?: Pick<SavedR
     points: baziReportCost,
     metadata: {
       kind: "bazi_destiny",
-      baziInput: normalizedInput
+      baziInput: normalizedInput,
+      baziAnalysis
     },
     createdAt: new Intl.DateTimeFormat("zh-MY", {
       year: "numeric",
@@ -4253,8 +4235,14 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
   const [aiFortune, setAiFortune] = useState<DailyFortuneResponse | null>(null);
   const [isLoadingFortune, setIsLoadingFortune] = useState(false);
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
-  const canUseAiReading = currentTier !== "free";
-  const canSeeStrategicCycle = currentTier === "strategic";
+  const matrix = aiFortune?.matrix || buildDailyFortuneMatrix(memberProfile, activeTier.name);
+  const dailyScores = [matrix.wealth, matrix.career, matrix.relationship];
+  const weatherToneClass =
+    matrix.weather.tone === "clear"
+      ? "border-[#C79A54]/45 bg-[#C79A54]/12 text-[#C79A54]"
+      : matrix.weather.tone === "cloudy"
+        ? "border-white/15 bg-white/10 text-[#DDEFF2]"
+        : "border-[#E8D4A8]/35 bg-[#E8D4A8]/12 text-[#E8D4A8]";
 
   async function getMemberAccessToken() {
     const supabase = createBrowserSupabaseClient();
@@ -4299,15 +4287,19 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
     }
   }
 
+  useEffect(() => {
+    generateDailyFortune();
+  }, [memberProfile.name, memberProfile.birthDate, memberProfile.birthTime, memberProfile.gender, currentTier]);
+
   return (
     <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-white/58">AI 紫微矩阵 · 今日运势</p>
-            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">稳中有进，先整理后扩张</h2>
+            <p className="text-sm text-white/58">每日紫微气象站 · {matrix.dateLabel}</p>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">{matrix.headline}</h2>
             <p className="mt-2 text-xs text-white/45">
-              {memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender}
+              {memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender} · {matrix.lunarDate}
             </p>
           </div>
           <CalendarDays className="size-9 text-[#C79A54]" />
@@ -4316,35 +4308,40 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
           <div className="rounded border border-[#C79A54]/35 bg-[#C79A54]/12 p-4">
             <p className="text-xs text-white/55">今日评分</p>
             <div className="mt-2 flex items-end gap-2">
-              <span className="text-5xl font-semibold leading-none text-[#C79A54]">89</span>
+              <span className="text-5xl font-semibold leading-none text-[#C79A54]">{matrix.overall}</span>
               <span className="pb-1 text-sm text-white/52">/100</span>
             </div>
-            <p className="mt-3 text-xs text-white/62">适合推进合作与整理计划</p>
+            <p className="mt-3 text-xs text-white/62">{matrix.weather.description}</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4 sm:hidden">
-            <p className="text-xs text-white/55">Free 星级</p>
-            <p className="mt-2 text-2xl text-[#C79A54]">★★★★★</p>
-            <p className="mt-2 text-xs text-white/58">一句话宜忌：宜谈合作，忌冲动承诺。</p>
+            <p className="text-xs text-white/55">今日天气</p>
+            <p className="mt-2 text-2xl text-[#C79A54]">{matrix.weather.label}</p>
+            <p className="mt-2 text-xs text-white/58">宜：{matrix.yi.slice(0, 2).join("、")}；忌：{matrix.ji.join("、")}。</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4">
             <div className="grid gap-4">
-              {fortuneScores.map(([label, score, note]) => (
-                <div key={label}>
+              {dailyScores.map((item) => (
+                <div key={item.key}>
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="font-semibold text-white">{label}</span>
-                    <span className="text-[#C79A54]">{score}/100</span>
+                    <span className="font-semibold text-white">{item.label}</span>
+                    <span className="text-[#C79A54]">{item.score}/100</span>
                   </div>
                   <div className="mt-2 h-2 rounded-full bg-white/12">
-                    <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${score}%` }} />
+                    <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${item.score}%` }} />
                   </div>
-                  <p className="mt-1 text-xs text-white/52">{note}</p>
+                  <p className="mt-1 text-xs text-white/52">{item.advice}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
         <div className="mt-6 grid grid-cols-2 gap-3">
-          {fortuneCards.map(([label, value]) => (
+          {[
+            ["今日宜", matrix.yi.join("、")],
+            ["今日忌", matrix.ji.join("、")],
+            ["吉时", matrix.luckyHour],
+            ["避开", matrix.avoidWindow]
+          ].map(([label, value]) => (
             <div key={label} className="rounded border border-white/12 bg-white/8 p-4">
               <p className="text-xs text-white/50">{label}</p>
               <p className="mt-2 font-semibold">{value}</p>
@@ -4356,35 +4353,41 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
             <Palette className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
               <span className="size-4 rounded-full bg-[#1495A0]" />
-              <p className="text-sm">幸运色：青绿</p>
+              <p className="text-sm">幸运色：{matrix.luckyColor}</p>
             </div>
           </div>
           <div className="rounded bg-white/8 p-3">
             <TrendingUp className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
-              <span className="grid size-6 place-items-center rounded-full border border-[#C79A54]/45 text-[10px] text-[#C79A54]">SE</span>
-              <p className="text-sm">贵人方：东南</p>
+              <span className="grid size-6 place-items-center rounded-full border border-[#C79A54]/45 text-[10px] text-[#C79A54]">{matrix.nobleDirection.slice(0, 1)}</span>
+              <p className="text-sm">贵人方：{matrix.nobleDirection}</p>
             </div>
           </div>
           <div className="rounded bg-white/8 p-3">
             <Flame className="size-4 text-[#C79A54]" />
-            <p className="mt-2 text-sm">今日宜：复盘</p>
+            <p className="mt-2 text-sm">吉方：{matrix.luckyDirection}</p>
           </div>
+        </div>
+
+        <div className={`mt-5 rounded border p-4 ${weatherToneClass}`}>
+          <p className="text-sm font-semibold">今日开运秘方</p>
+          <p className="mt-2 text-sm leading-6 text-white/75">{matrix.actionSecret}</p>
+          <p className="mt-2 text-xs leading-5 text-white/52">今日线索：{matrix.clue}</p>
         </div>
 
         <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold text-[#C79A54]">底层算法</p>
-              <p className="mt-1 text-sm text-white/65">紫微矩阵 + 飞星四化 + 梅花体用 + LLM 解读</p>
+              <p className="mt-1 text-sm text-white/65">{matrix.method}</p>
             </div>
           <button
             type="button"
               onClick={generateDailyFortune}
-              disabled={isLoadingFortune || !canUseAiReading}
+              disabled={isLoadingFortune}
               className="rounded bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A] disabled:opacity-60"
             >
-              {currentTier === "free" ? "升级解锁 AI 解读" : isLoadingFortune ? "AI 生成中..." : "AI 生成今日解读"}
+              {isLoadingFortune ? "生成中..." : currentTier === "free" ? "刷新今日气象" : "AI 生成今日解读"}
             </button>
           </div>
           <div className="mt-3 rounded bg-white/8 p-3">
@@ -4395,6 +4398,7 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
             <div className="mt-4 rounded bg-white/8 p-4">
               <p className="text-xs text-white/45">OpenAI · {aiFortune.model}</p>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/78">{aiFortune.reading}</p>
+              {currentTier === "free" ? <p className="mt-3 text-xs leading-5 text-[#E8D4A8]">{matrix.upgradeHint}</p> : null}
             </div>
           ) : null}
         </div>
@@ -4404,24 +4408,20 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Ziwei Matrix</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Daily Signals</p>
               <h3 className="mt-2 text-xl font-semibold">今日评分来源</h3>
             </div>
-            <StatusPill>飞星四化</StatusPill>
+            <StatusPill>{matrix.weather.label}</StatusPill>
           </div>
           <div className="mt-4 grid gap-3">
-            {[
-              ["财帛宫", "武曲 + 禄意象", "+8", "地空地劫风险，偏财保守"],
-              ["官禄宫", "化权触发", "+12", "适合谈合作、提案和签约准备"],
-              ["交友宫", "客户沟通窗口", "+5", "适合主动联系，但避免压迫式沟通"]
-            ].map(([palace, signal, score, note]) => (
-              <div key={palace} className="rounded border border-black/10 bg-rice p-3">
+            {dailyScores.map((item) => (
+              <div key={item.key} className="rounded border border-black/10 bg-rice p-3">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold">{palace}</p>
-                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{score}</span>
+                  <p className="font-semibold">{item.palace}</p>
+                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.score}</span>
                 </div>
-                <p className="mt-1 text-sm text-ink/65">{signal}</p>
-                <p className="mt-1 text-xs leading-5 text-ink/48">{note}</p>
+                <p className="mt-1 text-sm text-ink/65">{item.signals.join(" / ")}</p>
+                <p className="mt-1 text-xs leading-5 text-ink/48">风险：{item.risks.join("、")}</p>
               </div>
             ))}
           </div>
@@ -5143,16 +5143,32 @@ function FavoritesVaultModule() {
 
 function BaziReportPanel({ report, memberProfile }: { report: SavedReport; memberProfile: MemberProfile }) {
   const baziInput = report.metadata?.baziInput;
+  const analysis = report.metadata?.baziAnalysis;
   const pillars = getBaziPillars(baziInput);
-  const elements = getBaziElementRows(pillars);
-  const luckRows = getTenYearLuckRows();
-  const annualRows = getAnnualLuckRows();
+  const elements = analysis?.elementScores?.length
+    ? analysis.elementScores.map((item) => ({
+        element: item.element,
+        value: item.percentage,
+        tone: `${item.level} · ${item.meaning}`
+      }))
+    : getBaziElementRows(pillars);
+  const luckRows = analysis?.luckPillars?.length
+    ? analysis.luckPillars.map((row) => [row.ageRange, row.yearRange, row.ganZhi[0] || "-", row.ganZhi[1] || "-", row.tenGod, `${row.theme}：${row.advice}`])
+    : getTenYearLuckRows();
+  const annualRows = analysis?.annualLuck?.length
+    ? analysis.annualLuck.map((row) => ({ ...row, stemBranch: row.ganZhi }))
+    : getAnnualLuckRows();
   const scoreRows = getBaziScoreRows();
   const displayName = baziInput?.fullName || memberProfile.name;
   const displayBirthDate = baziInput?.birthDate || memberProfile.birthDate;
   const displayBirthTime = baziInput?.birthTime || memberProfile.birthTimeLabel;
   const displayBirthLocation = baziInput?.birthLocation || memberProfile.region;
-  const dayMaster = `${pillars[2]?.stem || "待"}${baziStemElements[pillars[2]?.stem] || ""}`;
+  const dayMaster = analysis ? `${analysis.dayMaster}${analysis.dayMasterElement} · ${analysis.dayMasterStrength}` : `${pillars[2]?.stem || "待"}${baziStemElements[pillars[2]?.stem] || ""}`;
+  const usefulGods = analysis?.usefulGods?.join("、") || "木、水";
+  const avoidGods = analysis?.avoidGods?.join("、") || "火、土";
+  const tenGodFocus = analysis?.tenGodDistribution?.slice(0, 4) || [];
+  const interactionFocus = analysis?.interactions?.slice(0, 4) || [];
+  const structureNotes = analysis?.structureNotes?.slice(0, 4) || [];
   const conicStops = elements.reduce(
     (state, item, index) => {
       const colors = ["#C79A54", "#1495A0", "#9ED8DF", "#B91C1C", "#E8D4A8"];
@@ -5173,7 +5189,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
         <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
           <div className="flex items-center justify-between gap-3">
             <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、八字排盘</h4>
-            <span className="text-sm font-semibold text-[#063F4A]">日主：{dayMaster} · 命盘核心</span>
+            <span className="text-sm font-semibold text-[#063F4A]">日主：{dayMaster}</span>
           </div>
           <div className="mt-4 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/35 text-center">
             {pillars.map((pillar) => (
@@ -5194,7 +5210,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
             分析对象：{displayName} · 公历 {displayBirthDate} {displayBirthTime} · 出生地：{displayBirthLocation}
           </p>
           <p className="mt-2 rounded bg-[#fff4d6] p-3 text-xs leading-5 text-ink/55">
-            当前四柱由系统按公历日期、约略节气切换和出生时辰自动推算；若出生地涉及真太阳时或节气交界日，建议以专业万年历复核。
+            当前四柱由系统按公历日期、节气切换与出生时辰自动推算。{analysis?.verification?.note || "若出生地涉及真太阳时或节气交界日，建议以专业万年历复核。"}
           </p>
         </section>
 
@@ -5224,11 +5240,11 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-3">
               <p className="text-sm font-semibold text-[#063F4A]">喜用神</p>
-              <p className="mt-1 text-sm leading-6 text-ink/65">木、水为主要调候，利学习、规划、流动资金与业务开拓。</p>
+              <p className="mt-1 text-sm leading-6 text-ink/65">{usefulGods} 为主要调候方向，用来补节奏、开资源、化压力。</p>
             </div>
             <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-3">
               <p className="text-sm font-semibold text-[#063F4A]">忌神提醒</p>
-              <p className="mt-1 text-sm leading-6 text-ink/65">火土过旺时易固执、压力内化，重大决定不宜急推。</p>
+              <p className="mt-1 text-sm leading-6 text-ink/65">{avoidGods} 过旺时容易消耗承载力，重大决定需先做风险复盘。</p>
             </div>
           </div>
         </section>
@@ -5236,10 +5252,10 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          ["三、性格分析", "戊土日主重承诺、守信用、能承载压力。金旺带来表达、制度与专业输出能力，但情绪紧绷时容易过度控制。"],
-          ["四、事业与财运", "适合管理、顾问、地产空间、教育培训、系统服务与长期信用型行业。财富宜走正财、长期复利与可复制产品。"],
-          ["五、感情婚姻", "关系中重安全感与实际行动，适合慢热稳定型伴侣。沟通上要减少闷着不说，避免把责任感变成压力。"],
-          ["六、健康倾向", "五行土金较显，需留意消化、睡眠、压力与呼吸系统保养。本段仅为生活提醒，不构成医疗建议。"]
+          ["三、命局重点", structureNotes.join(" ") || "日主重承诺、守信用、能承载压力；情绪紧绷时要避免过度控制。"],
+          ["四、十神分布", tenGodFocus.length ? tenGodFocus.map((item) => `${item.tenGod}×${item.count}：${item.tone}`).join(" ") : "十神分布较平均，适合长期规划、复盘机制与标准化流程。"],
+          ["五、合冲刑害", interactionFocus.length ? interactionFocus.map((item) => `${item.type}${item.pair}：${item.meaning}`).join(" ") : "未见特别集中的合冲刑害，判断重点回到五行强弱、喜忌和流年节奏。"],
+          ["六、落地提醒", "适合把命理结果转为行动清单：现金流表、合约边界、复盘制度、健康节律。命理只作文化参考，不构成专业建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
             <h4 className="font-semibold text-[#7A1F16]">{title}</h4>
@@ -5257,7 +5273,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
             </thead>
             <tbody className="divide-y divide-[#C79A54]/15">
               {luckRows.map((row) => (
-                <tr key={row.join("-")}>{row.map((cell) => <td key={cell} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
+                <tr key={row.join("-")}>{row.map((cell, index) => <td key={`${cell}-${index}`} className="px-3 py-2 text-ink/65">{cell}</td>)}</tr>
               ))}
             </tbody>
           </table>
@@ -6918,6 +6934,7 @@ function WalletAndReports({
     setBaziActionMessage("AI 正在生成报告，通常需要 10-30 秒。");
     setReportMessage("AI 正在生成八字命理完整报告，请稍候。");
     let aiContent: Pick<SavedReport, "summary" | "sections"> | undefined;
+    let baziAnalysis: BaziAnalysis | undefined;
 
     try {
       const response = await fetch("/api/bazi-report", {
@@ -6933,11 +6950,16 @@ function WalletAndReports({
           sections: payload.sections
         };
       }
+
+      if (payload.analysis) {
+        baziAnalysis = payload.analysis as BaziAnalysis;
+      }
     } catch {
       aiContent = undefined;
+      baziAnalysis = undefined;
     }
 
-    const generated = createBaziDestinyReport(attachLunarFields(baziInput), aiContent);
+    const generated = createBaziDestinyReport(attachLunarFields(baziInput), aiContent, baziAnalysis);
     const persistedReport = await persistGeneratedReport(generated, "bazi_destiny_report", "生成八字命理测算完整报告", accessToken);
 
     if (!persistedReport) {
