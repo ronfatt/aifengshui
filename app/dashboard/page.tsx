@@ -3464,7 +3464,7 @@ function MobileBottomNav({
   const navItems = categories.map((category) => ({ ...category, icon: iconMap[category.id] }));
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-10px_30px_rgba(16,47,56,0.12)] backdrop-blur md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#CFE2E5] bg-white/90 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-18px_45px_rgba(6,63,74,0.14)] backdrop-blur-xl md:hidden">
       <div className={`grid gap-1 ${navItems.length > 5 ? "grid-cols-6" : "grid-cols-5"}`}>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -3475,7 +3475,7 @@ function MobileBottomNav({
               key={item.id}
               type="button"
               onClick={() => onOpenCategory(item.id)}
-              className={`rounded px-1.5 py-2 text-center text-[11px] font-semibold transition ${active ? "bg-[#063F4A] text-white" : "text-ink/55"}`}
+              className={`rounded-2xl px-1.5 py-2 text-center text-[11px] font-semibold transition ${active ? "bg-[#063F4A] text-white shadow-[0_12px_24px_rgba(6,63,74,0.22)]" : "text-ink/55"}`}
             >
               <Icon className={`mx-auto mb-1 size-4 ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`} />
               {item.title}
@@ -3506,22 +3506,22 @@ function ModuleCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group rounded border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-soft ${
+      className={`group rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(6,63,74,0.12)] ${
         active
-          ? "border-[#C79A54]/70 bg-[#063F4A] text-white shadow-soft"
-          : "border-black/10 bg-white text-ink hover:border-[#C79A54]/45"
+          ? "border-[#C79A54]/70 bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_20px_50px_rgba(6,63,74,0.24)]"
+          : "border-[#CFE2E5] bg-white/92 text-ink shadow-[0_12px_32px_rgba(6,63,74,0.08)] hover:border-[#C79A54]/55"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <span
-          className={`grid size-9 place-items-center rounded ${
+          className={`grid size-10 place-items-center rounded-2xl ${
             active ? "bg-white/12 text-[#C79A54]" : locked ? "bg-[#F5FAFA] text-ink/35" : "bg-[#DDEFF2] text-[#063F4A]"
           }`}
         >
           {locked ? <LockKeyhole className="size-5" /> : <Icon className="size-5" />}
         </span>
         <span
-          className={`rounded px-2.5 py-1 text-xs font-semibold ${
+          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
             active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"
           }`}
         >
@@ -3541,11 +3541,11 @@ function ScoreRing({ score, label, desc }: { score: number; label: string; desc:
   return (
     <div className="grid place-items-center">
       <div
-        className="grid size-36 place-items-center rounded-full shadow-soft"
+        className="grid size-40 place-items-center rounded-full shadow-[0_22px_48px_rgba(199,154,84,0.24)]"
         style={{ background: `conic-gradient(#C79A54 ${score * 3.6}deg, #DDEFF2 0deg)` }}
       >
-        <div className="grid size-28 place-items-center rounded-full bg-white text-center">
-          <span className="text-4xl font-semibold text-[#063F4A]">{score}</span>
+        <div className="grid size-32 place-items-center rounded-full border border-[#E8D4A8]/55 bg-gradient-to-br from-white to-[#F8F1DF] text-center shadow-inner">
+          <span className="text-5xl font-semibold text-[#063F4A]">{score}</span>
           <span className="-mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink/45">{label}</span>
         </div>
       </div>
@@ -3566,9 +3566,10 @@ function TodayActionCenter({
   onOpenModule: (module: DashboardModule) => void;
 }) {
   return (
-    <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
+    <section className="premium-card premium-glow relative p-5 md:p-6">
+      <span className="premium-ring -right-28 -top-28 hidden lg:block" />
       <div className="grid gap-6 lg:grid-cols-[0.78fr_1fr_0.9fr]">
-        <div className="rounded bg-[#F5FAFA] p-5">
+        <div className="rounded-3xl border border-white/70 bg-white/58 p-5 shadow-[0_18px_45px_rgba(6,63,74,0.08)] backdrop-blur">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Today</p>
           <h1 className="mt-2 text-3xl font-semibold md:text-4xl">今日行动中心</h1>
           <p className="mt-3 text-sm leading-6 text-ink/58">先看分数、宜忌、吉时与吉方，再决定今天最稳的下一步。</p>
@@ -3579,19 +3580,19 @@ function TodayActionCenter({
             <button
               type="button"
               onClick={() => onOpenModule("partner")}
-              className="mt-3 inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-white px-3 py-2 text-xs font-semibold text-[#063F4A]"
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-white px-3 py-2 text-xs font-semibold text-[#063F4A] shadow-[0_10px_24px_rgba(6,63,74,0.08)]"
             >
               创业中心 <ChevronRight className="size-3.5" />
             </button>
           ) : null}
         </div>
 
-        <div className="grid gap-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-5 sm:grid-cols-[160px_1fr]">
+        <div className="premium-gold-card grid gap-4 p-5 sm:grid-cols-[176px_1fr]">
           <ScoreRing score={89} label="Score" desc="稳中有进" />
           <div>
             <div className="grid gap-3 sm:grid-cols-3">
               {fortuneScores.map(([label, score, note]) => (
-                <div key={label} className="rounded border border-black/10 bg-white p-3">
+                <div key={label} className="rounded-2xl border border-[#CFE2E5]/80 bg-white/86 p-3 shadow-[0_10px_25px_rgba(6,63,74,0.06)]">
                   <p className="text-xs text-ink/45">{label}</p>
                   <p className="mt-1 text-2xl font-semibold text-[#063F4A]">{score}</p>
                   <p className="mt-1 text-xs text-ink/50">{note}</p>
@@ -3599,11 +3600,11 @@ function TodayActionCenter({
               ))}
             </div>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <div className="rounded border border-black/10 bg-white p-3">
+              <div className="rounded-2xl border border-[#CFE2E5]/80 bg-white/86 p-3">
                 <p className="text-xs text-ink/45">今日宜</p>
                 <p className="mt-1 font-semibold text-[#063F4A]">复盘、整理资源、谈合作</p>
               </div>
-              <div className="rounded border border-black/10 bg-white p-3">
+              <div className="rounded-2xl border border-[#E8D4A8]/80 bg-white/86 p-3">
                 <p className="text-xs text-ink/45">今日忌</p>
                 <p className="mt-1 font-semibold text-[#7A1F16]">冲动承诺、夜间大额决策</p>
               </div>
@@ -3611,18 +3612,18 @@ function TodayActionCenter({
           </div>
         </div>
 
-        <div className="rounded bg-[#063F4A] p-5 text-white">
+        <div className="premium-card-dark p-5 text-white">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Read</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded bg-white/8 p-3">
+            <div className="rounded-2xl border border-white/8 bg-white/8 p-3">
               <p className="text-xs text-white/45">吉时</p>
               <p className="mt-1 text-xl font-semibold text-[#C79A54]">09:00 - 11:00</p>
             </div>
-            <div className="rounded bg-white/8 p-3">
+            <div className="rounded-2xl border border-white/8 bg-white/8 p-3">
               <p className="text-xs text-white/45">吉方</p>
               <p className="mt-1 text-xl font-semibold text-[#C79A54]">东南</p>
             </div>
-            <div className="col-span-2 rounded bg-white/8 p-3">
+            <div className="col-span-2 rounded-2xl border border-white/8 bg-white/8 p-3">
               <p className="text-xs text-white/45">今日建议</p>
               <p className="mt-1 text-sm leading-6 text-white/72">先整理方向与资源，再判断下一步行动。</p>
             </div>
@@ -3630,21 +3631,21 @@ function TodayActionCenter({
           <button
             type="button"
             onClick={() => onOpenModule("ai")}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A]"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A] shadow-[0_14px_28px_rgba(199,154,84,0.25)] transition hover:-translate-y-0.5"
           >
             问 AI 风水命理师 <Bot className="size-4" />
           </button>
           <button
             type="button"
             onClick={() => onOpenModule("wallet")}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded border border-white/15 px-4 py-3 text-sm font-semibold text-white"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/8"
           >
             生成今日建议报告 <FileText className="size-4" />
           </button>
           <button
             type="button"
             onClick={() => onOpenModule("sigil")}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded border border-[#C79A54]/45 bg-white/8 px-4 py-3 text-sm font-semibold text-[#C79A54]"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#C79A54]/45 bg-white/8 px-4 py-3 text-sm font-semibold text-[#C79A54] transition hover:-translate-y-0.5 hover:bg-[#C79A54]/10"
           >
             生成 Sigil 符印 <Sparkles className="size-4" />
           </button>
@@ -9640,8 +9641,8 @@ export default function DashboardPage() {
   if (authStatus !== "authenticated") {
     return (
       <AppShell>
-        <main className="px-5 py-16">
-          <div className="mx-auto max-w-3xl rounded border border-[#C79A54]/35 bg-white p-8 text-center shadow-sm">
+        <main className="premium-dashboard-bg min-h-screen px-5 py-16">
+          <div className="premium-card mx-auto max-w-3xl p-8 text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Member Access</p>
             <h1 className="mt-3 text-3xl font-semibold text-[#063F4A]">正在确认会员登录状态</h1>
             <p className="mt-3 text-ink/62">如果尚未登录，系统会自动带你回到登录页面。</p>
@@ -9653,7 +9654,7 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <main className="px-5 pb-24 pt-8 md:pb-8">
+      <main className="premium-dashboard-bg min-h-screen px-5 pb-24 pt-8 md:pb-10">
         <div className="mx-auto max-w-7xl">
           <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} hasPartnerAccess={hasPartnerAccess} onOpenModule={openModule} />
           {showOnboarding ? (
@@ -9679,7 +9680,7 @@ export default function DashboardPage() {
           <MembershipPlanPanel currentTier={currentTier} onRequestUpgrade={requestMembershipUpgrade} />
           <TodayAssistantPanel onOpenModule={openModule} onSelectPrompt={handleSelectAiPrompt} onSelectReport={handleSelectReportDemand} />
 
-          <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
+          <section className="premium-card premium-glow mt-6 p-4 md:p-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
               <div className="flex items-center gap-2">
                 <LayoutGrid className="size-5 text-[#063F4A]" />
@@ -9699,10 +9700,10 @@ export default function DashboardPage() {
                     type="button"
                     onClick={() => openCategory(category.id)}
                     className={[
-                      "rounded border p-3 text-left transition hover:-translate-y-0.5",
+                      "rounded-2xl border p-3 text-left transition duration-200 hover:-translate-y-1",
                       activeCategoryButton
-                        ? "border-[#C79A54] bg-[#063F4A] text-white shadow-sm"
-                        : "border-black/10 bg-white text-ink hover:border-[#C79A54]/50"
+                        ? "border-[#C79A54] bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_16px_36px_rgba(6,63,74,0.22)]"
+                        : "border-[#CFE2E5] bg-white/88 text-ink shadow-[0_10px_26px_rgba(6,63,74,0.06)] hover:border-[#C79A54]/50"
                     ].join(" ")}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -9717,7 +9718,7 @@ export default function DashboardPage() {
               })}
             </div>
 
-            <div className="mt-4 rounded border border-black/10 bg-white p-4">
+            <div className="premium-card mt-4 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h3 className="font-semibold text-[#063F4A]">{activeCategoryConfig.title}</h3>

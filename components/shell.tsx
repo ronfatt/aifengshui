@@ -77,10 +77,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-rice text-ink">
-      <header className="sticky top-0 z-30 border-b border-[#063F4A]/10 bg-rice/95 shadow-sm backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#CFE2E5]/80 bg-white/82 shadow-[0_12px_35px_rgba(6,63,74,0.08)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded bg-[#063F4A] text-lg font-semibold text-[#C79A54]">
+            <span className="grid size-11 place-items-center rounded-2xl border border-[#C79A54]/35 bg-gradient-to-br from-[#063F4A] to-[#022B33] text-lg font-semibold text-[#C79A54] shadow-[0_14px_28px_rgba(6,63,74,0.22)]">
               风
             </span>
             <span>
@@ -88,7 +88,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span className="block text-xs text-ink/58">AI 命理决策系统</span>
             </span>
           </Link>
-          <nav className="flex items-center gap-1 rounded-full border border-[#063F4A]/10 bg-white/70 p-1">
+          <nav className="flex items-center gap-1 rounded-full border border-[#CFE2E5] bg-white/78 p-1 shadow-[0_14px_32px_rgba(6,63,74,0.08)]">
             {navItems.filter((item) => item.href !== "/auth").map((item) => {
               const Icon = item.icon;
               const href = !isLoggedIn && item.href.startsWith("/dashboard") ? "/auth" : item.href;
@@ -96,7 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={href}
-                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#DDEFF2] hover:text-[#063F4A]"
+                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink/72 transition hover:bg-[#DDEFF2] hover:text-[#063F4A]"
                 >
                   <Icon className="size-4" />
                   <span className="hidden sm:inline">{item.label}</span>
@@ -107,7 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#E8D4A8] hover:text-[#1495A0]"
+                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink/72 transition hover:bg-[#E8D4A8] hover:text-[#063F4A]"
               >
                 <LogOut className="size-4" />
                 <span className="hidden sm:inline">登出</span>
@@ -121,7 +121,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-ink/72 transition hover:bg-[#DDEFF2] hover:text-[#063F4A]"
+                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink/72 transition hover:bg-[#DDEFF2] hover:text-[#063F4A]"
                     >
                       <Icon className="size-4" />
                       <span className="hidden sm:inline">{item.label}</span>

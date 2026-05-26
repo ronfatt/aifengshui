@@ -17,6 +17,98 @@ body {
   color: #102F38;
 }
 
+.premium-dashboard-bg {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 84% 4%, rgba(232, 212, 168, 0.46), transparent 28rem),
+    radial-gradient(circle at 7% 20%, rgba(158, 216, 223, 0.42), transparent 30rem),
+    linear-gradient(135deg, #F9FCFB 0%, #F5FAFA 38%, #EAF5F6 100%);
+}
+
+.premium-dashboard-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 72% 18%, rgba(199, 154, 84, 0.16) 0 1px, transparent 1.6px),
+    linear-gradient(rgba(6, 63, 74, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 63, 74, 0.035) 1px, transparent 1px);
+  background-size: 120px 120px, 34px 34px, 34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 82%);
+}
+
+.premium-card {
+  border: 1px solid rgba(207, 226, 229, 0.95);
+  border-radius: 1.35rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(250, 253, 252, 0.9));
+  box-shadow: 0 22px 60px rgba(6, 63, 74, 0.12), 0 1px 0 rgba(255, 255, 255, 0.72) inset;
+}
+
+.premium-card-dark {
+  border: 1px solid rgba(199, 154, 84, 0.42);
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(circle at 84% 0%, rgba(199, 154, 84, 0.22), transparent 16rem),
+    linear-gradient(135deg, #063F4A 0%, #022B33 100%);
+  box-shadow: 0 24px 70px rgba(6, 63, 74, 0.24);
+}
+
+.premium-gold-card {
+  border: 1px solid rgba(199, 154, 84, 0.38);
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(232, 212, 168, 0.42), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 250, 239, 0.96), rgba(255, 255, 255, 0.96));
+  box-shadow: 0 20px 55px rgba(199, 154, 84, 0.15);
+}
+
+.premium-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-glow::before {
+  content: "";
+  position: absolute;
+  inset: -38%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 74% 8%, rgba(232, 212, 168, 0.28), transparent 34%),
+    radial-gradient(circle at 8% 96%, rgba(158, 216, 223, 0.2), transparent 30%);
+}
+
+.premium-glow > * {
+  position: relative;
+  z-index: 1;
+}
+
+.premium-ring {
+  position: absolute;
+  width: 28rem;
+  height: 28rem;
+  border: 1px solid rgba(199, 154, 84, 0.16);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.premium-ring::after {
+  content: "";
+  position: absolute;
+  inset: 4.3rem;
+  border: 1px solid rgba(20, 149, 160, 0.12);
+  border-radius: inherit;
+}
+
+.premium-pill {
+  border: 1px solid rgba(207, 226, 229, 0.95);
+  border-radius: 999px;
+  background: rgba(238, 248, 249, 0.78);
+  box-shadow: 0 10px 26px rgba(6, 63, 74, 0.08);
+}
+
 button,
 input,
 textarea,
