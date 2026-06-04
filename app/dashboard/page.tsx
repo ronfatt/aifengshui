@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
   BookmarkCheck,
@@ -49,7 +49,8 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { companySponsorCode, generateShortReferralCode, normalizeReferralCode } from "@/lib/referral-code";
 import { getAutoLunarDateText, getMingliCalendar } from "@/lib/mingli-calendar";
 import type { BaziAnalysis } from "@/lib/bazi-engine";
-import { buildDailyFortuneMatrix, type DailyFortuneMatrix } from "@/lib/daily-fortune-engine";
+import { buildDailyFortuneMatrix, buildPublicDailyAlmanac, type DailyFortuneMatrix, type PublicDailyAlmanac } from "@/lib/daily-fortune-engine";
+import type { MembershipTier, PartnerPackage } from "@/lib/types";
 
 type DashboardModule =
   | "fortune"
@@ -68,7 +69,6 @@ type DashboardModule =
   | "courses"
   | "team";
 
-type PartnerPackage = "none" | "startup_8888" | "partner_16888" | "regional_38888";
 type DashboardCategory = "today" | "ai" | "reports" | "wallet" | "profile" | "partner";
 
 const partnerPackageLabels: Record<PartnerPackage, string> = {
@@ -343,8 +343,6 @@ const moduleCategoryMap = dashboardCategories.reduce<Record<DashboardModule, Das
   });
   return map;
 }, {} as Record<DashboardModule, DashboardCategory>);
-
-type MembershipTier = "free" | "tactical" | "strategic";
 
 const membershipTiers: {
   id: MembershipTier;
@@ -4232,10 +4230,149 @@ function ProfileOverviewPanel({ memberProfile, onOpenProfile }: { memberProfile:
   );
 }
 
+function toneLabel(tone: "good" | "steady" | "caution") {
+  if (tone === "good") return "旺";
+  if (tone === "steady") return "平";
+  return "慎";
+}
+
+function toneClass(tone: "good" | "steady" | "caution") {
+  if (tone === "good") return "border-[#1495A0]/25 bg-[#1495A0]/10 text-[#063F4A]";
+  if (tone === "steady") return "border-[#C79A54]/30 bg-[#C79A54]/12 text-[#063F4A]";
+  return "border-[#7A1F16]/25 bg-[#7A1F16]/8 text-[#7A1F16]";
+}
+
+function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
+  return (
+    <section className="rounded border border-[#C79A54]/35 bg-[#FFF8E8] shadow-soft">
+      <div className="rounded-t border-b border-[#C79A54]/25 bg-[#7A1F16] px-5 py-5 text-[#F8F1DF] md:px-7">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Public Almanac</p>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">大众每日通胜</h2>
+            <p className="mt-2 text-sm leading-6 text-[#F8F1DF]/72">
+              {almanac.dateLabel} · {almanac.lunarDate} · {almanac.fourPillarsText} · {almanac.chong}
+            </p>
+          </div>
+          <StatusPill>大众版 · 非个人命盘</StatusPill>
+        </div>
+      </div>
+
+      <div className="grid gap-5 p-5 md:p-7">
+        <div className="grid gap-4 lg:grid-cols-2">
+          {[almanac.wealthDirection, almanac.joyDirection].map((item) => (
+            <div key={item.title} className="rounded border border-[#C79A54]/35 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">{item.title}</p>
+                  <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{item.direction}</p>
+                </div>
+                <div className="grid size-20 place-items-center rounded-full border border-[#C79A54]/45 bg-[#F8F1DF] text-3xl font-semibold text-[#7A1F16]">
+                  {item.direction.slice(-1)}
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-7 text-ink/68">{item.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Daily Clothing Guide</p>
+              <h3 className="mt-2 text-xl font-semibold">每日穿衣指南</h3>
+            </div>
+            <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">按流日五行调频</span>
+          </div>
+          <div className="mt-5 grid gap-3 lg:grid-cols-3">
+            {Object.values(almanac.clothing).map((item) => (
+              <div key={item.label} className="rounded border border-black/10 bg-[#FFFDF7] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-semibold text-[#063F4A]">{item.label}</p>
+                  <div className="flex gap-1.5">
+                    {item.swatches.map((swatch) => (
+                      <span key={swatch} className="size-5 rounded-full border border-black/10" style={{ backgroundColor: swatch }} />
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-3 text-lg font-semibold text-[#7A1F16]">{item.colors.join("、")}</p>
+                <p className="mt-2 text-sm leading-6 text-ink/58">{item.reason}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Zodiac</p>
+                <h3 className="mt-2 text-xl font-semibold">十二生肖运势</h3>
+              </div>
+              <span className="rounded bg-[#F5FAFA] px-3 py-1 text-sm text-ink/58">每日更新</span>
+            </div>
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              {almanac.zodiac.map((item) => (
+                <div key={item.zodiac} className={`rounded border p-3 ${toneClass(item.tone)}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-lg font-semibold">{item.zodiac}</p>
+                    <span className="rounded bg-white/80 px-2 py-1 text-xs font-semibold">
+                      {toneLabel(item.tone)} · {item.score}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-semibold">{item.headline}</p>
+                  <p className="mt-1 text-xs leading-5 text-ink/58">{item.advice}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Day Master Flow</p>
+                <h3 className="mt-2 text-xl font-semibold">十神日元流日运势</h3>
+              </div>
+              <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">十日元参考</span>
+            </div>
+            <div className="mt-5 grid gap-2 md:grid-cols-2">
+              {almanac.dayMasterFlow.map((item) => (
+                <div key={item.stem} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#063F4A] text-lg font-semibold text-white">{item.stem}</span>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-[#063F4A]">{item.stem}{item.element} · {item.tenGod}</p>
+                      <p className="text-xs font-semibold text-[#C79A54]">{item.headline}</p>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-ink/58">{item.advice}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-3 rounded border border-[#C79A54]/30 bg-[#F8F1DF] p-4 md:grid-cols-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日宜</p>
+            <p className="mt-2 text-sm font-semibold text-[#063F4A]">{almanac.yi.join("、")}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日忌</p>
+            <p className="mt-2 text-sm font-semibold text-[#063F4A]">{almanac.ji.join("、")}</p>
+          </div>
+          <p className="border-t border-[#C79A54]/25 pt-3 text-center text-sm font-semibold tracking-[0.18em] text-[#7A1F16] md:col-span-2">{almanac.footer}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipTier; memberProfile: MemberProfile }) {
   const [aiFortune, setAiFortune] = useState<DailyFortuneResponse | null>(null);
   const [isLoadingFortune, setIsLoadingFortune] = useState(false);
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
+  const publicAlmanac = useMemo(() => buildPublicDailyAlmanac(), []);
   const matrix = aiFortune?.matrix || buildDailyFortuneMatrix(memberProfile, activeTier.name);
   const dailyScores = [matrix.wealth, matrix.career, matrix.relationship];
   const weatherToneClass =
@@ -4293,7 +4430,9 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
   }, [memberProfile.name, memberProfile.birthDate, memberProfile.birthTime, memberProfile.gender, currentTier]);
 
   return (
-    <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+    <>
+    <PublicDailyAlmanacPanel almanac={publicAlmanac} />
+    <section className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <div className="flex items-center justify-between">
           <div>
@@ -4488,6 +4627,7 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
         </div>
       </div>
     </section>
+    </>
   );
 }
 

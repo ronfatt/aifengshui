@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BookOpenCheck, Bot, CheckCircle2, FileText, Loader2, Send, ShieldCheck, ShoppingBag, Sparkles, UserRound } from "lucide-react";
 import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import type { MembershipTier } from "@/lib/types";
 
 type Message = {
   role: "user" | "assistant" | "system";
@@ -16,12 +17,11 @@ type OpenAIStatus = {
   provider: string;
 };
 
-type ChatTier = "free" | "tactical" | "strategic";
 type ChatNextActionTarget = "report" | "shop" | "courses";
 type InquiryTopic = "事业" | "财运" | "感情" | "合作" | "开业搬迁" | "健康";
 
 type FengshuiChatProps = {
-  tier?: ChatTier;
+  tier?: MembershipTier;
   tierName?: string;
   aiMode?: string;
   initialPrompt?: string;
@@ -84,7 +84,7 @@ const nextStepActions = [
   }
 ];
 
-const tierModeCopy: Record<ChatTier, { title: string; desc: string; budget: string }> = {
+const tierModeCopy: Record<MembershipTier, { title: string; desc: string; budget: string }> = {
   free: {
     title: "基础命理问答",
     desc: "适合快速确认方向，输出简短提醒与行动建议。",
@@ -102,7 +102,7 @@ const tierModeCopy: Record<ChatTier, { title: string; desc: string; budget: stri
   }
 };
 
-const depthModes: Record<ChatTier, { label: string; detail: string }> = {
+const depthModes: Record<MembershipTier, { label: string; detail: string }> = {
   free: {
     label: "快速判断",
     detail: "方向 + 风险 + 3 个行动"

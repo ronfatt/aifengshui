@@ -39,6 +39,61 @@ export type DailyFortuneMatrix = {
   upgradeHint: string;
 };
 
+type AlmanacTone = "good" | "steady" | "caution";
+type ElementKey = "wood" | "fire" | "earth" | "metal" | "water";
+
+type ClothingGuide = {
+  label: string;
+  colors: string[];
+  swatches: string[];
+  reason: string;
+};
+
+type ZodiacFortune = {
+  zodiac: string;
+  score: number;
+  headline: string;
+  advice: string;
+  tone: AlmanacTone;
+};
+
+type DayMasterFlow = {
+  stem: string;
+  element: string;
+  tenGod: string;
+  headline: string;
+  advice: string;
+  tone: AlmanacTone;
+};
+
+export type PublicDailyAlmanac = {
+  date: string;
+  dateLabel: string;
+  lunarDate: string;
+  fourPillarsText: string;
+  chong: string;
+  wealthDirection: {
+    title: string;
+    direction: string;
+    description: string;
+  };
+  joyDirection: {
+    title: string;
+    direction: string;
+    description: string;
+  };
+  clothing: {
+    primary: ClothingGuide;
+    secondary: ClothingGuide;
+    avoid: ClothingGuide;
+  };
+  zodiac: ZodiacFortune[];
+  dayMasterFlow: DayMasterFlow[];
+  yi: string[];
+  ji: string[];
+  footer: string;
+};
+
 const colors = ["青绿", "米白", "金色", "深蓝", "浅灰", "酒红", "暖黄", "墨青"];
 const directions = ["正东", "东南", "正南", "西南", "正西", "西北", "正北", "东北"];
 const luckyHours = ["辰时 7-9", "巳时 9-11", "午时 11-13", "未时 13-15", "申时 15-17", "酉时 17-19"];
@@ -86,6 +141,102 @@ const clues = [
   "今天适合从一个小整理动作开始破局。"
 ];
 
+const zodiacAnimals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+const branchToZodiac: Record<string, string> = {
+  子: "鼠",
+  丑: "牛",
+  寅: "虎",
+  卯: "兔",
+  辰: "龙",
+  巳: "蛇",
+  午: "马",
+  未: "羊",
+  申: "猴",
+  酉: "鸡",
+  戌: "狗",
+  亥: "猪"
+};
+
+const stemMeta: Record<string, { element: ElementKey; yinYang: "yang" | "yin"; icon: string }> = {
+  甲: { element: "wood", yinYang: "yang", icon: "树" },
+  乙: { element: "wood", yinYang: "yin", icon: "竹" },
+  丙: { element: "fire", yinYang: "yang", icon: "日" },
+  丁: { element: "fire", yinYang: "yin", icon: "灯" },
+  戊: { element: "earth", yinYang: "yang", icon: "山" },
+  己: { element: "earth", yinYang: "yin", icon: "田" },
+  庚: { element: "metal", yinYang: "yang", icon: "钟" },
+  辛: { element: "metal", yinYang: "yin", icon: "玉" },
+  壬: { element: "water", yinYang: "yang", icon: "江" },
+  癸: { element: "water", yinYang: "yin", icon: "雨" }
+};
+
+const elementNames: Record<ElementKey, string> = {
+  wood: "木",
+  fire: "火",
+  earth: "土",
+  metal: "金",
+  water: "水"
+};
+
+const elementCreates: Record<ElementKey, ElementKey> = {
+  wood: "fire",
+  fire: "earth",
+  earth: "metal",
+  metal: "water",
+  water: "wood"
+};
+
+const elementControls: Record<ElementKey, ElementKey> = {
+  wood: "earth",
+  fire: "metal",
+  earth: "water",
+  metal: "wood",
+  water: "fire"
+};
+
+const branchMainStem: Record<string, string> = {
+  子: "癸",
+  丑: "己",
+  寅: "甲",
+  卯: "乙",
+  辰: "戊",
+  巳: "丙",
+  午: "丁",
+  未: "己",
+  申: "庚",
+  酉: "辛",
+  戌: "戊",
+  亥: "壬"
+};
+
+const clothingByElement: Record<ElementKey, { primary: ClothingGuide; secondary: ClothingGuide; avoid: ClothingGuide }> = {
+  wood: {
+    primary: { label: "首选", colors: ["黑色", "深蓝", "海蓝"], swatches: ["#102F38", "#214B72", "#1495A0"], reason: "水生木，帮助思路回流，适合学习、谈规划与修复关系。" },
+    secondary: { label: "次选", colors: ["绿色", "青色", "翠绿"], swatches: ["#0D6B48", "#2E9E72", "#8BCB8F"], reason: "木气同频，增强生发力与执行耐心。" },
+    avoid: { label: "慎用", colors: ["白色", "银色", "金色"], swatches: ["#F5FAFA", "#DDEEF2", "#C79A54"], reason: "金克木，容易带来规则压力与沟通硬碰硬。" }
+  },
+  fire: {
+    primary: { label: "首选", colors: ["绿色", "青色", "翠绿"], swatches: ["#0D6B48", "#1495A0", "#9ED8DF"], reason: "木生火，提升灵感、表达力与行动热度。" },
+    secondary: { label: "次选", colors: ["红色", "紫色", "玫红"], swatches: ["#9F2E24", "#7B3F8C", "#B94A5B"], reason: "火气同频，适合曝光、表达与主动争取。" },
+    avoid: { label: "慎用", colors: ["黑色", "深蓝", "灰蓝"], swatches: ["#0A0A0A", "#102F38", "#6C8790"], reason: "水克火，容易情绪降温或临场犹豫。" }
+  },
+  earth: {
+    primary: { label: "首选", colors: ["红色", "紫色", "暖粉"], swatches: ["#9F2E24", "#7B3F8C", "#D16A65"], reason: "火生土，适合稳住气场、处理资源与做关键确认。" },
+    secondary: { label: "次选", colors: ["黄色", "咖啡", "卡其"], swatches: ["#C79A54", "#8C6A3D", "#E8D4A8"], reason: "土气同频，增强稳定、耐心与长期布局。" },
+    avoid: { label: "慎用", colors: ["绿色", "青色", "翠绿"], swatches: ["#0D6B48", "#1495A0", "#8BCB8F"], reason: "木克土，容易被外界事务牵制，压力增加。" }
+  },
+  metal: {
+    primary: { label: "首选", colors: ["黄色", "咖啡", "米金"], swatches: ["#C79A54", "#8C6A3D", "#F1E0B8"], reason: "土生金，帮助规则感、判断力与财务边界。" },
+    secondary: { label: "次选", colors: ["白色", "银色", "浅灰"], swatches: ["#F5FAFA", "#DDEEF2", "#B8C7CC"], reason: "金气同频，适合签约、整理制度与做标准化决策。" },
+    avoid: { label: "慎用", colors: ["红色", "紫色", "玫红"], swatches: ["#9F2E24", "#7B3F8C", "#B94A5B"], reason: "火克金，容易急躁、争执或被外界催促。" }
+  },
+  water: {
+    primary: { label: "首选", colors: ["白色", "银色", "金色"], swatches: ["#F5FAFA", "#DDEEF2", "#C79A54"], reason: "金生水，利于贵人、资讯、学习与谈判。" },
+    secondary: { label: "次选", colors: ["黑色", "深蓝", "海蓝"], swatches: ["#0A0A0A", "#102F38", "#1495A0"], reason: "水气同频，帮助冷静、复盘与看清暗线。" },
+    avoid: { label: "慎用", colors: ["黄色", "咖啡", "卡其"], swatches: ["#C79A54", "#8C6A3D", "#E8D4A8"], reason: "土克水，容易卡住进度或被现实条件限制。" }
+  }
+};
+
 function hashString(value: string) {
   let hash = 0;
   for (let index = 0; index < value.length; index += 1) {
@@ -128,6 +279,134 @@ function weatherFromScore(score: number): DailyFortuneMatrix["weather"] {
 
 function buildScore(seed: number, base: number, offset: number) {
   return clamp(base + ((seed >> offset) % 21) - 10);
+}
+
+function elementGenerates(source: ElementKey, target: ElementKey) {
+  return elementCreates[source] === target;
+}
+
+function elementOvercomes(source: ElementKey, target: ElementKey) {
+  return elementControls[source] === target;
+}
+
+function tenGodFor(selfStem: string, flowStem: string) {
+  const self = stemMeta[selfStem] || stemMeta.甲;
+  const flow = stemMeta[flowStem] || stemMeta.甲;
+  const samePolarity = self.yinYang === flow.yinYang;
+
+  if (self.element === flow.element) return samePolarity ? "比肩" : "劫财";
+  if (elementGenerates(self.element, flow.element)) return samePolarity ? "食神" : "伤官";
+  if (elementOvercomes(self.element, flow.element)) return samePolarity ? "偏财" : "正财";
+  if (elementOvercomes(flow.element, self.element)) return samePolarity ? "七杀" : "正官";
+  if (elementGenerates(flow.element, self.element)) return samePolarity ? "偏印" : "正印";
+
+  return "平运";
+}
+
+function toneFromScore(score: number): AlmanacTone {
+  if (score >= 78) return "good";
+  if (score >= 62) return "steady";
+  return "caution";
+}
+
+function buildZodiacFortunes(seed: number, chongText: string, dayBranch: string): ZodiacFortune[] {
+  const chongAnimal = zodiacAnimals.find((animal) => chongText.includes(animal)) || branchToZodiac[dayBranch] || "虎";
+
+  return zodiacAnimals.map((zodiac, index) => {
+    const rawScore = zodiac === chongAnimal ? 42 + ((seed + index) % 12) : 58 + ((seed >> (index % 9)) % 34);
+    const score = clamp(rawScore, 38, 95);
+    const tone = zodiac === chongAnimal ? "caution" : toneFromScore(score);
+    const headline =
+      tone === "good" ? "贵人活跃" : tone === "steady" ? "稳步上升" : zodiac === chongAnimal ? "逢冲谨慎" : "低调守成";
+    const advice =
+      tone === "good"
+        ? "适合主动联络、拜访客户或推进合作，重要事情先写清条件。"
+        : tone === "steady"
+          ? "适合按计划处理工作，耐心收尾，别被临时情绪带节奏。"
+          : "今日少做高风险决定，开车、签约、借贷与口舌争执都要放慢。";
+
+    return { zodiac, score, headline, advice, tone };
+  });
+}
+
+function buildDayMasterFlow(dayStem: string, dayBranch: string): DayMasterFlow[] {
+  const branchStem = branchMainStem[dayBranch] || dayStem;
+  const stems = Object.keys(stemMeta);
+
+  return stems.map((stem) => {
+    const stemGod = tenGodFor(stem, dayStem);
+    const branchGod = tenGodFor(stem, branchStem);
+    const combined = `${stemGod}坐${branchGod}`;
+    const tone: AlmanacTone =
+      ["正官", "正财", "正印", "食神"].includes(stemGod)
+        ? "good"
+        : ["七杀", "伤官", "劫财"].includes(stemGod)
+          ? "caution"
+          : "steady";
+    const headline =
+      tone === "good"
+        ? "顺势可进"
+        : tone === "caution"
+          ? "先稳后动"
+          : "平衡取胜";
+    const advice =
+      stemGod.includes("财")
+        ? "财务、报价、收款与资源交换较敏感，先定边界再谈收益。"
+        : stemGod.includes("官") || stemGod.includes("杀")
+          ? "规则、上级、制度与压力感变强，适合用流程化方式化解阻力。"
+          : stemGod.includes("印")
+            ? "适合学习、复盘、请教长辈或贵人，不宜急着证明自己。"
+            : stemGod.includes("食") || stemGod.includes("伤")
+              ? "表达、创意与曝光度提升，但说话要留余地，避免锋芒太露。"
+              : "人际与竞争感增强，适合团队协作，也要防止被琐事分散。";
+
+    return {
+      stem,
+      element: elementNames[stemMeta[stem].element],
+      tenGod: combined,
+      headline,
+      advice,
+      tone
+    };
+  });
+}
+
+export function buildPublicDailyAlmanac(date = new Date()): PublicDailyAlmanac {
+  const dateKey = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kuala_Lumpur" }).format(date);
+  const calendar = getMingliCalendar(dateKey, "12:00", "Gregorian");
+  const dayStem = calendar?.pillars[2]?.stem || "甲";
+  const dayBranch = calendar?.pillars[2]?.branch || "子";
+  const dayElement = stemMeta[dayStem]?.element || "wood";
+  const seed = hashString(`${dateKey}|public-almanac|${calendar?.fourPillarsText || ""}`);
+  const wealthDirection = calendar?.directions.wealth || pick(directions, seed, 3);
+  const joyDirection = calendar?.directions.joy || pick(directions, seed, 7);
+  const chong = calendar?.daily.chong || `冲${branchToZodiac[dayBranch] || "生肖"}`;
+  const yi = calendar?.daily.yi?.length ? calendar.daily.yi.slice(0, 4) : ["签约", "整理", "沟通", "学习"];
+  const ji = calendar?.daily.ji?.length ? calendar.daily.ji.slice(0, 4) : ["冲动", "争执", "借贷", "拖延"];
+
+  return {
+    date: dateKey,
+    dateLabel: new Intl.DateTimeFormat("zh-MY", { timeZone: "Asia/Kuala_Lumpur", year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(date),
+    lunarDate: calendar?.lunarDateText || "农历待换算",
+    fourPillarsText: calendar?.fourPillarsText || `${dayStem}${dayBranch}日`,
+    chong,
+    wealthDirection: {
+      title: "每日财位",
+      direction: wealthDirection,
+      description: `今日财气聚于${wealthDirection}，适合处理报价、收款、签单、账目整理，或在该方位放置干净明亮的招财物件。`
+    },
+    joyDirection: {
+      title: "每日喜神",
+      direction: joyDirection,
+      description: `今日喜神在${joyDirection}，适合约见贵人、拜访客户、安排面谈与修复关系，出门或沟通可优先借此方位之气。`
+    },
+    clothing: clothingByElement[dayElement],
+    zodiac: buildZodiacFortunes(seed, chong, dayBranch),
+    dayMasterFlow: buildDayMasterFlow(dayStem, dayBranch),
+    yi,
+    ji,
+    footer: "趋吉避凶 · 顺势而行"
+  };
 }
 
 export function buildDailyFortuneMatrix(profile?: Partial<MemberProfile>, memberLevel = "进阶会员版", date = new Date()): DailyFortuneMatrix {

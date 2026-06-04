@@ -1,4 +1,6 @@
-export const emptyMemberProfile = {
+import type { MemberProfile } from "@/lib/types/user";
+
+export const emptyMemberProfile: MemberProfile = {
   name: "未填写",
   birthDate: "",
   birthYear: "",
@@ -9,5 +11,4 @@ export const emptyMemberProfile = {
   phone: "",
   region: "Malaysia / Kuala Lumpur"
 };
-
-export type MemberProfile = typeof emptyMemberProfile;
+export type { MemberProfile };

@@ -1,3 +1,5 @@
+import type { CreditSource, MembershipTier, PartnerPackage, ReportSection, ReportType } from "@/lib/types";
+
 export type ProfileRow = {
   id: string;
   full_name: string;
@@ -7,8 +9,8 @@ export type ProfileRow = {
   email: string;
   phone: string | null;
   region: string | null;
-  membership_tier: "free" | "tactical" | "strategic";
-  partner_package?: "none" | "startup_8888" | "partner_16888" | "regional_38888";
+  membership_tier: MembershipTier;
+  partner_package?: PartnerPackage;
   credit_balance: number;
   created_at: string;
   updated_at: string;
@@ -18,10 +20,10 @@ export type ReportRow = {
   id: string;
   user_id: string;
   title: string;
-  tag: string;
+  tag: ReportType | string;
   points: number;
   summary: string;
-  sections: { title: string; content: string }[];
+  sections: ReportSection[];
   created_at: string;
 };
 
@@ -29,7 +31,7 @@ export type CreditTransactionRow = {
   id: string;
   user_id: string;
   amount: number;
-  source: string;
+  source: CreditSource | string;
   description: string | null;
   created_at: string;
 };
