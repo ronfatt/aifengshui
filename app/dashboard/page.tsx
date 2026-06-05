@@ -1055,6 +1055,7 @@ const reportContent: Record<string, Omit<SavedReport, "id" | "createdAt" | "tag"
 const reportStorageKey = "ai-fengshui-saved-reports";
 const reportProfileStorageKey = "ai-fengshui-report-subject-profiles";
 const sigilStorageKey = "ai-fengshui-sigil-vault";
+const recentModulesStorageKey = "ai-fengshui-recent-modules";
 const sigilCost = 88;
 const divinationStorageKey = "ai-fengshui-jiuyun-divinations";
 const divinationCheckInKey = "ai-fengshui-jiuyun-checkins";
@@ -3462,7 +3463,7 @@ function MobileBottomNav({
   const navItems = categories.map((category) => ({ ...category, icon: iconMap[category.id] }));
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#CFE2E5] bg-white/90 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-18px_45px_rgba(6,63,74,0.14)] backdrop-blur-xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 rounded-t-[1.75rem] border-t border-[#CFE2E5] bg-white/92 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-22px_55px_rgba(6,63,74,0.18)] backdrop-blur-xl md:hidden">
       <div className={`grid gap-1 ${navItems.length > 5 ? "grid-cols-6" : "grid-cols-5"}`}>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -3473,7 +3474,7 @@ function MobileBottomNav({
               key={item.id}
               type="button"
               onClick={() => onOpenCategory(item.id)}
-              className={`rounded-2xl px-1.5 py-2 text-center text-[11px] font-semibold transition ${active ? "bg-[#063F4A] text-white shadow-[0_12px_24px_rgba(6,63,74,0.22)]" : "text-ink/55"}`}
+              className={`rounded-2xl px-1.5 py-2 text-center text-[11px] font-semibold transition ${active ? "-translate-y-1 bg-[#063F4A] text-white shadow-[0_16px_28px_rgba(6,63,74,0.26)]" : "text-ink/55"}`}
             >
               <Icon className={`mx-auto mb-1 size-4 ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`} />
               {item.title}
@@ -3482,6 +3483,132 @@ function MobileBottomNav({
         })}
       </div>
     </nav>
+  );
+}
+
+function DashboardAppTopBar({
+  memberProfile,
+  currentPlan,
+  pointBalance,
+  onOpenModule
+}: {
+  memberProfile: MemberProfile;
+  currentPlan: (typeof membershipTiers)[number];
+  pointBalance: number;
+  onOpenModule: (module: DashboardModule) => void;
+}) {
+  const displayName = memberProfile.name && memberProfile.name !== "未填写" ? memberProfile.name : "会员";
+
+  return (
+    <section className="mb-4 md:hidden">
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#C79A54]/35 bg-gradient-to-br from-[#063F4A] via-[#063F4A] to-[#102F38] p-4 text-white shadow-[0_24px_62px_rgba(6,63,74,0.28)]">
+        <span className="pointer-events-none absolute -right-16 -top-16 size-36 rounded-full border border-[#C79A54]/18" />
+        <span className="pointer-events-none absolute -bottom-20 left-8 size-40 rounded-full bg-[#1495A0]/12 blur-2xl" />
+        <div className="relative flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-[#C79A54]/40 bg-white/10 text-lg font-semibold text-[#C79A54]">
+              风
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-lg font-semibold">你好，{displayName}</p>
+              <p className="truncate text-xs text-white/58">{currentPlan.name} · 今日先看方向再行动</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => onOpenModule("wallet")}
+            className="shrink-0 rounded-2xl border border-white/12 bg-white/10 px-3 py-2 text-right"
+          >
+            <p className="text-[11px] text-white/45">点数</p>
+            <p className="text-sm font-semibold text-[#C79A54]">{pointBalance.toLocaleString("en-US")}</p>
+          </button>
+        </div>
+
+        <div className="relative mt-4 grid grid-cols-3 gap-2">
+          {[
+            { label: "问 AI", icon: Bot, module: "ai" as DashboardModule },
+            { label: "生成报告", icon: FileText, module: "wallet" as DashboardModule },
+            { label: "符印", icon: Sparkles, module: "sigil" as DashboardModule }
+          ].map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => onOpenModule(item.module)}
+                className="rounded-2xl border border-white/12 bg-white/10 px-2 py-3 text-center text-xs font-semibold text-white transition active:scale-[0.98]"
+              >
+                <Icon className="mx-auto mb-1.5 size-4 text-[#C79A54]" />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobileCreditPill({
+  pointBalance,
+  onOpenWallet
+}: {
+  pointBalance: number;
+  onOpenWallet: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpenWallet}
+      className="fixed right-4 top-[max(env(safe-area-inset-top),12px)] z-30 inline-flex items-center gap-2 rounded-full border border-[#C79A54]/35 bg-white/92 px-3 py-2 text-xs font-semibold text-[#063F4A] shadow-[0_14px_35px_rgba(6,63,74,0.16)] backdrop-blur-xl md:hidden"
+      aria-label="查看点数钱包"
+    >
+      <Coins className="size-4 text-[#C79A54]" />
+      {pointBalance.toLocaleString("en-US")} 点
+    </button>
+  );
+}
+
+function ProfileCompletionAlert({
+  memberProfile,
+  onOpenProfile
+}: {
+  memberProfile: MemberProfile;
+  onOpenProfile: () => void;
+}) {
+  if (isProfileReady(memberProfile)) {
+    return null;
+  }
+
+  const missingItems = [
+    !memberProfile.name || memberProfile.name === "未填写" ? "姓名" : "",
+    !memberProfile.birthDate || memberProfile.birthDate === "2000-01-01" ? "生日" : "",
+    !memberProfile.birthTime || memberProfile.birthTimeLabel === "未填写" ? "出生时间" : "",
+    !memberProfile.gender || memberProfile.gender === "未填写" ? "性别" : ""
+  ].filter(Boolean);
+
+  return (
+    <section className="mb-4 rounded-2xl border border-[#C79A54]/35 bg-[#FFF8E8] p-4 shadow-sm md:rounded md:p-5">
+      <div className="flex items-start gap-3">
+        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#C79A54]/18 text-[#7A1F16]">
+          <UserRound className="size-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-[#063F4A]">先补完整个人命理资料</p>
+          <p className="mt-1 text-sm leading-6 text-ink/58">
+            还缺：{missingItems.join("、") || "基础资料"}。资料越完整，AI、每日运势和报告越像专属判断。
+          </p>
+          <button
+            type="button"
+            onClick={onOpenProfile}
+            className="mt-3 inline-flex items-center gap-1 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"
+          >
+            去补资料 <ChevronRight className="size-4" />
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -3532,6 +3659,87 @@ function ModuleCard({
         {locked ? "购买创业配套后开放" : "打开"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
       </div>
     </button>
+  );
+}
+
+function EmptyStateCard({
+  icon: Icon,
+  title,
+  desc,
+  action,
+  onAction
+}: {
+  icon: typeof CalendarDays;
+  title: string;
+  desc: string;
+  action?: string;
+  onAction?: () => void;
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-[#C79A54]/45 bg-gradient-to-br from-white to-[#F5FAFA] p-5 text-center shadow-[0_14px_34px_rgba(6,63,74,0.06)]">
+      <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[#DDEFF2] text-[#063F4A]">
+        <Icon className="size-5" />
+      </span>
+      <h3 className="mt-4 font-semibold text-[#063F4A]">{title}</h3>
+      <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-ink/55">{desc}</p>
+      {action && onAction ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="mt-4 inline-flex items-center gap-1 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"
+        >
+          {action} <ChevronRight className="size-4" />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function RecentUsePanel({
+  recentModules,
+  onOpenModule
+}: {
+  recentModules: DashboardModule[];
+  onOpenModule: (module: DashboardModule) => void;
+}) {
+  const fallbackModules: DashboardModule[] = ["ai", "wallet", "divination", "sigil"];
+  const quickModules = (recentModules.length ? recentModules : fallbackModules)
+    .map((id) => modules.find((module) => module.id === id))
+    .filter(Boolean)
+    .slice(0, 5) as (typeof modules)[number][];
+
+  return (
+    <section className="mb-4 rounded-2xl border border-[#CFE2E5] bg-white/88 p-4 shadow-[0_14px_35px_rgba(6,63,74,0.08)] md:mb-5 md:rounded md:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Access</p>
+          <h2 className="mt-1 text-lg font-semibold text-[#063F4A]">最近使用</h2>
+        </div>
+        <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A]">
+          {recentModules.length ? "你的习惯入口" : "推荐入口"}
+        </span>
+      </div>
+      <div className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0 md:pb-0">
+        {quickModules.map((module) => {
+          const Icon = module.icon;
+
+          return (
+            <button
+              key={module.id}
+              type="button"
+              onClick={() => onOpenModule(module.id)}
+              className="min-w-[148px] rounded-2xl border border-[#CFE2E5] bg-[#F5FAFA] p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:bg-white hover:shadow-sm md:min-w-0"
+            >
+              <span className="grid size-9 place-items-center rounded-xl bg-white text-[#063F4A] shadow-sm">
+                <Icon className="size-4" />
+              </span>
+              <p className="mt-3 text-sm font-semibold text-[#063F4A]">{module.title}</p>
+              <p className="mt-1 text-xs text-ink/48">{module.desc}</p>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -4132,7 +4340,7 @@ function AiQuestionStarter({ onSelectPrompt }: { onSelectPrompt: (prompt: string
 
 function ReportDemandPanel({ onSelectReport }: { onSelectReport: (preset: ReportDemandPreset) => void }) {
   return (
-    <section className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
+    <section className="mt-5 overflow-hidden rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Report Center</p>
@@ -4141,18 +4349,18 @@ function ReportDemandPanel({ onSelectReport }: { onSelectReport: (preset: Report
         </div>
         <StatusPill>四术合参 · 自动保存</StatusPill>
       </div>
-      <div className="mt-4 grid gap-3 md:grid-cols-5">
+      <div className="-mx-5 mt-4 flex gap-3 overflow-x-auto px-5 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0 md:pb-0">
         {demandReportCards.map((report) => (
           <button
             key={report.title}
             type="button"
             onClick={() => onSelectReport(report.preset)}
-            className="rounded border border-black/10 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
+            className="min-w-[168px] rounded-2xl border border-black/10 bg-white p-4 text-left transition active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm md:min-w-0 md:rounded"
           >
             <p className="font-semibold text-[#063F4A]">{report.title}</p>
-            <p className="mt-2 text-xs leading-5 text-ink/55">{report.desc}</p>
+            <p className="mt-2 hidden text-xs leading-5 text-ink/55 sm:block">{report.desc}</p>
             <p className="mt-3 rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{report.cost}</p>
-            <p className="mt-2 text-xs text-ink/42">结合八字、紫微、梅花、数字命理生成</p>
+            <p className="mt-2 text-xs text-ink/42">四术合参生成</p>
           </button>
         ))}
       </div>
@@ -4242,26 +4450,223 @@ function toneClass(tone: "good" | "steady" | "caution") {
   return "border-[#7A1F16]/25 bg-[#7A1F16]/8 text-[#7A1F16]";
 }
 
-function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
+function clothingToneClass(tone: "good" | "steady" | "neutral" | "caution" | "danger") {
+  if (tone === "good") return "border-[#1495A0]/25 bg-[#1495A0]/10";
+  if (tone === "steady") return "border-[#C79A54]/30 bg-[#C79A54]/12";
+  if (tone === "neutral") return "border-[#DDEEF2] bg-[#F5FAFA]";
+  if (tone === "caution") return "border-[#E8D4A8] bg-[#FFF8E8]";
+  return "border-[#7A1F16]/25 bg-[#7A1F16]/8";
+}
+
+const sevenDayFortuneCost = 68;
+
+function escapeSvgText(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildAlmanacShareSvg(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
+  const clothing = almanac.clothingLevels.slice(0, 3);
+  const personalLine = personal?.zodiac || personal?.dayMaster ? `你的重点：${personal?.zodiac ? `${personal.zodiac}生肖` : ""}${personal?.zodiac && personal?.dayMaster ? " · " : ""}${personal?.dayMaster ? `${personal.dayMaster}日主` : ""}` : "大众每日通胜";
+  const clothingRows = clothing
+    .map(
+      (item, index) => `
+        <g transform="translate(70 ${710 + index * 76})">
+          <rect width="760" height="56" rx="18" fill="${index === 0 ? "#FFF8E8" : "#F5FAFA"}" stroke="#E8D4A8"/>
+          <text x="28" y="36" font-size="22" font-weight="700" fill="#7A1F16">${escapeSvgText(item.level)}</text>
+          <text x="190" y="36" font-size="22" font-weight="700" fill="#063F4A">${escapeSvgText(item.colors.join("、"))}</text>
+          ${item.swatches
+            .slice(0, 4)
+            .map((swatch, swatchIndex) => `<circle cx="${610 + swatchIndex * 42}" cy="28" r="16" fill="${swatch}" stroke="#C79A54"/>`)
+            .join("")}
+        </g>`
+    )
+    .join("");
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <rect width="900" height="1200" fill="#F5FAFA"/>
+  <rect x="34" y="34" width="832" height="1132" rx="36" fill="#FFFDF7" stroke="#C79A54" stroke-width="3"/>
+  <rect x="34" y="34" width="832" height="210" rx="36" fill="#7A1F16"/>
+  <text x="450" y="104" text-anchor="middle" font-size="58" font-weight="800" fill="#F8F1DF">${escapeSvgText(almanac.date)}</text>
+  <text x="450" y="154" text-anchor="middle" font-size="28" font-weight="700" fill="#C79A54">${escapeSvgText(almanac.lunarDate)}</text>
+  <text x="450" y="198" text-anchor="middle" font-size="24" fill="#F8F1DF">${escapeSvgText(almanac.yearPillar)}年 ${escapeSvgText(almanac.monthPillar)}月 ${escapeSvgText(almanac.dayPillar)}日 · ${escapeSvgText(almanac.chong)}</text>
+
+  <text x="70" y="306" font-size="24" font-weight="700" fill="#C79A54" letter-spacing="8">DAILY ALMANAC</text>
+  <text x="70" y="360" font-size="46" font-weight="800" fill="#063F4A">每日吉方与穿衣指南</text>
+  <text x="70" y="404" font-size="22" fill="#6C8790">${escapeSvgText(personalLine)}</text>
+
+  <g transform="translate(70 456)">
+    <rect width="360" height="170" rx="26" fill="#F5FAFA" stroke="#C79A54"/>
+    <text x="34" y="48" font-size="24" font-weight="700" fill="#7A1F16">每日财位</text>
+    <text x="34" y="108" font-size="54" font-weight="800" fill="#063F4A">${escapeSvgText(almanac.wealthDirection.direction)}</text>
+    <text x="34" y="142" font-size="18" fill="#6C8790">报价、收款、签单、账目整理</text>
+  </g>
+  <g transform="translate(470 456)">
+    <rect width="360" height="170" rx="26" fill="#FFF8E8" stroke="#C79A54"/>
+    <text x="34" y="48" font-size="24" font-weight="700" fill="#7A1F16">每日喜神</text>
+    <text x="34" y="108" font-size="54" font-weight="800" fill="#063F4A">${escapeSvgText(almanac.joyDirection.direction)}</text>
+    <text x="34" y="142" font-size="18" fill="#6C8790">贵人、面谈、修复关系</text>
+  </g>
+
+  <text x="70" y="680" font-size="30" font-weight="800" fill="#7A1F16">每日穿衣指南</text>
+  ${clothingRows}
+
+  <g transform="translate(70 970)">
+    <rect width="760" height="118" rx="26" fill="#063F4A"/>
+    <text x="34" y="42" font-size="22" font-weight="700" fill="#C79A54">今日宜</text>
+    <text x="34" y="78" font-size="24" font-weight="700" fill="#F8F1DF">${escapeSvgText(almanac.yi.join("、"))}</text>
+    <text x="34" y="108" font-size="18" fill="#DDEFF2">今日忌：${escapeSvgText(almanac.ji.join("、"))}</text>
+  </g>
+
+  <text x="450" y="1130" text-anchor="middle" font-size="22" font-weight="700" fill="#C79A54">enhancefengshui.com · ${escapeSvgText(almanac.footer)}</text>
+</svg>`;
+}
+
+function downloadAlmanacSharePoster(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
+  const svg = buildAlmanacShareSvg(almanac, personal);
+  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `daily-almanac-${almanac.date}.svg`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function shareAlmanacToWhatsApp(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
+  const personalLine = personal?.zodiac || personal?.dayMaster ? `我的重点：${[personal?.zodiac ? `${personal.zodiac}生肖` : "", personal?.dayMaster ? `${personal.dayMaster}日主` : ""].filter(Boolean).join(" · ")}` : "大众每日通胜";
+  const text = [
+    `今日通胜 ${almanac.date}`,
+    `${almanac.lunarDate}｜${almanac.dayPillar}日｜${almanac.chong}`,
+    personalLine,
+    `财位：${almanac.wealthDirection.direction}｜喜神：${almanac.joyDirection.direction}`,
+    `穿衣首选：${almanac.clothingLevels[0]?.colors.join("、")}`,
+    `宜：${almanac.yi.join("、")}｜忌：${almanac.ji.join("、")}`,
+    "enhancefengshui.com"
+  ].join("\n");
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+}
+
+function PublicDailyAlmanacPanel({
+  almanac,
+  memberProfile,
+  sevenDayItems,
+  sevenDayUnlocked,
+  onUnlockSevenDay
+}: {
+  almanac: PublicDailyAlmanac;
+  memberProfile: MemberProfile;
+  sevenDayItems: PublicDailyAlmanac[];
+  sevenDayUnlocked: boolean;
+  onUnlockSevenDay: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const personalCalendar = useMemo(() => getMingliCalendar(memberProfile.birthDate, memberProfile.birthTime || memberProfile.birthTimeLabel, "Gregorian"), [memberProfile.birthDate, memberProfile.birthTime, memberProfile.birthTimeLabel]);
+  const personalZodiac = personalCalendar?.zodiac || "";
+  const personalDayMaster = personalCalendar?.dayMaster || "";
+  const personalZodiacFortune = almanac.zodiac.find((item) => item.zodiac === personalZodiac);
+  const personalDayMasterFlow = almanac.dayMasterFlow.find((item) => item.stem === personalDayMaster);
+
   return (
-    <section className="rounded border border-[#C79A54]/35 bg-[#FFF8E8] shadow-soft">
-      <div className="rounded-t border-b border-[#C79A54]/25 bg-[#7A1F16] px-5 py-5 text-[#F8F1DF] md:px-7">
+    <section className="rounded-2xl border border-[#C79A54]/35 bg-[#FFF8E8] shadow-soft">
+      <div className="rounded-t-2xl border-b border-[#C79A54]/25 bg-[#7A1F16] px-5 py-5 text-[#F8F1DF] md:px-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Public Almanac</p>
             <h2 className="mt-2 text-2xl font-semibold md:text-3xl">大众每日通胜</h2>
             <p className="mt-2 text-sm leading-6 text-[#F8F1DF]/72">
-              {almanac.dateLabel} · {almanac.lunarDate} · {almanac.fourPillarsText} · {almanac.chong}
+              {almanac.dateLabel} · {almanac.lunarDate} · {almanac.yearPillar}年 {almanac.monthPillar}月 {almanac.dayPillar}日 · {almanac.chong}
             </p>
           </div>
-          <StatusPill>大众版 · 非个人命盘</StatusPill>
+          <div className="flex flex-wrap gap-2">
+            <StatusPill>{almanac.dailyStar}</StatusPill>
+            <StatusPill>冲{almanac.clashZodiac}</StatusPill>
+          </div>
         </div>
       </div>
 
       <div className="grid gap-5 p-5 md:p-7">
+        <div className="grid gap-3 md:grid-cols-4">
+          {[
+            ["公历", almanac.date],
+            ["农历", almanac.lunarDate],
+            ["当日干支", `${almanac.dayPillar}日`],
+            ["贵人生肖", almanac.nobleZodiacs.join("、") || "待定"]
+          ].map(([label, value]) => (
+            <div key={label} className="rounded border border-[#C79A54]/25 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7A1F16]">{label}</p>
+              <p className="mt-2 text-sm font-semibold text-[#063F4A]">{value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-3 lg:grid-cols-[1fr_1fr_0.9fr]">
+          <div className="rounded-xl border border-[#1495A0]/25 bg-[#1495A0]/10 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#063F4A]">Personal Highlight</p>
+            <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">你的生肖重点</h3>
+            {personalZodiacFortune ? (
+              <>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#063F4A]">{personalZodiac} · {personalZodiacFortune.score}/100</span>
+                  {personalZodiacFortune.isClash ? <span className="rounded-full bg-[#7A1F16]/10 px-3 py-1 text-xs font-semibold text-[#7A1F16]">今日相冲</span> : null}
+                  {personalZodiacFortune.isNoble ? <span className="rounded-full bg-[#C79A54]/18 px-3 py-1 text-xs font-semibold text-[#063F4A]">贵人生肖</span> : null}
+                </div>
+                <p className="mt-3 text-sm font-semibold text-[#063F4A]">{personalZodiacFortune.headline}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/58">{personalZodiacFortune.advice}</p>
+                <p className="mt-2 text-xs font-semibold text-ink/45">色：{personalZodiacFortune.luckyColor} · 方：{personalZodiacFortune.luckyDirection}</p>
+              </>
+            ) : (
+              <p className="mt-3 text-sm leading-6 text-ink/58">补完整出生日期后，系统会自动高亮你的生肖今日重点。</p>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-[#C79A54]/30 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Day Master</p>
+            <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">你的日主流日</h3>
+            {personalDayMasterFlow ? (
+              <>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="grid size-10 place-items-center rounded-full bg-[#063F4A] text-lg font-semibold text-white">{personalDayMaster}</span>
+                  <span className="rounded-full bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.tenGod}</span>
+                  <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.score}/100</span>
+                </div>
+                <p className="mt-3 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.headline}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/58">{personalDayMasterFlow.advice}</p>
+              </>
+            ) : (
+              <p className="mt-3 text-sm leading-6 text-ink/58">补完整生日和时辰后，会显示你的今日十神标签。</p>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-[#C79A54]/35 bg-[#FFFDF7] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Share Poster</p>
+            <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">生成今日分享图</h3>
+            <p className="mt-2 text-sm leading-6 text-ink/58">把每日吉方、穿衣和宜忌做成 SVG 海报，适合 WhatsApp / Facebook 分享。</p>
+            <button
+              type="button"
+              onClick={() => downloadAlmanacSharePoster(almanac, { zodiac: personalZodiac, dayMaster: personalDayMaster })}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-4 py-3 text-sm font-semibold text-white"
+            >
+              下载今日海报 <Download className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => shareAlmanacToWhatsApp(almanac, { zodiac: personalZodiac, dayMaster: personalDayMaster })}
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded border border-[#C79A54]/45 bg-white px-4 py-3 text-sm font-semibold text-[#063F4A]"
+            >
+              WhatsApp 分享 <Share2 className="size-4" />
+            </button>
+          </div>
+        </div>
+
         <div className="grid gap-4 lg:grid-cols-2">
           {[almanac.wealthDirection, almanac.joyDirection].map((item) => (
-            <div key={item.title} className="rounded border border-[#C79A54]/35 bg-white p-5 shadow-sm">
+            <div key={item.title} className="rounded-xl border border-[#C79A54]/35 bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">{item.title}</p>
@@ -4276,7 +4681,29 @@ function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
           ))}
         </div>
 
-        <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
+        <div className="grid gap-3 rounded-xl border border-[#C79A54]/30 bg-[#F8F1DF] p-4 md:grid-cols-[1fr_1fr_1.2fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日宜</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#063F4A]">{almanac.yi.join("、")}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日忌</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#063F4A]">{almanac.ji.join("、")}</p>
+          </div>
+          <div className="rounded bg-white/65 p-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">时辰提醒</p>
+            <div className="mt-2 grid gap-2">
+              {almanac.timeWindows.map((item) => (
+                <div key={item.label} className="flex items-start justify-between gap-3 text-xs">
+                  <span className="font-semibold text-[#063F4A]">{item.label} · {item.time}</span>
+                  <span className={`rounded px-2 py-0.5 font-semibold ${toneClass(item.tone)}`}>{toneLabel(item.tone)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-[#C79A54]/30 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Daily Clothing Guide</p>
@@ -4284,11 +4711,11 @@ function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
             </div>
             <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">按流日五行调频</span>
           </div>
-          <div className="mt-5 grid gap-3 lg:grid-cols-3">
-            {Object.values(almanac.clothing).map((item) => (
-              <div key={item.label} className="rounded border border-black/10 bg-[#FFFDF7] p-4">
+          <div className="mt-5 grid gap-3 lg:grid-cols-5">
+            {almanac.clothingLevels.map((item) => (
+              <div key={item.level} className={`rounded border p-4 ${clothingToneClass(item.tone)}`}>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold text-[#063F4A]">{item.label}</p>
+                  <p className="font-semibold text-[#063F4A]">{item.level}</p>
                   <div className="flex gap-1.5">
                     {item.swatches.map((swatch) => (
                       <span key={swatch} className="size-5 rounded-full border border-black/10" style={{ backgroundColor: swatch }} />
@@ -4302,14 +4729,61 @@ function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
           </div>
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="rounded-xl border border-[#C79A54]/30 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">7-Day Unlock</p>
+              <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">未来 7 天运势预报</h3>
+              <p className="mt-1 text-sm leading-6 text-ink/55">适合安排约见、签约、出门、谈合作和避开风险时段。</p>
+            </div>
+            <StatusPill>{sevenDayUnlocked ? "已解锁" : `${sevenDayFortuneCost} 点解锁`}</StatusPill>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-7">
+            {(sevenDayUnlocked ? sevenDayItems : sevenDayItems.slice(0, 2)).map((item, index) => (
+              <div key={item.date} className={`rounded border p-3 ${index === 0 ? "border-[#C79A54]/45 bg-[#FFF8E8]" : "border-[#CFE2E5] bg-[#F5FAFA]"}`}>
+                <p className="text-xs font-semibold text-ink/45">{item.date}</p>
+                <p className="mt-1 font-semibold text-[#063F4A]">{item.dayPillar}日</p>
+                <p className="mt-2 text-xs leading-5 text-ink/58">财：{item.wealthDirection.direction} · 喜：{item.joyDirection.direction}</p>
+                <p className="mt-1 text-xs leading-5 text-[#7A1F16]">{item.chong}</p>
+                <p className="mt-2 text-xs font-semibold text-[#063F4A]">宜：{item.yi.slice(0, 2).join("、")}</p>
+              </div>
+            ))}
+            {!sevenDayUnlocked ? (
+              <div className="rounded border border-dashed border-[#C79A54]/45 bg-[#FFFDF7] p-3 md:col-span-5">
+                <LockKeyhole className="size-5 text-[#C79A54]" />
+                <p className="mt-2 font-semibold text-[#063F4A]">解锁完整 7 天预报</p>
+                <p className="mt-1 text-sm leading-6 text-ink/55">包含每日财位、喜神、相冲、宜忌和行动窗口，适合提前规划一周。</p>
+                <button
+                  type="button"
+                  onClick={onUnlockSevenDay}
+                  className="mt-3 inline-flex items-center gap-2 rounded bg-[#7A1F16] px-4 py-2 text-sm font-semibold text-white"
+                >
+                  消耗 {sevenDayFortuneCost} 点解锁 <ChevronRight className="size-4" />
+                </button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="flex justify-center md:hidden">
+          <button
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            className="inline-flex items-center gap-2 rounded-full border border-[#C79A54]/35 bg-white px-4 py-2 text-sm font-semibold text-[#063F4A] shadow-sm"
+          >
+            {expanded ? "收起生肖与十神" : "展开生肖与十神"}
+            <ChevronRight className={`size-4 transition ${expanded ? "rotate-90" : ""}`} />
+          </button>
+        </div>
+
+        <div className={`${expanded ? "grid" : "hidden"} gap-5 md:grid xl:grid-cols-[0.9fr_1.1fr]`}>
           <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Zodiac</p>
                 <h3 className="mt-2 text-xl font-semibold">十二生肖运势</h3>
               </div>
-              <span className="rounded bg-[#F5FAFA] px-3 py-1 text-sm text-ink/58">每日更新</span>
+              <span className="rounded bg-[#F5FAFA] px-3 py-1 text-sm text-ink/58">贵人：{almanac.nobleZodiacs.join("、") || "待定"}</span>
             </div>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
               {almanac.zodiac.map((item) => (
@@ -4320,8 +4794,13 @@ function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
                       {toneLabel(item.tone)} · {item.score}
                     </span>
                   </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {item.isClash ? <span className="rounded bg-[#7A1F16]/10 px-2 py-0.5 text-[11px] font-semibold text-[#7A1F16]">今日相冲</span> : null}
+                    {item.isNoble ? <span className="rounded bg-[#C79A54]/18 px-2 py-0.5 text-[11px] font-semibold text-[#063F4A]">贵人生肖</span> : null}
+                  </div>
                   <p className="mt-2 text-sm font-semibold">{item.headline}</p>
                   <p className="mt-1 text-xs leading-5 text-ink/58">{item.advice}</p>
+                  <p className="mt-2 text-[11px] font-semibold text-ink/48">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
@@ -4341,38 +4820,43 @@ function PublicDailyAlmanacPanel({ almanac }: { almanac: PublicDailyAlmanac }) {
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#063F4A] text-lg font-semibold text-white">{item.stem}</span>
                     <div className="min-w-0">
-                      <p className="font-semibold text-[#063F4A]">{item.stem}{item.element} · {item.tenGod}</p>
-                      <p className="text-xs font-semibold text-[#C79A54]">{item.headline}</p>
+                      <p className="font-semibold text-[#063F4A]">{item.stem}{item.element} · 今日主星：{item.tenGod}</p>
+                      <p className="text-xs font-semibold text-[#C79A54]">{item.headline} · {item.score}/100</p>
                     </div>
                   </div>
                   <p className="mt-2 text-xs leading-5 text-ink/58">{item.advice}</p>
+                  <p className="mt-2 text-[11px] font-semibold text-ink/45">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="grid gap-3 rounded border border-[#C79A54]/30 bg-[#F8F1DF] p-4 md:grid-cols-2">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日宜</p>
-            <p className="mt-2 text-sm font-semibold text-[#063F4A]">{almanac.yi.join("、")}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日忌</p>
-            <p className="mt-2 text-sm font-semibold text-[#063F4A]">{almanac.ji.join("、")}</p>
-          </div>
-          <p className="border-t border-[#C79A54]/25 pt-3 text-center text-sm font-semibold tracking-[0.18em] text-[#7A1F16] md:col-span-2">{almanac.footer}</p>
-        </div>
+        <p className="rounded border border-[#C79A54]/25 bg-[#F8F1DF] px-4 py-3 text-center text-sm font-semibold tracking-[0.18em] text-[#7A1F16]">{almanac.footer}</p>
       </div>
     </section>
   );
 }
 
-function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipTier; memberProfile: MemberProfile }) {
+function TodayFortune({
+  currentTier,
+  memberProfile,
+  onSpendPoints
+}: {
+  currentTier: MembershipTier;
+  memberProfile: MemberProfile;
+  onSpendPoints: (amount: number, source?: string, description?: string) => boolean;
+}) {
   const [aiFortune, setAiFortune] = useState<DailyFortuneResponse | null>(null);
   const [isLoadingFortune, setIsLoadingFortune] = useState(false);
+  const [sevenDayUnlocked, setSevenDayUnlocked] = useState(false);
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const publicAlmanac = useMemo(() => buildPublicDailyAlmanac(), []);
+  const sevenDayItems = useMemo(() => Array.from({ length: 7 }, (_, index) => {
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + index);
+    return buildPublicDailyAlmanac(nextDate);
+  }), []);
   const matrix = aiFortune?.matrix || buildDailyFortuneMatrix(memberProfile, activeTier.name);
   const dailyScores = [matrix.wealth, matrix.career, matrix.relationship];
   const weatherToneClass =
@@ -4429,9 +4913,28 @@ function TodayFortune({ currentTier, memberProfile }: { currentTier: MembershipT
     generateDailyFortune();
   }, [memberProfile.name, memberProfile.birthDate, memberProfile.birthTime, memberProfile.gender, currentTier]);
 
+  useEffect(() => {
+    const dateKey = publicAlmanac.date;
+    setSevenDayUnlocked(window.localStorage.getItem(`aifengshui-seven-day-${dateKey}`) === "unlocked");
+  }, [publicAlmanac.date]);
+
+  function unlockSevenDayFortune() {
+    if (sevenDayUnlocked) return;
+    const ok = onSpendPoints(sevenDayFortuneCost, "seven_day_fortune", "解锁未来 7 天运势预报");
+    if (!ok) return;
+    window.localStorage.setItem(`aifengshui-seven-day-${publicAlmanac.date}`, "unlocked");
+    setSevenDayUnlocked(true);
+  }
+
   return (
     <>
-    <PublicDailyAlmanacPanel almanac={publicAlmanac} />
+    <PublicDailyAlmanacPanel
+      almanac={publicAlmanac}
+      memberProfile={memberProfile}
+      sevenDayItems={sevenDayItems}
+      sevenDayUnlocked={sevenDayUnlocked}
+      onUnlockSevenDay={unlockSevenDayFortune}
+    />
     <section className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <div className="flex items-center justify-between">
@@ -6612,6 +7115,16 @@ function CreditPreview({ points, cost, message }: { points: number; cost: number
   );
 }
 
+function confirmCreditSpend(cost: number, action: string, points: number) {
+  if (typeof window === "undefined") return true;
+
+  const balanceAfter = Math.max(points - cost, 0);
+
+  return window.confirm(
+    `确认消耗 ${cost.toLocaleString("en-US")} 点${action}？\n\n当前点数：${points.toLocaleString("en-US")} 点\n生成后余额：${balanceAfter.toLocaleString("en-US")} 点\n\n确认后才会扣点。`
+  );
+}
+
 function WalletAndReports({
   currentTier,
   memberProfile,
@@ -6648,8 +7161,10 @@ function WalletAndReports({
   const [savedSubjectProfiles, setSavedSubjectProfiles] = useState<ReportSubjectProfile[]>([]);
   const [selectedPaidReport, setSelectedPaidReport] = useState<"integrated" | "bazi" | "ziwei" | "meihua" | "numerology">("integrated");
   const [generatingReportTitle, setGeneratingReportTitle] = useState("");
+  const [reportStep, setReportStep] = useState<1 | 2 | 3>(1);
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const strategicReportTitles = new Set(["流年报告", "开业择日报告", "公司风水初步分析报告"]);
+  const mobileStepClass = (step: 1 | 2 | 3) => (reportStep === step ? "block" : "hidden xl:block");
 
   async function getMemberAccessToken() {
     const supabase = createBrowserSupabaseClient();
@@ -6724,6 +7239,7 @@ function WalletAndReports({
 
     setSelectedPaidReport("integrated");
     setIsIntegratedFormOpen(true);
+    setReportStep(2);
     setIntegratedInput((current) => ({
       ...current,
       focus: reportPreset.focus,
@@ -6942,6 +7458,11 @@ function WalletAndReports({
       return;
     }
 
+    if (!confirmCreditSpend(report.points, `生成「${report.title}」`, points)) {
+      setReportMessage("已取消生成报告，未扣点。");
+      return;
+    }
+
     setGeneratingReportTitle(report.title);
     setReportMessage(`AI 正在用八字、紫微、梅花与数字命理生成${report.title}，请稍候。`);
 
@@ -7045,6 +7566,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setReportMessage(`${report.title} 已按四术框架生成并保存，点数已完成扣减。`);
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
     setGeneratingReportTitle("");
@@ -7068,6 +7590,12 @@ function WalletAndReports({
     if (points < baziReportCost) {
       setBaziActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${baziReportCost} 点。`);
       setReportMessage("点数不足，八字命理完整报告需要 380 点。请先充值点数后再生成。");
+      return;
+    }
+
+    if (!confirmCreditSpend(baziReportCost, "生成「八字命理测算完整报告」", points)) {
+      setBaziActionMessage("已取消生成报告，未扣点。");
+      setReportMessage("已取消生成八字命理完整报告，未扣点。");
       return;
     }
 
@@ -7113,6 +7641,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setBaziActionMessage("报告已生成、扣点并保存。");
     setReportMessage("八字命理测算完整报告已保存，之后可以在报告档案找回。");
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
@@ -7137,6 +7666,12 @@ function WalletAndReports({
     if (points < meihuaReportCost) {
       setMeihuaActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${meihuaReportCost} 点。`);
       setReportMessage("点数不足，梅花易数完整报告需要 260 点。请先充值点数后再生成。");
+      return;
+    }
+
+    if (!confirmCreditSpend(meihuaReportCost, "生成「梅花易数测算完整报告」", points)) {
+      setMeihuaActionMessage("已取消生成报告，未扣点。");
+      setReportMessage("已取消生成梅花易数完整报告，未扣点。");
       return;
     }
 
@@ -7172,6 +7707,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setMeihuaActionMessage("报告已生成、扣点并保存。");
     setReportMessage("梅花易数测算完整报告已保存，之后可以在报告档案找回。");
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
@@ -7196,6 +7732,12 @@ function WalletAndReports({
     if (points < ziweiReportCost) {
       setZiweiActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${ziweiReportCost} 点。`);
       setReportMessage("点数不足，紫微斗数命盘报告需要 420 点。请先充值点数后再生成。");
+      return;
+    }
+
+    if (!confirmCreditSpend(ziweiReportCost, "生成「紫微斗数命盘详细解析报告」", points)) {
+      setZiweiActionMessage("已取消生成报告，未扣点。");
+      setReportMessage("已取消生成紫微斗数命盘报告，未扣点。");
       return;
     }
 
@@ -7235,6 +7777,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setZiweiActionMessage("报告已生成、扣点并保存。");
     setReportMessage("紫微斗数命盘详细解析报告已保存，之后可以在报告档案找回。");
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
@@ -7259,6 +7802,12 @@ function WalletAndReports({
     if (points < numerologyReportCost) {
       setNumerologyActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${numerologyReportCost} 点。`);
       setReportMessage("点数不足，数字命理完整报告需要 220 点。请先充值点数后再生成。");
+      return;
+    }
+
+    if (!confirmCreditSpend(numerologyReportCost, "生成「数字命理测算完整报告」", points)) {
+      setNumerologyActionMessage("已取消生成报告，未扣点。");
+      setReportMessage("已取消生成数字命理完整报告，未扣点。");
       return;
     }
 
@@ -7294,6 +7843,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setNumerologyActionMessage("报告已生成、扣点并保存。");
     setReportMessage("数字命理测算完整报告已保存，之后可以在报告档案找回。");
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
@@ -7370,6 +7920,12 @@ function WalletAndReports({
       return;
     }
 
+    if (!confirmCreditSpend(integratedReportCost, "生成「综合命理合参完整报告」", points)) {
+      setIntegratedActionMessage("已取消生成报告，未扣点。");
+      setReportMessage("已取消生成综合命理报告，未扣点。");
+      return;
+    }
+
     setIsGeneratingIntegrated(true);
     setIntegratedActionMessage("AI 正在整合八字、紫微斗数、梅花易数与数字命理，通常需要 15-40 秒。");
     setReportMessage("AI 正在生成综合命理合参完整报告，请稍候。");
@@ -7407,6 +7963,7 @@ function WalletAndReports({
     setSavedReports(nextReports);
     setSelectedReport(persistedReport);
     setIsFullReportOpen(true);
+    setReportStep(3);
     setIntegratedActionMessage("综合报告已生成、扣点并保存。");
     setReportMessage("综合命理合参完整报告已保存，之后可以在报告档案找回。");
     window.localStorage.setItem(reportStorageKey, JSON.stringify(nextReports));
@@ -7461,20 +8018,34 @@ function WalletAndReports({
             ["01", "选择需求", "先选事业、财运、感情或年度方向"],
             ["02", "确认资料", "使用会员资料或为客户填写新资料"],
             ["03", "生成交付", "扣点后自动保存，可打开和下载"]
-          ].map(([step, title, desc]) => (
-            <div key={step} className="flex gap-3 rounded bg-white p-3">
-              <span className="grid size-8 shrink-0 place-items-center rounded bg-[#063F4A] text-xs font-semibold text-white">{step}</span>
+          ].map(([step, title, desc], index) => {
+            const stepNumber = (index + 1) as 1 | 2 | 3;
+            const active = reportStep === stepNumber;
+
+            return (
+            <button
+              key={step}
+              type="button"
+              onClick={() => setReportStep(stepNumber)}
+              className={`flex gap-3 rounded p-3 text-left transition ${
+                active ? "bg-[#063F4A] text-white shadow-sm" : "bg-white text-ink"
+              }`}
+            >
+              <span className={`grid size-8 shrink-0 place-items-center rounded text-xs font-semibold ${
+                active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#063F4A] text-white"
+              }`}>{step}</span>
               <span>
-                <span className="block text-sm font-semibold text-[#063F4A]">{title}</span>
-                <span className="mt-1 block text-xs leading-5 text-ink/50">{desc}</span>
+                <span className={`block text-sm font-semibold ${active ? "text-white" : "text-[#063F4A]"}`}>{title}</span>
+                <span className={`mt-1 block text-xs leading-5 ${active ? "text-white/62" : "text-ink/50"}`}>{desc}</span>
               </span>
-            </div>
-          ))}
+            </button>
+            );
+          })}
         </div>
 
         <div className="mt-6 grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
           <div>
-            <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
+            <div className={`${mobileStepClass(1)} mb-4 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4`}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Choose Purpose</p>
@@ -7502,6 +8073,7 @@ function WalletAndReports({
                         }));
                         setIntegratedActionMessage(item.preset.message);
                         setReportMessage(`${item.title} 已准备好，请确认资料后生成。`);
+                        setReportStep(2);
                       }}
                       className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
                         active ? "border-[#C79A54] bg-[#102F38] text-white" : "border-black/10 bg-white text-ink"
@@ -7518,7 +8090,7 @@ function WalletAndReports({
               </div>
             </div>
             {selectedPaidReport === "integrated" ? (
-              <div className="mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4">
+              <div className={`${mobileStepClass(2)} mb-4 rounded border border-[#C79A54]/35 bg-[#fffaf0] p-4`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Step 2 / 3 · Confirm Profile</p>
@@ -7689,7 +8261,7 @@ function WalletAndReports({
                 <CreditPreview points={points} cost={integratedReportCost} message={integratedActionMessage} />
               </div>
             ) : null}
-            <details className="mb-4 rounded border border-black/10 bg-white p-4">
+            <details className={`${mobileStepClass(2)} mb-4 rounded border border-black/10 bg-white p-4`}>
               <summary className="cursor-pointer list-none">
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -8024,7 +8596,7 @@ function WalletAndReports({
             </div>
             </details>
 
-            <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
+            <div className={`${mobileStepClass(3)} mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4`}>
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Archive className="size-4 text-[#063F4A]" />
@@ -8053,15 +8625,19 @@ function WalletAndReports({
                     </button>
                   ))
                 ) : (
-                  <div className="rounded border border-dashed border-black/15 bg-white p-4 text-sm leading-6 text-ink/55">
-                    点击上方任一报告后，系统会自动生成并保存到这里，用户之后可以随时找回。
-                  </div>
+                  <EmptyStateCard
+                    icon={FileText}
+                    title="还没有报告档案"
+                    desc="先选择一个需求生成报告。完成后会自动云端保存，之后可随时回看与下载。"
+                    action="去选择报告"
+                    onAction={() => setReportStep(1)}
+                  />
                 )}
               </div>
             </div>
           </div>
 
-          <div className="rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
+          <div className={`${mobileStepClass(3)} rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm`}>
             {selectedReport ? (
               <div>
                 {(() => {
@@ -8561,7 +9137,7 @@ function SigilModule({
   onSpendPoints,
 }: {
   points: number;
-  onSpendPoints: (amount: number) => boolean;
+  onSpendPoints: (amount: number, source?: string, description?: string) => boolean;
 }) {
   const [intent, setIntent] = useState("I AM EARNING STEADY MONEY EVERY WEEK");
   const [artifacts, setArtifacts] = useState<SigilArtifact[]>([]);
@@ -8593,8 +9169,13 @@ function SigilModule({
       return;
     }
 
-    if (points < sigilCost || !onSpendPoints(sigilCost)) {
+    if (points < sigilCost) {
       setError(`点数不足，生成符印需要 ${sigilCost} 点。`);
+      return;
+    }
+
+    if (!onSpendPoints(sigilCost, "sigil_generation", "生成 Sigil 符印")) {
+      setError("已取消生成符印，未扣点。");
       return;
     }
 
@@ -8688,9 +9269,16 @@ function SigilModule({
                 </button>
               ))
             ) : (
-              <p className="rounded border border-dashed border-black/15 bg-white p-4 text-sm leading-6 text-ink/55">
-                还没有符印。生成后会自动保存到这里，方便用户之后找回。
-              </p>
+              <EmptyStateCard
+                icon={Sparkles}
+                title="还没有符印"
+                desc="输入一句正向、肯定、现在式的意图，即可生成第一枚专属金色符印。"
+                action="套用示例意图"
+                onAction={() => {
+                  setIntent("I AM CALM FOCUSED AND PROTECTED");
+                  setError("");
+                }}
+              />
             )}
           </div>
         </div>
@@ -8728,26 +9316,18 @@ function SigilModule({
             </div>
           </div>
         ) : (
-          <div>
-            <div className="mb-4">
-              <p className="text-sm text-ink/48">Sigil Preview</p>
-              <h3 className="mt-2 text-2xl font-semibold">等待生成符印</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/55">输入意图并消耗点数后，这里会显示你的专属金色符印。</p>
-            </div>
-            <div className="grid min-h-[460px] place-items-center rounded border border-dashed border-[#C79A54]/40 bg-[#C79A54]/5 p-8 text-center">
-              <div>
-                <Sparkles className="mx-auto size-12 text-[#C79A54]" />
-                <p className="mt-4 text-sm leading-6 text-ink/55">符印将在生成后显示。</p>
-              </div>
-            </div>
-          </div>
+          <EmptyStateCard
+            icon={Sparkles}
+            title="等待生成符印"
+            desc="生成后这里会显示神圣几何风格的金色符印，并提供 SVG 下载。"
+          />
         )}
       </div>
     </section>
   );
 }
 
-function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPoints: (amount: number) => boolean }) {
+function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPoints: (amount: number, source?: string, description?: string) => boolean }) {
   const [readings, setReadings] = useState<Hexagram64Reading[]>([]);
   const [selectedReading, setSelectedReading] = useState<Hexagram64Reading | null>(null);
   const [mode, setMode] = useState<Hexagram64Mode>("daily");
@@ -8782,8 +9362,13 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
       return;
     }
 
-    if (points < selectedMode.cost || !onSpendPoints(selectedMode.cost)) {
+    if (points < selectedMode.cost) {
       setError(`点数不足，${selectedMode.title}需要 ${selectedMode.cost} 点。`);
+      return;
+    }
+
+    if (!onSpendPoints(selectedMode.cost, "hexagram64_one_word", `生成${selectedMode.title}`)) {
+      setError("已取消抽取，未扣点。");
       return;
     }
 
@@ -8893,9 +9478,16 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                 </button>
               ))
             ) : (
-              <p className="rounded border border-dashed border-black/15 bg-white p-4 text-sm leading-6 text-ink/55">
-                还没有一字记录。点击抽取后，会自动保存本次结果。
-              </p>
+              <EmptyStateCard
+                icon={Sparkles}
+                title="还没有一字记录"
+                desc="每日可抽取一次当下命理字。问具体事情时，可切换为问事一字或深度解字。"
+                action="填入今日问题"
+                onAction={() => {
+                  setQuestion("我今天最需要看见的提醒是什么？");
+                  setError("");
+                }}
+              />
             )}
           </div>
         </div>
@@ -8981,13 +9573,11 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             </p>
           </div>
         ) : (
-          <div className="grid min-h-[460px] place-items-center rounded border border-dashed border-[#C79A54]/40 bg-[#C79A54]/5 p-8 text-center">
-            <div>
-              <Sparkles className="mx-auto size-12 text-[#C79A54]" />
-              <h3 className="mt-4 text-2xl font-semibold text-[#063F4A]">等待抽取一字</h3>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-ink/55">点击左侧按钮后，系统会根据此刻时间与随机卦象生成你的今日命理关键字。</p>
-            </div>
-          </div>
+          <EmptyStateCard
+            icon={Sparkles}
+            title="等待抽取一字"
+            desc="点击左侧按钮后，系统会根据此刻时间与随机卦象生成命理关键字、断语与今日线索。"
+          />
         )}
       </div>
     </section>
@@ -9001,7 +9591,7 @@ function DivinationModule({
   onOpenModule
 }: {
   points: number;
-  onSpendPoints: (amount: number) => boolean;
+  onSpendPoints: (amount: number, source?: string, description?: string) => boolean;
   onEarnPoints: (amount: number, source?: string, description?: string) => void;
   onOpenModule: (module: DashboardModule) => void;
 }) {
@@ -9050,8 +9640,13 @@ function DivinationModule({
       return;
     }
 
-    if (points < divinationCost || !onSpendPoints(divinationCost)) {
+    if (points < divinationCost) {
       setError(`点数不足，九运问卦需要 ${divinationCost} 点。`);
+      return;
+    }
+
+    if (!onSpendPoints(divinationCost, "jiuyun_divination", "九运智慧问卦")) {
+      setError("已取消问卦，未扣点。");
       return;
     }
 
@@ -9182,9 +9777,16 @@ function DivinationModule({
                 </button>
               ))
             ) : (
-              <p className="rounded border border-dashed border-black/15 bg-white p-4 text-sm leading-6 text-ink/55">
-                还没有问卦记录。输入 3 个数字后，会自动保存本次结果。
-              </p>
+              <EmptyStateCard
+                icon={Flame}
+                title="还没有问卦记录"
+                desc="输入三个随机数字，系统会结合起卦时间生成本卦、互卦、变卦与通关建议。"
+                action="使用 1 / 4 / 7"
+                onAction={() => {
+                  setNumbers(["1", "4", "7"]);
+                  setError("");
+                }}
+              />
             )}
           </div>
         </div>
@@ -9476,15 +10078,11 @@ function DivinationModule({
             ) : null}
           </div>
         ) : (
-          <div className="grid min-h-[620px] place-items-center rounded border border-dashed border-[#C79A54]/45 bg-[#C79A54]/5 p-8 text-center">
-            <div>
-              <Flame className="mx-auto size-12 text-[#C79A54]" />
-              <h3 className="mt-4 text-2xl font-semibold">等待三数起卦</h3>
-              <p className="mt-2 max-w-md text-sm leading-6 text-ink/55">
-                输入 3 个随机数字后，系统会自动结合当前时辰生成九运智慧决策建议。
-              </p>
-            </div>
-          </div>
+          <EmptyStateCard
+            icon={Flame}
+            title="等待三数起卦"
+            desc="输入三个随机数字后，系统会结合当前时辰生成局势、阻力、结果与五行通关行动。"
+          />
         )}
       </div>
     </section>
@@ -9588,6 +10186,7 @@ export default function DashboardPage() {
   const [aiStarterPrompt, setAiStarterPrompt] = useState("");
   const [reportPreset, setReportPreset] = useState<ReportDemandPreset | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [recentModules, setRecentModules] = useState<DashboardModule[]>([]);
   const hasPartnerAccess = partnerPackage !== "none";
   const active = modules.find((module) => module.id === activeModule) || modules[0];
   const availableDashboardCategories = hasPartnerAccess ? [...memberDashboardCategories, partnerDashboardCategory] : memberDashboardCategories;
@@ -9665,6 +10264,21 @@ export default function DashboardPage() {
     setShowOnboarding(!dismissed);
   }, [authStatus]);
 
+  useEffect(() => {
+    if (authStatus !== "authenticated") return;
+
+    const stored = window.localStorage.getItem(recentModulesStorageKey);
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored) as DashboardModule[];
+      const validModuleIds = new Set(modules.map((module) => module.id));
+      setRecentModules(parsed.filter((module) => validModuleIds.has(module)).slice(0, 5));
+    } catch {
+      window.localStorage.removeItem(recentModulesStorageKey);
+    }
+  }, [authStatus]);
+
   function syncCreditDelta(delta: number, source: string, description: string) {
     const supabase = createBrowserSupabaseClient();
 
@@ -9702,6 +10316,10 @@ export default function DashboardPage() {
       return false;
     }
 
+    if (source !== "ai_chat" && !confirmCreditSpend(amount, description, pointBalance)) {
+      return false;
+    }
+
     setPointBalance((current) => current - amount);
     syncCreditDelta(-amount, source, description);
     return true;
@@ -9727,6 +10345,11 @@ export default function DashboardPage() {
     }
 
     setActiveModule(module);
+    setRecentModules((current) => {
+      const next = [module, ...current.filter((item) => item !== module)].slice(0, 5);
+      window.localStorage.setItem(recentModulesStorageKey, JSON.stringify(next));
+      return next;
+    });
     window.setTimeout(() => {
       moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
@@ -9740,7 +10363,13 @@ export default function DashboardPage() {
     }
 
     setActiveCategory(category);
-    setActiveModule(defaultModuleByCategory[category]);
+    const defaultModule = defaultModuleByCategory[category];
+    setActiveModule(defaultModule);
+    setRecentModules((current) => {
+      const next = [defaultModule, ...current.filter((item) => item !== defaultModule)].slice(0, 5);
+      window.localStorage.setItem(recentModulesStorageKey, JSON.stringify(next));
+      return next;
+    });
     window.setTimeout(() => {
       moduleContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
@@ -9794,9 +10423,12 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <main className="premium-dashboard-bg min-h-screen px-5 pb-24 pt-8 md:pb-10">
+      <main className="premium-dashboard-bg min-h-screen px-4 pb-28 pt-5 md:px-5 md:pb-10 md:pt-8">
         <div className="mx-auto max-w-7xl">
+          <DashboardAppTopBar memberProfile={memberProfile} currentPlan={currentPlan} pointBalance={pointBalance} onOpenModule={openModule} />
+          <ProfileCompletionAlert memberProfile={memberProfile} onOpenProfile={() => openModule("profile")} />
           <TodayActionCenter currentPlan={currentPlan} currentPoints={pointBalance} hasPartnerAccess={hasPartnerAccess} onOpenModule={openModule} />
+          <RecentUsePanel recentModules={recentModules} onOpenModule={openModule} />
           {showOnboarding ? (
             <MemberOnboardingGuide
               memberProfile={memberProfile}
@@ -9820,7 +10452,7 @@ export default function DashboardPage() {
           <MembershipPlanPanel currentTier={currentTier} onRequestUpgrade={requestMembershipUpgrade} />
           <TodayAssistantPanel onOpenModule={openModule} onSelectPrompt={handleSelectAiPrompt} onSelectReport={handleSelectReportDemand} />
 
-          <section className="premium-card premium-glow mt-6 p-4 md:p-5">
+          <section className="premium-card premium-glow mt-6 overflow-hidden p-4 md:p-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
               <div className="flex items-center gap-2">
                 <LayoutGrid className="size-5 text-[#063F4A]" />
@@ -9829,7 +10461,7 @@ export default function DashboardPage() {
               <p className="text-sm text-ink/55">当前打开：{active.title}</p>
             </div>
 
-            <div className="grid gap-2 md:grid-cols-5">
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0 md:pb-0">
               {availableDashboardCategories.map((category) => {
                 const activeCategoryButton = activeCategory === category.id;
                 const partnerCategoryLocked = category.id === "partner" && !hasPartnerAccess;
@@ -9840,7 +10472,7 @@ export default function DashboardPage() {
                     type="button"
                     onClick={() => openCategory(category.id)}
                     className={[
-                      "rounded-2xl border p-3 text-left transition duration-200 hover:-translate-y-1",
+                      "min-w-[154px] rounded-2xl border p-3 text-left transition duration-200 hover:-translate-y-1 md:min-w-0",
                       activeCategoryButton
                         ? "border-[#C79A54] bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_16px_36px_rgba(6,63,74,0.22)]"
                         : "border-[#CFE2E5] bg-white/88 text-ink shadow-[0_10px_26px_rgba(6,63,74,0.06)] hover:border-[#C79A54]/50"
@@ -9867,19 +10499,20 @@ export default function DashboardPage() {
                 <StatusPill>{visibleModules.length} 个入口</StatusPill>
               </div>
 
-              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
                 {visibleModules.map((module) => {
                 const partnerLocked = module.id === "partner" && !hasPartnerAccess;
 
                 return (
-                  <ModuleCard
-                    key={module.id}
-                    module={module}
-                    active={module.id === activeModule}
-                    locked={partnerLocked}
-                    lockLabel="创业配套"
-                    onClick={() => openModule(module.id)}
-                  />
+                  <div key={module.id} className="min-w-[210px] sm:min-w-0">
+                    <ModuleCard
+                      module={module}
+                      active={module.id === activeModule}
+                      locked={partnerLocked}
+                      lockLabel="创业配套"
+                      onClick={() => openModule(module.id)}
+                    />
+                  </div>
                 );
               })}
               </div>
@@ -9887,7 +10520,7 @@ export default function DashboardPage() {
           </section>
 
           <section ref={moduleContentRef} className="scroll-mt-28 mt-6">
-            {activeModule === "fortune" ? <TodayFortune currentTier={currentTier} memberProfile={memberProfile} /> : null}
+            {activeModule === "fortune" ? <TodayFortune currentTier={currentTier} memberProfile={memberProfile} onSpendPoints={spendPoints} /> : null}
             {activeModule === "calendar" ? <FortuneCalendarModule currentTier={currentTier} /> : null}
             {activeModule === "profile" ? (
               <DestinyProfileModule memberProfile={memberProfile} onProfileUpdated={setMemberProfile} />
@@ -9942,6 +10575,7 @@ export default function DashboardPage() {
           </section>
         </div>
       </main>
+      <MobileCreditPill pointBalance={pointBalance} onOpenWallet={() => openModule("wallet")} />
       <MobileBottomNav categories={availableDashboardCategories} activeCategory={activeCategory} onOpenCategory={openCategory} />
     </AppShell>
   );

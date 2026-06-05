@@ -84,6 +84,13 @@ const nextStepActions = [
   }
 ];
 
+const mobileFollowUpChips = [
+  "再具体一点",
+  "给我行动清单",
+  "哪里风险最大？",
+  "适合什么时候做？"
+];
+
 const tierModeCopy: Record<MembershipTier, { title: string; desc: string; budget: string }> = {
   free: {
     title: "基础命理问答",
@@ -365,7 +372,7 @@ export function FengshuiChat({
           </div>
         </aside>
 
-        <main className="p-5">
+        <main className="p-5 pb-36 md:pb-5">
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
@@ -374,7 +381,7 @@ export function FengshuiChat({
               </div>
               <p className="text-xs text-ink/45">当前：{selectedTopic} · {depthMode.label}</p>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-1 scrollbar-soft md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0">
               {inquiryTopics.map((topic) => (
                 <button
                   key={topic}
@@ -395,13 +402,13 @@ export function FengshuiChat({
               <Sparkles className="size-4 text-[#C79A54]" />
               <p className="text-sm font-semibold text-[#063F4A]">不知道怎么问？从这里开始</p>
             </div>
-            <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+            <div className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-3">
               {quickPrompts.map((prompt) => (
                 <button
                   key={prompt}
                   type="button"
                   onClick={() => setInput(prompt)}
-                  className="rounded border border-[#DDEEF2] bg-[#F5FAFA] px-3 py-2.5 text-left text-sm font-medium text-ink/70 transition hover:border-[#C79A54] hover:bg-white hover:text-[#063F4A]"
+                  className="min-w-[220px] rounded-2xl border border-[#DDEEF2] bg-[#F5FAFA] px-3 py-2.5 text-left text-sm font-medium text-ink/70 transition active:scale-[0.98] hover:border-[#C79A54] hover:bg-white hover:text-[#063F4A] md:min-w-0 md:rounded"
                 >
                   {prompt}
                 </button>
@@ -484,13 +491,13 @@ export function FengshuiChat({
                 <p className="text-sm font-semibold text-[#063F4A]">AI 回答后的下一步</p>
                 <span className="rounded bg-white px-2.5 py-1 text-xs font-semibold text-ink/45">继续追问 / 生成报告 / 转成方案</span>
               </div>
-              <div className="mt-3 grid gap-2 md:grid-cols-3">
+              <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
                 {topicFollowUps[selectedTopic].map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
                     onClick={() => setInput(prompt)}
-                    className="rounded border border-[#DDEEF2] bg-white px-3 py-2.5 text-left text-sm font-medium text-ink/70 transition hover:border-[#C79A54] hover:text-[#063F4A]"
+                    className="min-w-[210px] rounded-2xl border border-[#DDEEF2] bg-white px-3 py-2.5 text-left text-sm font-medium text-ink/70 transition active:scale-[0.98] hover:border-[#C79A54] hover:text-[#063F4A] md:min-w-0 md:rounded"
                   >
                     {prompt}
                   </button>
@@ -520,15 +527,33 @@ export function FengshuiChat({
             </div>
           ) : null}
 
-          <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+          {hasRealAssistantReply ? (
+            <div className="fixed inset-x-3 bottom-40 z-40 flex gap-2 overflow-x-auto rounded-full border border-[#CFE2E5] bg-white/92 p-2 shadow-[0_14px_42px_rgba(6,63,74,0.18)] backdrop-blur-xl scrollbar-soft md:hidden">
+              {mobileFollowUpChips.map((chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => setInput(chip)}
+                  className="shrink-0 rounded-full bg-[#F5FAFA] px-3 py-2 text-xs font-semibold text-[#063F4A] active:scale-[0.98]"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          <form
+            onSubmit={handleSubmit}
+            className="fixed inset-x-3 bottom-24 z-40 flex gap-2 rounded-[1.35rem] border border-[#CFE2E5] bg-white/95 p-2 shadow-[0_18px_55px_rgba(6,63,74,0.22)] backdrop-blur-xl md:static md:mt-4 md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none"
+          >
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              className="min-w-0 flex-1 rounded border border-[#DDEEF2] bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
+              className="min-w-0 flex-1 rounded-2xl border border-[#DDEEF2] bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A] md:rounded"
               placeholder={isFree ? "问一个简短问题，例如：今天适合谈合作吗？" : "输入你的问题，例如：我适合换工作吗？"}
             />
             <button
-              className="grid size-11 shrink-0 place-items-center rounded bg-[#063F4A] text-white transition hover:bg-[#1495A0] disabled:cursor-not-allowed disabled:opacity-55"
+              className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#063F4A] text-white transition hover:bg-[#1495A0] disabled:cursor-not-allowed disabled:opacity-55 md:size-11 md:rounded"
               type="submit"
               aria-label="发送"
               disabled={isLoading}

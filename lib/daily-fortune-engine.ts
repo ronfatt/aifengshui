@@ -49,12 +49,21 @@ type ClothingGuide = {
   reason: string;
 };
 
+type ClothingLevel = ClothingGuide & {
+  level: "首选色系" | "次选色系" | "一般色系" | "不建议色系" | "强烈不建议色系";
+  tone: "good" | "steady" | "neutral" | "caution" | "danger";
+};
+
 type ZodiacFortune = {
   zodiac: string;
   score: number;
   headline: string;
   advice: string;
   tone: AlmanacTone;
+  luckyColor: string;
+  luckyDirection: string;
+  isClash: boolean;
+  isNoble: boolean;
 };
 
 type DayMasterFlow = {
@@ -64,14 +73,32 @@ type DayMasterFlow = {
   headline: string;
   advice: string;
   tone: AlmanacTone;
+  score: number;
+  luckyColor: string;
+  luckyDirection: string;
 };
 
 export type PublicDailyAlmanac = {
   date: string;
   dateLabel: string;
   lunarDate: string;
+  weekday: string;
+  yearPillar: string;
+  monthPillar: string;
+  dayPillar: string;
+  dayStem: string;
+  dayBranch: string;
   fourPillarsText: string;
   chong: string;
+  clashZodiac: string;
+  dailyStar: string;
+  nobleZodiacs: string[];
+  timeWindows: {
+    label: string;
+    time: string;
+    tone: AlmanacTone;
+    advice: string;
+  }[];
   wealthDirection: {
     title: string;
     direction: string;
@@ -87,6 +114,7 @@ export type PublicDailyAlmanac = {
     secondary: ClothingGuide;
     avoid: ClothingGuide;
   };
+  clothingLevels: ClothingLevel[];
   zodiac: ZodiacFortune[];
   dayMasterFlow: DayMasterFlow[];
   yi: string[];
@@ -98,6 +126,7 @@ const colors = ["青绿", "米白", "金色", "深蓝", "浅灰", "酒红", "暖
 const directions = ["正东", "东南", "正南", "西南", "正西", "西北", "正北", "东北"];
 const luckyHours = ["辰时 7-9", "巳时 9-11", "午时 11-13", "未时 13-15", "申时 15-17", "酉时 17-19"];
 const avoidWindows = ["上午 9-11", "中午 12-14", "下午 15-17", "傍晚 18-20", "晚上 21-23"];
+const chineseWeekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
 
 const yiPool = [
   "整理账目",
@@ -142,6 +171,20 @@ const clues = [
 ];
 
 const zodiacAnimals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+const zodiacProfiles: Record<string, { trait: string; action: string; risk: string }> = {
+  鼠: { trait: "资讯敏锐", action: "先做资料核对与私下沟通", risk: "听到小道消息就急着转向" },
+  牛: { trait: "稳扎稳打", action: "把手上的任务逐件收尾", risk: "过度固执，错过调整窗口" },
+  虎: { trait: "行动爆发", action: "适合处理拖延已久的决定", risk: "情绪一上来就硬碰硬" },
+  兔: { trait: "人缘柔和", action: "用温和方式修复关系或确认合作", risk: "顾虑太多，话说一半" },
+  龙: { trait: "资源整合", action: "适合召集人脉、讨论方案", risk: "目标太大，细节落空" },
+  蛇: { trait: "观察入微", action: "先看清对方动机再回应", risk: "想太多，错失开口时机" },
+  马: { trait: "节奏快速", action: "适合跑动、拜访、推进外部事务", risk: "赶进度导致遗漏重点" },
+  羊: { trait: "协调包容", action: "适合做团队润滑与资源整理", risk: "为了和气而承担过多" },
+  猴: { trait: "应变灵活", action: "适合解决突发问题、优化流程", risk: "聪明反被琐事分心" },
+  鸡: { trait: "表达清晰", action: "适合汇报、谈判、整理标准", risk: "话太直引发误会" },
+  狗: { trait: "责任感强", action: "适合守住承诺、检查合约", risk: "过度担心而不敢推进" },
+  猪: { trait: "福气缓和", action: "适合休整、补资源、做长期规划", risk: "拖延或过度相信口头承诺" }
+};
 const branchToZodiac: Record<string, string> = {
   子: "鼠",
   丑: "牛",
@@ -155,6 +198,51 @@ const branchToZodiac: Record<string, string> = {
   酉: "鸡",
   戌: "狗",
   亥: "猪"
+};
+
+const branchSixHarmony: Record<string, string> = {
+  子: "丑",
+  丑: "子",
+  寅: "亥",
+  亥: "寅",
+  卯: "戌",
+  戌: "卯",
+  辰: "酉",
+  酉: "辰",
+  巳: "申",
+  申: "巳",
+  午: "未",
+  未: "午"
+};
+
+const branchThreeHarmony: Record<string, string[]> = {
+  申: ["子", "辰"],
+  子: ["申", "辰"],
+  辰: ["申", "子"],
+  亥: ["卯", "未"],
+  卯: ["亥", "未"],
+  未: ["亥", "卯"],
+  寅: ["午", "戌"],
+  午: ["寅", "戌"],
+  戌: ["寅", "午"],
+  巳: ["酉", "丑"],
+  酉: ["巳", "丑"],
+  丑: ["巳", "酉"]
+};
+
+const branchClash: Record<string, string> = {
+  子: "午",
+  午: "子",
+  丑: "未",
+  未: "丑",
+  寅: "申",
+  申: "寅",
+  卯: "酉",
+  酉: "卯",
+  辰: "戌",
+  戌: "辰",
+  巳: "亥",
+  亥: "巳"
 };
 
 const stemMeta: Record<string, { element: ElementKey; yinYang: "yang" | "yin"; icon: string }> = {
@@ -178,6 +266,14 @@ const elementNames: Record<ElementKey, string> = {
   water: "水"
 };
 
+const elementColorLibrary: Record<ElementKey, { colors: string[]; swatches: string[]; label: string }> = {
+  wood: { label: "木", colors: ["绿色", "青色", "翠绿"], swatches: ["#0D6B48", "#1495A0", "#8BCB8F"] },
+  fire: { label: "火", colors: ["红色", "紫色", "玫红"], swatches: ["#9F2E24", "#7B3F8C", "#B94A5B"] },
+  earth: { label: "土", colors: ["黄色", "咖啡", "卡其"], swatches: ["#C79A54", "#8C6A3D", "#E8D4A8"] },
+  metal: { label: "金", colors: ["白色", "银色", "金色"], swatches: ["#F5FAFA", "#DDEEF2", "#C79A54"] },
+  water: { label: "水", colors: ["黑色", "深蓝", "海蓝"], swatches: ["#0A0A0A", "#102F38", "#1495A0"] }
+};
+
 const elementCreates: Record<ElementKey, ElementKey> = {
   wood: "fire",
   fire: "earth",
@@ -192,6 +288,21 @@ const elementControls: Record<ElementKey, ElementKey> = {
   earth: "water",
   metal: "wood",
   water: "fire"
+};
+
+const dailyStarByBranch: Record<string, string> = {
+  子: "开日",
+  丑: "闭日",
+  寅: "建日",
+  卯: "除日",
+  辰: "满日",
+  巳: "平日",
+  午: "定日",
+  未: "执日",
+  申: "破日",
+  酉: "危日",
+  戌: "成日",
+  亥: "收日"
 };
 
 const branchMainStem: Record<string, string> = {
@@ -289,6 +400,53 @@ function elementOvercomes(source: ElementKey, target: ElementKey) {
   return elementControls[source] === target;
 }
 
+function elementGeneratedBy(target: ElementKey) {
+  return (Object.keys(elementCreates) as ElementKey[]).find((element) => elementCreates[element] === target) || "water";
+}
+
+function elementControlledBy(target: ElementKey) {
+  return (Object.keys(elementControls) as ElementKey[]).find((element) => elementControls[element] === target) || "metal";
+}
+
+function buildClothingLevels(dayElement: ElementKey): ClothingLevel[] {
+  const generatesDay = elementGeneratedBy(dayElement);
+  const sameDay = dayElement;
+  const dayControls = elementControls[dayElement];
+  const dayGenerates = elementCreates[dayElement];
+  const controlsDay = elementControlledBy(dayElement);
+
+  const makeLevel = (
+    element: ElementKey,
+    level: ClothingLevel["level"],
+    tone: ClothingLevel["tone"],
+    reason: string
+  ): ClothingLevel => {
+    const palette = elementColorLibrary[element];
+
+    return {
+      label: level.replace("色系", ""),
+      level,
+      tone,
+      colors: palette.colors,
+      swatches: palette.swatches,
+      reason
+    };
+  };
+
+  return [
+    makeLevel(generatesDay, "首选色系", "good", `${elementNames[generatesDay]}生${elementNames[dayElement]}，最能补足今日气场，适合谈合作、签单、见客户与做关键推进。`),
+    makeLevel(sameDay, "次选色系", "steady", `${elementNames[sameDay]}气同频，帮助稳定状态，适合按计划执行、复盘和整理节奏。`),
+    makeLevel(dayControls, "一般色系", "neutral", `${elementNames[dayElement]}克${elementNames[dayControls]}，有求财与掌控意味，但容易耗力，适合小额推进，不宜过度冒进。`),
+    makeLevel(dayGenerates, "不建议色系", "caution", `${elementNames[dayElement]}生${elementNames[dayGenerates]}，容易泄气分心，适合低调使用，不宜作为今天主色。`),
+    makeLevel(controlsDay, "强烈不建议色系", "danger", `${elementNames[controlsDay]}克${elementNames[dayElement]}，容易带来压迫、口舌或阻力，重要场合尽量避开。`)
+  ];
+}
+
+function buildNobleZodiacs(dayBranch: string) {
+  const branches = [branchSixHarmony[dayBranch], ...(branchThreeHarmony[dayBranch] || [])].filter(Boolean);
+  return Array.from(new Set(branches.map((branch) => branchToZodiac[branch]).filter(Boolean)));
+}
+
 function tenGodFor(selfStem: string, flowStem: string) {
   const self = stemMeta[selfStem] || stemMeta.甲;
   const flow = stemMeta[flowStem] || stemMeta.甲;
@@ -303,6 +461,16 @@ function tenGodFor(selfStem: string, flowStem: string) {
   return "平运";
 }
 
+function tenGodScore(tenGod: string, seed: number) {
+  const base = ["正官", "正财", "正印", "食神"].some((item) => tenGod.includes(item))
+    ? 78
+    : ["七杀", "伤官", "劫财"].some((item) => tenGod.includes(item))
+      ? 58
+      : 68;
+
+  return clamp(base + (seed % 13) - 6, 42, 94);
+}
+
 function toneFromScore(score: number): AlmanacTone {
   if (score >= 78) return "good";
   if (score >= 62) return "steady";
@@ -310,33 +478,63 @@ function toneFromScore(score: number): AlmanacTone {
 }
 
 function buildZodiacFortunes(seed: number, chongText: string, dayBranch: string): ZodiacFortune[] {
-  const chongAnimal = zodiacAnimals.find((animal) => chongText.includes(animal)) || branchToZodiac[dayBranch] || "虎";
+  const chongAnimal = zodiacAnimals.find((animal) => chongText.includes(animal)) || branchToZodiac[branchClash[dayBranch]] || "虎";
+  const nobleZodiacs = buildNobleZodiacs(dayBranch);
+  const sixHarmonyAnimal = branchToZodiac[branchSixHarmony[dayBranch]];
 
   return zodiacAnimals.map((zodiac, index) => {
-    const rawScore = zodiac === chongAnimal ? 42 + ((seed + index) % 12) : 58 + ((seed >> (index % 9)) % 34);
+    const isClash = zodiac === chongAnimal;
+    const isNoble = nobleZodiacs.includes(zodiac);
+    const isSixHarmony = zodiac === sixHarmonyAnimal;
+    const profile = zodiacProfiles[zodiac];
+    const rawScore = isClash
+      ? 38 + ((seed + index * 7) % 16)
+      : isSixHarmony
+        ? 84 + ((seed + index * 5) % 10)
+        : isNoble
+          ? 76 + ((seed + index * 3) % 14)
+          : 55 + ((seed + index * 11 + dayBranch.charCodeAt(0)) % 31);
     const score = clamp(rawScore, 38, 95);
-    const tone = zodiac === chongAnimal ? "caution" : toneFromScore(score);
-    const headline =
-      tone === "good" ? "贵人活跃" : tone === "steady" ? "稳步上升" : zodiac === chongAnimal ? "逢冲谨慎" : "低调守成";
-    const advice =
-      tone === "good"
-        ? "适合主动联络、拜访客户或推进合作，重要事情先写清条件。"
-        : tone === "steady"
-          ? "适合按计划处理工作，耐心收尾，别被临时情绪带节奏。"
-          : "今日少做高风险决定，开车、签约、借贷与口舌争执都要放慢。";
+    const tone = isClash ? "caution" : isSixHarmony || isNoble ? "good" : toneFromScore(score);
+    const headline = isClash
+      ? "逢冲谨慎"
+      : isSixHarmony
+        ? "六合贵人"
+        : isNoble
+          ? "贵人活跃"
+          : tone === "good"
+            ? "顺势可进"
+            : tone === "steady"
+              ? "稳步上升"
+              : "低调守成";
+    const relationshipNote = isClash
+      ? "今日逢冲，先避开冲动决策。"
+      : isSixHarmony
+        ? "今日六合气顺，适合借力贵人。"
+        : isNoble
+          ? "今日三合贵人带动，外部助力较明显。"
+          : tone === "good"
+            ? "今日气势不错，可以主动开口。"
+            : tone === "steady"
+              ? "今日适合稳扎稳打，先完成眼前事。"
+              : "今日宜低调观察，先守住节奏。";
+    const advice = `${relationshipNote}${profile.trait}是优势，${profile.action}；留意${profile.risk}。`;
+    const color = pick(colors, seed, index + 2);
+    const direction = pick(directions, seed, index + 5);
 
-    return { zodiac, score, headline, advice, tone };
+    return { zodiac, score, headline, advice, tone, luckyColor: color, luckyDirection: direction, isClash, isNoble };
   });
 }
 
-function buildDayMasterFlow(dayStem: string, dayBranch: string): DayMasterFlow[] {
+function buildDayMasterFlow(dayStem: string, dayBranch: string, seed = 0): DayMasterFlow[] {
   const branchStem = branchMainStem[dayBranch] || dayStem;
   const stems = Object.keys(stemMeta);
 
-  return stems.map((stem) => {
+  return stems.map((stem, index) => {
     const stemGod = tenGodFor(stem, dayStem);
     const branchGod = tenGodFor(stem, branchStem);
     const combined = `${stemGod}坐${branchGod}`;
+    const score = tenGodScore(combined, seed + index * 17);
     const tone: AlmanacTone =
       ["正官", "正财", "正印", "食神"].includes(stemGod)
         ? "good"
@@ -366,9 +564,41 @@ function buildDayMasterFlow(dayStem: string, dayBranch: string): DayMasterFlow[]
       tenGod: combined,
       headline,
       advice,
-      tone
+      tone,
+      score,
+      luckyColor: pick(colors, seed, index + 1),
+      luckyDirection: pick(directions, seed, index + 2)
     };
   });
+}
+
+function buildTimeWindows(seed: number, dayBranch: string): PublicDailyAlmanac["timeWindows"] {
+  const clashBranch = branchClash[dayBranch];
+  const clashHour = clashBranch ? `${clashBranch}时` : "冲时";
+  const goodHour = pick(luckyHours, seed, 3);
+  const steadyHour = pick(luckyHours, seed, 8);
+  const cautionWindow = pick(avoidWindows, seed, 5);
+
+  return [
+    {
+      label: "贵人时段",
+      time: goodHour,
+      tone: "good",
+      advice: "适合拜访、确认合作、发关键讯息或处理需要对方回应的事项。"
+    },
+    {
+      label: "整理时段",
+      time: steadyHour,
+      tone: "steady",
+      advice: "适合整理文件、账目、计划表和复盘，不急着做不可逆决定。"
+    },
+    {
+      label: "避开时段",
+      time: `${clashHour} / ${cautionWindow}`,
+      tone: "caution",
+      advice: "少争辩、少冲动付款，重要谈判尽量避开或先写清条件。"
+    }
+  ];
 }
 
 export function buildPublicDailyAlmanac(date = new Date()): PublicDailyAlmanac {
@@ -380,16 +610,32 @@ export function buildPublicDailyAlmanac(date = new Date()): PublicDailyAlmanac {
   const seed = hashString(`${dateKey}|public-almanac|${calendar?.fourPillarsText || ""}`);
   const wealthDirection = calendar?.directions.wealth || pick(directions, seed, 3);
   const joyDirection = calendar?.directions.joy || pick(directions, seed, 7);
-  const chong = calendar?.daily.chong || `冲${branchToZodiac[dayBranch] || "生肖"}`;
+  const clashZodiac = zodiacAnimals.find((animal) => calendar?.daily.chong?.includes(animal)) || branchToZodiac[branchClash[dayBranch]] || "生肖";
+  const chong = calendar?.daily.chong || `冲${clashZodiac}`;
   const yi = calendar?.daily.yi?.length ? calendar.daily.yi.slice(0, 4) : ["签约", "整理", "沟通", "学习"];
   const ji = calendar?.daily.ji?.length ? calendar.daily.ji.slice(0, 4) : ["冲动", "争执", "借贷", "拖延"];
+  const weekday = chineseWeekdays[new Date(`${dateKey}T12:00:00+08:00`).getDay()] || "星期";
+  const yearPillar = calendar?.pillars[0]?.ganZhi || "";
+  const monthPillar = calendar?.pillars[1]?.ganZhi || "";
+  const dayPillar = calendar?.pillars[2]?.ganZhi || `${dayStem}${dayBranch}`;
+  const nobleZodiacs = buildNobleZodiacs(dayBranch);
 
   return {
     date: dateKey,
     dateLabel: new Intl.DateTimeFormat("zh-MY", { timeZone: "Asia/Kuala_Lumpur", year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(date),
     lunarDate: calendar?.lunarDateText || "农历待换算",
+    weekday,
+    yearPillar,
+    monthPillar,
+    dayPillar,
+    dayStem,
+    dayBranch,
     fourPillarsText: calendar?.fourPillarsText || `${dayStem}${dayBranch}日`,
     chong,
+    clashZodiac,
+    dailyStar: dailyStarByBranch[dayBranch] || "平日",
+    nobleZodiacs,
+    timeWindows: buildTimeWindows(seed, dayBranch),
     wealthDirection: {
       title: "每日财位",
       direction: wealthDirection,
@@ -401,8 +647,9 @@ export function buildPublicDailyAlmanac(date = new Date()): PublicDailyAlmanac {
       description: `今日喜神在${joyDirection}，适合约见贵人、拜访客户、安排面谈与修复关系，出门或沟通可优先借此方位之气。`
     },
     clothing: clothingByElement[dayElement],
+    clothingLevels: buildClothingLevels(dayElement),
     zodiac: buildZodiacFortunes(seed, chong, dayBranch),
-    dayMasterFlow: buildDayMasterFlow(dayStem, dayBranch),
+    dayMasterFlow: buildDayMasterFlow(dayStem, dayBranch, seed),
     yi,
     ji,
     footer: "趋吉避凶 · 顺势而行"
