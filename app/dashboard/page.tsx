@@ -3631,7 +3631,7 @@ function ModuleCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(6,63,74,0.12)] ${
+      className={`group flex h-full flex-col rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(6,63,74,0.12)] ${
         active
           ? "border-[#C79A54]/70 bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_20px_50px_rgba(6,63,74,0.24)]"
           : "border-[#CFE2E5] bg-white/92 text-ink shadow-[0_12px_32px_rgba(6,63,74,0.08)] hover:border-[#C79A54]/55"
@@ -3653,9 +3653,9 @@ function ModuleCard({
           {locked ? lockLabel : module.metric}
         </span>
       </div>
-      <h3 className="mt-4 font-semibold">{module.title}</h3>
+      <h3 className="mt-4 font-semibold leading-tight">{module.title}</h3>
       <p className={`mt-1 text-xs ${active ? "text-white/62" : "text-ink/48"}`}>{module.desc}</p>
-      <div className={`mt-3 flex items-center gap-1 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>
+      <div className={`mt-auto flex items-center gap-1 pt-3 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>
         {locked ? "购买创业配套后开放" : "打开"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
       </div>
     </button>
@@ -4526,15 +4526,56 @@ function buildAlmanacShareSvg(almanac: PublicDailyAlmanac, personal?: { zodiac?:
 </svg>`;
 }
 
-function downloadAlmanacSharePoster(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
-  const svg = buildAlmanacShareSvg(almanac, personal);
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
+function downloadBlob(url: string, filename: string) {
   const link = document.createElement("a");
   link.href = url;
-  link.download = `daily-almanac-${almanac.date}.svg`;
+  link.download = filename;
   link.click();
-  URL.revokeObjectURL(url);
+}
+
+function downloadAlmanacSharePoster(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
+  const svg = buildAlmanacShareSvg(almanac, personal);
+  const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const svgUrl = URL.createObjectURL(svgBlob);
+  const image = new Image();
+
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 900;
+    canvas.height = 1200;
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      downloadBlob(svgUrl, `daily-almanac-${almanac.date}.svg`);
+      return;
+    }
+
+    context.fillStyle = "#F5FAFA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          downloadBlob(svgUrl, `daily-almanac-${almanac.date}.svg`);
+          return;
+        }
+
+        const jpgUrl = URL.createObjectURL(blob);
+        downloadBlob(jpgUrl, `daily-almanac-${almanac.date}.jpg`);
+        URL.revokeObjectURL(jpgUrl);
+        URL.revokeObjectURL(svgUrl);
+      },
+      "image/jpeg",
+      0.92
+    );
+  };
+
+  image.onerror = () => {
+    downloadBlob(svgUrl, `daily-almanac-${almanac.date}.svg`);
+    URL.revokeObjectURL(svgUrl);
+  };
+
+  image.src = svgUrl;
 }
 
 function shareAlmanacToWhatsApp(almanac: PublicDailyAlmanac, personal?: { zodiac?: string; dayMaster?: string }) {
@@ -4646,7 +4687,7 @@ function PublicDailyAlmanacPanel({
           <div className="rounded-xl border border-[#C79A54]/35 bg-[#FFFDF7] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Share Poster</p>
             <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">生成今日分享图</h3>
-            <p className="mt-2 text-sm leading-6 text-ink/58">把每日吉方、穿衣和宜忌做成 SVG 海报，适合 WhatsApp / Facebook 分享。</p>
+            <p className="mt-2 text-sm leading-6 text-ink/58">把每日吉方、穿衣和宜忌做成 JPG 海报，适合 WhatsApp / Facebook 分享。</p>
             <button
               type="button"
               onClick={() => downloadAlmanacSharePoster(almanac, { zodiac: personalZodiac, dayMaster: personalDayMaster })}
@@ -10192,6 +10233,9 @@ export default function DashboardPage() {
   const availableDashboardCategories = hasPartnerAccess ? [...memberDashboardCategories, partnerDashboardCategory] : memberDashboardCategories;
   const activeCategoryConfig = dashboardCategories.find((category) => category.id === activeCategory) || dashboardCategories[0];
   const visibleModules = modules.filter((module) => activeCategoryConfig.modules.includes(module.id));
+  const categoryGridClass = hasPartnerAccess ? "md:grid-cols-3 xl:grid-cols-6" : "md:grid-cols-5";
+  const moduleGridClass =
+    visibleModules.length <= 3 ? "lg:grid-cols-3" : visibleModules.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5";
   const currentPlan = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
   const accountStats = compactAccountStats(dashboardStats, pointBalance, currentTier);
 
@@ -10461,7 +10505,13 @@ export default function DashboardPage() {
               <p className="text-sm text-ink/55">当前打开：{active.title}</p>
             </div>
 
-            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0 md:pb-0">
+            <div
+              className={[
+                "-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-soft",
+                "md:mx-0 md:grid md:overflow-visible md:px-0 md:pb-0",
+                categoryGridClass
+              ].join(" ")}
+            >
               {availableDashboardCategories.map((category) => {
                 const activeCategoryButton = activeCategory === category.id;
                 const partnerCategoryLocked = category.id === "partner" && !hasPartnerAccess;
@@ -10499,12 +10549,18 @@ export default function DashboardPage() {
                 <StatusPill>{visibleModules.length} 个入口</StatusPill>
               </div>
 
-              <div className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+              <div
+                className={[
+                  "-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft",
+                  "sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0",
+                  moduleGridClass
+                ].join(" ")}
+              >
                 {visibleModules.map((module) => {
                 const partnerLocked = module.id === "partner" && !hasPartnerAccess;
 
                 return (
-                  <div key={module.id} className="min-w-[210px] sm:min-w-0">
+                  <div key={module.id} className="min-w-[210px] sm:min-w-0 sm:h-full">
                     <ModuleCard
                       module={module}
                       active={module.id === activeModule}
