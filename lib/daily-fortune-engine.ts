@@ -258,6 +258,32 @@ const stemMeta: Record<string, { element: ElementKey; yinYang: "yang" | "yin"; i
   癸: { element: "water", yinYang: "yin", icon: "雨" }
 };
 
+const dayMasterProfiles: Record<string, { image: string; strength: string; action: string; caution: string; clue: string }> = {
+  甲: { image: "大树之木", strength: "重原则、讲方向，适合做长期规划与资源整合", action: "先定一个主轴，再把任务拆成三步执行", caution: "别为了证明自己而硬撑到底", clue: "留意高处、绿色物件或长辈提醒" },
+  乙: { image: "花草藤蔓", strength: "柔韧细腻，擅长沟通、协调与借力", action: "用温和方式争取支持，先修关系再谈结果", caution: "别绕太多弯，让对方猜你的真实需求", clue: "留意女性贵人、花草或一句软性建议" },
+  丙: { image: "太阳之火", strength: "热情外放，适合曝光、表达与主动争取", action: "把想法讲出来，适合发布、邀约或展示成果", caution: "别一时兴奋答应太多，热度过后容易失衡", clue: "留意光线明亮处、红色物件或公开场合" },
+  丁: { image: "灯烛之火", strength: "洞察细腻，擅长用创意、温度与专业打动人", action: "适合私下沟通、修正细节、写文案和做提案", caution: "别把情绪闷在心里，越想越累", clue: "留意夜晚、灯光、文字讯息里的关键句" },
+  戊: { image: "高山厚土", strength: "稳定可靠，适合定规则、扛责任与做框架", action: "先稳住现金流、流程和边界，再谈扩大", caution: "别把所有压力都往自己身上背", clue: "留意不动产、桌面杂物或沉默的人" },
+  己: { image: "田园湿土", strength: "务实细致，适合整理、培养、服务与长期维护", action: "把混乱资料分类，先补漏洞再推进", caution: "别过度迁就，让琐事吞掉核心目标", clue: "留意黄色物件、账本、收据或旧资料" },
+  庚: { image: "矿铁之金", strength: "果断刚直，适合决策、切割与建立标准", action: "把不清楚的条件写成规则，今天要敢于说不", caution: "别太硬，容易把可以合作的人推远", clue: "留意金属声、白色物件或制度文件" },
+  辛: { image: "珠玉之金", strength: "审美精准，擅长包装、筛选与高质量表达", action: "适合优化细节、谈价值、做品牌或价格定位", caution: "别因追求完美而迟迟不交付", clue: "留意首饰、镜子、合约细节或一句批评" },
+  壬: { image: "江河之水", strength: "格局开阔，适合学习、连接资源与观察趋势", action: "先收集信息，再选择最有流动性的路径", caution: "别想太远，导致眼前一步没有落地", clue: "留意水边、黑色物件、远方消息或交通变化" },
+  癸: { image: "雨露之水", strength: "敏感细腻，擅长感知需求、疗愈与深度思考", action: "适合复盘、请教、写计划，把感觉变成文字", caution: "别被情绪雾气包住，重要事要找证据", clue: "留意雨水、饮品、梦境或安静角落的念头" }
+};
+
+const tenGodAdviceMap: Record<string, { theme: string; opportunity: string; risk: string; move: string }> = {
+  比肩: { theme: "同辈竞争", opportunity: "朋友、同行或团队会带来参照与助力", risk: "也容易出现抢资源、意见相持或谁都不服谁", move: "把利益、分工和截止时间写清楚" },
+  劫财: { theme: "资源分流", opportunity: "适合靠团队气势推进卡住的事情", risk: "钱、人情和时间容易被别人牵走", move: "今天不要随口答应借钱、帮忙或分成" },
+  食神: { theme: "稳定输出", opportunity: "适合表达、教学、内容、服务和客户体验", risk: "太舒服会让执行速度下降", move: "把一个可交付成果做完，而不是只聊天" },
+  伤官: { theme: "锋芒表达", opportunity: "创意、口才和突破力变强", risk: "容易顶撞权威、说太满或急着证明自己", move: "重要话先写草稿，留三分余地" },
+  偏财: { theme: "机会流动", opportunity: "适合谈资源、报价、客户线索和副业机会", risk: "也容易因贪快而忽略成本", move: "先算投入产出，再决定是否加码" },
+  正财: { theme: "现金秩序", opportunity: "适合收款、预算、账目、稳定收入和合约确认", risk: "过度保守会错过合理机会", move: "今天至少完成一次现金流检查" },
+  七杀: { theme: "压力破局", opportunity: "外部压力会逼你做出关键决断", risk: "焦虑、冲突、制度压力或突发状况增加", move: "先处理最高风险的一件事，别分散战线" },
+  正官: { theme: "规则加持", opportunity: "上级、制度、证照、流程和正式关系较有利", risk: "被规矩限制，行动速度变慢", move: "用 SOP、清单和书面确认降低阻力" },
+  偏印: { theme: "灵感复盘", opportunity: "适合研究、学习、策略、幕后准备和找方法", risk: "想法太多，容易陷入怀疑", move: "把灵感变成一页行动笔记" },
+  正印: { theme: "贵人学习", opportunity: "适合请教长辈、老师、专业人士或补知识", risk: "依赖建议太多，自己不下决定", move: "听完建议后，只选一个行动落地" }
+};
+
 const elementNames: Record<ElementKey, string> = {
   wood: "木",
   fire: "火",
@@ -534,29 +560,41 @@ function buildDayMasterFlow(dayStem: string, dayBranch: string, seed = 0): DayMa
     const stemGod = tenGodFor(stem, dayStem);
     const branchGod = tenGodFor(stem, branchStem);
     const combined = `${stemGod}坐${branchGod}`;
-    const score = tenGodScore(combined, seed + index * 17);
+    const variantSeed = seed + index * 17 + stem.charCodeAt(0) + dayBranch.charCodeAt(0);
+    const score = tenGodScore(combined, variantSeed);
     const tone: AlmanacTone =
       ["正官", "正财", "正印", "食神"].includes(stemGod)
         ? "good"
         : ["七杀", "伤官", "劫财"].includes(stemGod)
           ? "caution"
           : "steady";
-    const headline =
-      tone === "good"
-        ? "顺势可进"
-        : tone === "caution"
-          ? "先稳后动"
-          : "平衡取胜";
-    const advice =
-      stemGod.includes("财")
-        ? "财务、报价、收款与资源交换较敏感，先定边界再谈收益。"
-        : stemGod.includes("官") || stemGod.includes("杀")
-          ? "规则、上级、制度与压力感变强，适合用流程化方式化解阻力。"
-          : stemGod.includes("印")
-            ? "适合学习、复盘、请教长辈或贵人，不宜急着证明自己。"
-            : stemGod.includes("食") || stemGod.includes("伤")
-              ? "表达、创意与曝光度提升，但说话要留余地，避免锋芒太露。"
-              : "人际与竞争感增强，适合团队协作，也要防止被琐事分散。";
+    const profile = dayMasterProfiles[stem];
+    const stemAdvice = tenGodAdviceMap[stemGod] || tenGodAdviceMap.比肩;
+    const branchAdvice = tenGodAdviceMap[branchGod] || tenGodAdviceMap.比肩;
+    const opportunityText = stemAdvice.opportunity.replace(/^适合/, "");
+    const branchRiskText = branchAdvice.risk.replace(/^也/, "");
+    const headlines = tone === "good"
+      ? ["顺势可进", "贵人开门", "机会浮现", "主动有利"]
+      : tone === "caution"
+        ? ["先稳后动", "压力校准", "避开硬冲", "谨慎破局"]
+        : ["平衡取胜", "稳中有调", "先理后进", "小步成事"];
+    const headline = pick(headlines, variantSeed, 4);
+    const openings = [
+      `${stem}${elementNames[stemMeta[stem].element]}如${profile.image}，今日主轴落在「${stemAdvice.theme}」。`,
+      `对${stem}日主而言，今天不是看热闹，而是看「${stemAdvice.theme}」如何牵动选择。`,
+      `${profile.image}遇到${dayStem}${dayBranch}流日，重点在${opportunityText}。`
+    ];
+    const actions = [
+      `${profile.action}；${stemAdvice.move}。`,
+      `适合${profile.action.replace("适合", "")}，同时记得${stemAdvice.move}。`,
+      `先抓一个最小动作：${stemAdvice.move}，再处理其他旁枝。`
+    ];
+    const cautions = [
+      `隐患是${stemAdvice.risk}，也要留意${profile.caution}。`,
+      `卡点不在能力，而在${stemAdvice.risk}；${profile.caution}。`,
+      `过程中的暗线来自「${branchAdvice.theme}」：${branchRiskText}，先别急着加码。`
+    ];
+    const advice = `${pick(openings, variantSeed, 1)}${pick(actions, variantSeed, 5)}${pick(cautions, variantSeed, 9)}今日线索：${profile.clue}。`;
 
     return {
       stem,
@@ -566,8 +604,8 @@ function buildDayMasterFlow(dayStem: string, dayBranch: string, seed = 0): DayMa
       advice,
       tone,
       score,
-      luckyColor: pick(colors, seed, index + 1),
-      luckyDirection: pick(directions, seed, index + 2)
+      luckyColor: pick(colors, variantSeed, 1),
+      luckyDirection: pick(directions, variantSeed, 2)
     };
   });
 }

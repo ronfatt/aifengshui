@@ -544,22 +544,31 @@ export function FengshuiChat({
 
           <form
             onSubmit={handleSubmit}
-            className="fixed inset-x-3 bottom-24 z-40 flex gap-2 rounded-[1.35rem] border border-[#CFE2E5] bg-white/95 p-2 shadow-[0_18px_55px_rgba(6,63,74,0.22)] backdrop-blur-xl md:static md:mt-4 md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none"
+            className="fixed inset-x-3 bottom-24 z-40 rounded-[1.35rem] border-2 border-[#C79A54]/65 bg-[#F8F1DF] p-2 shadow-[0_18px_55px_rgba(6,63,74,0.22)] backdrop-blur-xl md:static md:mt-5 md:rounded-xl md:border-[#C79A54]/55 md:bg-[#F8F1DF] md:p-4 md:shadow-[0_18px_45px_rgba(6,63,74,0.12)]"
           >
-            <input
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              className="min-w-0 flex-1 rounded-2xl border border-[#DDEEF2] bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A] md:rounded"
-              placeholder={isFree ? "问一个简短问题，例如：今天适合谈合作吗？" : "输入你的问题，例如：我适合换工作吗？"}
-            />
-            <button
-              className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#063F4A] text-white transition hover:bg-[#1495A0] disabled:cursor-not-allowed disabled:opacity-55 md:size-11 md:rounded"
-              type="submit"
-              aria-label="发送"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
-            </button>
+            <div className="mb-2 hidden items-center justify-between gap-3 md:flex">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Ask AI Master</p>
+                <p className="text-sm font-semibold text-[#063F4A]">在这里输入你的问题，AI 风水命理师会直接分析</p>
+              </div>
+              <span className="rounded-full border border-[#C79A54]/35 bg-white px-3 py-1 text-xs font-semibold text-ink/60">Enter 发送</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                className="min-w-0 flex-1 rounded-2xl border-2 border-[#063F4A]/35 bg-white px-4 py-3 text-sm font-medium text-[#063F4A] shadow-inner outline-none placeholder:text-ink/40 focus:border-[#1495A0] focus:ring-4 focus:ring-[#1495A0]/12 md:rounded-lg md:py-4 md:text-base"
+                placeholder={isFree ? "直接输入：今天适合谈合作吗？" : "直接输入你的问题，例如：我适合换工作吗？"}
+              />
+              <button
+                className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#063F4A] text-white shadow-[0_10px_24px_rgba(6,63,74,0.28)] transition hover:bg-[#1495A0] disabled:cursor-not-allowed disabled:opacity-55 md:h-auto md:w-16 md:rounded-lg"
+                type="submit"
+                aria-label="发送"
+                disabled={isLoading}
+              >
+                {isLoading ? <Loader2 className="size-5 animate-spin" /> : <Send className="size-5" />}
+              </button>
+            </div>
           </form>
         </main>
       </div>
