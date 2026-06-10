@@ -1255,6 +1255,13 @@ type DivinationReading = {
     bodyHint: string;
     prompt: string;
   }[];
+  relationClues?: {
+    stage: string;
+    relation: string;
+    useTrigram: string;
+    extraction: string;
+    insight: string;
+  }[];
   situation: string;
   process: string;
   outcome: string;
@@ -2487,6 +2494,63 @@ function reportTemplateType(report: SavedReport) {
 }
 
 function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
+  const svg = buildReportShareSvg(report, memberProfile);
+  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${report.title}-${report.createdAt.replace(/[/:\\s]/g, "-")}.svg`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function downloadReportJpg(report: SavedReport, memberProfile: MemberProfile) {
+  const svg = buildReportShareSvg(report, memberProfile);
+  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const image = new Image();
+
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 1680;
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    context.fillStyle = "#F5FAFA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0);
+    canvas.toBlob(
+      (jpgBlob) => {
+        URL.revokeObjectURL(url);
+
+        if (!jpgBlob) return;
+
+        const jpgUrl = URL.createObjectURL(jpgBlob);
+        const link = document.createElement("a");
+        link.href = jpgUrl;
+        link.download = `${report.title}-${report.createdAt.replace(/[/:\\s]/g, "-")}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(jpgUrl);
+      },
+      "image/jpeg",
+      0.92
+    );
+  };
+
+  image.onerror = () => URL.revokeObjectURL(url);
+  image.src = url;
+}
+
+function buildReportShareSvg(report: SavedReport, memberProfile: MemberProfile) {
   const template = reportTemplateType(report);
   const content = normalizedReportContent(report);
   const lines = [
@@ -2499,7 +2563,7 @@ function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1680" viewBox="0 0 1200 1680">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1680" viewBox="0 0 1200 1680">
   <rect width="1200" height="1680" fill="#F5FAFA"/>
   <rect x="36" y="36" width="1128" height="1608" fill="#fffaf0" stroke="#C79A54" stroke-width="4"/>
   <rect x="72" y="72" width="1056" height="220" fill="#F5FAFA" stroke="#C79A54" stroke-width="2"/>
@@ -2527,15 +2591,6 @@ function downloadReportSvg(report: SavedReport, memberProfile: MemberProfile) {
     .join("")}
   <text x="600" y="1602" text-anchor="middle" font-size="20" fill="#6C8790">本报告为 AI 命理与风水辅助建议，仅供参考。</text>
 </svg>`;
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${report.title}-${report.createdAt.replace(/[/:\\s]/g, "-")}.svg`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
 }
 
 const trigrams: Trigram[] = [
@@ -2656,66 +2711,66 @@ const elementControls: Record<Trigram["element"], Trigram["element"]> = {
 const trigramClues: Record<string, Omit<DivinationReading["clues"][number], "trigram">> = {
   乾: {
     title: "权威与规则",
-    people: "父亲、老板、长辈、制度制定者、专业顾问、掌权者。",
-    behavior: "定规则、签署文件、授权、审批、决断、建立标准。",
-    space: "西北方、高处、办公室主位、会议室、金属物较多的位置。",
-    bodyHint: "留意头部、压力、睡眠紧绷与过度承担。",
-    prompt: "这件事是否卡在权责不清、上级未拍板，或你需要先把规则讲明？"
+    people: "父亲、老板、一把手、长辈、制度制定者、名流、专家、掌权者。",
+    behavior: "定规则、签署文件、授权、审批、决断、建立标准、资金与高端资源调动。",
+    space: "西北方、高处、办公室主位、会议室、大厦、高端场所、金属或钟表较多的位置。",
+    bodyHint: "留意头部、肺部、骨骼、压力、睡眠紧绷与过度承担。",
+    prompt: "这件事是否卡在权责不清、上级未拍板，或一位有权威/资金/规则制定权的人身上？"
   },
   兑: {
     title: "沟通与缺口",
-    people: "年轻女性、下属、销售、讲师、律师、靠表达吃饭的人。",
-    behavior: "沟通、谈判、饭局、口舌、承诺、娱乐、带有缺口或破损的物品。",
-    space: "正西方、水泽旁、湿地、餐桌、低洼处、谈话频繁的位置。",
-    bodyHint: "留意口腔、牙齿、呼吸道与表面开心、内心空虚的情绪。",
+    people: "年轻女性、下属、销售、讲师、律师、歌手、靠表达吃饭的人。",
+    behavior: "沟通、谈判、饭局、口舌、承诺、娱乐、庆典、带有缺口或破损的物品。",
+    space: "正西方、水泽旁、湿地、餐桌、咖啡屋、会议室、低洼处、谈话频繁的位置。",
+    bodyHint: "留意口腔、牙齿、咽喉、呼吸道与表面开心、内心空虚的情绪。",
     prompt: "这个转机或阻碍，是否和一位善言辞的人有关，或需要通过请客、沟通、说服来破局？"
   },
   离: {
     title: "曝光与判断",
     people: "中年女性、文化教育者、媒体人、设计师、看重形象与名声的人。",
-    behavior: "曝光、发布、看清真相、文件审阅、传播、包装、名声与舆论。",
-    space: "正南方、明亮处、屏幕前、灯光强的位置、展示区。",
-    bodyHint: "留意眼睛、心火、血压、焦虑与急于证明自己的状态。",
+    behavior: "曝光、发布、看清真相、文件审阅、传播、包装、名声、舆论、证件与屏幕讯息。",
+    space: "正南方、明亮处、屏幕前、灯光强的位置、展示区、学校、文化部门、美容与广告场景。",
+    bodyHint: "留意眼睛、心火、血压、失眠、焦虑与急于证明自己的状态。",
     prompt: "这件事是否需要先公开表达，或先把隐藏信息照亮，而不是继续模糊推进？"
   },
   震: {
     title: "启动与震动",
-    people: "长男、行动派、创业者、主动开口的人、容易急躁的人。",
-    behavior: "启动、宣布、冲刺、搬动、争执、惊动、快速变化。",
-    space: "正东方、门口、走廊、声音大的地方、正在施工或移动的位置。",
-    bodyHint: "留意肝胆、筋骨、惊恐、冲动和突发压力。",
+    people: "长男、行动派、创业者、驾驶员、执法人员、主动开口的人、容易急躁的人。",
+    behavior: "启动、宣布、冲刺、搬动、争执、惊动、快速变化、车辆交通、声音与电器触发。",
+    space: "正东方、门口、走廊、闹市、广播/音响处、声音大的地方、正在施工或移动的位置。",
+    bodyHint: "留意肝胆、足部、筋骨、惊恐、冲动和突发压力。",
     prompt: "你是否太急着启动？现在要分清是机会发动，还是情绪被惊动。"
   },
   巽: {
     title: "资源与渗透",
-    people: "长女、顾问、媒介、合作介绍人、温和但影响力持续的人。",
-    behavior: "谈资源、引荐、渗透、传播、跟进、文件与合约细节。",
-    space: "东南方、通风处、花草植物旁、文件柜、网络渠道。",
-    bodyHint: "留意神经紧绷、肠胃风气、犹豫不决与反复沟通。",
+    people: "长女、妻子、顾问、媒介、合作介绍人、营销员、教师、自由职业者。",
+    behavior: "谈资源、引荐、渗透、传播、跟进、文件票据、合约细节、风口与渠道。",
+    space: "东南方、通风处、花草植物旁、文件柜、网络渠道、过道、长廊、风口。",
+    bodyHint: "留意呼吸道、神经紧绷、肠胃风气、犹豫不决与反复沟通。",
     prompt: "这件事的入口是否不是硬攻，而是通过资源、介绍、长期跟进慢慢打开？"
   },
   坎: {
     title: "风险与流动",
-    people: "中男、流动行业者、财务人员、物流、技术、隐藏信息较多的人。",
-    behavior: "现金流、隐藏风险、流动、等待、陷入、反复确认。",
-    space: "正北方、水边、暗处、仓库、后台系统、低温或湿冷处。",
-    bodyHint: "留意肾水、泌尿、恐惧感、拖延和安全感不足。",
-    prompt: "你是否忽略了现金流、暗账、隐藏条款或情绪上的不安全感？"
+    people: "中男、驾驶员、流动行业者、财务人员、医生、物流技术人员、隐藏信息较多的人。",
+    behavior: "现金流、隐藏风险、诱惑、等待、陷入、反复确认、暗账、合同陷阱。",
+    space: "正北方、水边、暗处、地下室、厕所、车站、仓库、后台系统、低温或湿冷处。",
+    bodyHint: "留意肾水、泌尿、耳部、恐惧感、拖延和安全感不足。",
+    prompt: "你是否忽略了现金流、暗账、隐藏条款，或被某个看不见的风险拖住？"
   },
   艮: {
     title: "停止与门槛",
-    people: "少男、保安、宗教人士、内向谨慎的人、守门人。",
-    behavior: "停止、阻隔、审批、守住边界、靠山、不动产、制度门槛。",
-    space: "东北方、山、门槛、柜子、墙角、静止不动的位置。",
-    bodyHint: "留意脾胃、肩颈、背部、固执和迟迟不动的状态。",
+    people: "少男、儿童、保安、仓库管理员、房地产商、宗教人士、内向谨慎的人、守门人。",
+    behavior: "停止、阻隔、审批、守住边界、靠山、不动产、制度门槛、等待与转折。",
+    space: "东北方、山、门槛、仓库、墙角、桥梁、休息室、静止不动的位置。",
+    bodyHint: "留意脾胃、肩颈、背部、关节、固执和迟迟不动的状态。",
     prompt: "你目前是否遇到无法逾越的大山、制度门槛或一个关键守门人？"
   },
   坤: {
     title: "承载与积累",
-    people: "母亲、年长女性、团队后勤、执行支持者、稳定型伙伴。",
-    behavior: "承接、整理、等待、照顾、务实落地、长期积累。",
-    space: "西南方、土地、仓储、厨房、后勤区、稳定厚重的位置。",
-    bodyHint: "留意脾胃、疲累、水肿、过度迁就与承担过多。",
+    people: "母亲、妻子、年长女性、团队后勤、职员、副手、执行支持者、稳定型伙伴。",
+    behavior: "承接、整理、等待、照顾、务实落地、长期积累、后勤补给。",
+    space: "西南方、土地、乡村、农贸市场、仓储、厨房、后勤区、稳定厚重的位置。",
+    bodyHint: "留意脾胃、疲累、水肿、失眠、过度迁就与承担过多。",
     prompt: "这件事是否需要先补后勤、补资源、补耐心，而不是急着冲结果？"
   }
 };
@@ -2894,6 +2949,46 @@ function createDivinationClues(trigramsInChart: Trigram[]) {
     .slice(0, 4) as DivinationReading["clues"];
 }
 
+function getRelationExtraction(relationKey: string) {
+  const extractionMap: Record<string, { extraction: string; prefix: string }> = {
+    用生体: {
+      extraction: "提取用卦中的正面助力、资源、贵人、扶持力量。",
+      prefix: "外界正在给你递资源，重点不是硬冲，而是识别谁在帮你、什么条件正在成形。"
+    },
+    用克体: {
+      extraction: "提取用卦中的阻碍、风险、破坏者、压制源、破财点。",
+      prefix: "外界力量正在压制本体，必须先找出风险来源，不宜把压力误判成机会。"
+    },
+    体生用: {
+      extraction: "提取用卦中的消耗目标、投资去向、精力流失点。",
+      prefix: "你正在把能量输送给外界，若没有回报机制，就容易多做少成、为人作嫁。"
+    },
+    体克用: {
+      extraction: "提取用卦中的被征服目标、业务对象、需克服的难点。",
+      prefix: "事情仍在你的掌控范围内，但要花力气克服对象与环境，属于可成但辛苦。"
+    },
+    比和: {
+      extraction: "提取用卦中的合作伙伴、同行、协同环境、同频资源。",
+      prefix: "你与外界同气相求，适合合作推进，但仍需分工清楚，避免平稳变拖延。"
+    }
+  };
+
+  return extractionMap[relationKey] || extractionMap["比和"];
+}
+
+function createRelationClue(stage: string, relation: ReturnType<typeof getElementRelation>, useTrigram: Trigram) {
+  const clue = trigramClues[useTrigram.name];
+  const extraction = getRelationExtraction(relation.key);
+
+  return {
+    stage,
+    relation: relation.label,
+    useTrigram: `${useTrigram.symbol} ${useTrigram.name}卦`,
+    extraction: extraction.extraction,
+    insight: `${extraction.prefix} 以${useTrigram.name}卦取象来看，现实线索集中在：${clue.people}；${clue.behavior}；${clue.space}。请自检：${clue.prompt}`
+  };
+}
+
 function createDivinationDate(dateValue: string, timeValue: string) {
   const now = new Date();
   const date = dateValue || now.toISOString().slice(0, 10);
@@ -2923,12 +3018,18 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
   const bodyTrigram = movingLine <= 3 ? upper : lower;
   const useTrigram = movingLine <= 3 ? lower : upper;
   const originalRelation = getElementRelation(bodyTrigram.element, useTrigram.element);
+  const mutualUseTrigram = movingLine <= 3 ? mutualLower : mutualUpper;
+  const mutualRelation = getElementRelation(bodyTrigram.element, mutualUseTrigram.element);
   const changingUseTrigram = movingLine <= 3 ? changingLower : changingUpper;
   const changingRelation = getElementRelation(bodyTrigram.element, changingUseTrigram.element);
-  const mutualRelation = getElementRelation(mutualUpper.element, mutualLower.element);
   const passElement = getPassElementForRelation(bodyTrigram.element, useTrigram.element);
   const ritual = elementRituals[passElement];
   const score = Math.max(36, Math.min(92, Math.round((originalRelation.score + mutualRelation.score + changingRelation.score) / 3)));
+  const relationClues = [
+    createRelationClue("当下（本卦）", originalRelation, useTrigram),
+    createRelationClue("过程（互卦）", mutualRelation, mutualUseTrigram),
+    createRelationClue("结果（变卦）", changingRelation, changingUseTrigram)
+  ];
   const energyBoard = [
     {
       stage: "当下（本卦）",
@@ -2940,7 +3041,7 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
       stage: "过程（互卦）",
       status: mutualRelation.status,
       value: Math.max(30, mutualRelation.score - 6),
-      note: `${getHexagramTheme(mutualUpper, mutualLower)} ${mutualRelation.label}，中段需防暗线压力。`
+      note: `${getHexagramTheme(mutualUpper, mutualLower)} 以${bodyTrigram.name}体对${mutualUseTrigram.name}用来看，为${mutualRelation.label}，中段需防暗线压力。`
     },
     {
       stage: "结果（变卦）",
@@ -2974,9 +3075,10 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
     score,
     energyBoard,
     clues,
-    situation: `本卦为${composeHexagramName(upper, lower)}，核心是「${bodyTrigram.name}体遇${useTrigram.name}用」，五行关系为${originalRelation.label}。白话说：${originalRelation.meaning} ${getHexagramTheme(upper, lower)}`,
-    process: `互卦为${composeHexagramName(mutualUpper, mutualLower)}，它代表事情中段的隐秘夹层与不可控因素。${getHexagramTheme(mutualUpper, mutualLower)} 五行上呈${mutualRelation.label}，说明过程不是直线推进，需防资源承载、沟通压力或方向调整。`,
-    outcome: `变卦为${composeHexagramName(changingUpper, changingLower)}，代表最终演变。用卦由${useTrigram.name}转向${changingUseTrigram.name}，与体卦形成${changingRelation.label}：${changingRelation.meaning} 不宜只看表面热闹，要评估实际回报。`,
+    relationClues,
+    situation: `本卦为${composeHexagramName(upper, lower)}，核心是「${bodyTrigram.name}体遇${useTrigram.name}用」，五行关系为${originalRelation.label}。白话说：${originalRelation.meaning} ${getHexagramTheme(upper, lower)} ${relationClues[0].insight}`,
+    process: `互卦为${composeHexagramName(mutualUpper, mutualLower)}，它代表事情中段的隐秘夹层与不可控因素。以${bodyTrigram.name}体对${mutualUseTrigram.name}用来看，五行呈${mutualRelation.label}。${getHexagramTheme(mutualUpper, mutualLower)} ${relationClues[1].insight}`,
+    outcome: `变卦为${composeHexagramName(changingUpper, changingLower)}，代表最终演变。用卦由${useTrigram.name}转向${changingUseTrigram.name}，与体卦形成${changingRelation.label}：${changingRelation.meaning} ${relationClues[2].insight}`,
     mindset: `整体定局：${energyBoard[0].status}起局，${energyBoard[1].status}过关，${energyBoard[2].status}收尾。今日战略心法是：先承认现实压力，再用「${passElement}」通关，把克制、泄气或压迫转成可执行的步骤。`,
     actionPlan: {
       timing: `${hourBranch}时后 1 个时辰内，或今天第一个不被打扰的 20 分钟`,
@@ -5870,15 +5972,125 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
 
   return (
     <div className="grid gap-4">
+      <section className="overflow-hidden rounded-[1.75rem] border border-[#C79A54]/28 bg-[#0B1020] p-4 text-white shadow-[0_28px_80px_rgba(6,63,74,0.24)] sm:p-6">
+        <div className="mb-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#C79A54]">Bazi Destiny Console</p>
+          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl">八字论命系统</h3>
+          <p className="mt-2 text-xs tracking-[0.28em] text-white/42">天干地支 · 五行能量 · 大运流程 · AI 命盘推演</p>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
+          <aside className="grid gap-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">壹</span>
+                <div>
+                  <p className="font-semibold text-white">命盘输入</p>
+                  <p className="text-xs text-white/45">自动排盘 · 节气校准 · 出生资料</p>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3 text-sm">
+                {[
+                  ["姓名", displayName],
+                  ["出生", `${displayBirthDate} ${displayBirthTime || "未填时辰"}`],
+                  ["地点", displayBirthLocation || "未填写"],
+                  ["日主", dayMaster]
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-xl border border-white/10 bg-[#080D1A] px-3 py-3">
+                    <p className="text-xs text-white/38">{label}</p>
+                    <p className="mt-1 font-semibold text-white">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">肆</span>
+                <div>
+                  <p className="font-semibold text-white">分析主题</p>
+                  <p className="text-xs text-white/45">当前重点 · 喜忌 · 风险边界</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[focusLabels[baziInput?.focus || "career"], `喜用：${usefulGods}`, `忌神：${avoidGods}`, "十神", "大运", "流年"].map((tag) => (
+                  <span key={tag} className="rounded-full border border-white/10 bg-[#080D1A] px-3 py-2 text-xs font-semibold text-white/72">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <main className="rounded-2xl border border-white/10 bg-white/[0.045] p-4 sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">命</span>
+                <div>
+                  <p className="text-xl font-semibold text-white">命盘详情</p>
+                  <p className="text-xs text-white/42">四柱 · 藏干 · 十神 · 纳音</p>
+                </div>
+              </div>
+              <p className="text-xs text-white/45">{displayBirthDate} · {baziInput?.gender || "未填"} · {dayMaster}</p>
+            </div>
+
+            <div className="mt-6 grid gap-3 md:grid-cols-4">
+              {pillars.map((pillar) => (
+                <div key={`console-${pillar.label}`} className="rounded-xl border border-white/10 bg-[#070B16] p-4 text-center shadow-[inset_0_0_0_1px_rgba(199,154,84,0.08)]">
+                  <p className="text-sm font-semibold text-[#C79A54]">{pillar.label}</p>
+                  <div className="mt-3 rounded-lg border border-white/8 bg-black/20 px-3 py-4">
+                    <p className="text-xs text-white/45">{pillar.tenGods.split(" ")[0] || "十神"}</p>
+                    <p className="mt-1 text-5xl font-semibold text-[#F7E7A6]">{pillar.stem}</p>
+                    <p className="mt-1 text-5xl font-semibold text-[#9ED8DF]">{pillar.branch}</p>
+                  </div>
+                  <p className="mt-3 text-xs leading-5 text-white/45">{pillar.hiddenStems} · {pillar.naYin}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
+              <div className="rounded-xl border border-white/10 bg-[#070B16] p-4">
+                <p className="text-sm font-semibold text-[#F7E7A6]">五行能量分布</p>
+                <div className="mt-4 grid gap-3">
+                  {elements.map((item, index) => {
+                    const palette = ["#87D68D", "#F36B5F", "#D6B239", "#F7D56F", "#82B7E6"];
+                    return (
+                      <div key={`console-${item.element}`} className="grid grid-cols-[32px_1fr_38px] items-center gap-3 text-xs">
+                        <span className="font-semibold text-white/72">{item.element}</span>
+                        <span className="h-3 rounded-full bg-black/40">
+                          <span className="block h-full rounded-full" style={{ width: `${Math.max(item.value, 5)}%`, backgroundColor: palette[index % palette.length] }} />
+                        </span>
+                        <span className="text-right text-white/45">{item.value}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-[#070B16] p-4">
+                <p className="text-sm font-semibold text-[#F7E7A6]">大运流程</p>
+                <div className="mt-4 flex gap-2 overflow-x-auto pb-2 scrollbar-soft lg:grid lg:grid-cols-6 lg:overflow-visible lg:pb-0">
+                  {luckRows.slice(0, 6).map((row, index) => (
+                    <div key={`console-luck-${row.join("-")}`} className={`min-w-[118px] rounded-lg border px-3 py-3 text-center lg:min-w-0 ${index === 4 ? "border-[#C79A54] bg-[#C79A54]/12" : "border-white/10 bg-black/20"}`}>
+                      <p className="text-[11px] text-white/42">{row[0]}</p>
+                      <p className="mt-2 text-lg font-semibold text-white">{row[2]}{row[3]}</p>
+                      <p className="mt-1 text-[10px] text-[#C79A54]">{row[1]}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+
       <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
         <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
           <div className="flex items-center justify-between gap-3">
             <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">一、八字排盘</h4>
             <span className="text-sm font-semibold text-[#063F4A]">日主：{dayMaster}</span>
           </div>
-          <div className="mt-4 grid grid-cols-4 overflow-hidden rounded border border-[#C79A54]/35 text-center">
+          <div className="mt-4 grid gap-3 text-center sm:grid-cols-2 xl:grid-cols-4">
             {pillars.map((pillar) => (
-              <div key={pillar.label} className="border-r border-[#C79A54]/25 last:border-r-0">
+              <div key={pillar.label} className="overflow-hidden rounded border border-[#C79A54]/35 bg-white">
                 <p className="bg-[#F5FAFA] py-2 text-sm font-semibold">{pillar.label}</p>
                 <p className="py-3 text-5xl font-semibold text-[#C79A54]">{pillar.stem}</p>
                 <p className="py-3 text-5xl font-semibold text-[#7A1F16]">{pillar.branch}</p>
@@ -6274,9 +6486,80 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
     ["现实决策", "把命理信号转成可执行的工作、财务、关系建议。"],
     ["通关方法", "用空间、颜色、行为、仪式和复盘降低阻力。"]
   ] as const;
+  const integratedScore = Math.round(scoreRows.reduce((total, [, score]) => total + score, 0) / scoreRows.length);
+  const routePlan = [
+    ["30 天", "校准", "整理命盘资料、现金流、关系边界与当前问题，不急着扩大承诺。"],
+    ["60 天", "验证", "小范围测试合作、课程、产品或转型方向，用数据验证可行性。"],
+    ["90 天", "放大", "只放大已经跑通的路径，建立 SOP、收款规则与复盘节奏。"]
+  ] as const;
 
   return (
     <div className="grid gap-4">
+      <section className="overflow-hidden rounded-[1.75rem] border border-[#C79A54]/35 bg-[#0B1020] text-white shadow-2xl">
+        <div className="grid gap-6 p-5 md:p-7 xl:grid-cols-[0.95fr_1.25fr]">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Four Method Command Center</p>
+            <h4 className="mt-4 text-3xl font-semibold leading-tight text-[#F7E7A6]">综合命理合参决策盘</h4>
+            <p className="mt-3 text-sm leading-7 text-white/66">
+              以命格底盘、宫位阶段、当下问事与个人节奏交叉判断，把复杂命理浓缩成风险、机会和行动路线。
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              {systemMatrix.map(([label, value]) => (
+                <div key={label} className="rounded-xl border border-white/10 bg-[#060A16] p-3">
+                  <p className="text-xs text-white/42">{label}</p>
+                  <p className="mt-2 line-clamp-2 text-sm font-semibold text-white">{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="grid gap-4 md:grid-cols-[0.82fr_1.18fr]">
+              <div className="rounded-2xl border border-[#C79A54]/35 bg-[#060A16] p-5 text-center">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">Integrated Score</p>
+                <div className="mx-auto mt-5 grid size-40 place-items-center rounded-full border-[10px] border-[#C79A54] bg-[#111827] shadow-[0_0_40px_rgba(199,154,84,.28)]">
+                  <div>
+                    <p className="text-5xl font-semibold text-[#F7E7A6]">{integratedScore}</p>
+                    <p className="mt-1 text-xs tracking-[0.22em] text-white/45">TOTAL</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm leading-6 text-white/58">综合判断不是单看吉凶，而是看承载力、时机、资源与风险是否同步。</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">Risk / Opportunity Radar</p>
+                <div className="mt-4 grid gap-3">
+                  {scoreRows.map(([label, score]) => (
+                    <div key={label} className="grid grid-cols-[76px_1fr_42px] items-center gap-3">
+                      <p className="text-xs text-white/62">{label}</p>
+                      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                        <div className="h-full rounded-full bg-[#C79A54]" style={{ width: `${score}%` }} />
+                      </div>
+                      <p className="text-right text-sm font-semibold text-[#F7E7A6]">{score}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#C79A54]/25 bg-[#060A16] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">30 / 60 / 90 Action Route</p>
+                <span className="rounded-full bg-[#C79A54] px-3 py-1 text-xs font-semibold text-[#0B1020]">下一步路线</span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {routePlan.map(([period, title, content]) => (
+                  <div key={period} className="rounded-xl border border-white/10 bg-white/[0.05] p-4">
+                    <p className="text-2xl font-semibold text-[#F7E7A6]">{period}</p>
+                    <p className="mt-2 font-semibold text-white">{title}</p>
+                    <p className="mt-2 text-xs leading-5 text-white/58">{content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="rounded border border-[#C79A54]/40 bg-[#102F38] p-5 text-white">
         <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div>
@@ -6542,6 +6825,116 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
 
   return (
     <div className="grid gap-4">
+      <section className="overflow-hidden rounded-[1.75rem] border border-[#C79A54]/28 bg-[#0B1020] p-4 text-white shadow-[0_28px_80px_rgba(59,27,102,0.24)] sm:p-6">
+        <div className="mb-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#C79A54]">Zi Wei Destiny Console</p>
+          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl">紫微斗数命盘系统</h3>
+          <p className="mt-2 text-xs tracking-[0.28em] text-white/42">十二宫位 · 大限流年 · 四化飞星 · AI 命盘推演</p>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
+          <aside className="grid gap-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">参</span>
+                <div>
+                  <p className="font-semibold text-white">基本资料</p>
+                  <p className="text-xs text-white/45">命宫 · 身宫 · 五行局 · 四柱</p>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3 text-sm">
+                {[
+                  ["姓名", input?.fullName || reportSubjectName(report)],
+                  ["出生", `${input?.birthDate || "未填"} ${input?.birthTime || "未填时辰"}`],
+                  ["命宫", chart?.mainPalaceBranch ? `${chart.mainPalaceBranch}宫` : calendar?.mingGong || "待排盘"],
+                  ["身宫", chart?.bodyPalaceBranch ? `${chart.bodyPalaceBranch}宫` : calendar?.shenGong || "待排盘"],
+                  ["五行局", chart?.fiveElementName || calendar?.mingGongNaYin || "待校准"],
+                  ["四柱", calendar?.fourPillarsText || "待排盘"]
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-xl border border-white/10 bg-[#080D1A] px-3 py-3">
+                    <p className="text-xs text-white/38">{label}</p>
+                    <p className="mt-1 font-semibold text-white">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">肆</span>
+                <div>
+                  <p className="font-semibold text-white">分析主题</p>
+                  <p className="text-xs text-white/45">可复选方向 · 当前报告重点</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[
+                  input ? ziweiFocusLabels[input.focus] : "综合命盘",
+                  "事业路径",
+                  "财帛资源",
+                  "关系合作",
+                  "大限节奏",
+                  "流年策略"
+                ].map((tag) => (
+                  <span key={tag} className="rounded-full border border-white/10 bg-[#080D1A] px-3 py-2 text-xs font-semibold text-white/72">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <main className="rounded-2xl border border-white/10 bg-white/[0.045] p-4 sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#F7E7A6] to-[#C79A54] text-sm font-bold text-[#0B1020]">命</span>
+                <div>
+                  <p className="text-xl font-semibold text-white">十二宫命盘总览</p>
+                  <p className="text-xs text-white/42">命宫主轴 · 官禄财帛 · 夫妻福德 · 大限排序</p>
+                </div>
+              </div>
+              <p className="text-xs text-white/45">{calendar?.zodiac || "生肖待排"} · {calendar?.dayMaster || "日主待排"} · {chart?.engine ? "真实排盘" : "基础预览"}</p>
+            </div>
+
+            <div className="mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-soft md:grid md:grid-cols-4 md:overflow-visible md:pb-0">
+              {chartPalaceRows.slice(0, 12).map((palace, index) => {
+                const isCore = palace?.palaceName?.includes("命宫") || palace?.palaceName?.includes("官禄") || palace?.palaceName?.includes("财帛");
+                return (
+                  <div
+                    key={`console-ziwei-${palace?.palaceName}-${index}`}
+                    className={`min-h-28 min-w-[176px] rounded-xl border p-3 md:min-w-0 ${isCore ? "border-[#C79A54] bg-[#C79A54]/10" : "border-white/10 bg-[#070B16]"}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-semibold text-[#F7E7A6]">{palace?.palaceName || "宫位"}</p>
+                        <p className="mt-1 text-[11px] text-white/38">{palace?.age || "年龄段待排"}</p>
+                      </div>
+                      <span className="rounded bg-white/8 px-2 py-1 text-[10px] text-white/58">{palace?.branch || "-"}</span>
+                    </div>
+                    <p className="mt-3 text-sm font-semibold leading-5 text-white">{palace?.stars || "星曜待排"}</p>
+                    <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-white/42">{palace?.summary || "等待命盘资料写入。"}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 rounded-xl border border-white/10 bg-[#070B16] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[#F7E7A6]">大限流程</p>
+                <span className="rounded-full bg-[#C79A54]/15 px-3 py-1 text-xs text-[#F7E7A6]">当前阶段高亮</span>
+              </div>
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-2 scrollbar-soft lg:grid lg:grid-cols-8 lg:overflow-visible lg:pb-0">
+                {luckRows.slice(0, 8).map((row, index) => (
+                  <div key={`ziwei-console-luck-${row.join("-")}`} className={`min-w-[122px] rounded-lg border px-3 py-3 text-center lg:min-w-0 ${index === 2 ? "border-[#C79A54] bg-[#C79A54]/12" : "border-white/10 bg-black/20"}`}>
+                    <p className="text-[11px] text-white/42">{row[0]}</p>
+                    <p className="mt-2 text-sm font-semibold text-white">{row[1]}</p>
+                    <p className="mt-1 line-clamp-1 text-[10px] text-[#C79A54]">{row[2]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+
       <section className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
         <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
           <div>
@@ -6956,7 +7349,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
   const solutionStack = reportSolutionStack(report);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 backdrop-blur-sm md:p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#0A0A0A]/70 p-3 pb-28 backdrop-blur-sm md:p-6">
       <div className="mx-auto max-w-7xl">
         <div className="no-print sticky top-3 z-10 mb-3 flex flex-wrap items-center justify-between gap-3 rounded border border-white/10 bg-[#063F4A] p-3 text-white shadow-soft">
           <div>
@@ -6966,6 +7359,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
           <div className="flex flex-wrap gap-2">
             <span className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">Desktop / Mobile Preview</span>
             <button type="button" onClick={() => window.print()} className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">导出 PDF</button>
+            <button type="button" onClick={() => downloadReportJpg(report, memberProfile)} className="rounded bg-white/10 px-3 py-2 text-sm font-semibold">下载 JPG</button>
             <button type="button" onClick={() => downloadReportSvg(report, memberProfile)} className="rounded bg-[#C79A54] px-3 py-2 text-sm font-semibold text-[#063F4A]">下载 SVG</button>
             <button type="button" onClick={onClose} className="grid size-10 place-items-center rounded bg-white/10" aria-label="关闭报告">
               <X className="size-5" />
@@ -7132,10 +7526,46 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
             {template === "梅花易数" ? <MeihuaReportPanel report={report} /> : null}
           </div>
 
+          <section className="no-print mt-6 overflow-hidden rounded-2xl border border-[#C79A54]/40 bg-[#102F38] text-white">
+            <div className="grid gap-5 p-5 md:grid-cols-[0.85fr_1.15fr] md:p-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Next Step</p>
+                <h3 className="mt-3 text-2xl font-semibold">报告不是终点，而是下一步成交入口</h3>
+                <p className="mt-3 text-sm leading-6 text-white/66">
+                  根据这份报告的风险、机会和行动路线，可继续生成更具体的开运方案、预约大师判断，或选择适合的产品与课程。
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  ["生成开运方案", "把颜色、方位、行为与 7 日计划变成执行清单", "bg-[#C79A54] text-[#063F4A]"],
+                  ["预约易玺大师", "针对事业、财富、关系或企业布局做真人判断", "bg-white/10 text-white"],
+                  ["推荐相关产品", "按报告主题推荐九运香、水晶、办公室布局用品", "bg-white/10 text-white"],
+                  ["下载 JPG / PDF", "保存报告并分享给家人、客户或团队", "bg-white/10 text-white"]
+                ].map(([title, desc, tone]) => (
+                  <button
+                    key={title}
+                    type="button"
+                    onClick={title.includes("下载") ? () => downloadReportJpg(report, memberProfile) : undefined}
+                    className={`rounded-xl border border-white/10 p-4 text-left shadow-sm transition hover:-translate-y-0.5 ${tone}`}
+                  >
+                    <p className="font-semibold">{title}</p>
+                    <p className="mt-2 text-xs leading-5 opacity-75">{desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
           <footer className="mt-5 border-t border-[#C79A54]/35 pt-4 text-center text-xs leading-5 text-ink/50">
             注：本报告基于传统命理学理与 AI 辅助分析，仅供文化参考、自我觉察与个人规划，不构成金融、法律、医疗或其他专业建议。
           </footer>
         </article>
+        <div className="no-print fixed inset-x-3 bottom-3 z-20 grid grid-cols-4 gap-2 rounded-2xl border border-[#C79A54]/35 bg-[#063F4A]/95 p-2 text-white shadow-2xl backdrop-blur md:hidden">
+          <button type="button" onClick={() => window.print()} className="rounded-xl bg-white/10 px-2 py-3 text-xs font-semibold">PDF</button>
+          <button type="button" onClick={() => downloadReportJpg(report, memberProfile)} className="rounded-xl bg-[#C79A54] px-2 py-3 text-xs font-semibold text-[#063F4A]">JPG</button>
+          <button type="button" onClick={() => downloadReportSvg(report, memberProfile)} className="rounded-xl bg-white/10 px-2 py-3 text-xs font-semibold">SVG</button>
+          <button type="button" onClick={onClose} className="rounded-xl bg-white/10 px-2 py-3 text-xs font-semibold">关闭</button>
+        </div>
       </div>
     </div>
   );
@@ -9928,6 +10358,32 @@ function DivinationModule({
                   <p className="mt-2 text-sm leading-6 text-ink/62">{content}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#FFFDF7] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Body-Use Clue Engine</p>
+                  <h4 className="mt-1 text-xl font-semibold text-[#063F4A]">体用生克 × 象意提取</h4>
+                  <p className="mt-1 text-sm leading-6 text-ink/55">先判定生克吉凶，再决定从用卦提取助力、风险、消耗、目标或合作线索。</p>
+                </div>
+                <StatusPill>金钥匙类象</StatusPill>
+              </div>
+              <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                {(selectedReading.relationClues || []).map((item) => (
+                  <div key={`${item.stage}-${item.useTrigram}`} className="rounded border border-black/10 bg-white p-4 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-[#063F4A]">{item.stage}</p>
+                        <p className="mt-1 text-xs text-ink/45">{item.useTrigram}</p>
+                      </div>
+                      <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.relation}</span>
+                    </div>
+                    <p className="mt-3 rounded bg-[#F5FAFA] p-3 text-sm font-semibold leading-6 text-[#063F4A]">{item.extraction}</p>
+                    <p className="mt-3 text-sm leading-6 text-ink/62">{item.insight}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
