@@ -13,7 +13,7 @@ export function getOpenAIModel() {
 export function getResponseReasoningOptions(model: string): ResponseReasoningOptions {
   const normalized = model.toLowerCase();
 
-  if (normalized === "gpt-5" || normalized.startsWith("gpt-5-") || normalized.startsWith("o")) {
+  if (normalized === "gpt-5" || normalized.startsWith("gpt-5") || normalized.startsWith("o")) {
     return {
       reasoning: {
         effort: "minimal"
