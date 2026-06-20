@@ -5,9 +5,11 @@ import { emptyMemberProfile } from "@/lib/member-profile";
 import { getMingliKnowledgeContext, hexagramOneWordPromptRules, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
 import {
   createOpenAIResponseWithFallback,
+  getOpenAIErrorCode,
   getOpenAIErrorMessage,
   getOpenAIFallbackModel,
   getOpenAIModel,
+  getOpenAIUserMessage,
   getResponseReasoningOptions
 } from "@/lib/openai-runtime";
 import { rateLimitRequest } from "@/lib/rate-limit";
@@ -181,7 +183,12 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("OpenAI fengshui chat error", getOpenAIErrorMessage(error));
     return NextResponse.json(
-      { error: "AI 风水命理师暂时无法回应，请稍后再试。" },
+      {
+        error: getOpenAIUserMessage(error),
+        errorCode: getOpenAIErrorCode(error),
+        model,
+        fallbackModel: getOpenAIFallbackModel(model)
+      },
       { status: 500 }
     );
   }
