@@ -3,7 +3,13 @@ import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { emptyMemberProfile } from "@/lib/member-profile";
 import { getMingliKnowledgeContext, hexagramOneWordPromptRules, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIFallbackModel,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type ChatRequest = {
@@ -150,7 +156,7 @@ export async function POST(request: Request) {
       timeout: 30000
     });
 
-    const response = await client.responses.create({
+    const { response, model: usedModel, fallbackUsed } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: isStrategicTierForResponse(body.memberLevel || "Plus") ? 3400 : 2600,
       ...getResponseReasoningOptions(model),
@@ -164,11 +170,13 @@ export async function POST(request: Request) {
       })
     });
 
-    const answer = response.output_text?.trim() || "暂时无法生成回复，请稍后再试。";
+    const outputText = "output_text" in response && typeof response.output_text === "string" ? response.output_text : "";
+    const answer = outputText.trim() || "暂时无法生成回复，请稍后再试。";
 
     return NextResponse.json({
       answer,
-      model
+      model: usedModel,
+      fallbackUsed
     });
   } catch (error) {
     console.error("OpenAI fengshui chat error", getOpenAIErrorMessage(error));
@@ -184,6 +192,7 @@ export async function GET() {
     provider: "openai",
     configured: hasOpenAIKey,
     model,
+    fallbackModel: getOpenAIFallbackModel(model),
     endpoint: "responses"
   });
 }

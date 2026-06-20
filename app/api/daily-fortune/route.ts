@@ -5,7 +5,12 @@ import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { buildDailyFortuneMatrix, buildPublicDailyAlmanac } from "@/lib/daily-fortune-engine";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 
 const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
@@ -66,7 +71,7 @@ async function generateFortune({
       timeout: 30000
     });
 
-    const response = await client.responses.create({
+    const { response, model: usedModel, fallbackUsed } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 950,
       ...getResponseReasoningOptions(model),
@@ -108,7 +113,8 @@ ${JSON.stringify(dailyMatrix, null, 2)}
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
+      fallbackUsed,
       reading: response.output_text?.trim() || "今日稳中有进，适合先整理资料，再推进合作。",
       profile: activeProfile,
       matrix: dailyMatrix,

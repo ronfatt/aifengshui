@@ -4,7 +4,12 @@ import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getBaziAnalysis } from "@/lib/bazi-engine";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 
 type BaziReportBody = {
   fullName?: string;
@@ -101,7 +106,7 @@ export async function POST(request: Request) {
       timeout: 45000
     });
 
-    const response = await client.responses.create({
+    const { response, model: usedModel } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 3600,
       ...getResponseReasoningOptions(model),
@@ -135,7 +140,7 @@ ${JSON.stringify(analysis, null, 2)}
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
       analysis,
       summary: parsed.summary || fallbackReport(body).summary,
       sections: parsed.sections?.length ? parsed.sections.slice(0, 10) : fallbackReport(body).sections

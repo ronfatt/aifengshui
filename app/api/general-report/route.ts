@@ -6,7 +6,12 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 
 type GeneralReportBody = {
   reportTitle?: string;
@@ -121,7 +126,7 @@ export async function POST(request: Request) {
     const calendar = getMingliCalendar(body.subject?.birthDate, body.subject?.birthTime, body.subject?.calendarType || "Gregorian");
     const ziweiChart = getZiweiChart(body.subject);
 
-    const response = await client.responses.create({
+    const { response, model: usedModel } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 1900,
       ...getResponseReasoningOptions(model),
@@ -159,7 +164,7 @@ ${meihuaPromptGuardrails}
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
       summary: parsed.summary || fallbackReport(body).summary,
       sections: parsed.sections?.length ? parsed.sections.slice(0, 7) : fallbackReport(body).sections
     });

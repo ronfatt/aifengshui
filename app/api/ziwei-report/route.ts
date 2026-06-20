@@ -5,7 +5,12 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 
 type ZiweiReportBody = {
   fullName?: string;
@@ -147,7 +152,7 @@ export async function POST(request: Request) {
 
   try {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 45000 });
-    const response = await client.responses.create({
+    const { response, model: usedModel } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 4200,
       ...getResponseReasoningOptions(model),
@@ -187,7 +192,7 @@ ${JSON.stringify(chart, null, 2)}
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
       summary: parsed.summary || fallback.summary,
       sections: parsed.sections?.length ? parsed.sections.slice(0, 10) : fallback.sections,
       chart

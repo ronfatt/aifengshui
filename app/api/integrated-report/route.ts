@@ -6,7 +6,12 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 
 type IntegratedReportBody = {
   fullName?: string;
@@ -265,7 +270,7 @@ export async function POST(request: Request) {
     const instructions =
       "你是易玺老师的高阶个人命理报告助理。底层分析必须融合八字命理、紫微斗数、梅花易数、生命数字四套系统，但报告正文不要逐段提及这些系统名称，不要写“八字显示/紫微显示/梅花显示/数字显示”。你要把四套系统的判断融合成一份完整、细致、可执行的个人命理分析。文字要像专业付费报告：有判断、有原因、有风险、有行动、有通关方法，不要重复，不要空泛，不要只给简单建议。不要绝对化，不要提供金融、法律、医疗或专业建议。输出必须是严格 JSON：{\"summary\":\"...\",\"sections\":[{\"title\":\"...\",\"content\":\"...\"}],\"scores\":{\"overall\":数字,\"career\":数字,\"wealth\":数字,\"relationship\":数字,\"health\":数字,\"timing\":数字,\"risk\":数字},\"actions\":{\"now\":[\"...\"],\"avoid\":[\"...\"],\"ritual\":[\"...\"],\"products\":[\"...\"]}}。summary 220-320 字，sections 必须 12 个，每个 content 260-420 字，不要 Markdown。每个 section 的标题和内容必须明显不同，禁止重复同一句结论。";
 
-    const firstResponse = await client.responses.create({
+    const { response: firstResponse, model: usedModel, fallbackUsed } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 5600,
       ...getResponseReasoningOptions(model),
@@ -279,10 +284,10 @@ export async function POST(request: Request) {
 
     if (hasReportQualityIssues(sections)) {
       qualityRetried = true;
-      const retryResponse = await client.responses.create({
-        model,
+      const { response: retryResponse } = await createOpenAIResponseWithFallback(client, {
+        model: usedModel,
         max_output_tokens: 6000,
-        ...getResponseReasoningOptions(model),
+        ...getResponseReasoningOptions(usedModel),
         instructions,
         input: buildReportInput(body, true)
       });
@@ -300,7 +305,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
+      fallbackUsed,
       summary: parsed.summary || fallback.summary,
       sections: sections.length >= 6 ? sections : fallback.sections,
       scores: parsed.scores,

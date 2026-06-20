@@ -2,7 +2,12 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
-import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
+import {
+  createOpenAIResponseWithFallback,
+  getOpenAIErrorMessage,
+  getOpenAIModel,
+  getResponseReasoningOptions
+} from "@/lib/openai-runtime";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 
@@ -59,7 +64,7 @@ export async function POST(request: Request) {
 
   try {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 45000 });
-    const response = await client.responses.create({
+    const { response, model: usedModel } = await createOpenAIResponseWithFallback(client, {
       model,
       max_output_tokens: 2600,
       ...getResponseReasoningOptions(model),
@@ -111,7 +116,7 @@ ${JSON.stringify(body, null, 2)}
 
     return NextResponse.json({
       configured: true,
-      model,
+      model: usedModel,
       summary: parsed.summary || fallbackReport(body).summary,
       sections: parsed.sections?.length ? parsed.sections.slice(0, 10) : fallbackReport(body).sections
     });
