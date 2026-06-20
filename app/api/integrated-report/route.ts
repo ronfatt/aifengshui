@@ -6,6 +6,7 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
 type IntegratedReportBody = {
   fullName?: string;
@@ -36,9 +37,8 @@ type IntegratedReportPayload = {
   actions?: Record<string, string[]>;
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 function normalizeSections(sections?: IntegratedReportSection[]) {
   const seen = new Set<string>();
@@ -268,7 +268,7 @@ export async function POST(request: Request) {
     const firstResponse = await client.responses.create({
       model,
       max_output_tokens: 5600,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions,
       input: buildReportInput(body)
     });
@@ -282,7 +282,7 @@ export async function POST(request: Request) {
       const retryResponse = await client.responses.create({
         model,
         max_output_tokens: 6000,
-        reasoning: { effort: reasoningEffort },
+        ...getResponseReasoningOptions(model),
         instructions,
         input: buildReportInput(body, true)
       });
@@ -312,7 +312,7 @@ export async function POST(request: Request) {
       }
     });
   } catch (error) {
-    console.error("Integrated report generation error", error);
+    console.error("Integrated report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }

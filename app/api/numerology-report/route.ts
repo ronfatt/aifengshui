@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
 type NumerologyReportBody = {
   fullName?: string;
@@ -12,9 +13,8 @@ type NumerologyReportBody = {
   focus?: string;
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 function fallbackReport(body: NumerologyReportBody) {
   return {
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: 2600,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是易玺老师的数字命理报告助理。请用中文生成现代、专业、温暖、可执行的数字命理报告段落。输出必须是严格 JSON：{\"summary\":\"...\",\"sections\":[{\"title\":\"...\",\"content\":\"...\"}]}。summary 不超过 120 字，sections 最多 6 个，每个 content 不超过 180 字。不要使用 Markdown。不要绝对化，不要提供金融、法律、医疗或专业建议。",
       input: `
@@ -81,7 +81,7 @@ ${JSON.stringify(body, null, 2)}
       sections: parsed.sections?.length ? parsed.sections.slice(0, 6) : fallbackReport(body).sections
     });
   } catch (error) {
-    console.error("Numerology report generation error", error);
+    console.error("Numerology report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }

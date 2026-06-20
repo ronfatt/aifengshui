@@ -5,9 +5,9 @@ import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { buildDailyFortuneMatrix, buildPublicDailyAlmanac } from "@/lib/daily-fortune-engine";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
 
 type DailyFortuneRequest = {
@@ -69,9 +69,7 @@ async function generateFortune({
     const response = await client.responses.create({
       model,
       max_output_tokens: 950,
-      reasoning: {
-        effort: reasoningEffort
-      },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是 AI 风水命理师，也是一个每日运势产品的内容设计师。请根据系统给出的真实万年历、会员命理资料、每日气象站矩阵生成今日运势。必须中文、简短、好懂、可执行，像天气预报一样直观。禁止恐吓、宿命论、绝对化。必须优先采用系统提供的公历/农历/四柱/生肖/日主，不可自行猜测或改写。若资料不完整，要明确提醒先补资料，不要假装个人化。",
       input: `
@@ -120,7 +118,7 @@ ${JSON.stringify(dailyMatrix, null, 2)}
       personalDayMasterFlow
     });
   } catch (error) {
-    console.error("OpenAI daily fortune error", error);
+    console.error("OpenAI daily fortune error", getOpenAIErrorMessage(error));
     return NextResponse.json(
       {
         configured: true,

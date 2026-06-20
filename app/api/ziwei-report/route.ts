@@ -5,6 +5,7 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
 type ZiweiReportBody = {
   fullName?: string;
@@ -19,9 +20,8 @@ type ZiweiReportBody = {
 type ZiweiChartData = NonNullable<ReturnType<typeof getZiweiChart>>;
 type ZiweiPalaceData = ZiweiChartData["palaces"][number];
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 const sectionTitles = [
   "一、命宫总论",
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: 4200,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是易玺老师的紫微斗数命盘报告助理，精通传统紫微斗数、现代决策咨询与风水行动建议。请用中文生成专业、稳重、可执行的紫微斗数报告。输出必须是严格 JSON object，禁止 Markdown、禁止 code fence、禁止额外解释。格式只允许：{\"summary\":\"180-260字摘要\",\"sections\":[{\"title\":\"一、命宫总论\",\"content\":\"180-340字内容\"}]}。sections 必须刚好 10 节，标题必须依序使用：一、命宫总论；二、官禄宫事业定位；三、财帛宫财富模式；四、夫妻宫关系模式；五、疾厄宫身心节律；六、福德宫内在状态；七、三方四正交叉判断；八、大限阶段与当前节奏；九、流年策略与红黑榜；十、风水调理与行动清单。每节必须包含【盘面依据】【白话判断】【警示】【行动】四类短标签。【盘面依据】必须引用具体宫位、主星、辅星、四化、大限或流年触发，不可只写心理判断。必须根据提供的紫微排盘 JSON 写，不能编造 JSON 中没有的主星、辅星、四化、宫位。10%-20% 使用紫微术语，术语后必须马上用白话解释。拒绝空洞套话，每指出一个风险，必须给一个具体行动；每个行动要带有时间窗口、方位/空间整理或具体行为动作。不要绝对化，不要提供金融、法律、医疗或专业建议。",
       input: `
@@ -193,7 +193,7 @@ ${JSON.stringify(chart, null, 2)}
       chart
     });
   } catch (error) {
-    console.error("Ziwei report generation error", error);
+    console.error("Ziwei report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }

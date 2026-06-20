@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { emptyMemberProfile } from "@/lib/member-profile";
 import { getMingliKnowledgeContext, hexagramOneWordPromptRules, meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 import { rateLimitRequest } from "@/lib/rate-limit";
 
 type ChatRequest = {
@@ -21,8 +22,7 @@ type ChatRequest = {
   };
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
 
 function isStrategicTierForResponse(memberLevel: string) {
@@ -153,9 +153,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: isStrategicTierForResponse(body.memberLevel || "Plus") ? 3400 : 2600,
-      reasoning: {
-        effort: reasoningEffort
-      },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是易玺老师风格的 AI 风水命理师，服务 AI 命理决策平台。回答必须使用中文，像有实战经验的风水命理老师：先定问题，再拆盘面结构、现状、隐患、趋势和化解行动。用户问题开头可能会带有“问题类型”，要优先按该类型判断。底层逻辑以紫微斗数矩阵、天干地支时间变量、飞星派四化动态、三合派星曜底盘、梅花易数即时象意、五行平衡与风险评分为主。紫微斗数用于长期结构和宫位趋势，梅花易数用于当下一问一事的体用、生克、动爻、互卦、变卦趋势。不要声称结果绝对准确，不要编造用户未提供的精确命盘或具体卦名；若资料不足，要说明是象意参考。涉及健康、法律、投资等高风险事项时，必须加入风险提醒并建议咨询专业人士。",
       input: buildPrompt({
@@ -173,7 +171,7 @@ export async function POST(request: Request) {
       model
     });
   } catch (error) {
-    console.error("OpenAI fengshui chat error", error);
+    console.error("OpenAI fengshui chat error", getOpenAIErrorMessage(error));
     return NextResponse.json(
       { error: "AI 风水命理师暂时无法回应，请稍后再试。" },
       { status: 500 }

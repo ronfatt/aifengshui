@@ -4,6 +4,7 @@ import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getBaziAnalysis } from "@/lib/bazi-engine";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
 type BaziReportBody = {
   fullName?: string;
@@ -15,9 +16,8 @@ type BaziReportBody = {
   focus?: string;
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 function fallbackReport(body: BaziReportBody) {
   const focus = body.focus || "career";
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: 3600,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是易玺老师的八字命理报告助理，精通四柱八字、十神、五行强弱、合冲刑害、大运流年，并能把术语翻译成用户能执行的现实建议。必须严格采用系统提供的 analysis JSON，不得自行发明四柱、农历或干支。输出必须是 JSON，格式为 {\"summary\":\"...\",\"sections\":[{\"title\":\"...\",\"content\":\"...\"}]}。sections 需要 8-10 个，每段必须包含【盘面依据】【白话判断】【风险提醒】【行动建议】中的至少三个标签，其中【盘面依据】必须引用四柱、日主、十神、五行、合冲刑害或大运流年之一。每指出一个风险，必须立刻给一个行动建议；每个行动建议必须包含时间、方位、行为动作三者中至少两个。禁止空洞套话和重复句式，例如连续使用“稳中求进”“先整理后推进”。单段不要超过 220 字。不要声称绝对准确，不要提供金融、法律、医疗或专业建议。",
       input: `
@@ -141,7 +141,7 @@ ${JSON.stringify(analysis, null, 2)}
       sections: parsed.sections?.length ? parsed.sections.slice(0, 10) : fallbackReport(body).sections
     });
   } catch (error) {
-    console.error("Bazi report generation error", error);
+    console.error("Bazi report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }

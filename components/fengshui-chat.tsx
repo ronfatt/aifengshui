@@ -260,7 +260,18 @@ export function FengshuiChat({
         })
       });
 
-      const data = (await response.json()) as { answer?: string; error?: string };
+      const raw = await response.text();
+      let data: { answer?: string; error?: string } = {};
+
+      try {
+        data = raw ? (JSON.parse(raw) as { answer?: string; error?: string }) : {};
+      } catch {
+        data = {
+          error: response.ok
+            ? "AI 风水命理师返回格式异常，请稍后再试。"
+            : `AI 服务请求失败（${response.status}），请稍后再试。`
+        };
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "AI 风水命理师暂时无法回应。");
@@ -273,7 +284,11 @@ export function FengshuiChat({
     } catch (error) {
       onRefundPoints?.(chatCost, "ai_chat_refund", "AI 风水命理师回应失败自动退点");
       const message = error instanceof Error ? error.message : "AI 风水命理师暂时无法回应。";
-      setMessages((current) => [...current, { role: "system", content: message }]);
+      const friendlyMessage =
+        message === "Load failed" || message.includes("Failed to fetch")
+          ? "连接 AI 服务失败，请检查网络后重试。若持续出现，请管理员检查 Vercel 的 OPENAI_API_KEY、OPENAI_MODEL 与 Functions 日志。"
+          : message;
+      setMessages((current) => [...current, { role: "system", content: friendlyMessage }]);
     } finally {
       setIsLoading(false);
     }

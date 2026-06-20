@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/api-auth";
 import { meihuaPromptGuardrails } from "@/lib/mingli-knowledge";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 
@@ -18,9 +19,8 @@ type MeihuaReportBody = {
   mode?: "random" | "time";
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 function fallbackReport(body: MeihuaReportBody) {
   return {
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: 2600,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions:
         `你是易玺老师的专业梅花易数与现代心理咨询占卜助理。请用中文生成专业、稳重、可执行的梅花易数报告。输出必须是严格 JSON：{"summary":"...","sections":[{"title":"...","content":"..."}]}。
 
@@ -116,7 +116,7 @@ ${JSON.stringify(body, null, 2)}
       sections: parsed.sections?.length ? parsed.sections.slice(0, 10) : fallbackReport(body).sections
     });
   } catch (error) {
-    console.error("Meihua report generation error", error);
+    console.error("Meihua report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }

@@ -6,6 +6,7 @@ import { rateLimitRequest } from "@/lib/rate-limit";
 import { normalizeAiReportPayload } from "@/lib/report-json";
 import { getMingliCalendar } from "@/lib/mingli-calendar";
 import { getZiweiChart } from "@/lib/ziwei-engine";
+import { getOpenAIErrorMessage, getOpenAIModel, getResponseReasoningOptions } from "@/lib/openai-runtime";
 
 type GeneralReportBody = {
   reportTitle?: string;
@@ -29,9 +30,8 @@ type GeneralReportBody = {
   };
 };
 
-const model = process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || "gpt-5.4-mini";
+const model = getOpenAIModel();
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
-const reasoningEffort = model === "gpt-5" ? "minimal" : "none";
 
 const reportFocusMap: Record<string, string> = {
   财运报告: "财富、现金流、正偏财机会与风险",
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     const response = await client.responses.create({
       model,
       max_output_tokens: 1900,
-      reasoning: { effort: reasoningEffort },
+      ...getResponseReasoningOptions(model),
       instructions:
         "你是易玺老师的一般付费命理报告助理。请用中文生成专业、稳重、可执行的报告内容。所有一般报告都必须用四术框架：八字命理、紫微斗数、梅花易数、数字命理。不要写成普通 AI 建议，也不要只写单一命理体系。输出必须是严格 JSON：{\"summary\":\"...\",\"sections\":[{\"title\":\"...\",\"content\":\"...\"}]}。summary 不超过 150 字，sections 需要 5-7 个，每段 100-200 字，不要 Markdown。不要绝对化，不要提供金融、法律、医疗或专业建议。",
       input: `
@@ -164,7 +164,7 @@ ${meihuaPromptGuardrails}
       sections: parsed.sections?.length ? parsed.sections.slice(0, 7) : fallbackReport(body).sections
     });
   } catch (error) {
-    console.error("General report generation error", error);
+    console.error("General report generation error", getOpenAIErrorMessage(error));
     return NextResponse.json(fallbackReport(body));
   }
 }
