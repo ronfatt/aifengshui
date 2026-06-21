@@ -1210,6 +1210,14 @@ type SigilArtifact = {
   dots: { x: number; y: number }[];
   createdAt: string;
   cost: number;
+  refinedIntent?: string;
+  symbolMeaning?: string;
+  activationGuide?: string;
+  actionAnchor?: string;
+  reflectionPrompt?: string;
+  avoidNote?: string;
+  energyNotes?: string[];
+  aiGenerated?: boolean;
 };
 
 type Trigram = {
@@ -1304,6 +1312,12 @@ type Hexagram64Reading = {
   action: string;
   oracle: string;
   clue: string;
+  verdict: string;
+  risk: string;
+  timing: string;
+  actionList: string[];
+  avoidList: string[];
+  depthMap: Array<{ title: string; body: string }>;
   element: Trigram["element"];
   score: number;
 };
@@ -3184,12 +3198,81 @@ function getHexagram64Meta(upper: Trigram, lower: Trigram) {
 
 function buildHexagramOracle(meta: HexagramOneWordMeta, mode: Hexagram64Mode, question: string) {
   const questionPrefix = mode === "daily" || !question.trim() ? "" : `你问的是「${question.trim()}」。`;
-  const depth =
-    mode === "deep"
-      ? "不要急着求一个漂亮答案，先确认自己是否愿意为真正的转变付出代价。"
-      : "";
 
-  return `${questionPrefix}${meta.situation}${meta.keyPoint}${meta.action}${depth}【今日线索】：${meta.clue}`;
+  if (mode === "daily") {
+    return `${meta.situation}${meta.keyPoint}${meta.action}【今日线索】：${meta.clue}`;
+  }
+
+  if (mode === "question") {
+    return `${questionPrefix}此卦给出的判断不是单纯吉凶，而是提醒你先看清「${meta.word}」这股力量。${meta.keyPoint}${meta.action}短期内先做小验证，不宜一次押上全部资源。【关键线索】：${meta.clue}`;
+  }
+
+  return `${questionPrefix}深度来看，「${meta.word}」代表这件事的核心动力已经浮出表面。第一层看现状：${meta.situation}第二层看隐患：${meta.keyPoint}第三层看破局：${meta.action}接下来用 3 天观察信号、7 天验证行动、30 天决定是否加码。【关键线索】：${meta.clue}`;
+}
+
+function getHexagramTiming(score: number, mode: Hexagram64Mode) {
+  if (mode === "daily") return "今天以内：先抓一个小动作，不做长期承诺。";
+  if (score >= 82) return "24-72 小时内可小步推进，但必须留下回旋空间。";
+  if (score >= 68) return "未来 3-7 天适合试探、确认条件，不宜一次定死。";
+  return "先观察 3 天，等关键人物或资源变清楚后再行动。";
+}
+
+function buildHexagramModePayload(meta: HexagramOneWordMeta, mode: Hexagram64Mode, question: string, score: number) {
+  const cleanQuestion = question.trim();
+  const subject = cleanQuestion || "你此刻最在意的事";
+  const timing = getHexagramTiming(score, mode);
+
+  if (mode === "daily") {
+    return {
+      verdict: `今日关键字是「${meta.word}」，重点不是求快，而是看见今天最该调整的状态。`,
+      risk: meta.keyPoint,
+      timing,
+      actionList: [meta.action, "把今天最重要的一件事写下来，只推进一个可完成的小步骤。"],
+      avoidList: ["避免临时答应超出能力范围的承诺。", "避免因为情绪起伏而马上做长期决定。"],
+      depthMap: []
+    };
+  }
+
+  if (mode === "question") {
+    return {
+      verdict: `针对「${subject}」，此卦偏向先判断条件，再决定推进。关键不是能不能做，而是你是否已经掌握主动权。`,
+      risk: `核心卡点：${meta.keyPoint} 如果没有先确认边界，容易出现多做少得、口头承诺变责任的问题。`,
+      timing,
+      actionList: [
+        "先写下这件事的目标、代价、最坏结果。",
+        meta.action,
+        "用一次小金额、小范围或短周期测试，确认对方反应后再加码。"
+      ],
+      avoidList: ["不要只听口头承诺，要留下文字记录。", "不要在情绪高点或压力最大时做不可逆决定。"],
+      depthMap: [
+        { title: "问事结论", body: `这件事可以看，但不能急。重点在「${meta.word}」所代表的节奏与边界。` },
+        { title: "转机来源", body: `转机多半藏在：${meta.clue}。遇到相关人事物时，先观察再回应。` }
+      ]
+    };
+  }
+
+  return {
+    verdict: `深度判断：这不是单一事件，而是一次关于「${meta.word}」的资源、时机与心理状态测试。先分清什么能掌控，什么只是表面诱因。`,
+    risk: `风险分层：表层是${meta.theme}；中层是${meta.keyPoint}；深层是你可能为了快速得到结果，牺牲长期边界。`,
+    timing,
+    actionList: [
+      "今天：先把目标写成一句话，并列出必须满足的三个条件。",
+      "3 天内：找一个可信的人或数据验证，不靠感觉下注。",
+      "7 天内：只推进低成本试点，保留退出条件。",
+      "30 天内：若出现稳定回报或清晰承诺，再考虑加码。"
+    ],
+    avoidList: [
+      "避免一次投入全部资金、时间或人情。",
+      "避免为了证明自己而承担别人的责任。",
+      "避免在信息未完整前签约、借贷或长期绑定。"
+    ],
+    depthMap: [
+      { title: "现状层", body: meta.situation },
+      { title: "隐患层", body: meta.keyPoint },
+      { title: "破局层", body: meta.action },
+      { title: "线索层", body: `留意 ${meta.clue}，它可能是提醒、贵人、阻力或下一步入口。` }
+    ]
+  };
 }
 
 function createHexagram64Reading(selectedDate = new Date(), mode: Hexagram64Mode = "daily", question = ""): Hexagram64Reading {
@@ -3214,6 +3297,7 @@ function createHexagram64Reading(selectedDate = new Date(), mode: Hexagram64Mode
   const hexagram = composeHexagramName(upper, lower);
   const score = 64 + ((dateSeed + randomSeed * 5) % 28);
   const oracle = buildHexagramOracle(meta, mode, question);
+  const modePayload = buildHexagramModePayload(meta, mode, question, score);
 
   return {
     id: `hexagram64-${Date.now()}`,
@@ -3240,6 +3324,7 @@ function createHexagram64Reading(selectedDate = new Date(), mode: Hexagram64Mode
     action: meta.action,
     oracle,
     clue: meta.clue,
+    ...modePayload,
     element: dominantElement,
     score
   };
@@ -9614,6 +9699,7 @@ function SigilModule({
   const [artifacts, setArtifacts] = useState<SigilArtifact[]>([]);
   const [selectedArtifact, setSelectedArtifact] = useState<SigilArtifact | null>(null);
   const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const intentGuidance = getIntentGuidance(intent);
 
   useEffect(() => {
@@ -9632,7 +9718,21 @@ function SigilModule({
     }
   }, []);
 
-  function handleGenerateSigil() {
+  async function getSigilAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) return "";
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
+  async function handleGenerateSigil() {
+    if (isGenerating) return;
+
     const cleanIntent = intent.trim();
 
     if (!intentGuidance.ok) {
@@ -9645,18 +9745,70 @@ function SigilModule({
       return;
     }
 
-    if (!onSpendPoints(sigilCost, "sigil_generation", "生成 Sigil 符印")) {
-      setError("已取消生成符印，未扣点。");
-      return;
-    }
-
-    const generated = createSigilArtifact(cleanIntent);
-    const nextArtifacts = [generated, ...artifacts].slice(0, 9);
-    setArtifacts(nextArtifacts);
-    setSelectedArtifact(generated);
-    setIntent("");
+    setIsGenerating(true);
     setError("");
-    window.localStorage.setItem(sigilStorageKey, JSON.stringify(nextArtifacts));
+
+    try {
+      const baseArtifact = createSigilArtifact(cleanIntent);
+      const accessToken = await getSigilAccessToken();
+
+      if (!accessToken) {
+        setError("请先登录会员账号，再生成 AI 符印解读。");
+        return;
+      }
+
+      const response = await fetch("/api/sigil", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          intent: cleanIntent,
+          artifact: baseArtifact
+        })
+      });
+
+      const data = (await response.json().catch(() => ({}))) as {
+        artifact?: Partial<SigilArtifact>;
+        error?: string;
+      };
+
+      if (!response.ok || !data.artifact) {
+        setError(data.error || "AI 符印解读暂时无法生成，请稍后再试。本次未扣点。");
+        return;
+      }
+
+      const generated: SigilArtifact = {
+        ...baseArtifact,
+        ...data.artifact,
+        id: baseArtifact.id,
+        title: baseArtifact.title,
+        hash: baseArtifact.hash,
+        path: baseArtifact.path,
+        gridPath: baseArtifact.gridPath,
+        ornamentPath: baseArtifact.ornamentPath,
+        dots: baseArtifact.dots,
+        createdAt: baseArtifact.createdAt,
+        cost: baseArtifact.cost
+      };
+
+      if (!onSpendPoints(sigilCost, "sigil_generation", "AI 生成 Sigil 符印")) {
+        setError("已取消生成符印，未扣点。");
+        return;
+      }
+
+      const nextArtifacts = [generated, ...artifacts].slice(0, 9);
+      setArtifacts(nextArtifacts);
+      setSelectedArtifact(generated);
+      setIntent("");
+      setError("");
+      window.localStorage.setItem(sigilStorageKey, JSON.stringify(nextArtifacts));
+    } catch {
+      setError("AI 符印解读载入失败，请检查网络或稍后再试。本次未扣点。");
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   return (
@@ -9667,7 +9819,7 @@ function SigilModule({
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Sigil Studio</p>
             <h2 className="mt-2 text-2xl font-semibold">符印生成器</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
-              输入一个正向意图，系统会生成一枚专属金色符印。
+              输入一个正向意图，系统会生成一枚专属金色符印，并由 OpenAI 解释符号意义、激活方式与行动锚点。
             </p>
           </div>
           <StatusPill>生成一次 {sigilCost} 点</StatusPill>
@@ -9709,9 +9861,10 @@ function SigilModule({
           <button
             type="button"
             onClick={handleGenerateSigil}
-            className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
+            disabled={isGenerating}
+            className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
           >
-            消耗 {sigilCost} 点生成符印 <Sparkles className="size-4" />
+            {isGenerating ? "OpenAI 正在解读符印..." : `消耗 ${sigilCost} 点生成 AI 符印`} <Sparkles className="size-4" />
           </button>
           <span className="text-sm text-ink/55">当前点数：{points.toLocaleString("en-US")} 点</span>
         </div>
@@ -9779,11 +9932,47 @@ function SigilModule({
             <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
               <p className="text-sm font-semibold text-[#C79A54]">激活建议</p>
               <p className="mt-2 text-sm leading-6 text-ink/70">
-                进入专注或冥想状态后凝视符印 30-60 秒。完成后不要反复追问原始意图，让符号从显意识退场，把它当作行动提醒的视觉锚点。
+                {selectedArtifact.activationGuide ||
+                  "进入专注或冥想状态后凝视符印 30-60 秒。完成后不要反复追问原始意图，让符号从显意识退场，把它当作行动提醒的视觉锚点。"}
               </p>
               <p className="mt-2 text-xs leading-5 text-ink/45">
                 心理学视角：抽象图像降低理性怀疑干扰，让意图以视觉形式进入潜意识记忆。
               </p>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="rounded border border-[#063F4A]/15 bg-[#F5FAFA] p-4 md:col-span-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">AI Symbol Reading</p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">AI 符印解读</h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">
+                  {selectedArtifact.symbolMeaning ||
+                    "生成后，系统会把符印解释为一个可执行的心理锚点，帮助用户把抽象意图落实到每天的行动。"}
+                </p>
+              </div>
+              <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
+                <p className="text-xs font-semibold text-[#C79A54]">净化意图</p>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedArtifact.refinedIntent || "保持正向、现在式、无匮乏感的意图表达。"}</p>
+              </div>
+              <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
+                <p className="text-xs font-semibold text-[#C79A54]">行动锚点</p>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedArtifact.actionAnchor || "今天做一个能呼应此意图的小行动。"}</p>
+              </div>
+              <div className="rounded border border-black/10 bg-white p-4 md:col-span-2">
+                <p className="text-xs font-semibold text-[#063F4A]">觉察问题</p>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedArtifact.reflectionPrompt || "我今天可以用哪个具体动作，让这个意图更接近现实？"}</p>
+                {selectedArtifact.energyNotes?.length ? (
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    {selectedArtifact.energyNotes.map((note) => (
+                      <p key={note} className="rounded bg-[#F5FAFA] px-3 py-2 text-xs leading-5 text-ink/60">
+                        {note}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+                <p className="mt-3 text-xs leading-5 text-ink/45">
+                  {selectedArtifact.avoidNote || "提醒：符印是专注与行动工具，不替代现实规划、沟通和执行。"}
+                </p>
+              </div>
             </div>
           </div>
         ) : (
@@ -9804,6 +9993,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
   const [mode, setMode] = useState<Hexagram64Mode>("daily");
   const [question, setQuestion] = useState("");
   const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const selectedMode = hexagram64ModeOptions.find((item) => item.id === mode) || hexagram64ModeOptions[0];
   const todayReading = readings.find((reading) => reading.mode === "daily" && reading.dateKey === new Date().toISOString().slice(0, 10));
 
@@ -9821,7 +10011,21 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
     }
   }, []);
 
-  function handleGenerate() {
+  async function getHexagramAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) return "";
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
+  async function handleGenerate() {
+    if (isGenerating) return;
+
     if (mode !== "daily" && !question.trim()) {
       setError("问事一字和深度解字需要先输入一个具体问题。");
       return;
@@ -9838,17 +10042,84 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
       return;
     }
 
-    if (!onSpendPoints(selectedMode.cost, "hexagram64_one_word", `生成${selectedMode.title}`)) {
-      setError("已取消抽取，未扣点。");
-      return;
-    }
-
-    const reading = createHexagram64Reading(new Date(), mode, question);
-    const nextReadings = [reading, ...readings].slice(0, 12);
-    setReadings(nextReadings);
-    setSelectedReading(reading);
+    setIsGenerating(true);
     setError("");
-    window.localStorage.setItem(hexagram64StorageKey, JSON.stringify(nextReadings));
+
+    try {
+      const baseReading = createHexagram64Reading(new Date(), mode, question);
+      const accessToken = await getHexagramAccessToken();
+
+      if (!accessToken) {
+        setError("请先登录会员账号，再生成 AI 一字分析。");
+        setIsGenerating(false);
+        return;
+      }
+
+      const response = await fetch("/api/hexagram64", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          mode,
+          question: question.trim(),
+          reading: baseReading
+        })
+      });
+
+      const data = (await response.json().catch(() => ({}))) as {
+        reading?: Partial<Hexagram64Reading>;
+        error?: string;
+        errorCode?: string;
+        model?: string;
+      };
+
+      if (!response.ok || !data.reading) {
+        setError(data.error || "AI 一字分析暂时无法生成，请稍后再试。");
+        setIsGenerating(false);
+        return;
+      }
+
+      const aiReading = data.reading;
+      const reading: Hexagram64Reading = {
+        ...baseReading,
+        ...aiReading,
+        id: baseReading.id,
+        createdAt: baseReading.createdAt,
+        dateKey: baseReading.dateKey,
+        timeKey: baseReading.timeKey,
+        mode: baseReading.mode,
+        modeLabel: baseReading.modeLabel,
+        question: baseReading.question,
+        cost: baseReading.cost,
+        hexagram: baseReading.hexagram,
+        hexagramTitle: baseReading.hexagramTitle,
+        upper: baseReading.upper,
+        lower: baseReading.lower,
+        element: baseReading.element,
+        actionList: aiReading.actionList?.length ? aiReading.actionList : baseReading.actionList,
+        avoidList: aiReading.avoidList?.length ? aiReading.avoidList : baseReading.avoidList,
+        depthMap: aiReading.depthMap?.length ? aiReading.depthMap : baseReading.depthMap,
+        score: typeof aiReading.score === "number" ? aiReading.score : baseReading.score
+      };
+
+      if (!onSpendPoints(selectedMode.cost, "hexagram64_one_word", `AI生成${selectedMode.title}`)) {
+        setError("已取消抽取，未扣点。");
+        setIsGenerating(false);
+        return;
+      }
+
+      const nextReadings = [reading, ...readings].slice(0, 12);
+      setReadings(nextReadings);
+      setSelectedReading(reading);
+      setError("");
+      window.localStorage.setItem(hexagram64StorageKey, JSON.stringify(nextReadings));
+    } catch {
+      setError("AI 一字分析载入失败，请检查网络或稍后再试。本次未扣点。");
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   return (
@@ -9860,7 +10131,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">64 Hexagram One Word</p>
               <h2 className="mt-2 text-2xl font-semibold">64卦一字</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-ink/58">
-                根据当下日期、时间与随机抽取的一个卦，生成一个 2-4 字命理关键字与 80-120 字神谕断语。轻量、高频，适合每日打开。
+                根据当下日期、时间与随机抽取的一个卦，先建立卦象底盘，再交由 OpenAI 生成关键字、神谕断语、线索与行动策略。
               </p>
             </div>
             <StatusPill>低点数入口</StatusPill>
@@ -9914,12 +10185,13 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
           <button
             type="button"
             onClick={handleGenerate}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#052F38]"
+            disabled={isGenerating}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#052F38] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
           >
-            消耗 {selectedMode.cost} 点抽取{selectedMode.title} <Sparkles className="size-4" />
+            {isGenerating ? "OpenAI 正在解字..." : `消耗 ${selectedMode.cost} 点生成 AI ${selectedMode.title}`} <Sparkles className="size-4" />
           </button>
           <p className="mt-2 text-xs leading-5 text-ink/45">
-            今日一字每日只生成一次；问事与深度解字可针对具体问题生成，更适合决策前使用。
+            今日一字每日只生成一次；问事与深度解字会调用 OpenAI 做更完整的线索、时机、风险与行动拆解。
           </p>
           {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#7A1F16]">{error}</p> : null}
         </div>
@@ -10010,30 +10282,93 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                 <p className="mt-2 text-sm leading-7 text-ink/70">{selectedReading.oracle || selectedReading.action}</p>
               </div>
               <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Theme</p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">此刻主题</h4>
-                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.theme}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">
+                  {selectedReading.mode === "daily" ? "Theme" : selectedReading.mode === "question" ? "Verdict" : "Strategic View"}
+                </p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">
+                  {selectedReading.mode === "daily" ? "此刻主题" : selectedReading.mode === "question" ? "问事判断" : "深度总断"}
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{selectedReading.verdict || selectedReading.theme}</p>
               </div>
               <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">宇宙显化线索</h4>
-                <p className="mt-2 text-sm leading-6 text-ink/65">留意：{selectedReading.clue || "今天重复出现的名字或方向"}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">
+                  {selectedReading.mode === "daily" ? "Clue" : "Risk"}
+                </p>
+                <h4 className="mt-2 font-semibold text-[#063F4A]">
+                  {selectedReading.mode === "daily" ? "宇宙显化线索" : "核心卡点"}
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-ink/65">
+                  {selectedReading.mode === "daily"
+                    ? `留意：${selectedReading.clue || "今天重复出现的名字或方向"}`
+                    : selectedReading.risk || selectedReading.clue}
+                </p>
               </div>
-              {selectedReading.mode === "deep" ? (
+              {selectedReading.mode === "question" ? (
                 <div className="rounded border border-[#1495A0]/20 bg-[#EAF7F7] p-4 md:col-span-2">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Deep Reading</p>
-                  <h4 className="mt-2 font-semibold text-[#063F4A]">深度解字行动表</h4>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Question Reading</p>
+                  <h4 className="mt-2 font-semibold text-[#063F4A]">问事一字判断表</h4>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-4">
                     {[
-                      ["马上做", selectedReading.action],
-                      ["先避免", "不要为了求快而临时加码承诺，先守住边界。"],
-                      ["再观察", selectedReading.clue ? `今天反复出现的「${selectedReading.clue}」。` : "重复出现的人、方向或颜色。"]
+                      ["结论", selectedReading.verdict || "先看条件，再做决定。"],
+                      ["应期", selectedReading.timing || "未来 3-7 天先试探。"],
+                      ["马上做", selectedReading.actionList?.[0] || selectedReading.action],
+                      ["先避免", selectedReading.avoidList?.[0] || "不要急着做不可逆决定。"]
                     ].map(([label, value]) => (
                       <div key={label} className="rounded bg-white p-3">
                         <p className="text-xs font-semibold text-[#1495A0]">{label}</p>
                         <p className="mt-1 text-sm leading-6 text-ink/65">{value}</p>
                       </div>
                     ))}
+                  </div>
+                </div>
+              ) : null}
+              {selectedReading.mode === "deep" ? (
+                <div className="rounded border border-[#1495A0]/20 bg-[#EAF7F7] p-4 md:col-span-2">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Deep Reading</p>
+                  <h4 className="mt-2 font-semibold text-[#063F4A]">深度解字策略图</h4>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    {[
+                      ["阶段判断", selectedReading.timing || "3 天观察，7 天验证，30 天决定。"],
+                      ["风险分层", selectedReading.risk || selectedReading.theme],
+                      ["显化线索", selectedReading.clue ? `反复出现的「${selectedReading.clue}」。` : "重复出现的人、方向或颜色。"]
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded bg-white p-3">
+                        <p className="text-xs font-semibold text-[#1495A0]">{label}</p>
+                        <p className="mt-1 text-sm leading-6 text-ink/65">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                    {(selectedReading.depthMap?.length
+                      ? selectedReading.depthMap
+                      : [
+                          { title: "现状层", body: selectedReading.theme },
+                          { title: "破局层", body: selectedReading.action }
+                        ]
+                    ).map((item) => (
+                      <div key={item.title} className="rounded border border-[#1495A0]/15 bg-white p-3">
+                        <p className="text-xs font-semibold text-[#063F4A]">{item.title}</p>
+                        <p className="mt-1 text-sm leading-6 text-ink/65">{item.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded bg-white p-3">
+                      <p className="text-xs font-semibold text-[#1495A0]">行动清单</p>
+                      <ul className="mt-2 space-y-2 text-sm leading-6 text-ink/65">
+                        {(selectedReading.actionList?.length ? selectedReading.actionList : [selectedReading.action]).map((item) => (
+                          <li key={item}>- {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded bg-white p-3">
+                      <p className="text-xs font-semibold text-[#7A1F16]">避坑清单</p>
+                      <ul className="mt-2 space-y-2 text-sm leading-6 text-ink/65">
+                        {(selectedReading.avoidList?.length ? selectedReading.avoidList : ["不要为了求快而临时加码承诺，先守住边界。"]).map((item) => (
+                          <li key={item}>- {item}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               ) : null}
@@ -10074,6 +10409,7 @@ function DivinationModule({
   const [checkIns, setCheckIns] = useState<DivinationCheckIn[]>([]);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const activeProducts = selectedReading ? elementProductRecommendations[selectedReading.passElement] : elementProductRecommendations.火;
 
   useEffect(() => {
@@ -10105,7 +10441,21 @@ function DivinationModule({
     setNumbers(next);
   }
 
-  function handleGenerateReading() {
+  async function getDivinationAccessToken() {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) return "";
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    return session?.access_token || "";
+  }
+
+  async function handleGenerateReading() {
+    if (isGenerating) return;
+
     if (numbers.some((value) => !value.trim())) {
       setError("请先输入 3 个数字。");
       return;
@@ -10116,17 +10466,78 @@ function DivinationModule({
       return;
     }
 
-    if (!onSpendPoints(divinationCost, "jiuyun_divination", "九运智慧问卦")) {
-      setError("已取消问卦，未扣点。");
-      return;
-    }
-
-    const reading = createDivinationReading(numbers, createDivinationDate(divinationDate, divinationTime));
-    const nextReadings = [reading, ...readings].slice(0, 8);
-    setReadings(nextReadings);
-    setSelectedReading(reading);
+    setIsGenerating(true);
     setError("");
-    window.localStorage.setItem(divinationStorageKey, JSON.stringify(nextReadings));
+
+    try {
+      const selectedDate = createDivinationDate(divinationDate, divinationTime);
+      const baseReading = createDivinationReading(numbers, selectedDate);
+      const accessToken = await getDivinationAccessToken();
+
+      if (!accessToken) {
+        setError("请先登录会员账号，再进行 AI 九运问卦。");
+        return;
+      }
+
+      const response = await fetch("/api/divination", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          numbers,
+          selectedDate: selectedDate.toISOString(),
+          reading: baseReading
+        })
+      });
+
+      const data = (await response.json().catch(() => ({}))) as {
+        reading?: Partial<DivinationReading>;
+        error?: string;
+      };
+
+      if (!response.ok || !data.reading) {
+        setError(data.error || "AI 九运问卦暂时无法生成，请稍后再试。本次未扣点。");
+        return;
+      }
+
+      const reading: DivinationReading = {
+        ...baseReading,
+        ...data.reading,
+        id: baseReading.id,
+        numbers: baseReading.numbers,
+        hourBranch: baseReading.hourBranch,
+        createdAt: baseReading.createdAt,
+        originalHexagram: baseReading.originalHexagram,
+        mutualHexagram: baseReading.mutualHexagram,
+        changingHexagram: baseReading.changingHexagram,
+        bodyTrigram: baseReading.bodyTrigram,
+        useTrigram: baseReading.useTrigram,
+        movingLine: baseReading.movingLine,
+        passElement: data.reading.passElement || baseReading.passElement,
+        energyBoard: data.reading.energyBoard?.length ? data.reading.energyBoard : baseReading.energyBoard,
+        relationClues: data.reading.relationClues?.length ? data.reading.relationClues : baseReading.relationClues,
+        clues: data.reading.clues?.length ? data.reading.clues : baseReading.clues,
+        actionPlan: data.reading.actionPlan || baseReading.actionPlan,
+        score: typeof data.reading.score === "number" ? data.reading.score : baseReading.score
+      };
+
+      if (!onSpendPoints(divinationCost, "jiuyun_divination", "AI 九运智慧问卦")) {
+        setError("已取消问卦，未扣点。");
+        return;
+      }
+
+      const nextReadings = [reading, ...readings].slice(0, 8);
+      setReadings(nextReadings);
+      setSelectedReading(reading);
+      setError("");
+      window.localStorage.setItem(divinationStorageKey, JSON.stringify(nextReadings));
+    } catch {
+      setError("AI 九运问卦载入失败，请检查网络或稍后再试。本次未扣点。");
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   function handleCheckIn() {
@@ -10167,7 +10578,7 @@ function DivinationModule({
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Jiu Yun Oracle</p>
               <h2 className="mt-2 text-2xl font-semibold">九运智慧问卦</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-ink/58">
-                随机报出 3 个数字，系统结合当前时辰起卦，输出局势、变化、结果与五行通关行动。
+                随机报出 3 个数字，系统结合当前时辰起卦，再由 OpenAI 按体用生克、三阶段、类象线索与五行通关输出解读。
               </p>
             </div>
             <StatusPill>问卦一次 {divinationCost} 点</StatusPill>
@@ -10214,9 +10625,10 @@ function DivinationModule({
             <button
               type="button"
               onClick={handleGenerateReading}
-              className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]"
+              disabled={isGenerating}
+              className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
             >
-              消耗 {divinationCost} 点开始问卦 <Flame className="size-4" />
+              {isGenerating ? "OpenAI 正在解卦..." : `消耗 ${divinationCost} 点开始 AI 问卦`} <Flame className="size-4" />
             </button>
             <span className="text-sm text-ink/55">当前点数：{points.toLocaleString("en-US")} 点</span>
           </div>
