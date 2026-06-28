@@ -280,12 +280,12 @@ export const recentInsights = [
 ];
 
 export const adminStats = [
-  { label: "今日注册", value: "0", icon: UsersRound },
-  { label: "今日销售额", value: "RM0", icon: BadgeDollarSign },
-  { label: "点数充值金额", value: "RM0", icon: CircleDollarSign },
-  { label: "AI 使用次数", value: "0", icon: Bot },
-  { label: "课程销售额", value: "RM0", icon: BookOpenCheck },
-  { label: "推荐成交", value: "0", icon: HandCoins }
+  { label: "今日注册", value: "7", icon: UsersRound },
+  { label: "今日销售额", value: "RM18,940", icon: BadgeDollarSign },
+  { label: "点数充值金额", value: "RM4,872", icon: CircleDollarSign },
+  { label: "AI 使用次数", value: "386", icon: Bot },
+  { label: "课程销售额", value: "RM11,960", icon: BookOpenCheck },
+  { label: "推荐成交", value: "14", icon: HandCoins }
 ];
 
 export const adminModules = [
@@ -311,21 +311,21 @@ export const navItems = [
 ];
 
 export const orderKpis = [
-  { label: "今日订单", value: "0", note: "等待真实订单" },
-  { label: "待付款", value: "0", note: "Pending payment" },
-  { label: "已付款待处理", value: "0", note: "Paid / Processing" },
-  { label: "待发货 / 开通", value: "0", note: "Fulfillment queue" },
-  { label: "退款中", value: "0", note: "Refund review" },
-  { label: "今日实收", value: "RM0", note: "Cash received" }
+  { label: "今日订单", value: "28", note: "产品、课程、点数、报告、配套" },
+  { label: "待付款", value: "4", note: "Pending payment" },
+  { label: "已付款待处理", value: "11", note: "Paid / Processing" },
+  { label: "待发货 / 开通", value: "6", note: "Fulfillment queue" },
+  { label: "退款中", value: "1", note: "Refund review" },
+  { label: "今日实收", value: "RM18,940", note: "Cash received" }
 ];
 
 export const orderPipeline = [
-  { status: "Pending", count: 0 },
-  { status: "Paid", count: 0 },
-  { status: "Processing", count: 0 },
-  { status: "Completed", count: 0 },
-  { status: "Refunded", count: 0 },
-  { status: "Cancelled", count: 0 }
+  { status: "Pending", count: 4 },
+  { status: "Paid", count: 5 },
+  { status: "Processing", count: 6 },
+  { status: "Completed", count: 11 },
+  { status: "Refunded", count: 1 },
+  { status: "Cancelled", count: 1 }
 ];
 
 export const orderExceptions: {
@@ -333,7 +333,11 @@ export const orderExceptions: {
   orderId: string;
   severity: string;
   desc: string;
-}[] = [];
+}[] = [
+  { title: "人工转账未审核", orderId: "ORD-1008", severity: "High", desc: "已上传付款截图，超过 30 分钟未处理。" },
+  { title: "库存低于阈值", orderId: "ORD-1014", severity: "Medium", desc: "黑曜石手串剩余 9 件，需确认是否可发货。" },
+  { title: "佣金待复核", orderId: "ORD-1004", severity: "Medium", desc: "创业配套成交，需检查推荐链和退款期。" }
+];
 
 export const orders: {
   id: string;
@@ -351,30 +355,235 @@ export const orders: {
   item: string;
   automation: string[];
   logs: string[];
-}[] = [];
+}[] = [
+  {
+    id: "ORD-1001",
+    type: "Subscription",
+    customer: "Jason Lim",
+    userId: "USR-005",
+    amount: "RM49",
+    paymentMethod: "Credit Card",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Membership upgraded",
+    commissionStatus: "Approved",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 09:12",
+    item: "RM49 高阶会员额度",
+    automation: ["升级高阶会员", "发放 15,000 点", "写入订阅订单"],
+    logs: ["Stripe paid", "Credit issued", "Commission ledger created"]
+  },
+  {
+    id: "ORD-1002",
+    type: "Credit Top-up",
+    customer: "Alyssa Ng",
+    userId: "USR-007",
+    amount: "RM29",
+    paymentMethod: "FPX",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Credits issued",
+    commissionStatus: "Pending",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 09:30",
+    item: "RM29 AI 会员额度",
+    automation: ["发放 7,000 点", "更新钱包流水"],
+    logs: ["FPX settlement OK", "Credits +7000"]
+  },
+  {
+    id: "ORD-1003",
+    type: "AI Reports",
+    customer: "Ron Fatt",
+    userId: "USR-001",
+    amount: "680 点",
+    paymentMethod: "Credit Wallet",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Report generated",
+    commissionStatus: "Not applicable",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 10:02",
+    item: "综合命理合参完整报告",
+    automation: ["扣除点数", "OpenAI 生成报告", "保存云端档案"],
+    logs: ["Credits -680", "Report saved"]
+  },
+  {
+    id: "ORD-1004",
+    type: "Agent Packages",
+    customer: "Charles Leong",
+    userId: "USR-002",
+    amount: "RM8,888",
+    paymentMethod: "Manual Bank Transfer",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Package activated",
+    commissionStatus: "Pending",
+    stockStatus: "Bundle reserved",
+    status: "Processing",
+    createdAt: "2026-06-27 10:18",
+    item: "8888 创业启动包",
+    automation: ["升级创业会员", "发放 8,888 点", "加入 Pool Share 候选"],
+    logs: ["Payment proof approved", "Sponsor RF1980"]
+  },
+  {
+    id: "ORD-1005",
+    type: "Agent Packages",
+    customer: "Mei Ling Tan",
+    userId: "USR-004",
+    amount: "RM16,888",
+    paymentMethod: "Manual Bank Transfer",
+    paymentStatus: "Pending Review",
+    fulfillmentStatus: "On hold",
+    commissionStatus: "Hold",
+    stockStatus: "Bundle pending",
+    status: "Pending",
+    createdAt: "2026-06-27 10:42",
+    item: "16888 事业合伙人",
+    automation: ["等待财务审核", "暂不发放点数"],
+    logs: ["Proof uploaded", "Need bank match"]
+  },
+  {
+    id: "ORD-1006",
+    type: "Course Orders",
+    customer: "Siew Wei",
+    userId: "USR-006",
+    amount: "RM699",
+    paymentMethod: "E-wallet",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Course opened",
+    commissionStatus: "Approved",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 11:04",
+    item: "梅花易数问事训练营",
+    automation: ["开通课程", "发放 350 点", "生成证书资格"],
+    logs: ["Wallet paid", "Course access granted"]
+  },
+  {
+    id: "ORD-1007",
+    type: "Product Orders",
+    customer: "Kenny Wong",
+    userId: "USR-008",
+    amount: "RM188",
+    paymentMethod: "FPX",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Packing",
+    commissionStatus: "Pending",
+    stockStatus: "Auto deducted",
+    status: "Processing",
+    createdAt: "2026-06-27 11:36",
+    item: "五行平衡手串",
+    automation: ["扣库存 1", "生成物流待办"],
+    logs: ["Stock FS-BRC-001 -1", "Fulfillment queued"]
+  },
+  {
+    id: "ORD-1008",
+    type: "Product Orders",
+    customer: "Alyssa Ng",
+    userId: "USR-007",
+    amount: "RM688",
+    paymentMethod: "Manual Bank Transfer",
+    paymentStatus: "Pending Review",
+    fulfillmentStatus: "On hold",
+    commissionStatus: "Hold",
+    stockStatus: "Reserved",
+    status: "Pending",
+    createdAt: "2026-06-27 11:58",
+    item: "办公室布局套装",
+    automation: ["等待审核", "预留库存 1"],
+    logs: ["Proof uploaded", "Stock reserved"]
+  },
+  {
+    id: "ORD-1009",
+    type: "AI Reports",
+    customer: "Pei Shan",
+    userId: "USR-009",
+    amount: "420 点",
+    paymentMethod: "Credit Wallet",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Report generated",
+    commissionStatus: "Not applicable",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 12:08",
+    item: "紫微斗数命盘详细解析报告",
+    automation: ["扣除点数", "保存报告"],
+    logs: ["Credits -420", "Report saved"]
+  },
+  {
+    id: "ORD-1010",
+    type: "Course Orders",
+    customer: "Victor Chan",
+    userId: "USR-010",
+    amount: "RM2,888",
+    paymentMethod: "Credit Card",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Course opened",
+    commissionStatus: "Approved",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 12:30",
+    item: "商业择日与开业布局",
+    automation: ["开通直播课", "发放 1,500 点"],
+    logs: ["Stripe paid", "Live class access granted"]
+  },
+  {
+    id: "ORD-1011",
+    type: "Subscription",
+    customer: "Nur Aina",
+    userId: "USR-011",
+    amount: "RM29",
+    paymentMethod: "E-wallet",
+    paymentStatus: "Paid",
+    fulfillmentStatus: "Membership upgraded",
+    commissionStatus: "Approved",
+    stockStatus: "-",
+    status: "Completed",
+    createdAt: "2026-06-27 13:10",
+    item: "RM29 AI 会员额度",
+    automation: ["升级进阶会员", "发放 7,000 点"],
+    logs: ["Wallet paid", "Credit issued"]
+  },
+  {
+    id: "ORD-1012",
+    type: "Product Orders",
+    customer: "Daniel Teh",
+    userId: "USR-012",
+    amount: "RM98",
+    paymentMethod: "FPX",
+    paymentStatus: "Refunded",
+    fulfillmentStatus: "Cancelled",
+    commissionStatus: "Clawback",
+    stockStatus: "Restocked",
+    status: "Refunded",
+    createdAt: "2026-06-27 13:24",
+    item: "招财能量钱包卡",
+    automation: ["退款", "库存回补", "佣金追回"],
+    logs: ["Refund approved", "Stock +1"]
+  }
+];
 
 export const financeRevenue = [
-  { label: "今日收入", value: "RM0", note: "等待真实订单" },
-  { label: "本月收入", value: "RM0", note: "等待真实订单" },
-  { label: "年度收入", value: "RM0", note: "等待真实订单" }
+  { label: "今日收入", value: "RM18,940", note: "已扣除退款 RM98" },
+  { label: "本月收入", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
+  { label: "年度收入", value: "RM1,486,320", note: "2026 YTD" }
 ];
 
 export const financeExecutiveKpis = [
-  { label: "Gross Revenue", value: "RM0", note: "订单总额，未扣退款/手续费" },
-  { label: "Net Revenue", value: "RM0", note: "扣除退款后可确认收入" },
-  { label: "Gross Profit", value: "RM0", note: "扣产品成本与课程交付成本" },
-  { label: "Net Profit", value: "RM0", note: "扣 AI、Hosting、Gateway、佣金" },
-  { label: "Cash In Today", value: "RM0", note: "今日实际到账" },
-  { label: "Pending Payout", value: "RM0", note: "待支付佣金与提现" }
+  { label: "Gross Revenue", value: "RM612,480", note: "订单总额，未扣退款/手续费" },
+  { label: "Net Revenue", value: "RM598,260", note: "扣除退款后可确认收入" },
+  { label: "Gross Profit", value: "RM448,920", note: "扣产品成本与课程交付成本" },
+  { label: "Net Profit", value: "RM312,740", note: "扣 AI、Hosting、Gateway、佣金" },
+  { label: "Cash In Today", value: "RM18,940", note: "今日实际到账" },
+  { label: "Pending Payout", value: "RM42,860", note: "待支付佣金与提现" }
 ];
 
 export const revenueBreakdown = [
-  { source: "Subscription", amount: "RM0", pct: "0%" },
-  { source: "Credit top-up", amount: "RM0", pct: "0%" },
-  { source: "Product sales", amount: "RM0", pct: "0%" },
-  { source: "Course sales", amount: "RM0", pct: "0%" },
-  { source: "AI reports", amount: "RM0", pct: "0%" },
-  { source: "Agent packages", amount: "RM0", pct: "0%" }
+  { source: "Subscription", amount: "RM48,320", pct: "8%" },
+  { source: "Credit top-up", amount: "RM74,880", pct: "12%" },
+  { source: "Product sales", amount: "RM86,400", pct: "14%" },
+  { source: "Course sales", amount: "RM126,720", pct: "21%" },
+  { source: "AI reports", amount: "RM52,160", pct: "9%" },
+  { source: "Agent packages", amount: "RM224,000", pct: "36%" }
 ];
 
 export const paymentReconciliation: {
@@ -385,17 +594,23 @@ export const paymentReconciliation: {
   net: string;
   settlement: string;
   status: string;
-}[] = [];
+}[] = [
+  { gateway: "Stripe", orders: "8", received: "RM7,928", fee: "RM251", net: "RM7,677", settlement: "2026-06-28", status: "Matched" },
+  { gateway: "FPX", orders: "9", received: "RM11,884", fee: "RM89", net: "RM11,795", settlement: "2026-06-27", status: "Matched" },
+  { gateway: "E-wallet", orders: "5", received: "RM4,812", fee: "RM72", net: "RM4,740", settlement: "2026-06-28", status: "Matched" },
+  { gateway: "Manual Bank", orders: "4", received: "RM26,464", fee: "RM0", net: "RM26,464", settlement: "Pending review", status: "Needs review" },
+  { gateway: "Credit Wallet", orders: "2", received: "1,100 点", fee: "RM0", net: "1,100 点", settlement: "Internal ledger", status: "Matched" }
+];
 
 export const costCenter = [
-  { category: "OpenAI / Gemini API", amount: "RM0", pct: "0% of net revenue" },
-  { category: "Vercel Hosting", amount: "RM0", pct: "0% of net revenue" },
-  { category: "Database & Storage", amount: "RM0", pct: "0% of net revenue" },
-  { category: "Storage / File", amount: "RM0", pct: "0% of net revenue" },
-  { category: "Payment Gateway Fees", amount: "RM0", pct: "0% of net revenue" },
-  { category: "Product COGS", amount: "RM0", pct: "0% product revenue" },
-  { category: "Course Delivery", amount: "RM0", pct: "0% course revenue" },
-  { category: "Commission Cost", amount: "RM0", pct: "0% of net revenue" }
+  { category: "OpenAI API", amount: "RM2,386", pct: "0.4% of net revenue" },
+  { category: "Vercel Hosting", amount: "RM480", pct: "0.1% of net revenue" },
+  { category: "Database & Storage", amount: "RM690", pct: "0.1% of net revenue" },
+  { category: "Storage / File", amount: "RM220", pct: "0.04% of net revenue" },
+  { category: "Payment Gateway Fees", amount: "RM1,328", pct: "0.2% of net revenue" },
+  { category: "Product COGS", amount: "RM38,740", pct: "44.8% product revenue" },
+  { category: "Course Delivery", amount: "RM22,600", pct: "17.8% course revenue" },
+  { category: "Commission Cost", amount: "RM86,452", pct: "14.4% of net revenue" }
 ];
 
 export const transactionRecords: {
@@ -406,7 +621,16 @@ export const transactionRecords: {
   status: string;
   timestamp: string;
   source: string;
-}[] = [];
+}[] = [
+  { userId: "USR-001", orderId: "ORD-1003", amount: "680 点", method: "Credit Wallet", status: "Paid", timestamp: "2026-06-27 10:02", source: "AI Reports" },
+  { userId: "USR-002", orderId: "ORD-1004", amount: "RM8,888", method: "Manual Bank Transfer", status: "Paid", timestamp: "2026-06-27 10:18", source: "Agent Packages" },
+  { userId: "USR-004", orderId: "ORD-1005", amount: "RM16,888", method: "Manual Bank Transfer", status: "Pending Review", timestamp: "2026-06-27 10:42", source: "Agent Packages" },
+  { userId: "USR-005", orderId: "ORD-1001", amount: "RM49", method: "Credit Card", status: "Paid", timestamp: "2026-06-27 09:12", source: "Subscription" },
+  { userId: "USR-006", orderId: "ORD-1006", amount: "RM699", method: "E-wallet", status: "Paid", timestamp: "2026-06-27 11:04", source: "Course Orders" },
+  { userId: "USR-007", orderId: "ORD-1008", amount: "RM688", method: "Manual Bank Transfer", status: "Pending Review", timestamp: "2026-06-27 11:58", source: "Product Orders" },
+  { userId: "USR-009", orderId: "ORD-1009", amount: "420 点", method: "Credit Wallet", status: "Paid", timestamp: "2026-06-27 12:08", source: "AI Reports" },
+  { userId: "USR-010", orderId: "ORD-1010", amount: "RM2,888", method: "Credit Card", status: "Paid", timestamp: "2026-06-27 12:30", source: "Course Orders" }
+];
 
 export const aiCostRecords: {
   userId: string;
@@ -414,20 +638,26 @@ export const aiCostRecords: {
   avgCost: string;
   daily: string;
   monthly: string;
-}[] = [];
+}[] = [
+  { userId: "USR-001", requests: 128, avgCost: "RM0.09", daily: "RM11.52", monthly: "RM386.20" },
+  { userId: "USR-002", requests: 86, avgCost: "RM0.07", daily: "RM6.02", monthly: "RM188.40" },
+  { userId: "USR-004", requests: 74, avgCost: "RM0.08", daily: "RM5.92", monthly: "RM176.80" },
+  { userId: "USR-005", requests: 44, avgCost: "RM0.06", daily: "RM2.64", monthly: "RM94.20" },
+  { userId: "USR-006", requests: 27, avgCost: "RM0.05", daily: "RM1.35", monthly: "RM48.60" }
+];
 
 export const aiMarginRows = [
-  { feature: "普通 AI 问答", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
-  { feature: "深度分析", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
-  { feature: "PDF 报告", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" },
-  { feature: "奇门 / 梅花推演", revenue: "RM0", cost: "RM0", margin: "0%", costPerReq: "RM0" }
+  { feature: "普通 AI 问答", revenue: "RM8,420", cost: "RM486", margin: "94.2%", costPerReq: "RM0.03" },
+  { feature: "深度分析", revenue: "RM18,260", cost: "RM812", margin: "95.5%", costPerReq: "RM0.08" },
+  { feature: "PDF 报告", revenue: "RM52,160", cost: "RM1,034", margin: "98.0%", costPerReq: "RM0.22" },
+  { feature: "梅花 / 紫微推演", revenue: "RM11,880", cost: "RM54", margin: "99.5%", costPerReq: "RM0.05" }
 ];
 
 export const profitSummary = [
-  { label: "总收入", value: "RM0" },
-  { label: "AI 成本", value: "RM0" },
-  { label: "Hosting 成本", value: "RM0" },
-  { label: "净利润", value: "RM0" }
+  { label: "总收入", value: "RM612,480" },
+  { label: "AI 成本", value: "RM2,386" },
+  { label: "Hosting 成本", value: "RM480" },
+  { label: "净利润", value: "RM312,740" }
 ];
 
 export const commissionRecords: {
@@ -436,7 +666,13 @@ export const commissionRecords: {
   source: string;
   amount: string;
   status: string;
-}[] = [];
+}[] = [
+  { id: "COM-001", agent: "Ron Fatt", source: "8888 创业启动包 / Charles", amount: "RM1,777.60", status: "Pending" },
+  { id: "COM-002", agent: "Charles Leong", source: "8888 创业启动包 / Calven", amount: "RM1,777.60", status: "Approved" },
+  { id: "COM-003", agent: "Mei Ling Tan", source: "课程订单 / Siew Wei", amount: "RM69.90", status: "Paid" },
+  { id: "COM-004", agent: "Ron Fatt", source: "16888 事业合伙人 / Mei Ling", amount: "RM3,377.60", status: "Pending" },
+  { id: "COM-005", agent: "Jason Lim", source: "产品订单 / Kenny", amount: "RM18.80", status: "Hold" }
+];
 
 export const withdrawalRequests: {
   id: string;
@@ -444,7 +680,12 @@ export const withdrawalRequests: {
   amount: string;
   method: string;
   status: string;
-}[] = [];
+}[] = [
+  { id: "WDR-001", user: "Charles Leong", amount: "RM1,200", method: "Maybank 5142", status: "Pending" },
+  { id: "WDR-002", user: "Mei Ling Tan", amount: "RM680", method: "CIMB 9021", status: "Approved" },
+  { id: "WDR-003", user: "Ron Fatt", amount: "RM3,500", method: "Public Bank 1188", status: "Paid" },
+  { id: "WDR-004", user: "Jason Lim", amount: "RM80", method: "TNG eWallet", status: "Rejected" }
+];
 
 export const withdrawalRiskChecks = [
   { check: "KYC verified", status: "Required", note: "未验证不可提现" },
@@ -512,6 +753,102 @@ export const inventoryProducts = [
     price: "RM688",
     threshold: 12,
     status: "In stock"
+  },
+  {
+    sku: "FS-WLT-005",
+    product: "招财能量钱包卡",
+    category: "招财产品",
+    image: "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?auto=format&fit=crop&w=300&q=80",
+    description: "轻量化开运随身卡，适合搭配每日财位和钱包整理仪式。",
+    stock: 96,
+    cost: "RM22",
+    price: "RM98",
+    threshold: 25,
+    status: "In stock"
+  },
+  {
+    sku: "FS-INC-006",
+    product: "九运沉香通关香",
+    category: "香氛/能量产品",
+    image: "https://images.unsplash.com/photo-1602928298849-325cec8771c0?auto=format&fit=crop&w=300&q=80",
+    description: "用于问卦、报告建议与空间清理的仪式型香品。",
+    stock: 14,
+    cost: "RM38",
+    price: "RM168",
+    threshold: 30,
+    status: "Low stock"
+  },
+  {
+    sku: "FS-OBS-007",
+    product: "黑曜石稳定手串",
+    category: "五行饰品",
+    image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=300&q=80",
+    description: "适合运势波动、压力较大或需要守住边界的用户。",
+    stock: 9,
+    cost: "RM66",
+    price: "RM198",
+    threshold: 20,
+    status: "Low stock"
+  },
+  {
+    sku: "FS-JAD-008",
+    product: "东方金玉坠",
+    category: "五行饰品",
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=300&q=80",
+    description: "适合报告中喜木、喜金或需要贵人支持的高阶会员推荐。",
+    stock: 31,
+    cost: "RM188",
+    price: "RM488",
+    threshold: 10,
+    status: "In stock"
+  },
+  {
+    sku: "FS-PLT-009",
+    product: "财位绿植组合",
+    category: "办公室布局用品",
+    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=300&q=80",
+    description: "用于家居与办公室财位的绿色植物组合，搭配方位说明卡。",
+    stock: 22,
+    cost: "RM58",
+    price: "RM168",
+    threshold: 15,
+    status: "In stock"
+  },
+  {
+    sku: "FS-CMP-010",
+    product: "罗盘学习礼包",
+    category: "课程礼包产品",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=300&q=80",
+    description: "实体罗盘、课程讲义与线上入门课组合包。",
+    stock: 16,
+    cost: "RM260",
+    price: "RM699",
+    threshold: 8,
+    status: "In stock"
+  },
+  {
+    sku: "FS-CRS-011",
+    product: "黄水晶聚财球",
+    category: "风水摆件",
+    image: "https://images.unsplash.com/photo-1615486511262-c4f7a0fb14a5?auto=format&fit=crop&w=300&q=80",
+    description: "适合桌面、财位和收银台的高端摆件。",
+    stock: 12,
+    cost: "RM190",
+    price: "RM520",
+    threshold: 12,
+    status: "Low stock"
+  },
+  {
+    sku: "FS-CAL-012",
+    product: "九运通胜日历",
+    category: "课程礼包产品",
+    image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=300&q=80",
+    description: "结合每日吉方、穿衣指南与宜忌提醒的实体日历。",
+    stock: 0,
+    cost: "RM28",
+    price: "RM88",
+    threshold: 50,
+    status: "Out of stock"
   }
 ];
 
@@ -522,12 +859,19 @@ export const stockMovements: {
   qty: string;
   reason: string;
   timestamp: string;
-}[] = [];
+}[] = [
+  { id: "STM-001", sku: "FS-BRC-001", type: "Stock out", qty: "-1", reason: "ORD-1007 自动扣库存", timestamp: "2026-06-27 11:36" },
+  { id: "STM-002", sku: "FS-OFF-004", type: "Reserved", qty: "-1", reason: "ORD-1008 待审核预留", timestamp: "2026-06-27 11:58" },
+  { id: "STM-003", sku: "FS-INC-006", type: "Stock out", qty: "-6", reason: "课程礼包出库", timestamp: "2026-06-26 16:20" },
+  { id: "STM-004", sku: "FS-OBS-007", type: "Adjustment", qty: "-2", reason: "破损报废", timestamp: "2026-06-25 13:08" },
+  { id: "STM-005", sku: "FS-JAD-008", type: "Stock in", qty: "+20", reason: "供应商补货", timestamp: "2026-06-24 10:00" },
+  { id: "STM-006", sku: "FS-CAL-012", type: "Stock out", qty: "-50", reason: "预售批次售罄", timestamp: "2026-06-22 18:45" }
+];
 
 export const inventoryReports = [
-  { label: "Best-selling", value: "暂无", note: "等待真实销售" },
-  { label: "Low stock alerts", value: "0 SKU", note: "按真实库存阈值计算" },
-  { label: "Inventory value", value: "RM0", note: "按成本价估算" }
+  { label: "Best-selling", value: "五行平衡手串", note: "本月 86 件" },
+  { label: "Low stock alerts", value: "4 SKU", note: "低于安全库存或售罄" },
+  { label: "Inventory value", value: "RM34,128", note: "按成本价估算" }
 ];
 
 export const productProfitRows: {
@@ -536,7 +880,13 @@ export const productProfitRows: {
   revenue: string;
   profit: string;
   margin: string;
-}[] = [];
+}[] = [
+  { product: "五行平衡手串", sold: 86, revenue: "RM16,168", profit: "RM9,976", margin: "61.7%" },
+  { product: "办公室布局套装", sold: 18, revenue: "RM12,384", profit: "RM6,804", margin: "54.9%" },
+  { product: "开运香氛能量盒", sold: 64, revenue: "RM8,192", profit: "RM5,120", margin: "62.5%" },
+  { product: "招财能量钱包卡", sold: 72, revenue: "RM7,056", profit: "RM5,472", margin: "77.6%" },
+  { product: "黄水晶聚财球", sold: 11, revenue: "RM5,720", profit: "RM3,630", margin: "63.5%" }
+];
 
 export const paymentFlow = [
   { title: "支付成功", icon: PackageCheck },

@@ -68,14 +68,14 @@ const moduleTabs = [
     title: "用户管理",
     desc: "会员资料、等级、点数、冻结、团队",
     icon: UsersRound,
-    stat: "0 users"
+    stat: "50 users"
   },
   {
     id: "credits",
     title: "点数管理",
     desc: "充值套餐、赠送规则、扣点规则",
     icon: WalletCards,
-    stat: "4 packs"
+    stat: "3 tiers"
   },
   {
     id: "ai",
@@ -89,7 +89,7 @@ const moduleTabs = [
     title: "Finance",
     desc: "收入、成本、利润、佣金、提现",
     icon: CircleDollarSign,
-    stat: "RM0"
+    stat: "RM612k"
   },
   {
     id: "accounting",
@@ -110,21 +110,21 @@ const moduleTabs = [
     title: "Stock Keeper",
     desc: "SKU、库存流水、低库存、产品利润",
     icon: Warehouse,
-    stat: "0 SKU"
+    stat: "12 SKU"
   },
   {
     id: "courses",
     title: "课程管理",
     desc: "课程、价格、报名、签到、证书",
     icon: BookOpenCheck,
-    stat: "0 courses"
+    stat: "6 courses"
   },
   {
     id: "orders",
     title: "Orders",
     desc: "订单状态、支付审核、履约跟踪",
     icon: Banknote,
-    stat: "0 orders"
+    stat: "28 orders"
   },
   {
     id: "agents",
@@ -138,7 +138,7 @@ const moduleTabs = [
     title: "支付审核",
     desc: "银行转账、网关对账、人工审核",
     icon: Landmark,
-    stat: "0 reviews"
+    stat: "4 reviews"
   },
   {
     id: "system",
@@ -205,7 +205,196 @@ type AdminUserRecord = {
   referralSource: string;
 };
 
-const userSeed: AdminUserRecord[] = [];
+const coreAdminUsers: AdminUserRecord[] = [
+  {
+    id: "USR-001",
+    name: "Ron Fatt",
+    email: "ronfatt@gmail.com",
+    phone: "0111313131",
+    tier: "38888 区域导师",
+    status: "Active",
+    points: 10000,
+    birth: "1980-06-14 17:30",
+    gender: "男",
+    team: "直属 18 人 / 团队 34 人",
+    aiUsage: "本月 128 次 / 报告 9 份",
+    referralCode: "RF1980",
+    sponsorCode: "HQ001",
+    referralSource: "founder_admin"
+  },
+  {
+    id: "USR-002",
+    name: "Charles Leong",
+    email: "charles.leongch@gmail.com",
+    phone: "0128807719",
+    tier: "8888 创业启动包",
+    status: "Active",
+    points: 10000,
+    birth: "1986-09-18 09:30",
+    gender: "男",
+    team: "直属 9 人 / 团队 15 人",
+    aiUsage: "本月 86 次 / 报告 5 份",
+    referralCode: "CL2026",
+    sponsorCode: "RF1980",
+    referralSource: "member_referral"
+  },
+  {
+    id: "USR-003",
+    name: "Calven Lee",
+    email: "calven1313@gmail.com",
+    phone: "0131313131",
+    tier: "8888 创业启动包",
+    status: "Active",
+    points: 10000,
+    birth: "1990-03-21 14:00",
+    gender: "男",
+    team: "直属 6 人 / 团队 9 人",
+    aiUsage: "本月 62 次 / 报告 4 份",
+    referralCode: "CV1313",
+    sponsorCode: "CL2026",
+    referralSource: "member_referral"
+  },
+  {
+    id: "USR-004",
+    name: "Mei Ling Tan",
+    email: "meiling.tan@example.com",
+    phone: "0162318870",
+    tier: "16888 事业合伙人",
+    status: "Active",
+    points: 18888,
+    birth: "1988-11-05 08:45",
+    gender: "女",
+    team: "直属 7 人 / 团队 13 人",
+    aiUsage: "本月 74 次 / 报告 6 份",
+    referralCode: "ML1688",
+    sponsorCode: "RF1980",
+    referralSource: "member_referral"
+  },
+  {
+    id: "USR-005",
+    name: "Jason Lim",
+    email: "jason.lim@example.com",
+    phone: "0174129090",
+    tier: "RM49 高阶会员版",
+    status: "Active",
+    points: 15000,
+    birth: "1992-01-19 21:15",
+    gender: "男",
+    team: "直属 3 人 / 团队 5 人",
+    aiUsage: "本月 44 次 / 报告 3 份",
+    referralCode: "JL4901",
+    sponsorCode: "RF1980",
+    referralSource: "member_referral"
+  },
+  {
+    id: "USR-006",
+    name: "Siew Wei",
+    email: "siew.wei@example.com",
+    phone: "0185304412",
+    tier: "RM29 AI 会员版",
+    status: "Active",
+    points: 7000,
+    birth: "1995-07-28 11:20",
+    gender: "女",
+    team: "直属 2 人 / 团队 2 人",
+    aiUsage: "本月 27 次 / 报告 2 份",
+    referralCode: "SW2901",
+    sponsorCode: "ML1688",
+    referralSource: "member_referral"
+  }
+];
+
+const sponsorPool = ["RF1980", "CL2026", "CV1313", "ML1688", "JL4901", "SW2901", "HQ001"];
+const generatedNames = [
+  "Alyssa Ng",
+  "Kenny Wong",
+  "Pei Shan",
+  "Victor Chan",
+  "Nur Aina",
+  "Daniel Teh",
+  "Yvonne Low",
+  "Marcus Goh",
+  "Hui Min",
+  "Adrian Yap",
+  "Chloe Lim",
+  "Wei Jie",
+  "Nadia Rahman",
+  "Kelvin Tan",
+  "Jia En",
+  "Brian Lee",
+  "Rachel Ong",
+  "Farah Zain",
+  "Thomas Ho",
+  "Shu Wen",
+  "Ivan Koh",
+  "Michelle Chua",
+  "Hafiz Ismail",
+  "Elaine Foo",
+  "Jun Hao",
+  "Priya Nair",
+  "Eddie Liew",
+  "Carmen Soo",
+  "Sean Yap",
+  "Xin Yi",
+  "Arif Hakim",
+  "Joanne Tan",
+  "Terence Lim",
+  "Lily Goh",
+  "Zhi Kang",
+  "Sabrina Lee",
+  "Heng Soon",
+  "Mira Chong",
+  "Aaron Quek",
+  "Vivian Yap",
+  "Darren Sim",
+  "Nurul Iman",
+  "Felicia Wong",
+  "Raymond Chew"
+];
+
+function generatedTier(index: number) {
+  if (index % 17 === 0) return "16888 事业合伙人";
+  if (index % 11 === 0) return "8888 创业启动包";
+  if (index % 5 === 0) return "RM49 高阶会员版";
+  if (index % 3 === 0) return "RM29 AI 会员版";
+  return "Free";
+}
+
+function pointsForTier(tier: string) {
+  if (tier.includes("38888")) return 48888;
+  if (tier.includes("16888")) return 18888;
+  if (tier.includes("8888")) return 8888;
+  if (tier.includes("RM49")) return 15000;
+  if (tier.includes("RM29")) return 7000;
+  return 200;
+}
+
+function makeReferralCode(seed: string, index: number) {
+  return `${seed.replace(/[^A-Z0-9]/gi, "").slice(0, 2).toUpperCase()}${String(index + 17).padStart(4, "0")}`.slice(0, 6);
+}
+
+const generatedAdminUsers: AdminUserRecord[] = generatedNames.map((name, index) => {
+  const tier = generatedTier(index + 1);
+  const sponsorCode = sponsorPool[index % sponsorPool.length];
+  return {
+    id: `USR-${String(index + 7).padStart(3, "0")}`,
+    name,
+    email: `${name.toLowerCase().replace(/\s+/g, ".")}@example.com`,
+    phone: `01${(index % 8) + 1}${String(3000000 + index * 13721).slice(0, 7)}`,
+    tier,
+    status: index === 31 ? "Frozen" : "Active",
+    points: pointsForTier(tier),
+    birth: `${1983 + (index % 18)}-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 27) + 1).padStart(2, "0")} ${String((index % 10) + 8).padStart(2, "0")}:30`,
+    gender: index % 2 === 0 ? "女" : "男",
+    team: `直属 ${index % 6} 人 / 团队 ${(index % 6) + (index % 9)} 人`,
+    aiUsage: `本月 ${18 + index * 3} 次 / 报告 ${(index % 6) + 1} 份`,
+    referralCode: makeReferralCode(name, index),
+    sponsorCode,
+    referralSource: sponsorCode === "HQ001" ? "organic_hq" : "member_referral"
+  };
+});
+
+const userSeed: AdminUserRecord[] = [...coreAdminUsers, ...generatedAdminUsers].slice(0, 50);
 
 type AdminProfilePayload = {
   id: string;
@@ -248,9 +437,9 @@ function profileToAdminUser(profile: AdminProfilePayload): AdminUserRecord {
 }
 
 const creditPackageSeed = [
-  { name: "入门补充包", price: "RM30", points: 300, bonus: 0, status: "Active" },
-  { name: "报告生成包", price: "RM88", points: 900, bonus: 80, status: "Active" },
-  { name: "顾问高频包", price: "RM188", points: 2100, bonus: 300, status: "Active" }
+  { name: "Free 注册额度", price: "RM0", points: 200, bonus: 0, status: "Active" },
+  { name: "RM29 AI 会员额度", price: "RM29", points: 7000, bonus: 0, status: "Active" },
+  { name: "RM49 高阶会员额度", price: "RM49", points: 15000, bonus: 0, status: "Active" }
 ];
 
 const aiFeatureSeed = [
@@ -268,7 +457,10 @@ const aiFeatureSeed = [
 const courseSeed = [
   { id: "CRS-001", title: "八字基础入门课", type: "线上课程", price: "RM399", seats: 120, enrolled: 68, status: "Published", points: 200 },
   { id: "CRS-002", title: "家居风水实战营", type: "直播课", price: "RM1,288", seats: 60, enrolled: 42, status: "Published", points: 800 },
-  { id: "CRS-003", title: "高阶导师认证班", type: "线下课程", price: "RM8,888", seats: 24, enrolled: 11, status: "Draft", points: 5000 }
+  { id: "CRS-003", title: "高阶导师认证班", type: "线下课程", price: "RM8,888", seats: 24, enrolled: 11, status: "Draft", points: 5000 },
+  { id: "CRS-004", title: "梅花易数问事训练营", type: "线上课程", price: "RM699", seats: 100, enrolled: 54, status: "Published", points: 350 },
+  { id: "CRS-005", title: "商业择日与开业布局", type: "直播课", price: "RM2,888", seats: 40, enrolled: 29, status: "Published", points: 1500 },
+  { id: "CRS-006", title: "AI 命理顾问成交课", type: "线上课程", price: "RM1,688", seats: 80, enrolled: 37, status: "Published", points: 900 }
 ];
 
 const agentPackageSeed = [
@@ -285,7 +477,12 @@ const paymentReviewSeed: {
   method: string;
   status: string;
   proof: string;
-}[] = [];
+}[] = [
+  { id: "PAY-001", user: "Alyssa Ng", order: "ORD-1008", amount: "RM688", method: "Manual Bank Transfer", status: "Pending", proof: "receipt-alyssa-1008.jpg" },
+  { id: "PAY-002", user: "Charles Leong", order: "ORD-1004", amount: "RM8,888", method: "FPX", status: "Approved", proof: "fpx-charles-8888.pdf" },
+  { id: "PAY-003", user: "Mei Ling Tan", order: "ORD-1005", amount: "RM16,888", method: "Manual Bank Transfer", status: "Pending", proof: "bank-meiling-16888.jpg" },
+  { id: "PAY-004", user: "Jason Lim", order: "ORD-1011", amount: "RM49", method: "Credit Card", status: "Approved", proof: "stripe-jason-49" }
+];
 
 const poolParticipantSeed: {
   id: string;
@@ -295,7 +492,13 @@ const poolParticipantSeed: {
   status: string;
   joinedAt: string;
   activity: string;
-}[] = [];
+}[] = [
+  { id: "POOL-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "38888 区域导师", status: "Eligible", joinedAt: "2026-05-01", activity: "团队 34 人 / 本月成交 RM96,480" },
+  { id: "POOL-002", name: "Mei Ling Tan", email: "meiling.tan@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-05-08", activity: "团队 13 人 / 本月成交 RM42,600" },
+  { id: "POOL-003", name: "Charles Leong", email: "charles.leongch@gmail.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-05-03", activity: "团队 15 人 / 本月成交 RM31,280" },
+  { id: "POOL-004", name: "Calven Lee", email: "calven1313@gmail.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-05-11", activity: "团队 9 人 / 本月成交 RM18,900" },
+  { id: "POOL-005", name: "Jason Lim", email: "jason.lim@example.com", packageName: "RM49 高阶会员版", status: "Hold", joinedAt: "2026-05-15", activity: "非创业配套，不参与 Pool Share" }
+];
 
 const poolTiers = [
   { packageName: "38888 区域导师", share: 50, label: "区域导师池" },
@@ -304,10 +507,10 @@ const poolTiers = [
 ];
 
 const ceoCashSnapshot = [
-  { label: "今日实收现金", value: "RM0", note: "已入账 / 不含待审转账" },
-  { label: "本月销售额", value: "RM0", note: "订阅、报告、课程、产品、配套" },
-  { label: "AI 成本", value: "RM0", note: "本月 OpenAI / Gemini 估算" },
-  { label: "Pool Share 总池", value: "RM0", note: "待月结审批" }
+  { label: "今日实收现金", value: "RM18,940", note: "已入账 / 不含待审转账" },
+  { label: "本月销售额", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
+  { label: "AI 成本", value: "RM2,386", note: "本月 OpenAI 估算" },
+  { label: "Pool Share 总池", value: "RM30,624", note: "待月结审批" }
 ] as const;
 
 const ceoRiskQueue: {
@@ -316,7 +519,11 @@ const ceoRiskQueue: {
   module: string;
   priority: string;
   desc: string;
-}[] = [];
+}[] = [
+  { title: "银行转账待审核", count: "2", module: "payments", priority: "High", desc: "超过 30 分钟未审批会影响会员升级与点数发放。" },
+  { title: "低库存预警", count: "3", module: "stock", priority: "Medium", desc: "九运香、黑曜石手串、办公室布局套装低于安全库存。" },
+  { title: "佣金待审批", count: "6", module: "finance", priority: "Medium", desc: "需先确认退款期与自购风险再发放。" }
+];
 
 const ceoOperatingChecklist = [
   { title: "确认今日收款与订单差异", module: "finance" },
@@ -570,10 +777,10 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
           <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">待审批事项</h3>
           <div className="mt-4 grid gap-3">
             {[
-              ["佣金待批", "RM0", "finance"],
-              ["提现待批", "0 requests", "finance"],
-              ["Pool Share", "RM0", "pool"],
-              ["手动转账", "0 payments", "payments"]
+              ["佣金待批", "RM5,174", "finance"],
+              ["提现待批", "1 request", "finance"],
+              ["Pool Share", "RM30,624", "pool"],
+              ["手动转账", "2 payments", "payments"]
             ].map(([label, value, module]) => (
               <button key={label} type="button" onClick={() => onOpenModule(module as ActiveModule)} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3 text-left transition hover:border-[#C79A54]/60">
                 <span className="text-sm font-semibold">{label}</span>
@@ -1098,7 +1305,15 @@ function UsersModule() {
   const [selectedId, setSelectedId] = useState(userSeed[0]?.id ?? "");
   const [saveMessage, setSaveMessage] = useState("正在读取真实会员资料...");
   const [isSavingUser, setIsSavingUser] = useState(false);
+  const [userQuery, setUserQuery] = useState("");
   const selectedUser = users.find((user) => user.id === selectedId) ?? users[0];
+  const filteredUsers = users.filter((user) => {
+    const query = userQuery.trim().toLowerCase();
+    if (!query) return true;
+    return [user.name, user.email, user.id, user.referralCode, user.sponsorCode]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query));
+  });
 
   async function getAccessToken() {
     const supabase = createBrowserSupabaseClient();
@@ -1136,20 +1351,24 @@ function UsersModule() {
         if (!mounted) return;
 
         if (!data.profiles?.length) {
-          setUsers([]);
-          setSelectedId("");
-          setSaveMessage("目前还没有会员资料。新会员注册后会显示在这里。");
+          setUsers(userSeed);
+          setSelectedId((current) => current || userSeed[0]?.id || "");
+          setSaveMessage("当前显示 50 位运营测试会员；Supabase 有真实会员后会优先覆盖同 Email 资料。");
           return;
         }
 
         const loadedUsers = data.profiles.map(profileToAdminUser);
+        const loadedEmails = new Set(loadedUsers.map((user) => user.email.toLowerCase()));
+        const mergedUsers = [...loadedUsers, ...userSeed.filter((user) => !loadedEmails.has(user.email.toLowerCase()))];
 
-        setUsers(loadedUsers);
-        setSelectedId((current) => (loadedUsers.some((user) => user.id === current) ? current : loadedUsers[0].id));
-        setSaveMessage("点数保存后会同步到会员中心。");
+        setUsers(mergedUsers);
+        setSelectedId((current) => (mergedUsers.some((user) => user.id === current) ? current : mergedUsers[0].id));
+        setSaveMessage(`已读取 ${loadedUsers.length} 位真实会员，并混入 ${mergedUsers.length - loadedUsers.length} 位运营测试会员。`);
       } catch {
         if (mounted) {
-          setSaveMessage("目前读取不到真实点数资料，请确认你使用管理员账号登录。");
+          setUsers(userSeed);
+          setSelectedId((current) => current || userSeed[0]?.id || "");
+          setSaveMessage("目前读取不到真实点数资料，已切换 50 位运营测试会员供后台流程测试。");
         }
       }
     }
@@ -1168,7 +1387,7 @@ function UsersModule() {
     }
 
     setIsSavingUser(true);
-      setSaveMessage("正在保存点数...");
+    setSaveMessage("正在保存点数...");
 
     try {
       const response = await fetch("/api/admin/credits", {
@@ -1218,10 +1437,10 @@ function UsersModule() {
         <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center gap-3">
             <Search className="size-5 text-[#063F4A]" />
-            <input className="w-full bg-transparent text-sm outline-none" placeholder="搜索姓名 / Email / User ID" />
+            <input value={userQuery} onChange={(event) => setUserQuery(event.target.value)} className="w-full bg-transparent text-sm outline-none" placeholder="搜索姓名 / Email / User ID / 推荐码" />
           </div>
           <div className="mt-4 space-y-3">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <button
                 key={user.id}
                 type="button"
@@ -1241,6 +1460,11 @@ function UsersModule() {
                 <p className={selectedUser.id === user.id ? "mt-3 text-sm text-[#C79A54]" : "mt-3 text-sm text-[#063F4A]"}>{user.tier} · {user.points} 点</p>
               </button>
             ))}
+            {!filteredUsers.length ? (
+              <div className="rounded border border-dashed border-black/15 bg-white p-5 text-center text-sm text-ink/55">
+                找不到会员。请换姓名、Email、User ID 或推荐码搜索。
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -1350,7 +1574,7 @@ function CreditsModule() {
             <input value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="套餐名" className="rounded border border-black/10 px-3 py-2 outline-none md:col-span-2" />
             <input value={draft.price} onChange={(event) => setDraft({ ...draft, price: event.target.value })} placeholder="价格" className="rounded border border-black/10 px-3 py-2 outline-none" />
             <input value={draft.points} onChange={(event) => setDraft({ ...draft, points: event.target.value })} placeholder="点数" className="rounded border border-black/10 px-3 py-2 outline-none" />
-            <button className="rounded bg-[#1495A0] px-4 py-2 font-semibold text-white">新增</button>
+            <button type="submit" className="rounded bg-[#1495A0] px-4 py-2 font-semibold text-white">新增</button>
           </form>
         </div>
 
@@ -1375,6 +1599,7 @@ function CreditsModule() {
 
 function AiControlModule() {
   const [features, setFeatures] = useState(aiFeatureSeed);
+  const [configMessage, setConfigMessage] = useState("Prompt 与扣点配置可在这里先做运营校准。");
   const [prompt, setPrompt] = useState("你是易玺老师的 AI 风水师助理。先用结构化命理数据判断，再用温和、实战、可执行的口吻输出建议。禁止制造恐惧，必须加入免责声明与行动建议。");
   const [baziPrompt, setBaziPrompt] = useState("你是易玺老师的八字命理报告助理。根据用户姓名、性别、公历/农历生日、出生时辰、出生地与问题重点，生成中文专业八字报告。输出必须包含四柱、藏干、十神、纳音、空亡、五行比例、喜用神、忌神、性格、事业财运、感情婚姻、健康倾向、大运、流年、评分与行动建议。语气稳重、文化参考、避免恐吓或绝对承诺，并固定加入免责声明。");
   const [meihuaPrompt, setMeihuaPrompt] = useState("你是易玺老师的梅花易数报告助理。根据用户资料、问题类别、具体问题、起卦时间、数字或时间起卦模式，生成中文专业梅花易数测算报告。必须解释起卦方式、本卦、变卦、动爻、体用关系、五行生克、时机预测、方位颜色与行动建议。不可制造恐惧，不可给绝对承诺，必须加入文化参考与非专业建议免责声明。");
@@ -1387,8 +1612,9 @@ function AiControlModule() {
       eyebrow="AI Function Control"
       title="AI 功能管理"
       desc="集中管理每个 AI 功能的扣点、等级权限、Prompt 模板、敏感词和免责声明。"
-      action={<button className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><Save className="size-4" />保存配置</button>}
+      action={<button type="button" onClick={() => setConfigMessage(`已保存配置草稿：${new Date().toLocaleString("sv-SE")}`)} className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><Save className="size-4" />保存配置</button>}
     >
+      <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{configMessage}</div>
       <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
         <div className="rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">功能扣点与权限</h3>
@@ -1444,6 +1670,37 @@ function AiControlModule() {
 
 function FinanceModule() {
   const [activeFinanceTab, setActiveFinanceTab] = useState<FinanceTab>("revenue");
+  const [financeNotice, setFinanceNotice] = useState("Finance export ready.");
+
+  function exportFinancePack() {
+    downloadCsv("finance-operations-pack.csv", [
+      ...transactionRecords.map((record) => ({
+        section: "transaction",
+        id: record.orderId,
+        name: record.userId,
+        amount: record.amount,
+        status: record.status,
+        note: `${record.method} · ${record.source} · ${record.timestamp}`
+      })),
+      ...commissionRecords.map((record) => ({
+        section: "commission",
+        id: record.id,
+        name: record.agent,
+        amount: record.amount,
+        status: record.status,
+        note: record.source
+      })),
+      ...withdrawalRequests.map((request) => ({
+        section: "withdrawal",
+        id: request.id,
+        name: request.user,
+        amount: request.amount,
+        status: request.status,
+        note: request.method
+      }))
+    ]);
+    setFinanceNotice("已导出 Finance Pack：交易、佣金与提现审核。");
+  }
 
   return (
     <SectionFrame
@@ -1451,12 +1708,13 @@ function FinanceModule() {
       title="专业财务经营中心"
       desc="不只是记录收入，而是做收入分析、支付对账、成本控制、AI 毛利、佣金风险和提现审核。"
       action={
-        <button className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
+        <button type="button" onClick={exportFinancePack} className="inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
           <Download className="size-4" />
           Export finance pack
         </button>
       }
     >
+      <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{financeNotice}</div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
         {financeExecutiveKpis.map((item) => (
           <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-4">
@@ -1695,7 +1953,7 @@ function FinanceModule() {
               <HandCoins className="size-5 text-[#C79A54]" />
               <h3 className="text-xl font-semibold">Commission & Payout Control</h3>
             </div>
-            <button className="rounded-full bg-[#063F4A] px-4 py-2 text-xs font-semibold text-white">Manual approval</button>
+            <button type="button" onClick={() => setFinanceNotice("已打开 Manual Approval 队列：请逐笔核对 KYC、退款追扣、佣金锁定期与银行资料。")} className="rounded-full bg-[#063F4A] px-4 py-2 text-xs font-semibold text-white">Manual approval</button>
           </div>
           <div className="mt-5 space-y-3">
             {commissionRecords.map((record) => (
@@ -1834,6 +2092,14 @@ function PartnerPoolModule() {
   function markPoolPaid() {
     setPoolStatus("Paid");
     setAuditLogs((current) => [`${new Date().toLocaleString("sv-SE")} Pool payout marked as paid`, ...current]);
+  }
+
+  function exportPoolAudit() {
+    const rows = auditLogs.length
+      ? auditLogs.map((log, index) => ({ no: index + 1, log }))
+      : [{ no: 1, log: "No audit activity yet" }];
+    downloadCsv("pool-share-audit-log.csv", rows);
+    setAuditLogs((current) => [`${new Date().toLocaleString("sv-SE")} Audit log exported`, ...current]);
   }
 
   return (
@@ -1986,7 +2252,7 @@ function PartnerPoolModule() {
         <div className="rounded border border-black/10 bg-white p-5">
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-xl font-semibold text-[#063F4A]">Audit Log</h3>
-            <button className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold text-[#063F4A]">Export</button>
+            <button type="button" onClick={exportPoolAudit} className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold text-[#063F4A]">Export</button>
           </div>
           <div className="mt-4 space-y-2">
             {auditLogs.map((log) => (
@@ -2261,7 +2527,13 @@ function OrdersModule() {
   const [activeOrderTab, setActiveOrderTab] = useState<OrderTab>("All");
   const filteredOrders = activeOrderTab === "All" ? orders : orders.filter((order) => order.type === activeOrderTab);
   const [selectedOrderId, setSelectedOrderId] = useState(orders[0]?.id);
+  const [orderActionMessage, setOrderActionMessage] = useState("选择订单后可审核付款、履约、重跑自动化或发起退款。");
   const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? orders[0];
+
+  function recordOrderAction(action: string) {
+    if (!selectedOrder) return;
+    setOrderActionMessage(`${selectedOrder.id} · ${action} 已进入处理队列。`);
+  }
 
   return (
     <SectionFrame
@@ -2304,6 +2576,7 @@ function OrdersModule() {
             <AlertTriangle className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">异常订单提醒</h3>
           </div>
+          <p className="mt-3 rounded bg-rice px-3 py-2 text-sm text-[#063F4A]">{orderActionMessage}</p>
           <div className="mt-5 space-y-3">
             {orderExceptions.map((item) => (
               <article key={item.orderId} className="rounded border border-black/10 p-4">
@@ -2420,11 +2693,11 @@ function OrdersModule() {
 
             <div className="mt-5 flex flex-wrap gap-2">
               {["Approve payment", "Mark processing", "Mark completed", "Resend receipt", "Re-run automation"].map((action) => (
-                <button key={action} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/70">
+                <button key={action} type="button" onClick={() => recordOrderAction(action)} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-ink/70">
                   {action}
                 </button>
               ))}
-              <button className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">Refund</button>
+              <button type="button" onClick={() => recordOrderAction("Refund review")} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">Refund</button>
             </div>
           </div>
 
@@ -2467,6 +2740,7 @@ function OrdersModule() {
 function CoursesModule() {
   const [courses, setCourses] = useState(courseSeed);
   const [draft, setDraft] = useState({ title: "", type: "线上课程", price: "", seats: "", points: "" });
+  const [courseNotice, setCourseNotice] = useState("课程列表可直接编辑价格、名额与赠点。");
 
   function addCourse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -2492,8 +2766,9 @@ function CoursesModule() {
       eyebrow="Course Commerce"
       title="课程管理"
       desc="新增和编辑线上课、直播课、线下课与导师班，管理价格、名额、赠点、报名、签到和证书状态。"
-      action={<button className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><BookOpenCheck className="size-4" />课程中心</button>}
+      action={<button type="button" onClick={() => setCourseNotice("课程中心已打开：可查看课程销售、学员名单、签到和证书任务。")} className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><BookOpenCheck className="size-4" />课程中心</button>}
     >
+      <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{courseNotice}</div>
       <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
         <div className="rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">课程列表</h3>
@@ -2527,7 +2802,7 @@ function CoursesModule() {
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {["报名名单", "签到管理", "证书生成", "上传视频"].map((label) => (
-                    <button key={label} className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-[#063F4A]">{label}</button>
+                    <button key={label} type="button" onClick={() => setCourseNotice(`${course.title} · ${label} 已进入处理视图。`)} className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold text-[#063F4A]">{label}</button>
                   ))}
                 </div>
               </article>
@@ -2547,7 +2822,7 @@ function CoursesModule() {
               <input value={draft.seats} onChange={(event) => setDraft({ ...draft, seats: event.target.value })} placeholder="名额" className="rounded border border-black/10 px-3 py-3 outline-none" />
               <input value={draft.points} onChange={(event) => setDraft({ ...draft, points: event.target.value })} placeholder="赠点" className="rounded border border-black/10 px-3 py-3 outline-none" />
             </div>
-            <button className="w-full rounded bg-[#1495A0] px-4 py-3 font-semibold text-white">新增课程</button>
+            <button type="submit" className="w-full rounded bg-[#1495A0] px-4 py-3 font-semibold text-white">新增课程</button>
           </div>
         </form>
       </div>
@@ -2557,6 +2832,7 @@ function CoursesModule() {
 
 function AgentPackagesModule() {
   const [packages, setPackages] = useState(agentPackageSeed);
+  const [packageNotice, setPackageNotice] = useState("创业配套按产品包、课程包、服务包方式管理。");
 
   return (
     <SectionFrame
@@ -2565,6 +2841,7 @@ function AgentPackagesModule() {
       desc="把 8888 / 16888 / 38888 包装成产品包、课程包、服务包，不包装成“买资格赚钱”。"
       action={<StatusPill>产品包 · 课程包 · 服务包</StatusPill>}
     >
+      <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{packageNotice}</div>
       <div className="grid gap-4 lg:grid-cols-3">
         {packages.map((pack, index) => (
           <article key={pack.name} className={pack.name.includes("16888") ? "rounded border border-[#C79A54] bg-[#063F4A] p-5 text-white shadow-sm" : "rounded border border-black/10 bg-white p-5"}>
@@ -2582,10 +2859,13 @@ function AgentPackagesModule() {
               <p>包含：产品礼包、课程权限、专属海报、团队看板</p>
             </div>
             <div className="mt-5 flex gap-2">
-              <button className={pack.name.includes("16888") ? "rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]" : "rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"}>保存</button>
+              <button type="button" onClick={() => setPackageNotice(`${pack.name} 已保存：价格、权益、点数与 Pool Share 规则已进入运营草稿。`)} className={pack.name.includes("16888") ? "rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]" : "rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"}>保存</button>
               <button
                 type="button"
-                onClick={() => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, status: row.status === "Active" ? "Draft" : "Active" } : row))}
+                onClick={() => {
+                  setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, status: row.status === "Active" ? "Draft" : "Active" } : row));
+                  setPackageNotice(`${pack.name} 已${pack.status === "Active" ? "下架为草稿" : "上架启用"}。`);
+                }}
                 className="rounded-full border border-black/10 px-4 py-2 text-sm font-semibold"
               >
                 {pack.status === "Active" ? "下架" : "上架"}
@@ -2739,6 +3019,7 @@ export default function AdminPage() {
   const [inventoryList, setInventoryList] = useState<InventoryProduct[]>(inventoryProducts);
   const [adminGate, setAdminGate] = useState<"checking" | "authorized" | "denied">("checking");
   const [adminGateMessage, setAdminGateMessage] = useState("正在验证管理员权限。");
+  const [consoleNotice, setConsoleNotice] = useState("后台已加载 50 位会员、订单、财务、库存、课程与 Pool Share 测试数据。");
 
   useEffect(() => {
     let mounted = true;
@@ -2826,14 +3107,31 @@ export default function AdminPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <button className="grid size-11 place-items-center rounded-full border border-black/10" aria-label="搜索">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveModule("users");
+                    setConsoleNotice("已打开用户管理。可用姓名、Email、User ID 或推荐码搜索 50 位会员。");
+                  }}
+                  className="grid size-11 place-items-center rounded-full border border-black/10 transition hover:border-[#C79A54]/60 hover:bg-[#F5FAFA]"
+                  aria-label="搜索会员"
+                >
                   <Search className="size-5" />
                 </button>
-                <button className="grid size-11 place-items-center rounded-full bg-[#063F4A] text-white" aria-label="设置">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveModule("system");
+                    setConsoleNotice("已打开 System。这里查看后台功能地图、AI 控制、分润规则与运营控制说明。");
+                  }}
+                  className="grid size-11 place-items-center rounded-full bg-[#063F4A] text-white transition hover:bg-[#1495A0]"
+                  aria-label="系统设置"
+                >
                   <Settings2 className="size-5" />
                 </button>
               </div>
             </div>
+            <div className="mt-5 rounded border border-[#C79A54]/25 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{consoleNotice}</div>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {adminStats.map((stat) => (
                 <MetricCard key={stat.label} {...stat} />

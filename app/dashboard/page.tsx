@@ -360,28 +360,28 @@ const membershipTiers: {
     price: "RM0",
     positioning: "情绪晴雨表",
     aiMode: "低算力 · 静态短句库",
-    dataDepth: "仅当天星级评分",
-    features: ["今日财运/事业/人缘星级", "一句话宜忌", "每日打卡", "基础收藏"],
+    dataDepth: "注册赠 200 点",
+    features: ["200 点起始额度", "今日财运/事业/人缘星级", "一句话宜忌", "每日打卡", "基础收藏"],
     locked: ["每周运势", "AI 深度解析", "流月/流年战略"]
   },
   {
     id: "tactical",
     name: "进阶会员版",
-    price: "RM39.90/月",
+    price: "RM29/月",
     positioning: "紫微 + 梅花战术指南",
     aiMode: "中算力 · 紫微矩阵 + 梅花象意",
-    dataDepth: "每日 + 每周 + 100-200 字 AI 解读",
-    features: ["每日/每周运势", "紫微 + 梅花双引擎", "幸运色与贵人方", "谈判时辰", "报告中心"],
+    dataDepth: "每月 7,000 点 + 每日/每周 AI 解读",
+    features: ["每月 7,000 点", "每日/每周运势", "紫微 + 梅花双引擎", "幸运色与贵人方", "谈判时辰", "报告中心"],
     locked: ["流月/流年", "战略顾问问答", "商业策略报告"]
   },
   {
     id: "strategic",
     name: "高阶战略版",
-    price: "RM69.90/月",
+    price: "RM49/月",
     positioning: "紫微 + 梅花私人顾问",
     aiMode: "高算力 · 紫微/梅花 + 本命/流年/流月/流日",
-    dataDepth: "全周期趋势 + 商业决策建议",
-    features: ["流月/流年趋势", "梅花易数即时决策", "战略顾问 AI 对话", "化解与布局建议", "商业五行策略", "高级报告额度"]
+    dataDepth: "每月 15,000 点 + 全周期趋势",
+    features: ["每月 15,000 点", "流月/流年趋势", "梅花易数即时决策", "战略顾问 AI 对话", "化解与布局建议", "商业五行策略", "高级报告额度"]
   }
 ];
 
@@ -456,22 +456,85 @@ const walletRecords = [
   ["产品赠送", "+80 点"]
 ] as const;
 
-const fortuneCalendarDays = [
-  { day: "今天", date: "04/30", score: 89, tag: "宜合作", tone: "gold" },
-  { day: "五", date: "05/01", score: 84, tag: "宜复盘", tone: "green" },
-  { day: "六", date: "05/02", score: 76, tag: "慢决策", tone: "soft" },
-  { day: "日", date: "05/03", score: 81, tag: "宜学习", tone: "green" },
-  { day: "一", date: "05/04", score: 92, tag: "宜签约", tone: "gold" },
-  { day: "二", date: "05/05", score: 73, tag: "忌冲动", tone: "soft" },
-  { day: "三", date: "05/06", score: 88, tag: "宜见客", tone: "gold" },
-  { day: "四", date: "05/07", score: 79, tag: "宜整理", tone: "green" },
-  { day: "五", date: "05/08", score: 86, tag: "财务日", tone: "gold" },
-  { day: "六", date: "05/09", score: 70, tag: "宜休息", tone: "soft" },
-  { day: "日", date: "05/10", score: 83, tag: "宜沟通", tone: "green" },
-  { day: "一", date: "05/11", score: 90, tag: "贵人日", tone: "gold" },
-  { day: "二", date: "05/12", score: 78, tag: "守现金", tone: "soft" },
-  { day: "三", date: "05/13", score: 87, tag: "宜发布", tone: "gold" }
-] as const;
+const creditSourceLabels: Record<string, string> = {
+  admin_adjustment: "后台调整",
+  ai_chat: "AI 问答",
+  bazi_destiny_report: "八字报告",
+  course_bonus: "课程赠点",
+  credit_topup: "点数充值",
+  divination_checkin_reward: "问卦打卡",
+  general_report_generation: "综合报告",
+  hexagram64: "64卦一字",
+  integrated_destiny_report: "综合命理报告",
+  jiuyun_oracle: "九运问卦",
+  meihua_divination_report: "梅花报告",
+  member_reward: "会员奖励",
+  member_usage: "会员功能",
+  numerology_life_path_report: "数字命理报告",
+  product_bonus: "产品赠点",
+  referral_reward: "推荐奖励",
+  report_generation: "AI 报告",
+  report_generation_refund: "报告退款",
+  sigil: "Sigil 符印",
+  ziwei_destiny_report: "紫微报告"
+};
+
+function formatCreditSource(source: string) {
+  return (
+    creditSourceLabels[source] ||
+    source
+      .split("_")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  );
+}
+
+function formatCreditAmount(amount: number) {
+  return `${amount > 0 ? "+" : ""}${amount.toLocaleString("en-US")} 点`;
+}
+
+function formatCreditRecordTime(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString("zh-CN", { hour12: false });
+}
+
+const fortuneCalendarNoteStorageKey = "aifengshui-fortune-calendar-good-notes";
+
+function addCalendarDays(base: Date, offset: number) {
+  const next = new Date(base);
+  next.setDate(next.getDate() + offset);
+  return next;
+}
+
+function buildFortuneCalendarDays(baseDate = new Date()) {
+  const weekdayLabels = ["日", "一", "二", "三", "四", "五", "六"];
+
+  return Array.from({ length: 14 }, (_, index) => {
+    const date = addCalendarDays(baseDate, index);
+    const almanac = buildPublicDailyAlmanac(date);
+    const daySeed = almanac.dayPillar.split("").reduce((total, char) => total + char.charCodeAt(0), 0) + index * 7;
+    const score = 68 + (daySeed % 25);
+    const tone = score >= 84 ? "gold" : score >= 76 ? "green" : "soft";
+    const primaryAction = almanac.yi[0] || "整理";
+
+    return {
+      key: almanac.date,
+      day: index === 0 ? "今天" : weekdayLabels[date.getDay()],
+      date: `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`,
+      fullDate: almanac.date,
+      score,
+      tag: primaryAction.startsWith("宜") ? primaryAction : `宜${primaryAction}`,
+      tone,
+      almanac
+    };
+  });
+}
 
 const fiveElementProfile = [
   ["木", 76, "成长力强，适合学习与规划"],
@@ -760,6 +823,14 @@ type SavedReport = {
   }[];
 };
 
+type CreditHistoryRecord = {
+  id: string;
+  amount: number;
+  source: string;
+  description: string;
+  createdAt: string;
+};
+
 type IntegratedAiContent = Pick<SavedReport, "summary" | "sections"> & {
   scores?: Record<string, number>;
   actions?: Record<string, string[]>;
@@ -768,6 +839,7 @@ type IntegratedAiContent = Pick<SavedReport, "summary" | "sections"> & {
 type DailyFortuneResponse = {
   configured: boolean;
   model: string;
+  fallbackUsed?: boolean;
   reading: string;
   matrix: DailyFortuneMatrix;
 };
@@ -4780,6 +4852,37 @@ function shareAlmanacToWhatsApp(almanac: PublicDailyAlmanac, personal?: { zodiac
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
 }
 
+function buildSevenDaySimpleAdvice(
+  item: PublicDailyAlmanac,
+  personal: { zodiac?: string; dayMaster?: string },
+  index: number
+) {
+  const zodiacFortune = personal.zodiac ? item.zodiac.find((fortune) => fortune.zodiac === personal.zodiac) : null;
+  const dayMasterFlow = personal.dayMaster ? item.dayMasterFlow.find((flow) => flow.stem === personal.dayMaster) : null;
+  const bestWindow = item.timeWindows.find((windowItem) => windowItem.tone === "good") || item.timeWindows[0];
+
+  const personalLine = zodiacFortune
+    ? `${personal.zodiac}：${zodiacFortune.headline}，${zodiacFortune.advice}`
+    : dayMasterFlow
+      ? `${personal.dayMaster}日主：${dayMasterFlow.headline}，${dayMasterFlow.advice}`
+      : index === 0
+        ? "今天先看清现金流与沟通节奏，再推进关键事项。"
+        : "适合提前安排事务，把重要沟通放在状态更稳的时段。";
+
+  const fengshuiLine = `面向${item.wealthDirection.direction}整理财务或报价；若要见贵人，可借${item.joyDirection.direction}之气先沟通。`;
+  const timingLine = `${bestWindow.label} ${bestWindow.time}：${bestWindow.advice}`;
+  const cautionLine = zodiacFortune?.isClash
+    ? "当天与你生肖相冲，先确认条款、时间和对方承诺，再做决定。"
+    : `留意${item.chong}，涉及该生肖或方位的人事，先慢半拍。`;
+
+  return {
+    personalLine,
+    fengshuiLine,
+    timingLine,
+    cautionLine
+  };
+}
+
 function PublicDailyAlmanacPanel({
   almanac,
   memberProfile,
@@ -4966,18 +5069,28 @@ function PublicDailyAlmanacPanel({
             </div>
             <StatusPill>{sevenDayUnlocked ? "已解锁" : `${sevenDayFortuneCost} 点解锁`}</StatusPill>
           </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-7">
-            {(sevenDayUnlocked ? sevenDayItems : sevenDayItems.slice(0, 2)).map((item, index) => (
-              <div key={item.date} className={`rounded border p-3 ${index === 0 ? "border-[#C79A54]/45 bg-[#FFF8E8]" : "border-[#CFE2E5] bg-[#F5FAFA]"}`}>
-                <p className="text-xs font-semibold text-ink/45">{item.date}</p>
-                <p className="mt-1 font-semibold text-[#063F4A]">{item.dayPillar}日</p>
-                <p className="mt-2 text-xs leading-5 text-ink/58">财：{item.wealthDirection.direction} · 喜：{item.joyDirection.direction}</p>
-                <p className="mt-1 text-xs leading-5 text-[#7A1F16]">{item.chong}</p>
-                <p className="mt-2 text-xs font-semibold text-[#063F4A]">宜：{item.yi.slice(0, 2).join("、")}</p>
-              </div>
-            ))}
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {(sevenDayUnlocked ? sevenDayItems : sevenDayItems.slice(0, 2)).map((item, index) => {
+              const advice = buildSevenDaySimpleAdvice(item, { zodiac: personalZodiac, dayMaster: personalDayMaster }, index);
+
+              return (
+                <div key={item.date} className={`rounded border p-3 ${index === 0 ? "border-[#C79A54]/45 bg-[#FFF8E8]" : "border-[#CFE2E5] bg-[#F5FAFA]"}`}>
+                  <p className="text-xs font-semibold text-ink/45">{item.date}</p>
+                  <p className="mt-1 font-semibold text-[#063F4A]">{item.dayPillar}日</p>
+                  <p className="mt-2 text-xs leading-5 text-ink/58">财：{item.wealthDirection.direction} · 喜：{item.joyDirection.direction}</p>
+                  <p className="mt-1 text-xs leading-5 text-[#7A1F16]">{item.chong}</p>
+                  <p className="mt-2 text-xs font-semibold text-[#063F4A]">宜：{item.yi.slice(0, 2).join("、")}</p>
+                  <div className="mt-3 grid gap-2 border-t border-[#C79A54]/20 pt-3 text-xs leading-5 text-ink/62">
+                    <p><span className="font-semibold text-[#063F4A]">个人：</span>{advice.personalLine}</p>
+                    <p><span className="font-semibold text-[#063F4A]">风水：</span>{advice.fengshuiLine}</p>
+                    <p><span className="font-semibold text-[#063F4A]">时机：</span>{advice.timingLine}</p>
+                    <p><span className="font-semibold text-[#7A1F16]">提醒：</span>{advice.cautionLine}</p>
+                  </div>
+                </div>
+              );
+            })}
             {!sevenDayUnlocked ? (
-              <div className="rounded border border-dashed border-[#C79A54]/45 bg-[#FFFDF7] p-3 md:col-span-5">
+              <div className="rounded border border-dashed border-[#C79A54]/45 bg-[#FFFDF7] p-3 md:col-span-2 xl:col-span-2">
                 <LockKeyhole className="size-5 text-[#C79A54]" />
                 <p className="mt-2 font-semibold text-[#063F4A]">解锁完整 7 天预报</p>
                 <p className="mt-1 text-sm leading-6 text-ink/55">包含每日财位、喜神、相冲、宜忌和行动窗口，适合提前规划一周。</p>
@@ -5267,7 +5380,7 @@ function TodayFortune({
           </div>
           {aiFortune ? (
             <div className="mt-4 rounded bg-white/8 p-4">
-              <p className="text-xs text-white/45">OpenAI · {aiFortune.model}</p>
+              <p className="text-xs text-white/45">OpenAI · {aiFortune.model}{aiFortune.fallbackUsed ? " · fallback" : ""}</p>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/78">{aiFortune.reading}</p>
               {currentTier === "free" ? <p className="mt-3 text-xs leading-5 text-[#E8D4A8]">{matrix.upgradeHint}</p> : null}
             </div>
@@ -5364,6 +5477,44 @@ function TodayFortune({
 
 function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier }) {
   const canSeeStrategicCycle = currentTier === "strategic";
+  const calendarDays = useMemo(() => buildFortuneCalendarDays(), []);
+  const [selectedDateKey, setSelectedDateKey] = useState(calendarDays[0]?.key || "");
+  const [goodNotes, setGoodNotes] = useState<Record<string, string>>({});
+  const [draftGoodNote, setDraftGoodNote] = useState("");
+  const selectedDay = calendarDays.find((item) => item.key === selectedDateKey) || calendarDays[0];
+  const bestDays = [...calendarDays].sort((a, b) => b.score - a.score).slice(0, 3);
+  const riskDay = [...calendarDays].sort((a, b) => a.score - b.score)[0];
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(fortuneCalendarNoteStorageKey);
+      if (stored) {
+        setGoodNotes(JSON.parse(stored) as Record<string, string>);
+      }
+    } catch {
+      setGoodNotes({});
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!selectedDay) return;
+    setDraftGoodNote(goodNotes[selectedDay.key] || "");
+  }, [goodNotes, selectedDay]);
+
+  function saveGoodNote() {
+    if (!selectedDay) return;
+    const nextNotes = { ...goodNotes };
+    const nextValue = draftGoodNote.trim();
+
+    if (nextValue) {
+      nextNotes[selectedDay.key] = nextValue;
+    } else {
+      delete nextNotes[selectedDay.key];
+    }
+
+    setGoodNotes(nextNotes);
+    window.localStorage.setItem(fortuneCalendarNoteStorageKey, JSON.stringify(nextNotes));
+  }
 
   return (
     <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
@@ -5373,19 +5524,22 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Fortune Calendar</p>
             <h2 className="mt-2 text-2xl font-semibold">14 天运势日历</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
-              让用户每天回来查看分数、宜忌与行动窗口。后续接数据库后，可记录真实每日趋势。
+              点击日期打开记事本，记录当天遇见的好事、贵人、灵感和小进展。
             </p>
           </div>
-          <StatusPill>本周高峰：05/04</StatusPill>
+          <StatusPill>本周高峰：{bestDays[0]?.date}</StatusPill>
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {fortuneCalendarDays.map((item) => (
+          {calendarDays.map((item) => (
             <button
               key={`${item.date}-${item.tag}`}
               type="button"
+              onClick={() => setSelectedDateKey(item.key)}
               className={`rounded border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm ${
-                item.tone === "gold"
+                item.key === selectedDay?.key
+                  ? "border-[#063F4A] bg-[#DDEFF2] ring-2 ring-[#1495A0]/45"
+                  : item.tone === "gold"
                   ? "border-[#C79A54]/45 bg-[#C79A54]/10"
                   : item.tone === "green"
                     ? "border-[#063F4A]/15 bg-[#DDEFF2]"
@@ -5396,6 +5550,11 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
                 <span className="text-sm font-semibold">{item.day}</span>
                 <span className="text-xs text-ink/50">{item.date}</span>
               </div>
+              {goodNotes[item.key] ? (
+                <span className="mt-3 inline-flex rounded-full bg-[#C79A54]/18 px-2.5 py-1 text-xs font-semibold text-[#063F4A]">
+                  已记录好事
+                </span>
+              ) : null}
               <div className="mt-4 flex items-end gap-1">
                 <span className="text-3xl font-semibold text-[#063F4A]">{item.score}</span>
                 <span className="pb-1 text-xs text-ink/45">/100</span>
@@ -5407,6 +5566,38 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
             </button>
           ))}
         </div>
+
+        {selectedDay ? (
+          <div className="mt-5 rounded-xl border border-[#C79A54]/35 bg-[#FFF8E8] p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Daily Notepad</p>
+                <h3 className="mt-1 text-xl font-semibold text-[#063F4A]">{selectedDay.fullDate} · 好事记录</h3>
+                <p className="mt-1 text-sm text-ink/55">
+                  {selectedDay.almanac.dayPillar}日 · {selectedDay.tag} · 分数 {selectedDay.score}/100
+                </p>
+              </div>
+              <StatusPill>{goodNotes[selectedDay.key] ? "已保存" : "未记录"}</StatusPill>
+            </div>
+            <textarea
+              value={draftGoodNote}
+              onChange={(event) => setDraftGoodNote(event.target.value)}
+              rows={5}
+              className="mt-4 w-full rounded border border-[#C79A54]/35 bg-white px-4 py-3 text-sm leading-6 text-[#102F38] outline-none transition focus:border-[#1495A0] focus:ring-2 focus:ring-[#1495A0]/20"
+              placeholder="写下今天遇到的好事：例如收到好消息、客户回复、身体变轻松、贵人提醒、完成一个小目标..."
+            />
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs leading-5 text-ink/48">建议每天只写 1-3 件真实发生的小好事，连续 14 天会更容易看到自己的运势节奏。</p>
+              <button
+                type="button"
+                onClick={saveGoodNote}
+                className="inline-flex items-center justify-center rounded bg-[#063F4A] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#102F38]"
+              >
+                保存记录
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="grid gap-5">
@@ -5415,9 +5606,9 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
           <h3 className="mt-4 text-2xl font-semibold">最佳行动窗口</h3>
           <div className="mt-5 grid gap-3">
             {[
-              ["05/04", "适合签约、发布、谈合作"],
-              ["05/08", "适合整理现金流与收款"],
-              ["05/11", "贵人日，适合主动联系关键人物"]
+              [bestDays[0]?.date || "--", `${bestDays[0]?.tag || "宜推进"}，适合优先安排关键事项`],
+              [bestDays[1]?.date || "--", `${bestDays[1]?.tag || "宜复盘"}，适合处理现金流与沟通`],
+              [riskDay?.date || "--", `${riskDay?.tag || "宜慢行"}，当天重要决定先复核一次`]
             ].map(([date, text]) => (
               <div key={date} className="rounded border border-white/12 bg-white/8 p-3">
                 <p className="text-sm font-semibold text-[#C79A54]">{date}</p>
@@ -5478,7 +5669,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
           </div>
           <div className={`mt-4 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4 ${canSeeStrategicCycle ? "" : "opacity-65"}`}>
             <p className="text-sm font-semibold text-[#063F4A]">
-              {canSeeStrategicCycle ? "本月建议：防御型扩张" : "RM69.90 解锁"}
+              {canSeeStrategicCycle ? "本月建议：防御型扩张" : "RM49 解锁"}
             </p>
             <p className={`mt-2 text-sm leading-6 text-ink/62 ${canSeeStrategicCycle ? "" : "blur-[2px]"}`}>
               本月事业宫略有阻滞，宜先复盘内部管理、优化现金流，把重要对外谈判放在下半月推进。
@@ -7698,6 +7889,8 @@ function WalletAndReports({
   const [selectedReport, setSelectedReport] = useState<SavedReport | null>(null);
   const [isFullReportOpen, setIsFullReportOpen] = useState(false);
   const [reportMessage, setReportMessage] = useState("生成后的报告会自动保存，之后可随时找回。");
+  const [creditHistory, setCreditHistory] = useState<CreditHistoryRecord[]>([]);
+  const [creditHistoryMessage, setCreditHistoryMessage] = useState("点数流水会显示报告、AI 问答、问卦、符印、奖励和充值记录。");
   const [baziActionMessage, setBaziActionMessage] = useState("填写资料后即可生成，报告会自动保存。");
   const [isGeneratingBazi, setIsGeneratingBazi] = useState(false);
   const [baziInput, setBaziInput] = useState<BaziReportInput>(() => defaultBaziReportInput(memberProfile));
@@ -7878,7 +8071,7 @@ function WalletAndReports({
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
-        .limit(12);
+        .limit(50);
 
       if (!mounted || !data?.length) return;
 
@@ -7915,12 +8108,91 @@ function WalletAndReports({
     };
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadCreditHistory() {
+      const accessToken = await getMemberAccessToken();
+
+      if (!accessToken) {
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/credits?limit=60", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        const payload = (await response.json().catch(() => ({}))) as {
+          error?: string;
+          creditBalance?: number;
+          transactions?: {
+            id: string;
+            amount: number;
+            source: string;
+            description: string | null;
+            created_at: string;
+          }[];
+        };
+
+        if (!mounted) {
+          return;
+        }
+
+        if (!response.ok) {
+          setCreditHistoryMessage(payload.error || "点数流水读取失败，请稍后再试。");
+          return;
+        }
+
+        if (typeof payload.creditBalance === "number") {
+          onCreditBalanceChange(payload.creditBalance);
+        }
+
+        const nextHistory = (payload.transactions || []).map((record) => ({
+          id: record.id,
+          amount: record.amount,
+          source: record.source,
+          description: record.description || "会员点数变化",
+          createdAt: formatCreditRecordTime(record.created_at)
+        }));
+
+        setCreditHistory(nextHistory);
+        setCreditHistoryMessage(nextHistory.length ? "已同步最新点数流水。" : "还没有点数流水。");
+      } catch {
+        if (mounted) {
+          setCreditHistoryMessage("点数流水读取失败，请检查网络后再试。");
+        }
+      }
+    }
+
+    loadCreditHistory();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   function isReportLocked(report: (typeof reportTypes)[number]) {
     if (report.title === "八字命理测算完整报告") {
       return false;
     }
 
     return currentTier === "free" || (currentTier === "tactical" && strategicReportTitles.has(report.title));
+  }
+
+  function prependCreditHistory(amount: number, source: string, description: string) {
+    setCreditHistory((current) => [
+      {
+        id: `local-${source}-${Date.now()}`,
+        amount,
+        source,
+        description,
+        createdAt: formatCreditRecordTime(new Date().toISOString())
+      },
+      ...current
+    ].slice(0, 60));
+    setCreditHistoryMessage("已记录最新点数变化。");
   }
 
   async function persistGeneratedReport(report: SavedReport, source: string, description: string, accessToken: string) {
@@ -7973,6 +8245,8 @@ function WalletAndReports({
     if (typeof payload.creditBalance === "number") {
       onCreditBalanceChange(payload.creditBalance);
     }
+
+    prependCreditHistory(-report.points, source, description);
 
     return {
       ...report,
@@ -8530,6 +8804,13 @@ function WalletAndReports({
     setSelectedReport(report);
   }
 
+  const creditSpentTotal = creditHistory
+    .filter((record) => record.amount < 0)
+    .reduce((sum, record) => sum + Math.abs(record.amount), 0);
+  const creditEarnedTotal = creditHistory
+    .filter((record) => record.amount > 0)
+    .reduce((sum, record) => sum + record.amount, 0);
+
   return (
     <section className="space-y-5">
       <div className="rounded border border-black/10 bg-white p-4 shadow-sm">
@@ -8541,15 +8822,20 @@ function WalletAndReports({
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#063F4A]">Credit Balance</p>
               </div>
               <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{points.toLocaleString("en-US")} 点</p>
-              <p className="mt-1 text-xs text-ink/50">点数只用于平台功能，不可提现。</p>
-            </div>
-            {walletRecords.slice(0, 2).map(([label, value]) => (
-              <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
-                <p className="text-xs text-ink/45">{label}</p>
-                <p className="mt-2 text-lg font-semibold text-[#063F4A]">{value}</p>
-                <p className="mt-1 text-xs text-ink/45">正式账务将同步后台流水</p>
+                <p className="mt-1 text-xs text-ink/50">点数只用于平台功能，不可提现。</p>
               </div>
-            ))}
+            <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <p className="text-xs text-ink/45">已保存报告</p>
+              <p className="mt-2 text-lg font-semibold text-[#063F4A]">{savedReports.length} 份</p>
+              <p className="mt-1 text-xs text-ink/45">付费生成后可重复下载</p>
+            </div>
+            <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <p className="text-xs text-ink/45">点数收支</p>
+              <p className="mt-2 text-lg font-semibold text-[#063F4A]">
+                -{creditSpentTotal.toLocaleString("en-US")} / +{creditEarnedTotal.toLocaleString("en-US")}
+              </p>
+              <p className="mt-1 text-xs text-ink/45">支出 / 收入，来自真实流水</p>
+            </div>
           </div>
           <button className="inline-flex items-center justify-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88]">
             充值点数 <CreditCard className="size-4" />
@@ -9141,7 +9427,7 @@ function WalletAndReports({
                     </div>
                     <p className="mt-4 font-semibold">{report.title}</p>
                     <p className="mt-2 text-sm text-ink/55">
-                      {locked ? (currentTier === "free" ? "Free 仅可预览每日摘要" : "RM69.90 解锁流月/流年战略") : `消耗 ${report.points} 点`}
+                      {locked ? (currentTier === "free" ? "Free 仅可预览每日摘要" : "RM49 解锁流月/流年战略") : `消耗 ${report.points} 点`}
                     </p>
                     <div className={`mt-4 flex items-center gap-1 text-xs font-semibold ${locked ? "text-ink/38" : "text-[#063F4A]"}`}>
                       {locked ? "当前等级不可生成" : isGeneratingThisReport ? "AI 四术生成中..." : "生成并查看报告"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
@@ -9156,29 +9442,55 @@ function WalletAndReports({
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Archive className="size-4 text-[#063F4A]" />
-                  <h3 className="font-semibold">我的报告档案</h3>
+                  <h3 className="font-semibold">报告下载历史</h3>
                 </div>
                 <span className="rounded bg-white px-2.5 py-1 text-xs text-ink/55">{savedReports.length} 份</span>
               </div>
-              <div className="mt-3 max-h-72 overflow-y-auto pr-1 scrollbar-soft">
+              <p className="mt-2 text-xs leading-5 text-ink/50">
+                付费扣点生成过的报告会保存在这里，可随时重新打开和下载。
+              </p>
+              <div className="mt-3 max-h-96 overflow-y-auto pr-1 scrollbar-soft">
                 {savedReports.length ? (
                   savedReports.map((report) => (
-                    <button
+                    <div
                       key={report.id}
-                      type="button"
-                      onClick={() => handleSelectSaved(report)}
                       className={`flex w-full items-center justify-between gap-3 border-t border-black/10 py-3 text-left first:border-t-0 ${
                         selectedReport?.id === report.id ? "text-[#063F4A]" : "text-ink"
                       }`}
                     >
-                      <span className="min-w-0">
+                      <button type="button" onClick={() => handleSelectSaved(report)} className="min-w-0 flex-1 text-left">
                         <span className="block truncate text-sm font-semibold">{report.title}</span>
                         <span className="mt-0.5 block truncate text-xs text-ink/50">
                           {reportSubjectName(report)} · {report.createdAt} · {report.points} 点
                         </span>
-                      </span>
-                      <Eye className="size-4 shrink-0 text-ink/38" />
-                    </button>
+                      </button>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleSelectSaved(report);
+                            setIsFullReportOpen(true);
+                          }}
+                          className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A] shadow-sm"
+                        >
+                          查看
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => downloadReportJpg(report, memberProfile)}
+                          className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]"
+                        >
+                          JPG
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => downloadReport(report, memberProfile)}
+                          className="rounded bg-white px-2 py-1 text-xs font-semibold text-ink/60 shadow-sm"
+                        >
+                          TXT
+                        </button>
+                      </div>
+                    </div>
                   ))
                 ) : (
                   <EmptyStateCard
@@ -9188,6 +9500,47 @@ function WalletAndReports({
                     action="去选择报告"
                     onAction={() => setReportStep(1)}
                   />
+                )}
+              </div>
+            </div>
+
+            <div className={`${mobileStepClass(3)} mt-5 rounded border border-black/10 bg-white p-4`}>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <WalletCards className="size-4 text-[#063F4A]" />
+                  <h3 className="font-semibold">点数流水</h3>
+                </div>
+                <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs text-ink/55">{creditHistory.length} 笔</span>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-ink/50">{creditHistoryMessage}</p>
+              <div className="mt-3 max-h-96 overflow-y-auto pr-1 scrollbar-soft">
+                {creditHistory.length ? (
+                  creditHistory.map((record) => {
+                    const isIncome = record.amount > 0;
+
+                    return (
+                      <div key={record.id} className="border-t border-black/10 py-3 first:border-t-0">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-[#063F4A]">{formatCreditSource(record.source)}</p>
+                            <p className="mt-1 line-clamp-2 text-xs leading-5 text-ink/55">{record.description}</p>
+                            <p className="mt-1 text-[11px] text-ink/38">{record.createdAt}</p>
+                          </div>
+                          <span
+                            className={`shrink-0 rounded px-2.5 py-1 text-xs font-semibold ${
+                              isIncome ? "bg-[#1495A0]/10 text-[#0F7F88]" : "bg-[#8B1E18]/10 text-[#8B1E18]"
+                            }`}
+                          >
+                            {formatCreditAmount(record.amount)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="rounded border border-dashed border-black/12 bg-[#F5FAFA] p-4 text-sm leading-6 text-ink/55">
+                    还没有点数消费记录。之后生成报告、问 AI、问卦、生成符印、充值或获得奖励，都会记录在这里。
+                  </div>
                 )}
               </div>
             </div>
@@ -9217,7 +9570,7 @@ function WalletAndReports({
                     {[
                       ["完整内容", `${selectedReportContent.sections.length} 节`],
                       ["报告类型", selectedReport.tag],
-                      ["可下载", "PDF / SVG / TXT"]
+                      ["可下载", "JPG / SVG / TXT"]
                     ].map(([label, value]) => (
                       <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
                         <p className="text-xs text-ink/45">{label}</p>
@@ -9241,6 +9594,13 @@ function WalletAndReports({
                         className="inline-flex items-center gap-2 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 px-4 py-2 text-sm font-semibold text-[#063F4A]"
                       >
                         <Download className="size-4" /> 下载 SVG
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadReportJpg(selectedReport, memberProfile)}
+                        className="inline-flex items-center gap-2 rounded border border-[#C79A54]/45 bg-[#fffaf0] px-4 py-2 text-sm font-semibold text-[#063F4A]"
+                      >
+                        <Download className="size-4" /> 下载 JPG
                       </button>
                       <button
                         type="button"

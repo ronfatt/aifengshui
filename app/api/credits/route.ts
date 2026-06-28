@@ -12,6 +12,50 @@ const memberRewardRules: Record<string, number> = {
   divination_checkin_reward: 18
 };
 
+export async function GET(request: Request) {
+  const supabase = createServerSupabaseClient();
+  const token = request.headers.get("authorization")?.replace("Bearer ", "").trim();
+
+  if (!supabase || !isSupabaseServiceConfigured || !token) {
+    return NextResponse.json({ error: "请先登录会员账号。" }, { status: 401 });
+  }
+
+  const {
+    data: { user },
+    error: authError
+  } = await supabase.auth.getUser(token);
+
+  if (authError || !user) {
+    return NextResponse.json({ error: "会员登录已过期，请重新登录。" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const requestedLimit = Number(searchParams.get("limit") || 40);
+  const limit = Math.min(100, Math.max(1, Number.isFinite(requestedLimit) ? requestedLimit : 40));
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("credit_balance")
+    .eq("id", user.id)
+    .single();
+
+  const { data: transactions, error } = await supabase
+    .from("credit_transactions")
+    .select("id,user_id,amount,source,description,created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    return NextResponse.json({ error: "点数流水读取失败。" }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    creditBalance: profile?.credit_balance,
+    transactions: transactions || []
+  });
+}
+
 export async function PATCH(request: Request) {
   const supabase = createServerSupabaseClient();
   const token = request.headers.get("authorization")?.replace("Bearer ", "").trim();
