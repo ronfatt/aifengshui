@@ -203,6 +203,9 @@ type AdminUserRecord = {
   referralCode: string;
   sponsorCode: string;
   referralSource: string;
+  cashWallet: string;
+  pvWallet: string;
+  poolWallet: string;
 };
 
 const coreAdminUsers: AdminUserRecord[] = [
@@ -220,7 +223,10 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 128 次 / 报告 9 份",
     referralCode: "RF1980",
     sponsorCode: "HQ001",
-    referralSource: "founder_admin"
+    referralSource: "founder_admin",
+    cashWallet: "RM13,460.00",
+    pvWallet: "11,400 PV",
+    poolWallet: "RM2,830.02"
   },
   {
     id: "USR-002",
@@ -236,7 +242,10 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 86 次 / 报告 5 份",
     referralCode: "CL2026",
     sponsorCode: "RF1980",
-    referralSource: "member_referral"
+    referralSource: "member_referral",
+    cashWallet: "RM2,940.00",
+    pvWallet: "6,860 PV",
+    poolWallet: "RM636.75"
   },
   {
     id: "USR-003",
@@ -252,7 +261,10 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 62 次 / 报告 4 份",
     referralCode: "CV1313",
     sponsorCode: "CL2026",
-    referralSource: "member_referral"
+    referralSource: "member_referral",
+    cashWallet: "RM1,176.00",
+    pvWallet: "2,744 PV",
+    poolWallet: "RM636.75"
   },
   {
     id: "USR-004",
@@ -268,7 +280,10 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 74 次 / 报告 6 份",
     referralCode: "ML1688",
     sponsorCode: "RF1980",
-    referralSource: "member_referral"
+    referralSource: "member_referral",
+    cashWallet: "RM8,400.00",
+    pvWallet: "8,400 PV",
+    poolWallet: "RM1,981.35"
   },
   {
     id: "USR-005",
@@ -284,7 +299,10 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 44 次 / 报告 3 份",
     referralCode: "JL4901",
     sponsorCode: "RF1980",
-    referralSource: "member_referral"
+    referralSource: "member_referral",
+    cashWallet: "RM0.00",
+    pvWallet: "90 PV",
+    poolWallet: "RM0.00"
   },
   {
     id: "USR-006",
@@ -300,11 +318,14 @@ const coreAdminUsers: AdminUserRecord[] = [
     aiUsage: "本月 27 次 / 报告 2 份",
     referralCode: "SW2901",
     sponsorCode: "ML1688",
-    referralSource: "member_referral"
+    referralSource: "member_referral",
+    cashWallet: "RM0.00",
+    pvWallet: "60 PV",
+    poolWallet: "RM0.00"
   }
 ];
 
-const sponsorPool = ["RF1980", "CL2026", "CV1313", "ML1688", "JL4901", "SW2901", "HQ001"];
+const sponsorPool = ["RF1980", "RF1980", "RF1980", "CL2026", "CL2026", "CV1313", "ML1688", "JL4901", "SW2901", "HQ001"];
 const generatedNames = [
   "Alyssa Ng",
   "Kenny Wong",
@@ -353,8 +374,9 @@ const generatedNames = [
 ];
 
 function generatedTier(index: number) {
-  if (index % 17 === 0) return "RM16,800 事业合伙人";
-  if (index % 11 === 0) return "RM9,800 创业启动包";
+  if (index % 19 === 0) return "RM38,000 区域代理商";
+  if (index % 13 === 0) return "RM16,800 事业合伙人";
+  if (index % 7 === 0) return "RM9,800 创业启动包";
   if (index % 5 === 0) return "RM49 高阶会员版";
   if (index % 3 === 0) return "RM29 AI 会员版";
   return "Free";
@@ -367,6 +389,42 @@ function pointsForTier(tier: string) {
   if (tier.includes("RM49")) return 15000;
   if (tier.includes("RM29")) return 7000;
   return 200;
+}
+
+function packageValueForTier(tier: string) {
+  if (tier.includes("38,000")) return 38000;
+  if (tier.includes("16,800")) return 16800;
+  if (tier.includes("9,800")) return 9800;
+  return 0;
+}
+
+function isAgentPackageTier(tier: string) {
+  return packageValueForTier(tier) > 0;
+}
+
+function seedMoney(value: number) {
+  return `RM${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function walletPreviewForTier(tier: string, index: number) {
+  const packageValue = packageValueForTier(tier);
+  if (!packageValue) {
+    return {
+      cashWallet: "RM0.00",
+      pvWallet: `${30 + (index % 4) * 15} PV`,
+      poolWallet: "RM0.00"
+    };
+  }
+
+  const cashRate = tier.includes("38,000") ? 0.7 : tier.includes("16,800") ? 0.5 : 0.3;
+  const pvRate = tier.includes("38,000") ? 0.3 : tier.includes("16,800") ? 0.5 : 0.7;
+  const earningFactor = 0.08 + (index % 4) * 0.025;
+
+  return {
+    cashWallet: seedMoney(packageValue * cashRate * earningFactor),
+    pvWallet: `${Math.round(packageValue * pvRate * earningFactor).toLocaleString("en-US")} PV`,
+    poolWallet: seedMoney(packageValue * 0.05 * (0.08 + (index % 3) * 0.02))
+  };
 }
 
 function makeReferralCode(seed: string, index: number) {
@@ -390,7 +448,8 @@ const generatedAdminUsers: AdminUserRecord[] = generatedNames.map((name, index) 
     aiUsage: `本月 ${18 + index * 3} 次 / 报告 ${(index % 6) + 1} 份`,
     referralCode: makeReferralCode(name, index),
     sponsorCode,
-    referralSource: sponsorCode === "HQ001" ? "organic_hq" : "member_referral"
+    referralSource: sponsorCode === "HQ001" ? "organic_hq" : "member_referral",
+    ...walletPreviewForTier(tier, index)
   };
 });
 
@@ -432,7 +491,10 @@ function profileToAdminUser(profile: AdminProfilePayload): AdminUserRecord {
     aiUsage: "待接入 AI usage ledger",
     referralCode: profile.referral_code || "-",
     sponsorCode: profile.sponsor_code || "HQ001",
-    referralSource: profile.referral_source || "organic_hq"
+    referralSource: profile.referral_source || "organic_hq",
+    cashWallet: "RM0.00",
+    pvWallet: "0 PV",
+    poolWallet: "RM0.00"
   };
 }
 
@@ -498,13 +560,17 @@ const poolParticipantSeed: {
   status: string;
   joinedAt: string;
   activity: string;
-}[] = [
-  { id: "POOL-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "RM38,000 区域代理商", status: "Eligible", joinedAt: "2026-05-01", activity: "团队 34 人 / 本月成交 RM96,480" },
-  { id: "POOL-002", name: "Mei Ling Tan", email: "meiling.tan@example.com", packageName: "RM16,800 事业合伙人", status: "Eligible", joinedAt: "2026-05-08", activity: "团队 13 人 / 本月成交 RM42,600" },
-  { id: "POOL-003", name: "Charles Leong", email: "charles.leongch@gmail.com", packageName: "RM9,800 创业启动包", status: "Eligible", joinedAt: "2026-05-03", activity: "团队 15 人 / 本月成交 RM31,280" },
-  { id: "POOL-004", name: "Calven Lee", email: "calven1313@gmail.com", packageName: "RM9,800 创业启动包", status: "Eligible", joinedAt: "2026-05-11", activity: "团队 9 人 / 本月成交 RM18,900" },
-  { id: "POOL-005", name: "Jason Lim", email: "jason.lim@example.com", packageName: "RM49 高阶会员版", status: "Hold", joinedAt: "2026-05-15", activity: "非创业配套，不参与 Pool Share" }
-];
+}[] = userSeed
+  .filter((user) => isAgentPackageTier(user.tier))
+  .map((user, index) => ({
+    id: `POOL-${String(index + 1).padStart(3, "0")}`,
+    name: user.name,
+    email: user.email,
+    packageName: user.tier,
+    status: user.status === "Active" ? "Eligible" : "Hold",
+    joinedAt: `2026-05-${String((index % 24) + 1).padStart(2, "0")}`,
+    activity: `${user.team} / Cash ${user.cashWallet} / PV ${user.pvWallet}`
+  }));
 
 const poolTiers = [
   { packageName: "RM38,000 区域代理商", share: 50, label: "RM38,000 区域代理池" },
@@ -513,10 +579,10 @@ const poolTiers = [
 ];
 
 const ceoCashSnapshot = [
-  { label: "今日实收现金", value: "RM18,940", note: "已入账 / 不含待审转账" },
-  { label: "本月销售额", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
-  { label: "AI 成本", value: "RM2,386", note: "本月 OpenAI 估算" },
-  { label: "Pool Share 总池", value: "RM30,624", note: "待月结审批" }
+  { label: "今日实收现金", value: "RM13,682", note: "已入账 / 不含待审转账" },
+  { label: "本月销售额", value: "RM340,980", note: "50 人测试：订阅、报告、课程、产品、配套" },
+  { label: "AI 成本", value: "RM1,420", note: "本月 OpenAI 估算" },
+  { label: "Pool Share 总池", value: "RM16,980.10", note: "5% 合资格净业绩，待月结审批" }
 ] as const;
 
 const ceoRiskQueue: {
@@ -550,6 +616,16 @@ function parseMoney(value: string) {
   return Number(value.replace(/[^\d.]/g, "")) || 0;
 }
 
+function extractCashAmount(value: string) {
+  const match = value.match(/RM\s*([\d,]+(?:\.\d+)?)/i);
+  return match ? match[1].replace(/,/g, "") : "0";
+}
+
+function extractPvAmount(value: string) {
+  const match = value.match(/([\d,]+(?:\.\d+)?)\s*PV/i);
+  return match ? match[1].replace(/,/g, "") : "0";
+}
+
 function formatMoney(value: number) {
   return `RM${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -565,7 +641,7 @@ function statusTone(status: string) {
     return "bg-emerald-50 text-emerald-700";
   }
 
-  if (["Matched", "Enabled", "Required", "Points issued", "Course opened"].includes(status)) {
+  if (["Matched", "Enabled", "Required", "Points issued", "PV issued", "Course opened"].includes(status)) {
     return "bg-emerald-50 text-emerald-700";
   }
 
@@ -783,9 +859,9 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
           <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">待审批事项</h3>
           <div className="mt-4 grid gap-3">
             {[
-              ["佣金待批", "RM5,174", "finance"],
+              ["佣金待批", "RM11,340 Cash / 15,260 PV", "finance"],
               ["提现待批", "1 request", "finance"],
-              ["Pool Share", "RM30,624", "pool"],
+              ["Pool Share", "RM16,980.10", "pool"],
               ["手动转账", "2 payments", "payments"]
             ].map(([label, value, module]) => (
               <button key={label} type="button" onClick={() => onOpenModule(module as ActiveModule)} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3 text-left transition hover:border-[#C79A54]/60">
@@ -808,6 +884,7 @@ function AccountingExportModule() {
     { Code: "1300", Account: "Inventory", Type: "Asset", Usage: "产品库存成本" },
     { Code: "2000", Account: "Commission Payable", Type: "Liability", Usage: "待发放佣金" },
     { Code: "2100", Account: "Partner Pool Payable", Type: "Liability", Usage: "Pool Share 待发放金额" },
+    { Code: "2150", Account: "PV Wallet Liability", Type: "Liability", Usage: "产品积分 PV 待兑换责任" },
     { Code: "2200", Account: "Deferred Revenue", Type: "Liability", Usage: "课程、订阅、点数未履约部分" },
     { Code: "2300", Account: "SST / Tax Payable", Type: "Liability", Usage: "SST / 税务预留科目" },
     { Code: "4000", Account: "Subscription Revenue", Type: "Revenue", Usage: "会员订阅收入" },
@@ -818,7 +895,8 @@ function AccountingExportModule() {
     { Code: "4500", Account: "Agent Package Revenue", Type: "Revenue", Usage: "创业配套收入" },
     { Code: "5000", Account: "Cost of Goods Sold", Type: "Expense", Usage: "产品销售成本" },
     { Code: "5100", Account: "AI API Cost", Type: "Expense", Usage: "OpenAI / Gemini API 成本" },
-    { Code: "5200", Account: "Commission Expense", Type: "Expense", Usage: "三层佣金成本" },
+    { Code: "5200", Account: "Commission Expense", Type: "Expense", Usage: "Cash Wallet 现金佣金成本" },
+    { Code: "5250", Account: "PV Reward Expense", Type: "Expense", Usage: "PV Wallet 产品积分奖励成本" },
     { Code: "5300", Account: "Partner Pool Expense", Type: "Expense", Usage: "业绩共享池成本" },
     { Code: "5400", Account: "Payment Gateway Fees", Type: "Expense", Usage: "Stripe / FPX / 本地网关手续费" }
   ];
@@ -844,7 +922,8 @@ function AccountingExportModule() {
     Status: record.status,
     DebitAccount: "Commission Expense",
     CreditAccount: "Commission Payable",
-    AmountMYR: record.amount.replace("RM", ""),
+    CashAmountMYR: extractCashAmount(record.amount),
+    PVAmount: extractPvAmount(record.amount),
     HoldPeriod: "14 days",
     Clawback: record.status === "Paid" ? "Closed" : "Enabled"
   }));
@@ -911,15 +990,25 @@ function AccountingExportModule() {
       ];
     }),
     ...commissionRecords.flatMap((record) => {
-      const amount = record.amount.replace("RM", "");
-      return [
+      const cashAmount = extractCashAmount(record.amount);
+      const pvAmount = extractPvAmount(record.amount);
+      const lines: {
+        Date: string;
+        JournalID: string;
+        Source: string;
+        Line: string;
+        Account: string;
+        DebitMYR: string;
+        CreditMYR: string;
+        Memo: string;
+      }[] = Number(cashAmount) > 0 ? [
         {
           Date: "2026-05",
           JournalID: `JE-${record.id}-DR`,
           Source: record.id,
           Line: "Debit",
           Account: "5200 Commission Expense",
-          DebitMYR: amount,
+          DebitMYR: cashAmount,
           CreditMYR: "0",
           Memo: `${record.agent} commission from ${record.source}`
         },
@@ -930,10 +1019,37 @@ function AccountingExportModule() {
           Line: "Credit",
           Account: "2000 Commission Payable",
           DebitMYR: "0",
-          CreditMYR: amount,
+          CreditMYR: cashAmount,
           Memo: "Commission payable pending approval / payout"
         }
-      ];
+      ] : [];
+
+      if (Number(pvAmount) > 0) {
+        lines.push(
+          {
+            Date: "2026-05",
+            JournalID: `JE-${record.id}-PV-DR`,
+            Source: record.id,
+            Line: "Debit",
+            Account: "5250 PV Reward Expense",
+            DebitMYR: "0",
+            CreditMYR: "0",
+            Memo: `${record.agent} PV reward from ${record.source}: ${pvAmount} PV`
+          },
+          {
+            Date: "2026-05",
+            JournalID: `JE-${record.id}-PV-CR`,
+            Source: record.id,
+            Line: "Credit",
+            Account: "2150 PV Wallet Liability",
+            DebitMYR: "0",
+            CreditMYR: "0",
+            Memo: `PV Wallet liability pending product redemption: ${pvAmount} PV`
+          }
+        );
+      }
+
+      return lines;
     })
   ];
 
@@ -1334,6 +1450,16 @@ function UsersModule() {
     setUsers((current) => current.map((user) => (user.id === selectedUser.id ? { ...user, ...patch } : user)));
   }
 
+  function updateSelectedTier(tier: string) {
+    if (!selectedUser) return;
+    const selectedIndex = users.findIndex((user) => user.id === selectedUser.id);
+    updateSelectedUser({
+      tier,
+      points: pointsForTier(tier),
+      ...walletPreviewForTier(tier, Math.max(selectedIndex, 0))
+    });
+  }
+
   useEffect(() => {
     let mounted = true;
     const emails = userSeed.map((user) => user.email).join(",");
@@ -1498,7 +1624,10 @@ function UsersModule() {
               ["AI 使用", selectedUser.aiUsage],
               ["推荐码", selectedUser.referralCode],
               ["上级 Sponsor", selectedUser.sponsorCode],
-              ["推荐来源", selectedUser.referralSource === "member_referral" ? "会员推荐" : selectedUser.referralSource === "organic_hq" ? "总部自然流量" : "无效推荐码归属 HQ001"]
+              ["推荐来源", selectedUser.referralSource === "member_referral" ? "会员推荐" : selectedUser.referralSource === "organic_hq" ? "总部自然流量" : "无效推荐码归属 HQ001"],
+              ["Cash Wallet", selectedUser.cashWallet],
+              ["PV Wallet", selectedUser.pvWallet],
+              ["Pool Share Wallet", selectedUser.poolWallet]
             ].map(([label, value]) => (
               <div key={label} className="rounded bg-[#F5FAFA] p-4">
                 <p className="text-xs text-ink/45">{label}</p>
@@ -1510,7 +1639,7 @@ function UsersModule() {
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <label className="rounded border border-black/10 p-3">
               <span className="text-xs text-ink/45">会员等级</span>
-              <select value={selectedUser.tier} onChange={(event) => updateSelectedUser({ tier: event.target.value })} className="mt-2 w-full bg-transparent font-semibold outline-none">
+              <select value={selectedUser.tier} onChange={(event) => updateSelectedTier(event.target.value)} className="mt-2 w-full bg-transparent font-semibold outline-none">
                 {["Free", "进阶会员版", "高阶战略版", "RM9,800 创业启动包", "RM16,800 事业合伙人", "RM38,000 区域代理商"].map((tier) => (
                   <option key={tier}>{tier}</option>
                 ))}
@@ -2062,9 +2191,9 @@ function FinanceModule() {
 }
 
 function PartnerPoolModule() {
-  const [grossRevenue, setGrossRevenue] = useState("0");
-  const [refunds, setRefunds] = useState("0");
-  const [gatewayFees, setGatewayFees] = useState("0");
+  const [grossRevenue, setGrossRevenue] = useState("340980");
+  const [refunds, setRefunds] = useState("98");
+  const [gatewayFees, setGatewayFees] = useState("1280");
   const [excludedRevenue, setExcludedRevenue] = useState("0");
   const [poolRate, setPoolRate] = useState("5");
   const [participants, setParticipants] = useState(poolParticipantSeed);

@@ -563,27 +563,27 @@ export const orders: {
 ];
 
 export const financeRevenue = [
-  { label: "今日收入", value: "RM18,940", note: "已扣除退款 RM98" },
-  { label: "本月收入", value: "RM612,480", note: "订阅、报告、课程、产品、配套" },
-  { label: "年度收入", value: "RM1,486,320", note: "2026 YTD" }
+  { label: "今日收入", value: "RM13,682", note: "已扣除退款 RM98" },
+  { label: "本月收入", value: "RM340,980", note: "50 人测试盘：订阅、报告、课程、产品、配套" },
+  { label: "年度收入", value: "RM1,214,820", note: "2026 YTD 测试账套" }
 ];
 
 export const financeExecutiveKpis = [
-  { label: "Gross Revenue", value: "RM612,480", note: "订单总额，未扣退款/手续费" },
-  { label: "Net Revenue", value: "RM598,260", note: "扣除退款后可确认收入" },
-  { label: "Gross Profit", value: "RM448,920", note: "扣产品成本与课程交付成本" },
-  { label: "Net Profit", value: "RM312,740", note: "扣 AI、Hosting、Gateway、佣金" },
-  { label: "Cash In Today", value: "RM18,940", note: "今日实际到账" },
-  { label: "Pending Payout", value: "RM42,860", note: "待支付佣金与提现" }
+  { label: "Gross Revenue", value: "RM340,980", note: "订单总额，未扣退款/手续费" },
+  { label: "Net Revenue", value: "RM339,602", note: "扣除退款与网关费后的合资格收入" },
+  { label: "Gross Profit", value: "RM321,880", note: "扣产品成本与课程交付成本" },
+  { label: "Net Profit", value: "RM306,819.90", note: "扣 AI、Hosting、Gateway、Cash 佣金与 Pool" },
+  { label: "Cash In Today", value: "RM13,682", note: "今日实际到账" },
+  { label: "Pending Payout", value: "RM14,280 Cash / 15,260 PV", note: "Cash Wallet + PV Wallet 待审批" }
 ];
 
 export const revenueBreakdown = [
-  { source: "Subscription", amount: "RM48,320", pct: "8%" },
-  { source: "Credit top-up", amount: "RM74,880", pct: "12%" },
-  { source: "Product sales", amount: "RM86,400", pct: "14%" },
-  { source: "Course sales", amount: "RM126,720", pct: "21%" },
-  { source: "AI reports", amount: "RM52,160", pct: "9%" },
-  { source: "Agent packages", amount: "RM224,000", pct: "36%" }
+  { source: "Subscription", amount: "RM36,360", pct: "11%" },
+  { source: "Credit top-up", amount: "RM42,800", pct: "13%" },
+  { source: "Product sales", amount: "RM38,420", pct: "11%" },
+  { source: "Course sales", amount: "RM54,600", pct: "16%" },
+  { source: "AI reports", amount: "RM28,000", pct: "8%" },
+  { source: "Agent packages", amount: "RM140,800", pct: "41%" }
 ];
 
 export const paymentReconciliation: {
@@ -603,14 +603,16 @@ export const paymentReconciliation: {
 ];
 
 export const costCenter = [
-  { category: "OpenAI API", amount: "RM2,386", pct: "0.4% of net revenue" },
+  { category: "OpenAI API", amount: "RM1,420", pct: "0.4% of net revenue" },
   { category: "Vercel Hosting", amount: "RM480", pct: "0.1% of net revenue" },
-  { category: "Database & Storage", amount: "RM690", pct: "0.1% of net revenue" },
-  { category: "Storage / File", amount: "RM220", pct: "0.04% of net revenue" },
-  { category: "Payment Gateway Fees", amount: "RM1,328", pct: "0.2% of net revenue" },
-  { category: "Product COGS", amount: "RM38,740", pct: "44.8% product revenue" },
-  { category: "Course Delivery", amount: "RM22,600", pct: "17.8% course revenue" },
-  { category: "Commission Cost", amount: "RM86,452", pct: "14.4% of net revenue" }
+  { category: "Database & Storage", amount: "RM520", pct: "0.2% of net revenue" },
+  { category: "Storage / File", amount: "RM180", pct: "0.05% of net revenue" },
+  { category: "Payment Gateway Fees", amount: "RM1,280", pct: "0.4% of gross revenue" },
+  { category: "Product COGS", amount: "RM9,600", pct: "25.0% product revenue" },
+  { category: "Course Delivery", amount: "RM9,500", pct: "17.4% course revenue" },
+  { category: "Cash Commission Cost", amount: "RM14,280", pct: "Cash Wallet only" },
+  { category: "PV Reward Liability", amount: "15,260 PV", pct: "PV Wallet only" },
+  { category: "Pool Share Cost", amount: "RM16,980.10", pct: "5% of eligible net revenue" }
 ];
 
 export const transactionRecords: {
@@ -654,10 +656,11 @@ export const aiMarginRows = [
 ];
 
 export const profitSummary = [
-  { label: "总收入", value: "RM612,480" },
-  { label: "AI 成本", value: "RM2,386" },
+  { label: "总收入", value: "RM340,980" },
+  { label: "AI 成本", value: "RM1,420" },
   { label: "Hosting 成本", value: "RM480" },
-  { label: "净利润", value: "RM312,740" }
+  { label: "Pool Share", value: "RM16,980.10" },
+  { label: "净利润", value: "RM306,819.90" }
 ];
 
 export const commissionRecords: {
@@ -669,9 +672,9 @@ export const commissionRecords: {
 }[] = [
   { id: "COM-001", agent: "Ron Fatt", source: "RM9,800 创业启动包 / Charles", amount: "RM2,940 Cash / 6,860 PV", status: "Pending" },
   { id: "COM-002", agent: "Charles Leong", source: "RM9,800 创业启动包 / Calven", amount: "RM2,940 Cash / 6,860 PV", status: "Approved" },
-  { id: "COM-003", agent: "Mei Ling Tan", source: "课程订单 / Siew Wei", amount: "RM69.90", status: "Paid" },
+  { id: "COM-003", agent: "Mei Ling Tan", source: "课程订单 / Siew Wei", amount: "350 PV", status: "PV issued" },
   { id: "COM-004", agent: "Ron Fatt", source: "RM16,800 事业合伙人 / Mei Ling", amount: "RM8,400 Cash / 8,400 PV", status: "Pending" },
-  { id: "COM-005", agent: "Jason Lim", source: "产品订单 / Kenny", amount: "RM18.80", status: "Hold" }
+  { id: "COM-005", agent: "Jason Lim", source: "产品订单 / Kenny", amount: "30 PV", status: "PV issued" }
 ];
 
 export const withdrawalRequests: {
