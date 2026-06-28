@@ -10,8 +10,8 @@ type OpenAITextResponse = {
   output_text?: string;
 };
 
-const DEFAULT_OPENAI_MODEL = "gpt-4o-mini";
-const DEFAULT_OPENAI_FALLBACK_MODEL = "gpt-4o-mini";
+const DEFAULT_OPENAI_MODEL = "gpt-5.5-2026-04-23";
+const DEFAULT_OPENAI_FALLBACK_MODEL = "gpt-5.5-2026-04-23";
 
 export function getOpenAIModel() {
   return (process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL).trim();
@@ -20,7 +20,7 @@ export function getOpenAIModel() {
 export function getOpenAIFallbackModel(primaryModel = getOpenAIModel()) {
   const fallback = (process.env.OPENAI_FALLBACK_MODEL || DEFAULT_OPENAI_FALLBACK_MODEL).trim();
 
-  if (!fallback || fallback === primaryModel) {
+  if (!fallback) {
     return DEFAULT_OPENAI_MODEL;
   }
 
