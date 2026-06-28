@@ -73,9 +73,9 @@ type DashboardCategory = "today" | "ai" | "reports" | "wallet" | "profile" | "pa
 
 const partnerPackageLabels: Record<PartnerPackage, string> = {
   none: "未购买创业配套",
-  startup_8888: "8888 创业启动包",
-  partner_16888: "16888 事业合伙人",
-  regional_38888: "38888 区域导师 / 代理商"
+  startup_8888: "RM9,800 创业启动包",
+  partner_16888: "RM16,800 事业合伙人",
+  regional_38888: "RM38,000 区域代理商"
 };
 
 const modules: {
@@ -745,24 +745,24 @@ const favoriteItems = [
 
 const partnerMetrics = [
   ["Free 线索", "0", "等待真实推荐"],
-  ["创业配套", "0", "8888 / 16888 / 38888"],
+  ["创业配套", "0", "RM9,800 / RM16,800 / RM38,000"],
   ["本月新增", "0", "等待真实注册"],
   ["Pool Share", "RM0", "本月总分享金额"]
 ] as const;
 
 const partnerPackageMix = [
-  ["8888 创业启动包", 0, "等待真实购买"],
-  ["16888 事业合伙人", 0, "等待真实购买"],
-  ["38888 区域导师", 0, "等待真实购买"]
+  ["RM9,800 创业启动包", 0, "30% Cash / 70% PV"],
+  ["RM16,800 事业合伙人", 0, "50% Cash / 50% PV"],
+  ["RM38,000 区域代理商", 0, "70% Cash / 30% PV"]
 ] as const;
 
 const partnerLeadSegments = [
   ["Free 新人未完成资料", "0 人", "等待真实会员"],
   ["Free 已连续打卡 7 天", "0 人", "等待真实打卡"],
   ["已生成报告未咨询", "0 人", "等待真实报告"],
-  ["8888 已招 5 人以上", "0 人", "等待真实团队"],
-  ["16888 活跃合伙人", "0 人", "等待真实团队"],
-  ["38888 区域代理", "0 人", "等待真实团队"]
+  ["RM9,800 已招 5 人以上", "0 人", "等待真实团队"],
+  ["RM16,800 活跃合伙人", "0 人", "等待真实团队"],
+  ["RM38,000 区域代理", "0 人", "等待真实团队"]
 ] as const;
 
 const partnerFollowUps = [
@@ -7876,12 +7876,14 @@ function WalletAndReports({
   currentTier,
   memberProfile,
   points,
+  hasPartnerAccess,
   onCreditBalanceChange,
   reportPreset
 }: {
   currentTier: MembershipTier;
   memberProfile: MemberProfile;
   points: number;
+  hasPartnerAccess: boolean;
   onCreditBalanceChange: (nextBalance: number) => void;
   reportPreset?: ReportDemandPreset | null;
 }) {
@@ -9438,6 +9440,50 @@ function WalletAndReports({
             </div>
             </details>
 
+            <div className={`${mobileStepClass(3)} mt-5 rounded border border-[#C79A54]/25 bg-white p-4 shadow-sm`}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Reward Wallets</p>
+                  <h3 className="mt-1 font-semibold text-[#063F4A]">奖励钱包</h3>
+                  <p className="mt-1 text-xs leading-5 text-ink/50">AI 点数用于平台功能；奖励制度独立拆分为现金、PV 产品积分和 Pool Share。</p>
+                </div>
+                <span className="rounded bg-[#DDEFF2] px-2.5 py-1 text-xs font-semibold text-[#063F4A]">
+                  {hasPartnerAccess ? "代理权益已开通" : "普通会员 PV 已开通"}
+                </span>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {[
+                  {
+                    name: "Cash Wallet",
+                    value: hasPartnerAccess ? "RM0.00" : "未开通",
+                    access: "代理配套",
+                    desc: hasPartnerAccess ? "现金佣金进入这里，可按后台审核流程申请提现。" : "需购买 RM9,800 / RM16,800 / RM38,000 代理配套后才可获得现金佣金。"
+                  },
+                  {
+                    name: "PV Wallet",
+                    value: "0 PV",
+                    access: "所有会员",
+                    desc: "注册、推荐和活动奖励进入这里，可兑换产品，不可提现。"
+                  },
+                  {
+                    name: "Pool Share Wallet",
+                    value: hasPartnerAccess ? "RM0.00" : "未开通",
+                    access: "代理配套",
+                    desc: hasPartnerAccess ? "Pool Share 月结后进入这里，金额以公司审批为准。" : "只开放给代理配套会员，普通会员不会显示可提现 Pool 收益。"
+                  }
+                ].map((wallet) => (
+                  <div key={wallet.name} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="font-semibold text-[#063F4A]">{wallet.name}</p>
+                      <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{wallet.access}</span>
+                    </div>
+                    <p className="mt-3 text-2xl font-semibold text-[#063F4A]">{wallet.value}</p>
+                    <p className="mt-2 text-xs leading-5 text-ink/55">{wallet.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className={`${mobileStepClass(3)} mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4`}>
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -9691,7 +9737,7 @@ function InviteFriendsModule({
   }
 
   function shareWhatsApp() {
-    const text = encodeURIComponent(`我在使用 AI Feng Shui Master，你可以用我的推荐链接注册，完成资料后双方各得 30 点：${inviteLink}`);
+    const text = encodeURIComponent(`我在使用 AI Feng Shui Master，你可以用我的推荐链接注册，完成资料后双方各得 30 PV 产品积分：${inviteLink}`);
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }
 
@@ -9703,7 +9749,7 @@ function InviteFriendsModule({
       <circle cx="190" cy="1120" r="190" fill="#C79A54" opacity="0.16"/>
       <text x="120" y="170" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#C79A54" letter-spacing="8">AI FENG SHUI MASTER</text>
       <text x="120" y="300" font-family="Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF">邀请你免费测算</text>
-      <text x="120" y="385" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#E8D4A8">注册完成资料，双方各得 30 点</text>
+      <text x="120" y="385" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#E8D4A8">注册完成资料，双方各得 30 PV</text>
       <rect x="120" y="475" width="840" height="250" rx="32" fill="#FFFFFF" opacity="0.96"/>
       <text x="170" y="565" font-family="Arial, sans-serif" font-size="30" fill="#6C8790">专属推荐码</text>
       <text x="170" y="650" font-family="Arial, sans-serif" font-size="66" font-weight="800" fill="#063F4A" letter-spacing="6">${referralCode}</text>
@@ -9777,7 +9823,7 @@ function InviteFriendsModule({
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Referral Center</p>
         <h2 className="mt-3 text-3xl font-semibold">邀请好友注册</h2>
         <p className="mt-3 text-sm leading-7 text-white/68">
-          分享你的专属推荐链接，好友完成注册后，你和好友各获得 30 点。推荐关系用于后续团队、奖励和订单归属。
+          分享你的专属推荐链接，好友完成注册后，你和好友各获得 30 PV 产品积分。推荐关系用于后续团队、奖励和订单归属。
         </p>
         <div className="mt-6 rounded border border-white/10 bg-white/8 p-4">
           <p className="text-xs text-white/48">我的推荐码</p>
@@ -9816,7 +9862,20 @@ function InviteFriendsModule({
           ))}
         </div>
         <div className="mt-5 rounded border border-[#C79A54]/30 bg-[#C79A54]/10 p-4 text-sm leading-6 text-ink/65">
-          推荐关系注册后锁定，若用户没有推荐码，系统会归属总部账号 HQ001，避免随机分配造成佣金争议。
+          推荐关系注册后锁定，若用户没有推荐码，系统会归属总部账号 HQ001，避免随机分配造成奖励争议。
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {[
+            ["PV Wallet", "所有会员", "推荐、活动与注册奖励进入 PV，可兑换产品，不可提现。"],
+            ["Cash Wallet", "代理配套", "只有 RM9,800 / RM16,800 / RM38,000 代理配套才有现金佣金与提现审核。"],
+            ["Pool Share Wallet", "代理配套", "只给代理配套会员，按公司合资格业绩 5% 月结分池。"]
+          ].map(([name, access, desc]) => (
+            <div key={name} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+              <p className="font-semibold text-[#063F4A]">{name}</p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{access}</p>
+              <p className="mt-2 text-xs leading-5 text-ink/55">{desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -11607,7 +11666,7 @@ export default function DashboardPage() {
     if (nextCategory) setActiveCategory(nextCategory);
 
     if (module === "partner" && !hasPartnerAccess) {
-      setMembershipMessage("创业会员经营中心只开放给已购买 8888 / 16888 / 38888 创业配套的会员。普通 Free、进阶会员版、高阶战略版无法进入。");
+      setMembershipMessage("创业会员经营中心只开放给已购买 RM9,800 / RM16,800 / RM38,000 创业配套的会员。普通 Free、进阶会员版、高阶战略版无法进入。");
       setActiveModule("wallet");
       setActiveCategory("reports");
       window.setTimeout(() => {
@@ -11629,7 +11688,7 @@ export default function DashboardPage() {
 
   function openCategory(category: DashboardCategory) {
     if (category === "partner" && !hasPartnerAccess) {
-      setMembershipMessage("创业会员经营中心只开放给已购买 8888 / 16888 / 38888 创业配套的会员。普通会员可先使用邀请好友功能。");
+      setMembershipMessage("创业会员经营中心只开放给已购买 RM9,800 / RM16,800 / RM38,000 创业配套的会员。普通会员可先使用邀请好友功能。");
       openModule("invite");
       return;
     }
@@ -11849,6 +11908,7 @@ export default function DashboardPage() {
                 currentTier={currentTier}
                 memberProfile={memberProfile}
                 points={pointBalance}
+                hasPartnerAccess={hasPartnerAccess}
                 onCreditBalanceChange={setPointBalance}
                 reportPreset={reportPreset}
               />

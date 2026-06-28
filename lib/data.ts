@@ -206,19 +206,19 @@ export const dashboardCourses = [
 
 export const affiliatePackages = [
   {
-    name: "8888 创业启动包",
+    name: "RM9,800 创业启动包",
     label: "产品包 + 课程包 + 服务包",
-    includes: ["AI Pro / Master 权限", "点数礼包", "产品礼包", "推荐分润资格", "专属海报生成"]
+    includes: ["AI Pro / Master 权限", "点数礼包", "产品礼包", "30% Cash / 70% PV", "15% Pool Share"]
   },
   {
-    name: "16888 事业合伙人",
+    name: "RM16,800 事业合伙人",
     label: "团队成长配套",
-    includes: ["更高折扣", "更多点数", "高级课程", "团队管理权限", "更高分润"]
+    includes: ["更高折扣", "更多点数", "高级课程", "50% Cash / 50% PV", "35% Pool Share"]
   },
   {
-    name: "38888 区域导师",
+    name: "RM38,000 区域代理商",
     label: "区域服务配套",
-    includes: ["区域授权", "线下课程资格", "团队业绩看板", "高阶培训", "专属后台权限"]
+    includes: ["区域授权", "线下课程资格", "团队业绩看板", "70% Cash / 30% PV", "50% Pool Share"]
   }
 ];
 
@@ -297,8 +297,8 @@ export const adminModules = [
   { title: "Stock Keeper", desc: "SKU、库存流水、低库存预警、库存价值与产品利润", icon: PackageCheck },
   { title: "课程管理", desc: "视频、价格、报名、签到、证书、名额", icon: BookOpenCheck },
   { title: "订单管理", desc: "产品、课程、点数、订阅、报告订单状态", icon: ReceiptText },
-  { title: "分润系统", desc: "三层分润：20%、10%、5%，按项目配置佣金", icon: ChartNoAxesCombined },
-  { title: "代理配套", desc: "把 8888/16888/38888 包装成产品、课程、服务包", icon: Award },
+  { title: "分润系统", desc: "Cash Wallet、PV Wallet、Pool Share 三钱包规则", icon: ChartNoAxesCombined },
+  { title: "代理配套", desc: "把 RM9,800/RM16,800/RM38,000 包装成产品、课程、服务包", icon: Award },
   { title: "支付审核", desc: "Stripe、本地网关、FPX、钱包、银行转账审核", icon: Landmark }
 ];
 
@@ -412,7 +412,7 @@ export const orders: {
     type: "Agent Packages",
     customer: "Charles Leong",
     userId: "USR-002",
-    amount: "RM8,888",
+    amount: "RM9,800",
     paymentMethod: "Manual Bank Transfer",
     paymentStatus: "Paid",
     fulfillmentStatus: "Package activated",
@@ -420,8 +420,8 @@ export const orders: {
     stockStatus: "Bundle reserved",
     status: "Processing",
     createdAt: "2026-06-27 10:18",
-    item: "8888 创业启动包",
-    automation: ["升级创业会员", "发放 8,888 点", "加入 Pool Share 候选"],
+    item: "RM9,800 创业启动包",
+    automation: ["升级创业会员", "发放 9,800 点", "Cash 30% / PV 70%", "加入 Pool Share 候选"],
     logs: ["Payment proof approved", "Sponsor RF1980"]
   },
   {
@@ -429,7 +429,7 @@ export const orders: {
     type: "Agent Packages",
     customer: "Mei Ling Tan",
     userId: "USR-004",
-    amount: "RM16,888",
+    amount: "RM16,800",
     paymentMethod: "Manual Bank Transfer",
     paymentStatus: "Pending Review",
     fulfillmentStatus: "On hold",
@@ -437,7 +437,7 @@ export const orders: {
     stockStatus: "Bundle pending",
     status: "Pending",
     createdAt: "2026-06-27 10:42",
-    item: "16888 事业合伙人",
+    item: "RM16,800 事业合伙人",
     automation: ["等待财务审核", "暂不发放点数"],
     logs: ["Proof uploaded", "Need bank match"]
   },
@@ -623,8 +623,8 @@ export const transactionRecords: {
   source: string;
 }[] = [
   { userId: "USR-001", orderId: "ORD-1003", amount: "680 点", method: "Credit Wallet", status: "Paid", timestamp: "2026-06-27 10:02", source: "AI Reports" },
-  { userId: "USR-002", orderId: "ORD-1004", amount: "RM8,888", method: "Manual Bank Transfer", status: "Paid", timestamp: "2026-06-27 10:18", source: "Agent Packages" },
-  { userId: "USR-004", orderId: "ORD-1005", amount: "RM16,888", method: "Manual Bank Transfer", status: "Pending Review", timestamp: "2026-06-27 10:42", source: "Agent Packages" },
+  { userId: "USR-002", orderId: "ORD-1004", amount: "RM9,800", method: "Manual Bank Transfer", status: "Paid", timestamp: "2026-06-27 10:18", source: "Agent Packages" },
+  { userId: "USR-004", orderId: "ORD-1005", amount: "RM16,800", method: "Manual Bank Transfer", status: "Pending Review", timestamp: "2026-06-27 10:42", source: "Agent Packages" },
   { userId: "USR-005", orderId: "ORD-1001", amount: "RM49", method: "Credit Card", status: "Paid", timestamp: "2026-06-27 09:12", source: "Subscription" },
   { userId: "USR-006", orderId: "ORD-1006", amount: "RM699", method: "E-wallet", status: "Paid", timestamp: "2026-06-27 11:04", source: "Course Orders" },
   { userId: "USR-007", orderId: "ORD-1008", amount: "RM688", method: "Manual Bank Transfer", status: "Pending Review", timestamp: "2026-06-27 11:58", source: "Product Orders" },
@@ -667,10 +667,10 @@ export const commissionRecords: {
   amount: string;
   status: string;
 }[] = [
-  { id: "COM-001", agent: "Ron Fatt", source: "8888 创业启动包 / Charles", amount: "RM1,777.60", status: "Pending" },
-  { id: "COM-002", agent: "Charles Leong", source: "8888 创业启动包 / Calven", amount: "RM1,777.60", status: "Approved" },
+  { id: "COM-001", agent: "Ron Fatt", source: "RM9,800 创业启动包 / Charles", amount: "RM2,940 Cash / 6,860 PV", status: "Pending" },
+  { id: "COM-002", agent: "Charles Leong", source: "RM9,800 创业启动包 / Calven", amount: "RM2,940 Cash / 6,860 PV", status: "Approved" },
   { id: "COM-003", agent: "Mei Ling Tan", source: "课程订单 / Siew Wei", amount: "RM69.90", status: "Paid" },
-  { id: "COM-004", agent: "Ron Fatt", source: "16888 事业合伙人 / Mei Ling", amount: "RM3,377.60", status: "Pending" },
+  { id: "COM-004", agent: "Ron Fatt", source: "RM16,800 事业合伙人 / Mei Ling", amount: "RM8,400 Cash / 8,400 PV", status: "Pending" },
   { id: "COM-005", agent: "Jason Lim", source: "产品订单 / Kenny", amount: "RM18.80", status: "Hold" }
 ];
 
@@ -928,8 +928,9 @@ export const downlineTree: DownlineMember = {
 };
 
 export const downlineSummary = [
-  { label: "直属下线", value: "0", helper: "第一代 20%" },
+  { label: "直属下线", value: "0", helper: "第一代推荐" },
   { label: "团队总人数", value: "0", helper: "含二代、三代" },
   { label: "团队销售", value: "RM0", helper: "按真实订单计算" },
-  { label: "预计佣金", value: "RM0", helper: "20% / 10% / 5%" }
+  { label: "PV 奖励", value: "0 PV", helper: "所有会员可获得" },
+  { label: "Cash Wallet", value: "代理配套专属", helper: "按配套比例审核" }
 ];

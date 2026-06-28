@@ -129,7 +129,7 @@ const moduleTabs = [
   {
     id: "agents",
     title: "代理配套",
-    desc: "8888/16888/38888 产品包管理",
+    desc: "RM9,800/RM16,800/RM38,000 三钱包管理",
     icon: Award,
     stat: "3 packs"
   },
@@ -211,7 +211,7 @@ const coreAdminUsers: AdminUserRecord[] = [
     name: "Ron Fatt",
     email: "ronfatt@gmail.com",
     phone: "0111313131",
-    tier: "38888 区域导师",
+    tier: "RM38,000 区域代理商",
     status: "Active",
     points: 10000,
     birth: "1980-06-14 17:30",
@@ -227,7 +227,7 @@ const coreAdminUsers: AdminUserRecord[] = [
     name: "Charles Leong",
     email: "charles.leongch@gmail.com",
     phone: "0128807719",
-    tier: "8888 创业启动包",
+    tier: "RM9,800 创业启动包",
     status: "Active",
     points: 10000,
     birth: "1986-09-18 09:30",
@@ -243,7 +243,7 @@ const coreAdminUsers: AdminUserRecord[] = [
     name: "Calven Lee",
     email: "calven1313@gmail.com",
     phone: "0131313131",
-    tier: "8888 创业启动包",
+    tier: "RM9,800 创业启动包",
     status: "Active",
     points: 10000,
     birth: "1990-03-21 14:00",
@@ -259,9 +259,9 @@ const coreAdminUsers: AdminUserRecord[] = [
     name: "Mei Ling Tan",
     email: "meiling.tan@example.com",
     phone: "0162318870",
-    tier: "16888 事业合伙人",
+    tier: "RM16,800 事业合伙人",
     status: "Active",
-    points: 18888,
+    points: 16800,
     birth: "1988-11-05 08:45",
     gender: "女",
     team: "直属 7 人 / 团队 13 人",
@@ -353,17 +353,17 @@ const generatedNames = [
 ];
 
 function generatedTier(index: number) {
-  if (index % 17 === 0) return "16888 事业合伙人";
-  if (index % 11 === 0) return "8888 创业启动包";
+  if (index % 17 === 0) return "RM16,800 事业合伙人";
+  if (index % 11 === 0) return "RM9,800 创业启动包";
   if (index % 5 === 0) return "RM49 高阶会员版";
   if (index % 3 === 0) return "RM29 AI 会员版";
   return "Free";
 }
 
 function pointsForTier(tier: string) {
-  if (tier.includes("38888")) return 48888;
-  if (tier.includes("16888")) return 18888;
-  if (tier.includes("8888")) return 8888;
+  if (tier.includes("38,000")) return 38000;
+  if (tier.includes("16,800")) return 16800;
+  if (tier.includes("9,800")) return 9800;
   if (tier.includes("RM49")) return 15000;
   if (tier.includes("RM29")) return 7000;
   return 200;
@@ -464,9 +464,15 @@ const courseSeed = [
 ];
 
 const agentPackageSeed = [
-  { name: "8888 创业启动包", price: "RM8,888", points: 8888, tier: "AI Pro", commission: "20% / 10% / 5%", poolShare: "15% 池", status: "Active" },
-  { name: "16888 事业合伙人", price: "RM16,888", points: 18888, tier: "AI Master", commission: "25% / 10% / 5%", poolShare: "35% 池", status: "Active" },
-  { name: "38888 区域导师", price: "RM38,888", points: 48888, tier: "Regional", commission: "30% / 12% / 6%", poolShare: "50% 池", status: "Draft" }
+  { name: "RM9,800 创业启动包", price: "RM9,800", points: 9800, tier: "AI Pro", cashWallet: "30%", pvWallet: "70%", commission: "30% Cash / 70% PV", poolShare: "15% Pool", status: "Active" },
+  { name: "RM16,800 事业合伙人", price: "RM16,800", points: 16800, tier: "AI Master", cashWallet: "50%", pvWallet: "50%", commission: "50% Cash / 50% PV", poolShare: "35% Pool", status: "Active" },
+  { name: "RM38,000 区域代理商", price: "RM38,000", points: 38000, tier: "Regional", cashWallet: "70%", pvWallet: "30%", commission: "70% Cash / 30% PV", poolShare: "50% Pool", status: "Active" }
+];
+
+const rewardWalletPolicy = [
+  { name: "Cash Wallet", access: "代理配套会员", desc: "符合 RM9,800 / RM16,800 / RM38,000 配套者才可获得现金佣金，并经后台审核后申请提现。", status: "提现审核" },
+  { name: "PV Wallet", access: "所有会员", desc: "免费会员、付费会员、代理会员都可获得 PV 产品积分；PV 可兑换产品，不可提现。", status: "立即开放" },
+  { name: "Pool Share Wallet", access: "代理配套会员", desc: "公司合资格业绩 5% 进入业绩共享池，只按三大代理配套月结分配。", status: "月结审批" }
 ];
 
 const paymentReviewSeed: {
@@ -479,8 +485,8 @@ const paymentReviewSeed: {
   proof: string;
 }[] = [
   { id: "PAY-001", user: "Alyssa Ng", order: "ORD-1008", amount: "RM688", method: "Manual Bank Transfer", status: "Pending", proof: "receipt-alyssa-1008.jpg" },
-  { id: "PAY-002", user: "Charles Leong", order: "ORD-1004", amount: "RM8,888", method: "FPX", status: "Approved", proof: "fpx-charles-8888.pdf" },
-  { id: "PAY-003", user: "Mei Ling Tan", order: "ORD-1005", amount: "RM16,888", method: "Manual Bank Transfer", status: "Pending", proof: "bank-meiling-16888.jpg" },
+  { id: "PAY-002", user: "Charles Leong", order: "ORD-1004", amount: "RM9,800", method: "FPX", status: "Approved", proof: "fpx-charles-9800.pdf" },
+  { id: "PAY-003", user: "Mei Ling Tan", order: "ORD-1005", amount: "RM16,800", method: "Manual Bank Transfer", status: "Pending", proof: "bank-meiling-16800.jpg" },
   { id: "PAY-004", user: "Jason Lim", order: "ORD-1011", amount: "RM49", method: "Credit Card", status: "Approved", proof: "stripe-jason-49" }
 ];
 
@@ -493,17 +499,17 @@ const poolParticipantSeed: {
   joinedAt: string;
   activity: string;
 }[] = [
-  { id: "POOL-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "38888 区域导师", status: "Eligible", joinedAt: "2026-05-01", activity: "团队 34 人 / 本月成交 RM96,480" },
-  { id: "POOL-002", name: "Mei Ling Tan", email: "meiling.tan@example.com", packageName: "16888 事业合伙人", status: "Eligible", joinedAt: "2026-05-08", activity: "团队 13 人 / 本月成交 RM42,600" },
-  { id: "POOL-003", name: "Charles Leong", email: "charles.leongch@gmail.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-05-03", activity: "团队 15 人 / 本月成交 RM31,280" },
-  { id: "POOL-004", name: "Calven Lee", email: "calven1313@gmail.com", packageName: "8888 创业启动包", status: "Eligible", joinedAt: "2026-05-11", activity: "团队 9 人 / 本月成交 RM18,900" },
+  { id: "POOL-001", name: "Ron Fatt", email: "ronfatt@gmail.com", packageName: "RM38,000 区域代理商", status: "Eligible", joinedAt: "2026-05-01", activity: "团队 34 人 / 本月成交 RM96,480" },
+  { id: "POOL-002", name: "Mei Ling Tan", email: "meiling.tan@example.com", packageName: "RM16,800 事业合伙人", status: "Eligible", joinedAt: "2026-05-08", activity: "团队 13 人 / 本月成交 RM42,600" },
+  { id: "POOL-003", name: "Charles Leong", email: "charles.leongch@gmail.com", packageName: "RM9,800 创业启动包", status: "Eligible", joinedAt: "2026-05-03", activity: "团队 15 人 / 本月成交 RM31,280" },
+  { id: "POOL-004", name: "Calven Lee", email: "calven1313@gmail.com", packageName: "RM9,800 创业启动包", status: "Eligible", joinedAt: "2026-05-11", activity: "团队 9 人 / 本月成交 RM18,900" },
   { id: "POOL-005", name: "Jason Lim", email: "jason.lim@example.com", packageName: "RM49 高阶会员版", status: "Hold", joinedAt: "2026-05-15", activity: "非创业配套，不参与 Pool Share" }
 ];
 
 const poolTiers = [
-  { packageName: "38888 区域导师", share: 50, label: "区域导师池" },
-  { packageName: "16888 事业合伙人", share: 35, label: "事业合伙人池" },
-  { packageName: "8888 创业启动包", share: 15, label: "创业启动包池" }
+  { packageName: "RM38,000 区域代理商", share: 50, label: "RM38,000 区域代理池" },
+  { packageName: "RM16,800 事业合伙人", share: 35, label: "RM16,800 合伙人池" },
+  { packageName: "RM9,800 创业启动包", share: 15, label: "RM9,800 启动包池" }
 ];
 
 const ceoCashSnapshot = [
@@ -1505,7 +1511,7 @@ function UsersModule() {
             <label className="rounded border border-black/10 p-3">
               <span className="text-xs text-ink/45">会员等级</span>
               <select value={selectedUser.tier} onChange={(event) => updateSelectedUser({ tier: event.target.value })} className="mt-2 w-full bg-transparent font-semibold outline-none">
-                {["Free", "进阶会员版", "高阶战略版", "8888 创业启动包", "16888 事业合伙人", "38888 区域导师"].map((tier) => (
+                {["Free", "进阶会员版", "高阶战略版", "RM9,800 创业启动包", "RM16,800 事业合伙人", "RM38,000 区域代理商"].map((tier) => (
                   <option key={tier}>{tier}</option>
                 ))}
               </select>
@@ -2106,11 +2112,24 @@ function PartnerPoolModule() {
     <SectionFrame
       eyebrow="Partner Performance Pool"
       title="创业配套业绩奖励池"
-      desc="每月从合资格净业绩拨出 5% 进入奖励池，再按 38888 / 16888 / 8888 三个配套池 50% / 35% / 15% 分配。"
+      desc="每月从合资格净业绩拨出 5% 进入 Pool Share Wallet，只开放给三大代理配套，并按 RM38,000 / RM16,800 / RM9,800 三个池 50% / 35% / 15% 分配。"
       action={<StatusBadge status={poolStatus} />}
     >
       <div className="rounded border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-        上市友好规则：这是渠道销售激励，不是投资分红；不承诺固定回报；以实收净业绩、活跃资格、退款追回和财务审批为准。
+        上市友好规则：Pool Share 是渠道业绩奖励，不是投资分红；不承诺固定回报；以实收净业绩、活跃资格、退款追回和财务审批为准。
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-3">
+        {rewardWalletPolicy.map((wallet) => (
+          <article key={wallet.name} className="rounded border border-black/10 bg-white p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-semibold text-[#063F4A]">{wallet.name}</p>
+              <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{wallet.status}</span>
+            </div>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{wallet.access}</p>
+            <p className="mt-2 text-sm leading-6 text-ink/58">{wallet.desc}</p>
+          </article>
+        ))}
       </div>
 
       <div className="mt-5 grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
@@ -2838,28 +2857,38 @@ function AgentPackagesModule() {
     <SectionFrame
       eyebrow="Partner Package Control"
       title="代理配套管理"
-      desc="把 8888 / 16888 / 38888 包装成产品包、课程包、服务包，不包装成“买资格赚钱”。"
+      desc="把 RM9,800 / RM16,800 / RM38,000 包装成产品包、课程包、服务包，并清楚拆分 Cash Wallet、PV Wallet 与 Pool Share Wallet 权益。"
       action={<StatusPill>产品包 · 课程包 · 服务包</StatusPill>}
     >
       <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{packageNotice}</div>
+      <div className="mb-4 grid gap-3 md:grid-cols-3">
+        {rewardWalletPolicy.map((wallet) => (
+          <div key={wallet.name} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+            <p className="font-semibold text-[#063F4A]">{wallet.name}</p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{wallet.access}</p>
+            <p className="mt-2 text-sm leading-6 text-ink/58">{wallet.desc}</p>
+          </div>
+        ))}
+      </div>
       <div className="grid gap-4 lg:grid-cols-3">
         {packages.map((pack, index) => (
-          <article key={pack.name} className={pack.name.includes("16888") ? "rounded border border-[#C79A54] bg-[#063F4A] p-5 text-white shadow-sm" : "rounded border border-black/10 bg-white p-5"}>
+          <article key={pack.name} className={pack.name.includes("16,800") ? "rounded border border-[#C79A54] bg-[#063F4A] p-5 text-white shadow-sm" : "rounded border border-black/10 bg-white p-5"}>
             <div className="flex items-start justify-between gap-3">
-              <Award className={pack.name.includes("16888") ? "size-6 text-[#C79A54]" : "size-6 text-[#063F4A]"} />
+              <Award className={pack.name.includes("16,800") ? "size-6 text-[#C79A54]" : "size-6 text-[#063F4A]"} />
               <StatusBadge status={pack.status} />
             </div>
             <input value={pack.name} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="mt-5 w-full bg-transparent text-xl font-semibold outline-none" />
-            <input value={pack.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className={pack.name.includes("16888") ? "mt-3 w-full bg-transparent text-3xl font-semibold text-[#C79A54] outline-none" : "mt-3 w-full bg-transparent text-3xl font-semibold text-[#063F4A] outline-none"} />
-            <div className={pack.name.includes("16888") ? "mt-5 space-y-3 text-sm text-white/68" : "mt-5 space-y-3 text-sm text-ink/60"}>
+            <input value={pack.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className={pack.name.includes("16,800") ? "mt-3 w-full bg-transparent text-3xl font-semibold text-[#C79A54] outline-none" : "mt-3 w-full bg-transparent text-3xl font-semibold text-[#063F4A] outline-none"} />
+            <div className={pack.name.includes("16,800") ? "mt-5 space-y-3 text-sm text-white/68" : "mt-5 space-y-3 text-sm text-ink/60"}>
               <p>AI 权限：{pack.tier}</p>
               <p>包含点数：{pack.points.toLocaleString()} 点</p>
-              <p>推荐分润：{pack.commission}</p>
-              <p>业绩奖励池：{pack.poolShare}</p>
+              <p>Cash Wallet：{pack.cashWallet} 可提现现金佣金</p>
+              <p>PV Wallet：{pack.pvWallet} 产品积分</p>
+              <p>Pool Share Wallet：{pack.poolShare}</p>
               <p>包含：产品礼包、课程权限、专属海报、团队看板</p>
             </div>
             <div className="mt-5 flex gap-2">
-              <button type="button" onClick={() => setPackageNotice(`${pack.name} 已保存：价格、权益、点数与 Pool Share 规则已进入运营草稿。`)} className={pack.name.includes("16888") ? "rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]" : "rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"}>保存</button>
+              <button type="button" onClick={() => setPackageNotice(`${pack.name} 已保存：三钱包比例、价格、权益、点数与 Pool Share 规则已进入运营草稿。`)} className={pack.name.includes("16,800") ? "rounded-full bg-[#C79A54] px-4 py-2 text-sm font-semibold text-[#063F4A]" : "rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"}>保存</button>
               <button
                 type="button"
                 onClick={() => {

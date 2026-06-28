@@ -16,12 +16,6 @@ type ReferralUser = {
   points: number;
 };
 
-const commissionRate = {
-  1: 0.2,
-  2: 0.1,
-  3: 0.05
-} as const;
-
 function fallbackReferralCode(userId: string, name: string) {
   return generateShortReferralCode(`${userId}:${name}`);
 }
@@ -48,7 +42,7 @@ function formatRM(amount: number) {
 
 function buildTree(users: ReferralUser[], root: ReferralUser, relationLevel: 0 | 1 | 2 | 3): DownlineMember {
   const sales = estimateSales(root, relationLevel);
-  const commission = relationLevel === 0 ? 0 : sales * commissionRate[relationLevel];
+  const rewardLabel = relationLevel === 0 ? "—" : sales > 0 ? "Cash/PV 待审核" : "+30 PV";
   const children =
     relationLevel >= 3
       ? []
@@ -65,7 +59,7 @@ function buildTree(users: ReferralUser[], root: ReferralUser, relationLevel: 0 |
     status: statusFor(root),
     joinedAt: root.createdAt.slice(0, 10),
     sales: formatRM(sales),
-    commission: formatRM(commission),
+    commission: rewardLabel,
     points: root.points.toLocaleString("en-US"),
     children
   };
@@ -126,8 +120,8 @@ export async function GET(request: Request) {
   const tree = buildTree(users, current, 0);
   const members = flattenTree(tree).filter((member) => member.relationLevel > 0);
   const totalSales = members.reduce((sum, member) => sum + Number(member.sales.replace(/[^\d.]/g, "")), 0);
-  const totalCommission = members.reduce((sum, member) => sum + Number(member.commission.replace(/[^\d.]/g, "")), 0);
   const directCount = tree.children?.length || 0;
+  const totalPvRewards = members.length * 30;
 
   const commissions = members
     .filter((member) => member.relationLevel <= 3)
@@ -136,18 +130,19 @@ export async function GET(request: Request) {
       date: member.joinedAt,
       from: member.name,
       level: member.relationLevel,
-      source: member.sales === "RM0" ? "注册奖励" : "首单预估佣金",
-      amount: member.sales === "RM0" ? "+30 点" : member.commission,
-      status: member.sales === "RM0" ? "Points issued" : "Pending"
+      source: member.sales === "RM0" ? "注册 PV 奖励" : "代理配套 Cash / PV 审核",
+      amount: member.sales === "RM0" ? "+30 PV" : member.commission,
+      status: member.sales === "RM0" ? "PV issued" : "Pending review"
     }));
 
   return NextResponse.json({
     tree,
     summary: [
-      { label: "直属下线", value: String(directCount), helper: "第一代 20%" },
+      { label: "直属下线", value: String(directCount), helper: "第一代推荐" },
       { label: "团队总人数", value: String(members.length), helper: "含二代、三代" },
-      { label: "团队销售", value: formatRM(totalSales), helper: "按会员订单估算" },
-      { label: "预计佣金", value: formatRM(totalCommission), helper: "20% / 10% / 5%" }
+      { label: "团队销售", value: formatRM(totalSales), helper: "真实订单接入后统计" },
+      { label: "PV 奖励", value: `${totalPvRewards.toLocaleString("en-US")} PV`, helper: "所有会员可获得" },
+      { label: "Cash Wallet", value: "代理配套专属", helper: "按 RM9,800 / RM16,800 / RM38,000 比例审核" }
     ],
     commissions,
     referral: {
