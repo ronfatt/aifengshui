@@ -9,6 +9,7 @@ export type PaymentMethod =
   | "billplz"
   | "toyyibpay"
   | "senangpay"
+  | "doku"
   | "fpx"
   | "credit_card"
   | "e_wallet"
@@ -17,4 +18,3 @@ export type PaymentMethod =
   | "unknown";
 
 export type LifecycleStatus = "draft" | "pending" | "approved" | "rejected" | "paid" | "cancelled" | "void";
-

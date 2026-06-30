@@ -36,6 +36,42 @@ export type CreditTransactionRow = {
   created_at: string;
 };
 
+export type PaymentOrderRow = {
+  id: string;
+  order_no: string;
+  user_id: string;
+  order_type: "credit_topup" | "subscription" | "agent_package" | "product" | "course" | "ai_report" | "service";
+  status: "pending" | "paid" | "processing" | "completed" | "failed" | "cancelled" | "refunded";
+  payment_status: "unpaid" | "pending" | "paid" | "failed" | "refunded";
+  payment_method: string;
+  currency: string;
+  amount_cents: number;
+  credit_amount: number;
+  membership_tier: MembershipTier | null;
+  partner_package: PartnerPackage | null;
+  description: string;
+  metadata: Record<string, unknown>;
+  gateway_transaction_id: string | null;
+  senangpay_transaction_id: string | null;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PaymentTransactionRow = {
+  id: string;
+  order_id: string;
+  gateway: string;
+  gateway_order_id: string;
+  transaction_id: string | null;
+  amount_cents: number;
+  status: string;
+  message: string | null;
+  raw_payload: Record<string, unknown>;
+  verified: boolean;
+  created_at: string;
+};
+
 export type AccountingAccountRow = {
   id: string;
   code: string;
@@ -135,6 +171,42 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<CreditTransactionRow, "id" | "user_id" | "created_at">>;
+        Relationships: [];
+      };
+      payment_orders: {
+        Row: PaymentOrderRow;
+        Insert: Omit<PaymentOrderRow, "id" | "created_at" | "updated_at" | "paid_at" | "gateway_transaction_id" | "senangpay_transaction_id" | "status" | "payment_status" | "payment_method" | "currency" | "credit_amount" | "metadata"> & {
+          id?: string;
+          status?: PaymentOrderRow["status"];
+          payment_status?: PaymentOrderRow["payment_status"];
+          payment_method?: string;
+          currency?: string;
+          credit_amount?: number;
+          metadata?: Record<string, unknown>;
+          gateway_transaction_id?: string | null;
+          senangpay_transaction_id?: string | null;
+          paid_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<PaymentOrderRow, "id" | "order_no" | "user_id" | "created_at" | "updated_at">> & {
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      payment_transactions: {
+        Row: PaymentTransactionRow;
+        Insert: Omit<PaymentTransactionRow, "id" | "created_at" | "gateway" | "amount_cents" | "verified" | "raw_payload" | "transaction_id" | "message"> & {
+          id?: string;
+          gateway?: string;
+          transaction_id?: string | null;
+          amount_cents?: number;
+          message?: string | null;
+          raw_payload?: Record<string, unknown>;
+          verified?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Omit<PaymentTransactionRow, "id" | "order_id" | "created_at">>;
         Relationships: [];
       };
       accounting_accounts: {

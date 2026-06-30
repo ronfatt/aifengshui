@@ -719,6 +719,52 @@ function ModuleCard({
   );
 }
 
+function ModuleSidebarButton({
+  module,
+  active,
+  onClick
+}: {
+  module: (typeof moduleTabs)[number];
+  active: boolean;
+  onClick: () => void;
+}) {
+  const Icon = module.icon;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "group flex w-full items-center gap-3 rounded-xl border p-3 text-left transition",
+        active
+          ? "border-[#C79A54] bg-[#063F4A] text-white shadow-soft"
+          : "border-transparent bg-white/70 text-ink hover:border-[#DDEFF2] hover:bg-white"
+      ].join(" ")}
+    >
+      <span
+        className={[
+          "grid size-10 shrink-0 place-items-center rounded-lg",
+          active ? "bg-white/12 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"
+        ].join(" ")}
+      >
+        <Icon className="size-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center justify-between gap-2">
+          <span className="truncate text-sm font-semibold">{module.title}</span>
+          <span className={active ? "text-[10px] font-semibold uppercase tracking-[0.14em] text-white/55" : "text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/38"}>
+            {module.stat}
+          </span>
+        </span>
+        <span className={active ? "mt-1 block truncate text-xs text-white/58" : "mt-1 block truncate text-xs text-ink/48"}>
+          {module.desc}
+        </span>
+      </span>
+      <ChevronRight className={active ? "size-4 shrink-0 text-[#C79A54]" : "size-4 shrink-0 text-ink/25 transition group-hover:translate-x-0.5 group-hover:text-[#063F4A]"} />
+    </button>
+  );
+}
+
 function SectionFrame({
   eyebrow,
   title,
@@ -733,16 +779,16 @@ function SectionFrame({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded border border-black/10 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">{eyebrow}</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">{title}</h2>
+          <h2 className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{title}</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/58">{desc}</p>
         </div>
         {action}
       </div>
-      <div className="mt-5">{children}</div>
+      <div className="mt-5 min-w-0">{children}</div>
     </section>
   );
 }
@@ -760,14 +806,14 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
           {ceoCashSnapshot.map((item) => (
             <article key={item.label} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
               <p className="text-sm text-ink/50">{item.label}</p>
-              <p className="mt-3 text-3xl font-semibold text-[#063F4A]">{item.value}</p>
+              <p className="mt-3 text-2xl font-semibold text-[#063F4A] sm:text-3xl">{item.value}</p>
               <p className="mt-2 text-xs leading-5 text-ink/55">{item.note}</p>
             </article>
           ))}
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded border border-black/10 bg-white p-5">
+        <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <div className="min-w-0 rounded border border-black/10 bg-white p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h3 className="text-xl font-semibold text-[#063F4A]">经营异常队列</h3>
@@ -794,11 +840,11 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
             </div>
           </div>
 
-          <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white">
+          <div className="min-w-0 rounded border border-black/10 bg-[#063F4A] p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Daily Control</p>
-                <h3 className="mt-2 text-2xl font-semibold">今日管理动作</h3>
+                <h3 className="mt-2 text-xl font-semibold sm:text-2xl">今日管理动作</h3>
               </div>
               <ShieldCheck className="size-7 text-[#C79A54]" />
             </div>
@@ -819,7 +865,7 @@ function CeoOverviewModule({ onOpenModule }: { onOpenModule: (module: ActiveModu
         </div>
       </SectionFrame>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid min-w-0 gap-5 xl:grid-cols-3">
         <section className="rounded border border-black/10 bg-white p-5 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Revenue Mix</p>
           <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">收入结构</h3>
@@ -1292,8 +1338,8 @@ function AccountingExportModule() {
         </button>
       }
     >
-      <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <div className="min-w-0 rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">上市前建议口径</h3>
           <div className="mt-4 grid gap-3">
             {[
@@ -1362,7 +1408,7 @@ function AccountingExportModule() {
           </div>
         </div>
 
-        <div className="grid gap-4">
+        <div className="min-w-0 grid gap-4">
           {exportPacks.map((pack) => {
             const previewHeaders = pack.rows[0] ? Object.keys(pack.rows[0]).slice(0, 5) : [];
 
@@ -1565,8 +1611,8 @@ function UsersModule() {
           <p className="mt-2 text-sm text-ink/55">{saveMessage}</p>
         </div>
       ) : (
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="min-w-0 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center gap-3">
             <Search className="size-5 text-[#063F4A]" />
             <input value={userQuery} onChange={(event) => setUserQuery(event.target.value)} className="w-full bg-transparent text-sm outline-none" placeholder="搜索姓名 / Email / User ID / 推荐码" />
@@ -1600,11 +1646,11 @@ function UsersModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#C79A54]">{selectedUser.id}</p>
-              <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">{selectedUser.name}</h3>
+              <h3 className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{selectedUser.name}</h3>
               <p className="mt-1 text-sm text-ink/55">{selectedUser.email} · {selectedUser.phone}</p>
             </div>
             <button
@@ -1692,12 +1738,12 @@ function CreditsModule() {
       desc="配置充值套餐、注册奖励、推荐奖励、产品/课程赠点和功能扣点规则。点数只用于平台功能，不能提现。"
       action={<StatusPill>Wallet rules</StatusPill>}
     >
-      <div className="grid gap-5 xl:grid-cols-[1fr_0.85fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">充值套餐</h3>
           <div className="mt-4 space-y-3">
             {packages.map((item, index) => (
-              <div key={`${item.name}-${index}`} className="grid gap-3 rounded border border-black/10 p-4 md:grid-cols-[1fr_0.8fr_0.8fr_0.6fr]">
+              <div key={`${item.name}-${index}`} className="grid gap-3 rounded border border-black/10 p-4 sm:grid-cols-2 xl:grid-cols-[1fr_0.8fr_0.8fr_0.6fr]">
                 <input value={item.name} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="font-semibold outline-none" />
                 <input value={item.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className="text-[#063F4A] outline-none" />
                 <input type="number" value={item.points} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, points: Number(event.target.value) } : row))} className="outline-none" />
@@ -1713,7 +1759,7 @@ function CreditsModule() {
           </form>
         </div>
 
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           {[
             ["注册奖励", "新会员完成资料后赠 80 点"],
             ["每日赠送", "Free 每日 3 点，Plus 每日 12 点"],
@@ -1750,12 +1796,12 @@ function AiControlModule() {
       action={<button type="button" onClick={() => setConfigMessage(`已保存配置草稿：${new Date().toLocaleString("sv-SE")}`)} className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><Save className="size-4" />保存配置</button>}
     >
       <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{configMessage}</div>
-      <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_420px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">功能扣点与权限</h3>
           <div className="mt-4 space-y-3">
             {features.map((feature, index) => (
-              <div key={feature.name} className="grid gap-3 rounded border border-black/10 p-4 md:grid-cols-[1.2fr_0.5fr_0.8fr_0.6fr]">
+              <div key={feature.name} className="grid gap-3 rounded border border-black/10 p-4 sm:grid-cols-2 xl:grid-cols-[1.2fr_0.5fr_0.8fr_0.6fr]">
                 <input value={feature.name} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="font-semibold outline-none" />
                 <input type="number" value={feature.points} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, points: Number(event.target.value) } : row))} className="text-[#063F4A] outline-none" />
                 <input value={feature.tier} onChange={(event) => setFeatures((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, tier: event.target.value } : row))} className="outline-none" />
@@ -1765,7 +1811,7 @@ function AiControlModule() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <label className="block rounded border border-black/10 bg-[#F5FAFA] p-4">
             <span className="font-semibold text-[#063F4A]">核心 Prompt 模板</span>
             <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={7} className="mt-3 w-full rounded border border-black/10 bg-white p-3 text-sm leading-6 outline-none" />
@@ -1854,7 +1900,7 @@ function FinanceModule() {
         {financeExecutiveKpis.map((item) => (
           <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-4">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{item.value}</p>
             <p className="mt-3 text-xs leading-5 text-[#C79A54]">{item.note}</p>
           </article>
         ))}
@@ -1892,8 +1938,8 @@ function FinanceModule() {
       </div>
 
       {activeFinanceTab === "revenue" ? (
-      <div className="mt-5 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded border border-black/10 bg-rice p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <div className="min-w-0 rounded border border-black/10 bg-rice p-5">
           <div className="flex items-center gap-3">
             <CircleDollarSign className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Revenue Analytics</h3>
@@ -1902,7 +1948,7 @@ function FinanceModule() {
             {financeRevenue.map((item) => (
               <article key={item.label} className="rounded bg-white p-4">
                 <p className="text-sm text-ink/58">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+                <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{item.value}</p>
                 <p className="mt-2 text-xs text-[#C79A54]">{item.note}</p>
               </article>
             ))}
@@ -1923,7 +1969,7 @@ function FinanceModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-rice p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-rice p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <TrendingUp className="size-5 text-[#C79A54]" />
@@ -1935,7 +1981,7 @@ function FinanceModule() {
             {profitSummary.map((item) => (
               <article key={item.label} className="rounded bg-white p-4">
                 <p className="text-sm text-ink/55">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+                <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{item.value}</p>
               </article>
             ))}
           </div>
@@ -2007,8 +2053,8 @@ function FinanceModule() {
       ) : null}
 
       {activeFinanceTab === "ai" ? (
-      <div className="mt-5 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <Bot className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">AI Cost Intelligence</h3>
@@ -2037,7 +2083,7 @@ function FinanceModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <Bot className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">AI 使用成本追踪</h3>
@@ -2063,8 +2109,8 @@ function FinanceModule() {
       ) : null}
 
       {activeFinanceTab === "payout" ? (
-      <div className="mt-5 grid gap-5 xl:grid-cols-2">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-2">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">Withdrawal Risk Review</h3>
@@ -2082,7 +2128,7 @@ function FinanceModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <HandCoins className="size-5 text-[#C79A54]" />
@@ -2106,7 +2152,7 @@ function FinanceModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">提现申请</h3>
@@ -2261,8 +2307,8 @@ function PartnerPoolModule() {
         ))}
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[0.88fr_1.12fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h3 className="text-xl font-semibold text-[#063F4A]">Pool 计算设置</h3>
@@ -2298,7 +2344,7 @@ function PartnerPoolModule() {
             ].map(([label, value]) => (
               <article key={label} className="rounded bg-[#063F4A] p-4 text-white">
                 <p className="text-sm text-white/58">{label}</p>
-                <p className="mt-2 text-2xl font-semibold text-[#C79A54]">{value}</p>
+                <p className="mt-2 text-xl font-semibold text-[#C79A54] sm:text-2xl">{value}</p>
               </article>
             ))}
           </div>
@@ -2316,15 +2362,15 @@ function PartnerPoolModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-[#F5FAFA] p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-[#F5FAFA] p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">三大配套池分配</h3>
-          <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <div className="mt-5 grid gap-3 xl:grid-cols-3">
             {poolTiers.map((tier) => {
               const allocation = allocationFor(tier.packageName, tier.share);
               return (
                 <article key={tier.packageName} className={tier.share === 50 ? "rounded border border-[#C79A54] bg-[#063F4A] p-4 text-white" : "rounded border border-black/10 bg-white p-4"}>
                   <p className={tier.share === 50 ? "text-sm text-[#C79A54]" : "text-sm text-ink/50"}>{tier.label}</p>
-                  <p className="mt-2 text-3xl font-semibold">{tier.share}%</p>
+                  <p className="mt-2 text-2xl font-semibold sm:text-3xl">{tier.share}%</p>
                   <div className={tier.share === 50 ? "mt-4 space-y-2 text-sm text-white/70" : "mt-4 space-y-2 text-sm text-ink/58"}>
                     <p>池金额：{formatMoney(allocation.tierPool)}</p>
                     <p>合资格人数：{allocation.members.length}</p>
@@ -2335,7 +2381,7 @@ function PartnerPoolModule() {
             })}
           </div>
 
-          <div className="mt-5 overflow-x-auto rounded border border-black/10 bg-white">
+          <div className="mt-5 min-w-0 overflow-x-auto rounded border border-black/10 bg-white">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="bg-cloud text-ink/55">
                 <tr>
@@ -2377,8 +2423,8 @@ function PartnerPoolModule() {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_0.85fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">上市审计控制清单</h3>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {[
@@ -2397,7 +2443,7 @@ function PartnerPoolModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-xl font-semibold text-[#063F4A]">Audit Log</h3>
             <button type="button" onClick={exportPoolAudit} className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold text-[#063F4A]">Export</button>
@@ -2563,14 +2609,14 @@ function StockModule({
         {inventoryReports.map((item) => (
           <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-5">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{item.value}</p>
             <p className="mt-3 text-sm text-[#C79A54]">{item.note}</p>
           </article>
         ))}
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <Warehouse className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">产品库存</h3>
@@ -2619,7 +2665,7 @@ function StockModule({
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-rice p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-rice p-5">
           <div className="flex items-center gap-3">
             <PackageCheck className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">库存流水</h3>
@@ -2646,7 +2692,7 @@ function StockModule({
           <TrendingUp className="size-5 text-[#C79A54]" />
           <h3 className="text-xl font-semibold">产品利润追踪</h3>
         </div>
-        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          <div className="mt-5 grid gap-3 xl:grid-cols-3">
           {productProfitRows.map((row) => (
             <article key={row.product} className="rounded border border-black/10 p-4">
               <p className="font-semibold text-[#063F4A]">{row.product}</p>
@@ -2694,7 +2740,7 @@ function OrdersModule() {
         {orderKpis.map((item) => (
           <article key={item.label} className="rounded border border-[#C79A54]/20 bg-[#DDEFF2] p-4">
             <p className="text-sm text-ink/58">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{item.value}</p>
+            <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{item.value}</p>
             <p className="mt-2 text-xs text-[#C79A54]">{item.note}</p>
           </article>
         ))}
@@ -2712,14 +2758,14 @@ function OrdersModule() {
           {orderPipeline.map((item) => (
             <article key={item.status} className="rounded border border-black/10 bg-white p-4">
               <p className="text-sm text-ink/55">{item.status}</p>
-              <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{item.count}</p>
+              <p className="mt-2 text-2xl font-semibold text-[#063F4A] sm:text-3xl">{item.count}</p>
             </article>
           ))}
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[380px_minmax(0,1fr)]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center gap-3">
             <AlertTriangle className="size-5 text-[#C79A54]" />
             <h3 className="text-xl font-semibold">异常订单提醒</h3>
@@ -2740,7 +2786,7 @@ function OrdersModule() {
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 className="text-xl font-semibold">订单类型筛选</h3>
@@ -2812,12 +2858,12 @@ function OrdersModule() {
       </div>
 
       {selectedOrder ? (
-        <div className="mt-5 grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="mt-5 grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div className="rounded border border-black/10 bg-white p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Selected Order</p>
-                <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">{selectedOrder.id}</h3>
+                <h3 className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{selectedOrder.id}</h3>
                 <p className="mt-2 text-sm text-ink/58">{selectedOrder.customer} · {selectedOrder.userId}</p>
               </div>
               <StatusBadge status={selectedOrder.status} />
@@ -2917,8 +2963,8 @@ function CoursesModule() {
       action={<button type="button" onClick={() => setCourseNotice("课程中心已打开：可查看课程销售、学员名单、签到和证书任务。")} className="inline-flex items-center gap-2 rounded-full bg-[#063F4A] px-4 py-2 text-sm font-semibold text-white"><BookOpenCheck className="size-4" />课程中心</button>}
     >
       <div className="mb-4 rounded border border-[#C79A54]/20 bg-rice px-4 py-3 text-sm font-medium text-[#063F4A]">{courseNotice}</div>
-      <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">课程列表</h3>
           <div className="mt-4 space-y-3">
             {courses.map((course, index) => (
@@ -2958,7 +3004,7 @@ function CoursesModule() {
           </div>
         </div>
 
-        <form onSubmit={addCourse} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+        <form onSubmit={addCourse} className="min-w-0 rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">新增课程</h3>
           <div className="mt-4 space-y-3">
             <input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="课程名称" className="w-full rounded border border-black/10 px-3 py-3 outline-none" />
@@ -2999,7 +3045,7 @@ function AgentPackagesModule() {
           </div>
         ))}
       </div>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-3">
         {packages.map((pack, index) => (
           <article key={pack.name} className={pack.name.includes("16,800") ? "rounded border border-[#C79A54] bg-[#063F4A] p-5 text-white shadow-sm" : "rounded border border-black/10 bg-white p-5"}>
             <div className="flex items-start justify-between gap-3">
@@ -3007,7 +3053,7 @@ function AgentPackagesModule() {
               <StatusBadge status={pack.status} />
             </div>
             <input value={pack.name} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, name: event.target.value } : row))} className="mt-5 w-full bg-transparent text-xl font-semibold outline-none" />
-            <input value={pack.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className={pack.name.includes("16,800") ? "mt-3 w-full bg-transparent text-3xl font-semibold text-[#C79A54] outline-none" : "mt-3 w-full bg-transparent text-3xl font-semibold text-[#063F4A] outline-none"} />
+            <input value={pack.price} onChange={(event) => setPackages((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, price: event.target.value } : row))} className={pack.name.includes("16,800") ? "mt-3 w-full bg-transparent text-2xl font-semibold text-[#C79A54] outline-none sm:text-3xl" : "mt-3 w-full bg-transparent text-2xl font-semibold text-[#063F4A] outline-none sm:text-3xl"} />
             <div className={pack.name.includes("16,800") ? "mt-5 space-y-3 text-sm text-white/68" : "mt-5 space-y-3 text-sm text-ink/60"}>
               <p>AI 权限：{pack.tier}</p>
               <p>包含点数：{pack.points.toLocaleString()} 点</p>
@@ -3050,8 +3096,8 @@ function PaymentsModule() {
       desc="处理手动银行转账、网关对账差异和付款后自动开通动作。审核通过后应触发升级会员、发放点数、开通课程、生成佣金。"
       action={<StatusPill>{reviews.filter((item) => item.status === "Pending Review").length} 待审核</StatusPill>}
     >
-      <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">付款审核队列</h3>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[720px] text-left text-sm">
@@ -3084,13 +3130,13 @@ function PaymentsModule() {
           </div>
         </div>
 
-        <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
+        <div className="min-w-0 rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5">
           <h3 className="text-xl font-semibold text-[#063F4A]">审核通过后自动执行</h3>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-1">
             {["升级会员", "发放点数", "开通课程 / 报告", "生成三层佣金", "更新团队业绩", "发送收据通知"].map((item) => (
               <div key={item} className="flex items-center gap-3 rounded bg-white p-3">
                 <CheckCircle2 className="size-4 text-[#1495A0]" />
-                <span className="text-sm font-semibold">{item}</span>
+                <span className="text-sm font-semibold leading-5">{item}</span>
               </div>
             ))}
           </div>
@@ -3107,8 +3153,8 @@ function SystemModule() {
       title="后台功能地图与控制规则"
       desc="这里放比较稳定的系统管理入口，不和财务、库存的日常运营数据混在一起。"
     >
-      <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-        <div className="rounded border border-black/10 bg-white p-5">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="min-w-0 rounded border border-black/10 bg-white p-5">
           <div className="flex items-center justify-between gap-4">
             <div>
               <h3 className="text-xl font-semibold">后台功能地图</h3>
@@ -3130,7 +3176,7 @@ function SystemModule() {
           </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white">
             <div className="flex items-start gap-3">
               <AlertTriangle className="mt-1 size-5 shrink-0 text-[#C79A54]" />
@@ -3156,7 +3202,7 @@ function SystemModule() {
                   ].map(([level, pct]) => (
                     <div key={level} className="rounded bg-cloud p-4">
                       <p className="text-sm text-ink/55">{level}</p>
-                      <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{pct}</p>
+                      <p className="mt-2 text-xl font-semibold text-[#063F4A] sm:text-2xl">{pct}</p>
                     </div>
                   ))}
                 </div>
@@ -3178,6 +3224,8 @@ export default function AdminPage() {
   const [adminGate, setAdminGate] = useState<"checking" | "authorized" | "denied">("checking");
   const [adminGateMessage, setAdminGateMessage] = useState("正在验证管理员权限。");
   const [consoleNotice, setConsoleNotice] = useState("后台已加载 50 位会员、订单、财务、库存、课程与 Pool Share 测试数据。");
+  const currentModule = moduleTabs.find((module) => module.id === activeModule) || moduleTabs[0];
+  const CurrentIcon = currentModule.icon;
 
   useEffect(() => {
     let mounted = true;
@@ -3259,8 +3307,8 @@ export default function AdminPage() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <StatusPill>老板后台 · Admin Console</StatusPill>
-                <h1 className="mt-4 text-3xl font-semibold text-[#063F4A] md:text-5xl">公司经营控制台</h1>
-                <p className="mt-3 max-w-3xl text-ink/65">
+                <h1 className="mt-4 text-2xl font-semibold text-[#063F4A] md:text-4xl">公司经营控制台</h1>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-ink/65 md:text-base">
                   先看现金、异常、审批和经营风险，再进入用户、财务、库存、订单、代理与 Pool Share 模块处理。
                 </p>
               </div>
@@ -3297,51 +3345,68 @@ export default function AdminPage() {
             </div>
           </section>
 
-          <section className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-5 shadow-sm">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Module Switcher</p>
-                <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">选择一个模块查看细节</h2>
+          <section className="mt-6 grid gap-5 lg:grid-cols-[248px_minmax(0,1fr)] xl:grid-cols-[268px_minmax(0,1fr)]">
+            <aside className="rounded-2xl border border-black/10 bg-[#F5FAFA] p-3 shadow-sm lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto xl:p-4">
+              <div className="flex items-end justify-between gap-3 lg:block">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Admin Modules</p>
+                  <h2 className="mt-1 text-xl font-semibold text-[#063F4A]">后台模块</h2>
+                </div>
+                <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A] lg:mt-3 lg:inline-block">
+                  {moduleTabs.length} modules
+                </span>
               </div>
-              <p className="text-sm text-ink/55">当前：{moduleTabs.find((module) => module.id === activeModule)?.title}</p>
-            </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-              {moduleTabs.map((module) => (
-                <ModuleCard
-                  key={module.id}
-                  module={module}
-                  active={activeModule === module.id}
-                  onClick={() => setActiveModule(module.id)}
-                />
-              ))}
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-1 lg:block lg:space-y-2 lg:overflow-visible lg:pb-0">
+                {moduleTabs.map((module) => (
+                  <div key={module.id} className="min-w-[260px] lg:min-w-0">
+                    <ModuleSidebarButton module={module} active={activeModule === module.id} onClick={() => setActiveModule(module.id)} />
+                  </div>
+                ))}
+              </div>
+            </aside>
+
+            <div className="min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+              <div className="sticky top-0 z-10 border-b border-black/10 bg-white/92 px-4 py-3 backdrop-blur sm:px-5 sm:py-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-11 place-items-center rounded-xl bg-[#DDEFF2] text-[#063F4A]">
+                      <CurrentIcon className="size-5" />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Current Module</p>
+                      <h2 className="text-xl font-semibold text-[#063F4A] sm:text-2xl">{currentModule.title}</h2>
+                    </div>
+                  </div>
+                  <p className="max-w-xl text-xs leading-5 text-ink/55 sm:text-sm sm:leading-6">{currentModule.desc}</p>
+                </div>
+              </div>
+              <div className="min-w-0 p-4 sm:p-5 xl:p-6">
+                {activeModule === "ceo" ? <CeoOverviewModule onOpenModule={setActiveModule} /> : null}
+                {activeModule === "users" ? <UsersModule /> : null}
+                {activeModule === "credits" ? <CreditsModule /> : null}
+                {activeModule === "ai" ? <AiControlModule /> : null}
+                {activeModule === "finance" ? <FinanceModule /> : null}
+                {activeModule === "accounting" ? <AccountingExportModule /> : null}
+                {activeModule === "pool" ? <PartnerPoolModule /> : null}
+                {activeModule === "stock" ? (
+                  <StockModule
+                    products={inventoryList}
+                    onSaveProduct={(product, originalSku) =>
+                      setInventoryList((current) => {
+                        if (!originalSku) return [product, ...current];
+                        return current.map((item) => (item.sku === originalSku ? product : item));
+                      })
+                    }
+                  />
+                ) : null}
+                {activeModule === "courses" ? <CoursesModule /> : null}
+                {activeModule === "orders" ? <OrdersModule /> : null}
+                {activeModule === "agents" ? <AgentPackagesModule /> : null}
+                {activeModule === "payments" ? <PaymentsModule /> : null}
+                {activeModule === "system" ? <SystemModule /> : null}
+              </div>
             </div>
           </section>
-
-          <div className="mt-6">
-            {activeModule === "ceo" ? <CeoOverviewModule onOpenModule={setActiveModule} /> : null}
-            {activeModule === "users" ? <UsersModule /> : null}
-            {activeModule === "credits" ? <CreditsModule /> : null}
-            {activeModule === "ai" ? <AiControlModule /> : null}
-            {activeModule === "finance" ? <FinanceModule /> : null}
-            {activeModule === "accounting" ? <AccountingExportModule /> : null}
-            {activeModule === "pool" ? <PartnerPoolModule /> : null}
-            {activeModule === "stock" ? (
-              <StockModule
-                products={inventoryList}
-                onSaveProduct={(product, originalSku) =>
-                  setInventoryList((current) => {
-                    if (!originalSku) return [product, ...current];
-                    return current.map((item) => (item.sku === originalSku ? product : item));
-                  })
-                }
-              />
-            ) : null}
-            {activeModule === "courses" ? <CoursesModule /> : null}
-            {activeModule === "orders" ? <OrdersModule /> : null}
-            {activeModule === "agents" ? <AgentPackagesModule /> : null}
-            {activeModule === "payments" ? <PaymentsModule /> : null}
-            {activeModule === "system" ? <SystemModule /> : null}
-          </div>
         </div>
       </main>
     </AppShell>

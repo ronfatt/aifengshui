@@ -38,6 +38,49 @@ create table if not exists public.reports (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.payment_orders (
+  id uuid primary key default gen_random_uuid(),
+  order_no text not null unique,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  order_type text not null check (order_type in ('credit_topup', 'subscription', 'agent_package', 'product', 'course', 'ai_report', 'service')),
+  status text not null default 'pending' check (status in ('pending', 'paid', 'processing', 'completed', 'failed', 'cancelled', 'refunded')),
+  payment_status text not null default 'unpaid' check (payment_status in ('unpaid', 'pending', 'paid', 'failed', 'refunded')),
+  payment_method text not null default 'doku',
+  currency text not null default 'MYR',
+  amount_cents integer not null check (amount_cents > 0),
+  credit_amount integer not null default 0 check (credit_amount >= 0),
+  membership_tier text check (membership_tier in ('free', 'tactical', 'strategic')),
+  partner_package text check (partner_package in ('none', 'startup_8888', 'partner_16888', 'regional_38888')),
+  description text not null,
+  metadata jsonb not null default '{}'::jsonb,
+  gateway_transaction_id text,
+  senangpay_transaction_id text,
+  paid_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.payment_transactions (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.payment_orders(id) on delete cascade,
+  gateway text not null default 'doku',
+  gateway_order_id text not null,
+  transaction_id text,
+  amount_cents integer not null default 0 check (amount_cents >= 0),
+  status text not null,
+  message text,
+  raw_payload jsonb not null default '{}'::jsonb,
+  verified boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.payment_orders
+  add column if not exists gateway_transaction_id text;
+
+create index if not exists payment_orders_user_id_idx on public.payment_orders(user_id);
+create index if not exists payment_orders_order_no_idx on public.payment_orders(order_no);
+create index if not exists payment_transactions_order_id_idx on public.payment_transactions(order_id);
+
 create table if not exists public.accounting_accounts (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
@@ -147,6 +190,10 @@ grant usage on schema public to anon, authenticated, service_role;
 grant select, insert, update on public.profiles to anon, authenticated, service_role;
 grant select, insert on public.credit_transactions to anon, authenticated, service_role;
 grant select, insert, update, delete on public.reports to anon, authenticated, service_role;
+grant select, insert, update, delete on public.payment_orders to service_role;
+grant select, insert, update, delete on public.payment_transactions to service_role;
+grant select on public.payment_orders to authenticated;
+grant select on public.payment_transactions to authenticated;
 grant select, insert, update, delete on public.accounting_accounts to service_role;
 grant select, insert, update, delete on public.accounting_journals to service_role;
 grant select, insert, update, delete on public.accounting_journal_lines to service_role;
@@ -156,6 +203,8 @@ grant select, insert, update, delete on public.accounting_sync_batches to servic
 alter table public.profiles enable row level security;
 alter table public.credit_transactions enable row level security;
 alter table public.reports enable row level security;
+alter table public.payment_orders enable row level security;
+alter table public.payment_transactions enable row level security;
 alter table public.accounting_accounts enable row level security;
 alter table public.accounting_journals enable row level security;
 alter table public.accounting_journal_lines enable row level security;
@@ -192,3 +241,19 @@ drop policy if exists "Users can insert own reports" on public.reports;
 create policy "Users can insert own reports"
 on public.reports for insert
 with check (auth.uid() = user_id);
+
+drop policy if exists "Users can read own payment orders" on public.payment_orders;
+create policy "Users can read own payment orders"
+on public.payment_orders for select
+using (auth.uid() = user_id);
+
+drop policy if exists "Users can read own payment transactions" on public.payment_transactions;
+create policy "Users can read own payment transactions"
+on public.payment_transactions for select
+using (
+  exists (
+    select 1 from public.payment_orders
+    where public.payment_orders.id = payment_transactions.order_id
+      and public.payment_orders.user_id = auth.uid()
+  )
+);

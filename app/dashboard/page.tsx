@@ -4122,9 +4122,11 @@ function TodayActionCenter({
 
 function MembershipPlanPanel({
   currentTier,
+  isStartingPayment,
   onRequestUpgrade
 }: {
   currentTier: MembershipTier;
+  isStartingPayment: boolean;
   onRequestUpgrade: (tier: MembershipTier) => void;
 }) {
   const activeTier = membershipTiers.find((tier) => tier.id === currentTier) || membershipTiers[1];
@@ -4157,10 +4159,11 @@ function MembershipPlanPanel({
             <button
               key={tier.id}
               type="button"
+              disabled={isStartingPayment}
               onClick={() => onRequestUpgrade(tier.id)}
-              className={tier.id === "strategic" ? "inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white" : "inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2.5 text-sm font-semibold text-[#063F4A]"}
+              className={tier.id === "strategic" ? "inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60" : "inline-flex items-center gap-2 rounded border border-[#063F4A]/15 bg-[#DDEFF2] px-4 py-2.5 text-sm font-semibold text-[#063F4A] disabled:cursor-not-allowed disabled:opacity-60"}
             >
-              {tier.id === "tactical" ? "升级进阶版" : "升级高阶版"} <CreditCard className="size-4" />
+              {isStartingPayment ? "创建付款中..." : tier.id === "tactical" ? "升级进阶版" : "升级高阶版"} <CreditCard className="size-4" />
             </button>
           )) : (
             <span className="rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white">已是最高会员方案</span>
@@ -11511,6 +11514,7 @@ export default function DashboardPage() {
   const [partnerPackage, setPartnerPackage] = useState<PartnerPackage>("none");
   const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
   const [membershipMessage, setMembershipMessage] = useState("正式模式：会员等级只会在付款成功后由系统升级。");
+  const [isStartingPayment, setIsStartingPayment] = useState(false);
   const [aiStarterPrompt, setAiStarterPrompt] = useState("");
   const [reportPreset, setReportPreset] = useState<ReportDemandPreset | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -11590,6 +11594,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (authStatus !== "authenticated") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get("payment");
+    const orderNo = params.get("order");
+
+    if (paymentStatus === "success") {
+      setMembershipMessage(`SenangPay 付款成功${orderNo ? `（订单 ${orderNo}）` : ""}，系统已自动处理会员权益与点数。`);
+    } else if (paymentStatus === "failed") {
+      setMembershipMessage(`SenangPay 付款未完成${orderNo ? `（订单 ${orderNo}）` : ""}，会员等级与点数没有变更。`);
+    } else if (paymentStatus === "invalid") {
+      setMembershipMessage(`SenangPay 回调验证失败${orderNo ? `（订单 ${orderNo}）` : ""}，请联系后台核对付款记录。`);
+    }
 
     const dismissed = window.localStorage.getItem("aifengshui-onboarding-dismissed");
     setShowOnboarding(!dismissed);
@@ -11730,12 +11746,49 @@ export default function DashboardPage() {
     openModule(target);
   }
 
-  function requestMembershipUpgrade(tier: MembershipTier) {
+  async function requestMembershipUpgrade(tier: MembershipTier) {
     const plan = membershipTiers.find((item) => item.id === tier);
     if (!plan || tier === currentTier) return;
 
-    setMembershipMessage(`已选择 ${plan.name}（${plan.price}）。下一步应连接 Stripe / FPX / 本地支付网关创建订阅订单，付款成功后后台自动升级会员。`);
-    openModule("wallet");
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) {
+      setMembershipMessage("无法读取登录状态，请重新登录后再升级会员。");
+      return;
+    }
+
+    setIsStartingPayment(true);
+    setMembershipMessage(`正在为 ${plan.name} 创建 DOKU 付款订单...`);
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+
+      if (!token) {
+        setMembershipMessage("会员登录已过期，请重新登录后再升级会员。");
+        return;
+      }
+
+      const response = await fetch("/api/payments/doku/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ orderType: "subscription", membershipTier: tier })
+      });
+      const payload = (await response.json().catch(() => ({}))) as { paymentUrl?: string; error?: string; orderNo?: string };
+
+      if (!response.ok || !payload.paymentUrl) {
+        setMembershipMessage(payload.error || "DOKU 付款订单创建失败，请稍后再试。");
+        openModule("wallet");
+        return;
+      }
+
+      setMembershipMessage(`订单 ${payload.orderNo || ""} 已创建，正在前往 DOKU 安全付款页。`);
+      window.location.href = payload.paymentUrl;
+    } finally {
+      setIsStartingPayment(false);
+    }
   }
 
   if (authStatus !== "authenticated") {
@@ -11780,7 +11833,7 @@ export default function DashboardPage() {
             onOpenWallet={() => openModule("wallet")}
             onOpenInvite={() => openModule("invite")}
           />
-          <MembershipPlanPanel currentTier={currentTier} onRequestUpgrade={requestMembershipUpgrade} />
+          <MembershipPlanPanel currentTier={currentTier} isStartingPayment={isStartingPayment} onRequestUpgrade={requestMembershipUpgrade} />
           <TodayAssistantPanel onOpenModule={openModule} onSelectPrompt={handleSelectAiPrompt} onSelectReport={handleSelectReportDemand} />
 
           <section className="premium-card premium-glow mt-6 overflow-hidden p-4 md:p-5">
