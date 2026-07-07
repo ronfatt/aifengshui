@@ -2,7 +2,7 @@ import type OpenAI from "openai";
 
 type ResponseReasoningOptions = {
   reasoning?: {
-    effort: "minimal" | "low" | "medium" | "high";
+    effort: "none" | "low" | "medium" | "high" | "xhigh";
   };
 };
 
@@ -11,20 +11,27 @@ type OpenAITextResponse = {
 };
 
 const DEFAULT_OPENAI_MODEL = "gpt-5.5-2026-04-23";
-const DEFAULT_OPENAI_FALLBACK_MODEL = "gpt-5.5-2026-04-23";
+const DEFAULT_OPENAI_FALLBACK_MODEL = "gpt-5.5";
+const OPENAI_MIN_OUTPUT_TOKENS = 16;
+const BUILT_IN_FALLBACK_MODELS = ["gpt-5.5", "gpt-5", "gpt-4.1", "gpt-4o-mini"];
 
 export function getOpenAIModel() {
   return (process.env.OPENAI_CHAT_MODEL || process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL).trim();
 }
 
 export function getOpenAIFallbackModel(primaryModel = getOpenAIModel()) {
-  const fallback = (process.env.OPENAI_FALLBACK_MODEL || DEFAULT_OPENAI_FALLBACK_MODEL).trim();
+  return getOpenAIFallbackCandidates(primaryModel)[0] || DEFAULT_OPENAI_FALLBACK_MODEL;
+}
 
-  if (!fallback) {
-    return DEFAULT_OPENAI_MODEL;
-  }
-
-  return fallback;
+export function getOpenAIFallbackCandidates(primaryModel = getOpenAIModel()) {
+  return [
+    process.env.OPENAI_FALLBACK_MODEL,
+    DEFAULT_OPENAI_FALLBACK_MODEL,
+    ...BUILT_IN_FALLBACK_MODELS
+  ]
+    .map((model) => model?.trim())
+    .filter((model): model is string => Boolean(model))
+    .filter((model, index, models) => model !== primaryModel && models.indexOf(model) === index);
 }
 
 export function getResponseReasoningOptions(model: string): ResponseReasoningOptions {
@@ -33,7 +40,7 @@ export function getResponseReasoningOptions(model: string): ResponseReasoningOpt
   if (normalized === "gpt-5" || normalized.startsWith("gpt-5") || normalized.startsWith("o")) {
     return {
       reasoning: {
-        effort: "minimal"
+        effort: "low"
       }
     };
   }
@@ -49,6 +56,18 @@ export function getOpenAIErrorMessage(error: unknown) {
   return "OpenAI request failed";
 }
 
+function getOpenAIErrorField(error: unknown, field: "code" | "type" | "status") {
+  if (error && typeof error === "object" && field in error) {
+    const value = (error as Record<string, unknown>)[field];
+
+    if (typeof value === "string" || typeof value === "number") {
+      return String(value).toLowerCase();
+    }
+  }
+
+  return "";
+}
+
 export type OpenAIErrorCode =
   | "OPENAI_AUTH"
   | "OPENAI_QUOTA"
@@ -59,8 +78,12 @@ export type OpenAIErrorCode =
 
 export function getOpenAIErrorCode(error: unknown): OpenAIErrorCode {
   const message = getOpenAIErrorMessage(error).toLowerCase();
+  const status = getOpenAIErrorField(error, "status");
+  const codeValue = getOpenAIErrorField(error, "code");
+  const typeValue = getOpenAIErrorField(error, "type");
 
   if (
+    status === "401" ||
     message.includes("api key") ||
     message.includes("authentication") ||
     message.includes("unauthorized") ||
@@ -87,11 +110,11 @@ export function getOpenAIErrorCode(error: unknown): OpenAIErrorCode {
   }
 
   if (
-    message.includes("model") ||
-    message.includes("unsupported") ||
-    message.includes("invalid") ||
-    message.includes("not found") ||
-    message.includes("does not exist")
+    codeValue.includes("model_not_found") ||
+    typeValue.includes("model_not_found") ||
+    message.includes("you do not have access to the model") ||
+    message.includes("you do not have access to model") ||
+    (message.includes("model") && (message.includes("not found") || message.includes("does not exist")))
   ) {
     return "OPENAI_MODEL";
   }
@@ -116,14 +139,41 @@ export function getOpenAIUserMessage(error: unknown) {
     case "OPENAI_TIMEOUT":
       return "OpenAI 回应超时，请稍后再试。系统已配置备用模型，但当前请求仍未完成。";
     default:
-      return "AI 风水命理师暂时无法回应，请稍后再试。";
+      return "OpenAI 请求参数或模型配置暂时不兼容，请稍后再试。系统已记录错误。";
   }
 }
 
 function shouldRetryWithFallback(error: unknown) {
   const code = getOpenAIErrorCode(error);
+  const message = getOpenAIErrorMessage(error).toLowerCase();
 
-  return code === "OPENAI_MODEL" || code === "OPENAI_TIMEOUT" || code === "OPENAI_RATE_LIMIT";
+  return (
+    code === "OPENAI_MODEL" ||
+    code === "OPENAI_TIMEOUT" ||
+    code === "OPENAI_RATE_LIMIT" ||
+    message.includes("unsupported value") ||
+    message.includes("unsupported_parameter")
+  );
+}
+
+function normalizeResponseParams(
+  params: Parameters<OpenAI["responses"]["create"]>[0],
+  model: string
+) {
+  const { reasoning: _reasoning, ...baseParams } = params as Record<string, unknown>;
+  const normalizedParams = {
+    ...baseParams,
+    model,
+    ...getResponseReasoningOptions(model)
+  } as Parameters<OpenAI["responses"]["create"]>[0];
+
+  const mutableParams = normalizedParams as Record<string, unknown>;
+
+  if (typeof mutableParams.max_output_tokens === "number" && mutableParams.max_output_tokens < OPENAI_MIN_OUTPUT_TOKENS) {
+    mutableParams.max_output_tokens = OPENAI_MIN_OUTPUT_TOKENS;
+  }
+
+  return normalizedParams;
 }
 
 export async function createOpenAIResponseWithFallback(
@@ -133,8 +183,10 @@ export async function createOpenAIResponseWithFallback(
   const primaryModel = String(params.model || getOpenAIModel());
 
   try {
+    const primaryParams = normalizeResponseParams(params, primaryModel);
+
     return {
-      response: (await client.responses.create(params)) as OpenAITextResponse,
+      response: (await client.responses.create(primaryParams)) as OpenAITextResponse,
       model: primaryModel,
       fallbackUsed: false
     };
@@ -143,18 +195,26 @@ export async function createOpenAIResponseWithFallback(
       throw error;
     }
 
-    const fallbackModel = getOpenAIFallbackModel(primaryModel);
-    const { reasoning: _reasoning, ...baseParams } = params as Record<string, unknown>;
-    const fallbackParams = {
-      ...baseParams,
-      model: fallbackModel,
-      ...getResponseReasoningOptions(fallbackModel)
-    } as Parameters<OpenAI["responses"]["create"]>[0];
+    let lastError = error;
 
-    return {
-      response: (await client.responses.create(fallbackParams)) as OpenAITextResponse,
-      model: fallbackModel,
-      fallbackUsed: true
-    };
+    for (const fallbackModel of getOpenAIFallbackCandidates(primaryModel)) {
+      try {
+        const fallbackParams = normalizeResponseParams(params, fallbackModel);
+
+        return {
+          response: (await client.responses.create(fallbackParams)) as OpenAITextResponse,
+          model: fallbackModel,
+          fallbackUsed: true
+        };
+      } catch (fallbackError) {
+        lastError = fallbackError;
+
+        if (!shouldRetryWithFallback(fallbackError)) {
+          break;
+        }
+      }
+    }
+
+    throw lastError;
   }
 }
