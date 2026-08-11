@@ -3696,8 +3696,8 @@ function MemberOnboardingGuide({
               <span className="grid size-8 place-items-center rounded-full bg-[#063F4A] text-sm font-semibold text-white">{index + 1}</span>
               {step.done ? <CheckCircle2 className="size-5 text-[#1495A0]" /> : <ChevronRight className="size-5 text-[#C79A54]" />}
             </div>
-            <h3 className="mt-4 font-semibold text-[#063F4A]">{step.title}</h3>
-            <p className="mt-2 min-h-12 text-xs leading-5 text-ink/55">{step.desc}</p>
+            <h3 className="mt-4 font-bold text-[#0F172A] text-base">{step.title}</h3>
+            <p className="mt-2 min-h-12 text-xs leading-5 font-medium text-[#334155]">{step.desc}</p>
             <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#7A1F16]">
               {step.done ? "已完成" : step.action} <ChevronRight className="size-3.5" />
             </span>
@@ -4665,12 +4665,12 @@ function ReportDemandPanel({ onSelectReport }: { onSelectReport: (preset: Report
             key={report.title}
             type="button"
             onClick={() => onSelectReport(report.preset)}
-            className="min-w-[168px] rounded-2xl border border-black/10 bg-white p-4 text-left transition active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm md:min-w-0 md:rounded"
+            className="min-w-[168px] rounded-2xl border border-slate-200 bg-white p-4.5 text-left transition active:scale-[0.98] hover:-translate-y-0.5 hover:border-[#C79A54] hover:shadow-md md:min-w-0 md:rounded-xl"
           >
-            <p className="font-semibold text-[#063F4A]">{report.title}</p>
-            <p className="mt-2 hidden text-xs leading-5 text-ink/55 sm:block">{report.desc}</p>
-            <p className="mt-3 rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{report.cost}</p>
-            <p className="mt-2 text-xs text-ink/42">四术合参生成</p>
+            <p className="font-bold text-[#0F172A] text-base">{report.title}</p>
+            <p className="mt-2 text-xs leading-5 font-medium text-[#334155]">{report.desc}</p>
+            <p className="mt-3 rounded-lg border border-[#04c9db]/30 bg-[#04c9db]/10 px-2.5 py-1 text-xs font-bold text-[#04c9db]">{report.cost}</p>
+            <p className="mt-2 text-xs font-semibold text-[#64748B]">四术合参生成</p>
           </button>
         ))}
       </div>
@@ -5058,7 +5058,7 @@ function PublicDailyAlmanacPanel({
                   {item.direction.slice(-1)}
                 </div>
               </div>
-              <p className="mt-4 text-sm leading-7 text-ink/68">{item.description}</p>
+              <p className="mt-4 text-xs leading-6 font-medium text-[#334155]">{item.description}</p>
             </div>
           ))}
         </div>
@@ -5066,18 +5066,18 @@ function PublicDailyAlmanacPanel({
         <div className="grid gap-3 rounded-xl border border-[#C79A54]/30 bg-[#F8F1DF] p-4 md:grid-cols-[1fr_1fr_1.2fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日宜</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#063F4A]">{almanac.yi.join("、")}</p>
+            <p className="mt-2 text-sm font-bold leading-6 text-[#0F172A]">{almanac.yi.join("、")}</p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">今日忌</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#063F4A]">{almanac.ji.join("、")}</p>
+            <p className="mt-2 text-sm font-bold leading-6 text-[#7A1F16]">{almanac.ji.join("、")}</p>
           </div>
           <div className="rounded bg-white/65 p-3">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">时辰提醒</p>
             <div className="mt-2 grid gap-2">
               {almanac.timeWindows.map((item) => (
                 <div key={item.label} className="flex items-start justify-between gap-3 text-xs">
-                  <span className="font-semibold text-[#063F4A]">{item.label} · {item.time}</span>
+                  <span className="font-bold text-[#0F172A]">{item.label} · {item.time}</span>
                   <span className={`rounded px-2 py-0.5 font-semibold ${toneClass(item.tone)}`}>{toneLabel(item.tone)}</span>
                 </div>
               ))}
@@ -5089,23 +5089,23 @@ function PublicDailyAlmanacPanel({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Daily Clothing Guide</p>
-              <h3 className="mt-2 text-xl font-semibold">每日穿衣指南</h3>
+              <h3 className="mt-2 text-xl font-bold text-[#0F172A]">每日穿衣指南</h3>
             </div>
-            <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">按流日五行调频</span>
+            <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-bold text-[#063F4A]">按流日五行调频</span>
           </div>
           <div className="mt-5 grid gap-3 lg:grid-cols-5">
             {almanac.clothingLevels.map((item) => (
-              <div key={item.level} className={`rounded border p-4 ${clothingToneClass(item.tone)}`}>
+              <div key={item.level} className={`rounded-xl border p-4 shadow-xs ${clothingToneClass(item.tone)}`}>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold text-[#063F4A]">{item.level}</p>
+                  <p className="font-bold text-[#0F172A] text-sm">{item.level}</p>
                   <div className="flex gap-1.5">
                     {item.swatches.map((swatch) => (
-                      <span key={swatch} className="size-5 rounded-full border border-black/10" style={{ backgroundColor: swatch }} />
+                      <span key={swatch} className="size-5 rounded-full border border-black/20 shadow-xs" style={{ backgroundColor: swatch }} />
                     ))}
                   </div>
                 </div>
-                <p className="mt-3 text-lg font-semibold text-[#7A1F16]">{item.colors.join("、")}</p>
-                <p className="mt-2 text-sm leading-6 text-ink/58">{item.reason}</p>
+                <p className="mt-3 text-lg font-bold text-[#7A1F16]">{item.colors.join("、")}</p>
+                <p className="mt-2 text-xs leading-6 font-medium text-[#1E293B]">{item.reason}</p>
               </div>
             ))}
           </div>
@@ -5115,8 +5115,8 @@ function PublicDailyAlmanacPanel({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">7-Day Unlock</p>
-              <h3 className="mt-2 text-xl font-semibold text-[#063F4A]">未来 7 天运势预报</h3>
-              <p className="mt-1 text-sm leading-6 text-ink/55">适合安排约见、签约、出门、谈合作和避开风险时段。</p>
+              <h3 className="mt-2 text-xl font-bold text-[#0F172A]">未来 7 天运势预报</h3>
+              <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">适合安排约见、签约、出门、谈合作和避开风险时段。</p>
             </div>
             <StatusPill>{sevenDayUnlocked ? "已解锁" : `${sevenDayFortuneCost} 点解锁`}</StatusPill>
           </div>
@@ -5125,17 +5125,17 @@ function PublicDailyAlmanacPanel({
               const advice = buildSevenDaySimpleAdvice(item, { zodiac: personalZodiac, dayMaster: personalDayMaster }, index);
 
               return (
-                <div key={item.date} className={`rounded border p-3 ${index === 0 ? "border-[#C79A54]/45 bg-[#FFF8E8]" : "border-[#CFE2E5] bg-[#F5FAFA]"}`}>
-                  <p className="text-xs font-semibold text-ink/45">{item.date}</p>
-                  <p className="mt-1 font-semibold text-[#063F4A]">{item.dayPillar}日</p>
-                  <p className="mt-2 text-xs leading-5 text-ink/58">财：{item.wealthDirection.direction} · 喜：{item.joyDirection.direction}</p>
-                  <p className="mt-1 text-xs leading-5 text-[#7A1F16]">{item.chong}</p>
-                  <p className="mt-2 text-xs font-semibold text-[#063F4A]">宜：{item.yi.slice(0, 2).join("、")}</p>
-                  <div className="mt-3 grid gap-2 border-t border-[#C79A54]/20 pt-3 text-xs leading-5 text-ink/62">
-                    <p><span className="font-semibold text-[#063F4A]">个人：</span>{advice.personalLine}</p>
-                    <p><span className="font-semibold text-[#063F4A]">风水：</span>{advice.fengshuiLine}</p>
-                    <p><span className="font-semibold text-[#063F4A]">时机：</span>{advice.timingLine}</p>
-                    <p><span className="font-semibold text-[#7A1F16]">提醒：</span>{advice.cautionLine}</p>
+                <div key={item.date} className={`rounded-xl border p-3.5 shadow-xs ${index === 0 ? "border-[#C79A54]/60 bg-[#FFF8E8]" : "border-slate-200 bg-[#F8FAFC]"}`}>
+                  <p className="text-xs font-bold text-[#64748B]">{item.date}</p>
+                  <p className="mt-1 font-bold text-[#0F172A] text-base">{item.dayPillar}日</p>
+                  <p className="mt-2 text-xs font-bold text-[#0F172A]">财：{item.wealthDirection.direction} · 喜：{item.joyDirection.direction}</p>
+                  <p className="mt-1 text-xs font-bold text-[#7A1F16]">{item.chong}</p>
+                  <p className="mt-2 text-xs font-bold text-[#0F172A]">宜：{item.yi.slice(0, 2).join("、")}</p>
+                  <div className="mt-3 grid gap-2 border-t border-[#C79A54]/30 pt-3 text-xs leading-5">
+                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">个人：</span>{advice.personalLine}</p>
+                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">风水：</span>{advice.fengshuiLine}</p>
+                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">时机：</span>{advice.timingLine}</p>
+                    <p className="text-[#7A1F16] font-medium"><span className="font-bold text-[#7A1F16]">提醒：</span>{advice.cautionLine}</p>
                   </div>
                 </div>
               );
@@ -11925,17 +11925,19 @@ export default function DashboardPage() {
                     type="button"
                     onClick={() => openCategory(category.id)}
                     className={[
-                      "min-w-[154px] rounded-2xl border p-3 text-left transition duration-200 hover:-translate-y-1 md:min-w-0",
+                      "min-w-[154px] rounded-2xl border p-3.5 text-left transition duration-300 hover:-translate-y-1 md:min-w-0",
                       activeCategoryButton
-                        ? "border-[#C79A54] bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_16px_36px_rgba(6,63,74,0.22)]"
-                        : "border-[#CFE2E5] bg-white/88 text-ink shadow-[0_10px_26px_rgba(6,63,74,0.06)] hover:border-[#C79A54]/50"
+                        ? "border-[#C79A54] bg-[#0D1012] text-white shadow-[0_0_20px_rgba(199,154,84,0.3)] ring-1 ring-[#C79A54]/50"
+                        : "border-white/10 bg-[#080A0C]/80 text-white/80 backdrop-blur-md hover:border-[#C79A54]/40 hover:bg-[#0D1012] hover:text-white"
                     ].join(" ")}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-semibold">{partnerCategoryLocked ? "邀请好友" : category.title}</span>
-                      {partnerCategoryLocked ? <LockKeyhole className={activeCategoryButton ? "size-4 text-[#C79A54]" : "size-4 text-ink/35"} /> : null}
+                      <span className={`text-sm font-serif font-bold ${activeCategoryButton ? "text-[#E8D4A8]" : "text-white"}`}>
+                        {partnerCategoryLocked ? "邀请好友" : category.title}
+                      </span>
+                      {partnerCategoryLocked ? <LockKeyhole className={activeCategoryButton ? "size-4 text-[#C79A54]" : "size-4 text-white/40"} /> : null}
                     </div>
-                    <p className={activeCategoryButton ? "mt-1 text-xs leading-5 text-white/58" : "mt-1 text-xs leading-5 text-ink/50"}>
+                    <p className={`mt-1.5 text-xs leading-5 ${activeCategoryButton ? "text-white/80 font-medium" : "text-white/60 font-medium"}`}>
                       {partnerCategoryLocked ? "推荐码、分享链接；创业中心购买配套后开放" : category.desc}
                     </p>
                   </button>
