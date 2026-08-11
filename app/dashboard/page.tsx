@@ -4002,6 +4002,25 @@ function EmptyStateCard({
   );
 }
 
+
+
+function ScoreRing({ score, label, desc }: { score: number; label: string; desc: string }) {
+  return (
+    <div className="grid place-items-center">
+      <div
+        className="grid size-40 place-items-center rounded-full shadow-[0_0_30px_rgba(199,154,84,0.35)]"
+        style={{ background: `conic-gradient(#C79A54 ${score * 3.6}deg, rgba(255,255,255,0.1) 0deg)` }}
+      >
+        <div className="grid size-32 place-items-center rounded-full border border-[#E8D4A8]/40 bg-[#080A0C] text-center shadow-inner">
+          <span className="font-serif text-5xl font-black gold-gradient-text">{score}</span>
+          <span className="-mt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/50">{label}</span>
+        </div>
+      </div>
+      <p className="mt-3 text-center text-sm font-bold text-[#04c9db]">{desc}</p>
+    </div>
+  );
+}
+
 function RecentUsePanel({
   recentModules,
   onOpenModule
@@ -4009,21 +4028,21 @@ function RecentUsePanel({
   recentModules: DashboardModule[];
   onOpenModule: (module: DashboardModule) => void;
 }) {
-  const fallbackModules: DashboardModule[] = ["ai", "wallet", "divination", "sigil"];
-  const quickModules = (recentModules.length ? recentModules : fallbackModules)
+  const defaultRecent: DashboardModule[] = ["fortune", "ai", "divination", "hexagram64", "sigil"];
+  const moduleIds = recentModules.length ? recentModules : defaultRecent;
+  const quickModules = moduleIds
     .map((id) => modules.find((module) => module.id === id))
-    .filter(Boolean)
-    .slice(0, 5) as (typeof modules)[number][];
+    .filter((module): module is (typeof modules)[number] => Boolean(module));
 
   return (
-    <section className="mb-4 rounded-2xl border border-[#CFE2E5] bg-white/88 p-4 shadow-[0_14px_35px_rgba(6,63,74,0.08)] md:mb-5 md:rounded md:p-5">
+    <section className="glass-panel mt-6 p-5 md:p-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Access</p>
-          <h2 className="mt-1 text-lg font-semibold text-[#063F4A]">最近使用</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#04c9db]">QUICK ACCESS</p>
+          <h2 className="mt-1 font-serif text-lg font-bold text-white">最近使用与常用入口</h2>
         </div>
-        <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-xs font-semibold text-[#063F4A]">
-          {recentModules.length ? "你的习惯入口" : "推荐入口"}
+        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-[#E8D4A8]">
+          {recentModules.length ? "习惯偏好" : "推荐功能"}
         </span>
       </div>
       <div className="-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0 md:pb-0">
@@ -4035,35 +4054,23 @@ function RecentUsePanel({
               key={module.id}
               type="button"
               onClick={() => onOpenModule(module.id)}
-              className="min-w-[148px] rounded-2xl border border-[#CFE2E5] bg-[#F5FAFA] p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:bg-white hover:shadow-sm md:min-w-0"
+              className="glass-panel glass-panel-interactive flex min-w-[148px] flex-col justify-between border-white/10 bg-[#080A0C] p-4 text-left hover:border-[#C79A54]/50 md:min-w-0"
             >
-              <span className="grid size-9 place-items-center rounded-xl bg-white text-[#063F4A] shadow-sm">
-                <Icon className="size-4" />
-              </span>
-              <p className="mt-3 text-sm font-semibold text-[#063F4A]">{module.title}</p>
-              <p className="mt-1 text-xs text-ink/48">{module.desc}</p>
+              <div>
+                <span className="grid size-10 place-items-center rounded-xl border border-[#04c9db]/30 bg-[#04c9db]/15 text-[#04c9db]">
+                  <Icon className="size-5" />
+                </span>
+                <p className="mt-3 font-serif text-sm font-bold text-white">{module.title}</p>
+                <p className="mt-1 text-xs text-white/50">{module.desc}</p>
+              </div>
+              <div className="mt-3 flex items-center gap-1 text-[11px] font-bold text-[#04c9db]">
+                点击打开 <ChevronRight className="size-3 transition group-hover:translate-x-1" />
+              </div>
             </button>
           );
         })}
       </div>
     </section>
-  );
-}
-
-function ScoreRing({ score, label, desc }: { score: number; label: string; desc: string }) {
-  return (
-    <div className="grid place-items-center">
-      <div
-        className="grid size-40 place-items-center rounded-full shadow-[0_22px_48px_rgba(199,154,84,0.24)]"
-        style={{ background: `conic-gradient(#C79A54 ${score * 3.6}deg, #DDEFF2 0deg)` }}
-      >
-        <div className="grid size-32 place-items-center rounded-full border border-[#E8D4A8]/55 bg-gradient-to-br from-white to-[#F8F1DF] text-center shadow-inner">
-          <span className="text-5xl font-semibold text-[#063F4A]">{score}</span>
-          <span className="-mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink/45">{label}</span>
-        </div>
-      </div>
-      <p className="mt-3 text-center text-sm font-semibold text-ink/70">{desc}</p>
-    </div>
   );
 }
 
@@ -4079,88 +4086,80 @@ function TodayActionCenter({
   onOpenModule: (module: DashboardModule) => void;
 }) {
   return (
-    <section className="premium-card premium-glow relative p-5 md:p-6">
-      <span className="premium-ring -right-28 -top-28 hidden lg:block" />
-      <div className="grid gap-6 lg:grid-cols-[0.78fr_1fr_0.9fr]">
-        <div className="rounded-3xl border border-white/70 bg-white/58 p-5 shadow-[0_18px_45px_rgba(6,63,74,0.08)] backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Today</p>
-          <h1 className="mt-2 text-3xl font-semibold md:text-4xl">今日行动中心</h1>
-          <p className="mt-3 text-sm leading-6 text-ink/58">先看分数、宜忌、吉时与吉方，再决定今天最稳的下一步。</p>
+    <section className="glass-panel glass-panel-gold relative mt-6 p-5 md:p-6">
+      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.1fr_0.9fr]">
+        <div className="rounded-2xl border border-white/10 bg-black/40 p-5 backdrop-blur-md">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#04c9db]">TODAY CENTER</p>
+          <h2 className="mt-2 font-serif text-3xl font-bold text-white">今日行动指南</h2>
+          <p className="mt-3 text-sm leading-6 text-white/70">结合每日评分、吉时吉方与宜忌提醒，稳妥布局下一步。</p>
           <div className="mt-5">
-            <StatusPill>{currentPlan.name} · {currentPoints.toLocaleString("en-US")} 点</StatusPill>
+            <StatusPill>{currentPlan.name} · {currentPoints.toLocaleString("en-US")} 点数可用</StatusPill>
           </div>
           {hasPartnerAccess ? (
             <button
               type="button"
               onClick={() => onOpenModule("partner")}
-              className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#063F4A]/15 bg-white px-3 py-2 text-xs font-semibold text-[#063F4A] shadow-[0_10px_24px_rgba(6,63,74,0.08)]"
+              className="btn-obsidian mt-4 text-xs font-bold"
             >
               创业中心 <ChevronRight className="size-3.5" />
             </button>
           ) : null}
         </div>
 
-        <div className="premium-gold-card grid gap-4 p-5 sm:grid-cols-[176px_1fr]">
+        <div className="rounded-2xl border border-white/10 bg-black/40 p-5 backdrop-blur-md grid gap-4 sm:grid-cols-[176px_1fr]">
           <ScoreRing score={89} label="Score" desc="稳中有进" />
           <div>
             <div className="grid gap-3 sm:grid-cols-3">
               {fortuneScores.map(([label, score, note]) => (
-                <div key={label} className="rounded-2xl border border-[#CFE2E5]/80 bg-white/86 p-3 shadow-[0_10px_25px_rgba(6,63,74,0.06)]">
-                  <p className="text-xs text-ink/45">{label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#063F4A]">{score}</p>
-                  <p className="mt-1 text-xs text-ink/50">{note}</p>
+                <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
+                  <p className="text-xs text-white/60">{label}</p>
+                  <p className="mt-1 font-serif text-2xl font-bold gold-gradient-text">{score}</p>
+                  <p className="mt-1 text-xs font-semibold text-[#04c9db]">{note}</p>
                 </div>
               ))}
             </div>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <div className="rounded-2xl border border-[#CFE2E5]/80 bg-white/86 p-3">
-                <p className="text-xs text-ink/45">今日宜</p>
-                <p className="mt-1 font-semibold text-[#063F4A]">复盘、整理资源、谈合作</p>
+              <div className="rounded-xl border border-[#04c9db]/30 bg-[#04c9db]/10 p-3">
+                <p className="text-xs font-bold text-[#04c9db]">今日宜</p>
+                <p className="mt-1 text-xs font-bold text-white">复盘、整理资源、谈合作</p>
               </div>
-              <div className="rounded-2xl border border-[#E8D4A8]/80 bg-white/86 p-3">
-                <p className="text-xs text-ink/45">今日忌</p>
-                <p className="mt-1 font-semibold text-[#7A1F16]">冲动承诺、夜间大额决策</p>
+              <div className="rounded-xl border border-[#FF6B6B]/30 bg-[#FF6B6B]/10 p-3">
+                <p className="text-xs font-bold text-[#FF6B6B]">今日忌</p>
+                <p className="mt-1 text-xs font-bold text-white">冲动承诺、夜间大额决策</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="premium-card-dark p-5 text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Quick Read</p>
+        <div className="rounded-2xl border border-white/10 bg-[#0D1012] p-5 text-white">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#C79A54]">QUICK READ</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/8 bg-white/8 p-3">
-              <p className="text-xs text-white/45">吉时</p>
-              <p className="mt-1 text-xl font-semibold text-[#C79A54]">09:00 - 11:00</p>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-white/50">吉时</p>
+              <p className="mt-1 font-serif text-lg font-bold text-[#E8D4A8]">09:00 - 11:00</p>
             </div>
-            <div className="rounded-2xl border border-white/8 bg-white/8 p-3">
-              <p className="text-xs text-white/45">吉方</p>
-              <p className="mt-1 text-xl font-semibold text-[#C79A54]">东南</p>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-white/50">吉方</p>
+              <p className="mt-1 font-serif text-lg font-bold text-[#E8D4A8]">东南纳财</p>
             </div>
-            <div className="col-span-2 rounded-2xl border border-white/8 bg-white/8 p-3">
-              <p className="text-xs text-white/45">今日建议</p>
-              <p className="mt-1 text-sm leading-6 text-white/72">先整理方向与资源，再判断下一步行动。</p>
+            <div className="col-span-2 rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-white/50">今日建议</p>
+              <p className="mt-1 text-xs leading-6 text-white/80">先整理方向与资源，再判断下一步行动。</p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => onOpenModule("ai")}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#C79A54] px-4 py-3 text-sm font-semibold text-[#063F4A] shadow-[0_14px_28px_rgba(199,154,84,0.25)] transition hover:-translate-y-0.5"
+            className="btn-gold mt-4 w-full text-xs font-bold"
           >
             问 AI 风水命理师 <Bot className="size-4" />
           </button>
           <button
             type="button"
             onClick={() => onOpenModule("wallet")}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/8"
+            className="btn-obsidian mt-2 w-full text-xs font-bold"
           >
             生成今日建议报告 <FileText className="size-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onOpenModule("sigil")}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#C79A54]/45 bg-white/8 px-4 py-3 text-sm font-semibold text-[#C79A54] transition hover:-translate-y-0.5 hover:bg-[#C79A54]/10"
-          >
-            生成 Sigil 符印 <Sparkles className="size-4" />
           </button>
         </div>
       </div>
@@ -4998,18 +4997,18 @@ function PublicDailyAlmanacPanel({
                   {personalZodiacFortune.isClash ? <span className="rounded-full bg-[#7A1F16]/10 px-3 py-1 text-xs font-semibold text-[#7A1F16]">今日相冲</span> : null}
                   {personalZodiacFortune.isNoble ? <span className="rounded-full bg-[#C79A54]/18 px-3 py-1 text-xs font-semibold text-[#063F4A]">贵人生肖</span> : null}
                 </div>
-                <p className="mt-3 text-sm font-semibold text-[#063F4A]">{personalZodiacFortune.headline}</p>
-                <p className="mt-1 text-sm leading-6 text-ink/58">{personalZodiacFortune.advice}</p>
-                <p className="mt-2 text-xs font-semibold text-ink/45">色：{personalZodiacFortune.luckyColor} · 方：{personalZodiacFortune.luckyDirection}</p>
+                <p className="mt-3 text-sm font-bold text-[#0F172A]">{personalZodiacFortune.headline}</p>
+                <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">{personalZodiacFortune.advice}</p>
+                <p className="mt-2 text-xs font-bold text-[#0F172A]">色：{personalZodiacFortune.luckyColor} · 方：{personalZodiacFortune.luckyDirection}</p>
               </>
             ) : (
-              <p className="mt-3 text-sm leading-6 text-ink/58">补完整出生日期后，系统会自动高亮你的生肖今日重点。</p>
+              <p className="mt-3 text-xs leading-6 font-medium text-[#334155]">补完整出生日期后，系统会自动高亮你的生肖今日重点。</p>
             )}
           </div>
 
           <div className="rounded-xl border border-[#C79A54]/30 bg-white p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Day Master</p>
-            <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">你的日主流日</h3>
+            <h3 className="mt-2 text-lg font-semibold text-[#0F172A]">你的日主流日</h3>
             {personalDayMasterFlow ? (
               <>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -5017,11 +5016,11 @@ function PublicDailyAlmanacPanel({
                   <span className="rounded-full bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.tenGod}</span>
                   <span className="rounded-full bg-[#DDEFF2] px-3 py-1 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.score}/100</span>
                 </div>
-                <p className="mt-3 text-sm font-semibold text-[#063F4A]">{personalDayMasterFlow.headline}</p>
-                <p className="mt-1 text-sm leading-6 text-ink/58">{personalDayMasterFlow.advice}</p>
+                <p className="mt-3 text-sm font-bold text-[#0F172A]">{personalDayMasterFlow.headline}</p>
+                <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">{personalDayMasterFlow.advice}</p>
               </>
             ) : (
-              <p className="mt-3 text-sm leading-6 text-ink/58">补完整生日和时辰后，会显示你的今日十神标签。</p>
+              <p className="mt-3 text-xs leading-6 font-medium text-[#334155]">补完整生日和时辰后，会显示你的今日十神标签。</p>
             )}
           </div>
 
@@ -5190,9 +5189,9 @@ function PublicDailyAlmanacPanel({
                     {item.isClash ? <span className="rounded bg-[#7A1F16]/10 px-2 py-0.5 text-[11px] font-semibold text-[#7A1F16]">今日相冲</span> : null}
                     {item.isNoble ? <span className="rounded bg-[#C79A54]/18 px-2 py-0.5 text-[11px] font-semibold text-[#063F4A]">贵人生肖</span> : null}
                   </div>
-                  <p className="mt-2 text-sm font-semibold">{item.headline}</p>
-                  <p className="mt-1 text-xs leading-5 text-ink/58">{item.advice}</p>
-                  <p className="mt-2 text-[11px] font-semibold text-ink/48">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
+                  <p className="mt-2 text-sm font-bold text-[#0F172A]">{item.headline}</p>
+                  <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">{item.advice}</p>
+                  <p className="mt-2 text-[11px] font-bold text-[#0F172A]">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
@@ -5202,22 +5201,22 @@ function PublicDailyAlmanacPanel({
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">Day Master Flow</p>
-                <h3 className="mt-2 text-xl font-semibold">十神日元流日运势</h3>
+                <h3 className="mt-2 text-xl font-semibold text-[#0F172A]">十神日元流日运势</h3>
               </div>
               <span className="rounded bg-[#F8F1DF] px-3 py-1 text-sm font-semibold text-[#063F4A]">十日元参考</span>
             </div>
             <div className="mt-5 grid gap-2 md:grid-cols-2">
               {almanac.dayMasterFlow.map((item) => (
-                <div key={item.stem} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
+                <div key={item.stem} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-3.5 shadow-sm">
                   <div className="flex items-center gap-3">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#063F4A] text-lg font-semibold text-white">{item.stem}</span>
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#063F4A] text-lg font-bold text-white">{item.stem}</span>
                     <div className="min-w-0">
-                      <p className="font-semibold text-[#063F4A]">{item.stem}{item.element} · 今日主星：{item.tenGod}</p>
-                      <p className="text-xs font-semibold text-[#C79A54]">{item.headline} · {item.score}/100</p>
+                      <p className="font-bold text-[#0F172A]">{item.stem}{item.element} · 今日主星：{item.tenGod}</p>
+                      <p className="text-xs font-bold text-[#C79A54]">{item.headline} · {item.score}/100</p>
                     </div>
                   </div>
-                  <p className="mt-2 text-xs leading-5 text-ink/58">{item.advice}</p>
-                  <p className="mt-2 text-[11px] font-semibold text-ink/45">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
+                  <p className="mt-2.5 text-xs leading-6 font-medium text-[#334155]">{item.advice}</p>
+                  <p className="mt-2 text-[11px] font-bold text-[#0F172A]">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
