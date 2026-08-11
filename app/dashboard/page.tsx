@@ -34,6 +34,7 @@ import {
   X,
   type LucideIcon
 } from "lucide-react";
+import { CeremonialLoader } from "@/components/ceremonial-loader";
 import {
   dailyRituals,
   dashboardCourses,
@@ -10452,6 +10453,11 @@ function SigilModule({
           />
         )}
       </div>
+      <CeremonialLoader
+        isOpen={isGenerating}
+        title="正在显化 Sigil 能量符印..."
+        subtitle="结合您输入的意图文字，运用神圣几何与灵性粒子进行符印铸造"
+      />
     </section>
   );
 }
@@ -10855,6 +10861,11 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
           />
         )}
       </div>
+      <CeremonialLoader
+        isOpen={isGenerating}
+        title="正在起卦抽取 64 卦一字..."
+        subtitle="感应时空交汇磁场，为您抽取今日核心命理天字与断语"
+      />
     </section>
   );
 }
@@ -11463,6 +11474,11 @@ function DivinationModule({
           />
         )}
       </div>
+      <CeremonialLoader
+        isOpen={isGenerating}
+        title="正在起卦演测九运天机..."
+        subtitle="结合您输入的三个数字与此时此刻时空场进行命理抽爻"
+      />
     </section>
   );
 }

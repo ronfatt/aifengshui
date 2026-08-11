@@ -5,6 +5,7 @@ import { BookOpenCheck, Bot, CheckCircle2, FileText, Loader2, Send, ShieldCheck,
 import { emptyMemberProfile, type MemberProfile } from "@/lib/member-profile";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { MembershipTier } from "@/lib/types";
+import { CeremonialLoader } from "@/components/ceremonial-loader";
 
 type Message = {
   role: "user" | "assistant" | "system";
@@ -587,6 +588,11 @@ export function FengshuiChat({
           </form>
         </main>
       </div>
+      <CeremonialLoader
+        isOpen={isLoading}
+        title="AI 风水命理师推演中..."
+        subtitle="正在结合您的生辰八字、流年大运与阴阳五行局进行深度解盘"
+      />
     </div>
   );
 }
