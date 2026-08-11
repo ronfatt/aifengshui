@@ -4486,12 +4486,12 @@ function TodayAssistantPanel({
           </button>
         </div>
 
-        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+        <div className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-[#063F4A]">2. 新会员先做这 4 件事</p>
-            <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">{completedSteps.length}/{onboardingSteps.length}</span>
+            <p className="text-sm font-bold text-[#0F172A]">2. 新会员先做这 4 件事</p>
+            <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-[#063F4A]">{completedSteps.length}/{onboardingSteps.length}</span>
           </div>
-          <div className="mt-3 h-2 rounded-full bg-white">
+          <div className="mt-3 h-2 rounded-full bg-slate-200">
             <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${progress}%` }} />
           </div>
           <div className="mt-3 grid gap-2">
@@ -4503,16 +4503,16 @@ function TodayAssistantPanel({
                   key={step.title}
                   type="button"
                   onClick={() => handleOnboardingStep(step, index)}
-                  className={done ? "group flex items-center gap-3 rounded border border-[#C79A54]/45 bg-[#C79A54]/10 p-3 text-left transition hover:border-[#C79A54]" : "group flex items-center gap-3 rounded border border-black/10 bg-white p-3 text-left transition hover:border-[#C79A54]/55"}
+                  className={done ? "group flex items-center gap-3 rounded-xl border border-[#C79A54]/60 bg-[#FFF8E8] p-3.5 text-left transition hover:border-[#C79A54]" : "group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-[#C79A54] shadow-xs"}
                 >
-                  <span className={done ? "grid size-7 shrink-0 place-items-center rounded bg-[#C79A54] text-xs font-semibold text-[#063F4A]" : "grid size-7 shrink-0 place-items-center rounded bg-[#DDEFF2] text-xs font-semibold text-[#063F4A]"}>
+                  <span className={done ? "grid size-7 shrink-0 place-items-center rounded-lg bg-[#C79A54] text-xs font-bold text-[#050607]" : "grid size-7 shrink-0 place-items-center rounded-lg bg-[#063F4A] text-xs font-bold text-white"}>
                     {done ? <CheckCircle2 className="size-4" /> : index + 1}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold">{step.title}</span>
-                    <span className="block truncate text-xs text-ink/48">{done ? "已完成，可再次查看" : step.desc}</span>
+                    <span className="block text-sm font-bold text-[#0F172A]">{step.title}</span>
+                    <span className="block text-xs font-medium text-[#334155] leading-5">{done ? "已完成，可再次查看" : step.desc}</span>
                   </span>
-                  <ChevronRight className="size-4 shrink-0 text-ink/35 transition group-hover:translate-x-0.5" />
+                  <ChevronRight className="size-4 shrink-0 text-[#0F172A] transition group-hover:translate-x-1" />
                 </button>
               );
             })}
@@ -5027,8 +5027,8 @@ function PublicDailyAlmanacPanel({
 
           <div className="rounded-xl border border-[#C79A54]/35 bg-[#FFFDF7] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Share Poster</p>
-            <h3 className="mt-2 text-lg font-semibold text-[#063F4A]">生成今日分享图</h3>
-            <p className="mt-2 text-sm leading-6 text-ink/58">把每日吉方、穿衣和宜忌做成 JPG 海报，适合 WhatsApp / Facebook 分享。</p>
+            <h3 className="mt-2 text-lg font-bold text-[#0F172A]">生成今日分享图</h3>
+            <p className="mt-2 text-xs leading-6 font-medium text-[#334155]">把每日吉方、穿衣和宜忌做成 JPG 海报，适合 WhatsApp / Facebook 分享。</p>
             <button
               type="button"
               onClick={() => downloadAlmanacSharePoster(almanac, { zodiac: personalZodiac, dayMaster: personalDayMaster })}
@@ -5440,82 +5440,82 @@ function TodayFortune({
       </div>
 
       <div className="grid gap-5">
-        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Daily Signals</p>
-              <h3 className="mt-2 text-xl font-semibold">今日评分来源</h3>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Daily Signals</p>
+              <h3 className="mt-2 text-xl font-bold text-[#0F172A]">今日评分来源</h3>
             </div>
             <StatusPill>{matrix.weather.label}</StatusPill>
           </div>
           <div className="mt-4 grid gap-3">
             {dailyScores.map((item) => (
-              <div key={item.key} className="rounded border border-black/10 bg-rice p-3">
+              <div key={item.key} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-3.5 shadow-xs">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold">{item.palace}</p>
-                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.score}</span>
+                  <p className="font-bold text-[#0F172A] text-base">{item.palace}</p>
+                  <span className="rounded-md border border-[#C79A54]/30 bg-[#C79A54]/15 px-2.5 py-1 text-xs font-bold text-[#063F4A]">{item.score}</span>
                 </div>
-                <p className="mt-1 text-sm text-ink/65">{item.signals.join(" / ")}</p>
-                <p className="mt-1 text-xs leading-5 text-ink/48">风险：{item.risks.join("、")}</p>
+                <p className="mt-1.5 text-xs leading-6 font-medium text-[#1E293B]">{item.signals.join(" / ")}</p>
+                <p className="mt-1.5 text-xs font-bold text-[#7A1F16]">风险：{item.risks.join("、")}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm text-ink/55">连续签到</p>
-              <p className="mt-2 text-4xl font-semibold">7 天</p>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#64748B]">连续签到</p>
+              <p className="mt-2 text-4xl font-bold text-[#0F172A]">7 天</p>
             </div>
-            <span className="grid size-11 place-items-center rounded bg-[#C79A54]/15 text-[#C79A54]">
+            <span className="grid size-11 place-items-center rounded-xl bg-[#C79A54]/15 text-[#C79A54]">
               <Sparkles className="size-5" />
             </span>
           </div>
           <div className="mt-5 grid grid-cols-7 gap-1">
             {["一", "二", "三", "四", "五", "六", "日"].map((day) => (
-              <div key={day} className="grid aspect-square place-items-center rounded bg-[#063F4A] text-xs font-semibold text-white">
+              <div key={day} className="grid aspect-square place-items-center rounded-lg bg-[#063F4A] text-xs font-bold text-white shadow-xs">
                 {day}
               </div>
             ))}
           </div>
-          <p className="mt-4 text-sm leading-6 text-ink/60">保持 14 天可解锁一次免费深度分析。</p>
+          <p className="mt-4 text-xs leading-6 font-medium text-[#334155]">保持 14 天可解锁一次免费深度分析。</p>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">今日开运任务</h2>
-            <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs font-medium text-ink/58">3 / 3</span>
+            <h2 className="text-xl font-bold text-[#0F172A]">今日开运任务</h2>
+            <span className="rounded-md border border-slate-200 bg-[#F8FAFC] px-2.5 py-1 text-xs font-bold text-[#063F4A]">3 / 3</span>
           </div>
           <div className="grid gap-3">
             {dailyRituals.map((item) => (
-              <div key={item.title} className="flex gap-3 rounded border border-black/10 bg-[#F5FAFA] p-3">
+              <div key={item.title} className="flex gap-3 rounded-xl border border-slate-200 bg-[#F8FAFC] p-3.5 shadow-xs">
                 <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-[#063F4A]" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold">{item.title}</p>
-                    <span className="shrink-0 rounded bg-white px-2 py-1 text-xs text-[#063F4A]">{item.reward}</span>
+                    <p className="font-bold text-[#0F172A] text-sm">{item.title}</p>
+                    <span className="shrink-0 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-[#063F4A] shadow-xs">{item.reward}</span>
                   </div>
-                  <p className="mt-1 text-sm leading-6 text-ink/58">{item.desc}</p>
+                  <p className="mt-1 text-xs leading-5 font-medium text-[#334155]">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold">最近洞察</h2>
-            <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs font-medium text-ink/58">AI 总结</span>
+            <h2 className="text-xl font-bold text-[#0F172A]">最近洞察</h2>
+            <span className="rounded-md border border-slate-200 bg-[#F8FAFC] px-2.5 py-1 text-xs font-bold text-[#063F4A]">AI 总结</span>
           </div>
           <div className="grid gap-3">
             {recentInsights.map((item) => (
-              <div key={item.title} className="rounded border border-black/10 p-3">
+              <div key={item.title} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-3.5 shadow-xs">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold">{item.title}</p>
-                  <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs text-ink">{item.tag}</span>
+                  <p className="font-bold text-[#0F172A] text-base">{item.title}</p>
+                  <span className="rounded-md border border-[#C79A54]/30 bg-[#C79A54]/15 px-2.5 py-1 text-xs font-bold text-[#063F4A]">{item.tag}</span>
                 </div>
-                <p className="mt-2 text-sm leading-6 text-ink/58">{item.desc}</p>
+                <p className="mt-2 text-xs leading-6 font-medium text-[#334155]">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -11945,11 +11945,11 @@ export default function DashboardPage() {
               })}
             </div>
 
-            <div className="premium-card mt-4 p-4">
+            <div className="glass-panel mt-4 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-semibold text-[#063F4A]">{activeCategoryConfig.title}</h3>
-                  <p className="mt-1 text-sm text-ink/55">{activeCategoryConfig.desc}</p>
+                  <h3 className="font-serif text-lg font-bold text-white">{activeCategoryConfig.title}</h3>
+                  <p className="mt-1 text-xs font-medium text-white/70">{activeCategoryConfig.desc}</p>
                 </div>
                 <StatusPill>{visibleModules.length} 个入口</StatusPill>
               </div>
