@@ -23,6 +23,7 @@ import {
   LockKeyhole,
   Network,
   Palette,
+  Search,
   Share2,
   ShoppingBag,
   Sparkles,
@@ -30,7 +31,8 @@ import {
   Trophy,
   UserRound,
   WalletCards,
-  X
+  X,
+  type LucideIcon
 } from "lucide-react";
 import {
   dailyRituals,
@@ -236,7 +238,10 @@ const dashboardCategories: {
   }
 ];
 
-const memberDashboardCategories = dashboardCategories.slice(0, 5);
+type DashboardModuleConfig = (typeof modules)[number];
+type DashboardCategoryConfig = (typeof dashboardCategories)[number];
+
+const memberDashboardCategories = dashboardCategories.slice(0, 5) as DashboardCategoryConfig[];
 const partnerDashboardCategory = dashboardCategories[5]!;
 
 const defaultModuleByCategory: Record<DashboardCategory, DashboardModule> = {

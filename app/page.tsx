@@ -16,46 +16,50 @@ import {
   ShieldCheck,
   Sparkles,
   Target,
+  ChevronRight,
+  Zap
 } from "lucide-react";
 import { AppShell } from "@/components/shell";
 
 const ctaPrimary =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[#1495A0] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(20,149,160,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0F7F88]";
+  "inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#E8D4A8] via-[#C79A54] to-[#997233] px-7 py-4 text-sm font-semibold text-[#050607] shadow-[0_12px_32px_rgba(199,154,84,0.3)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
+
 const ctaDark =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[#063F4A] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(6,63,74,0.18)] transition hover:-translate-y-0.5 hover:bg-[#052F38]";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-[#C79A54]/40 bg-[#0D1012] px-7 py-4 text-sm font-semibold text-[#E8D4A8] shadow-[0_12px_32px_rgba(0,0,0,0.5)] transition hover:-translate-y-0.5 hover:border-[#C79A54] hover:bg-[#1A1F24] hover:text-white";
+
 const ctaGhost =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-[#C79A54]/45 bg-white px-6 py-3.5 text-sm font-semibold text-[#063F4A] shadow-sm transition hover:-translate-y-0.5 hover:border-[#C79A54] hover:shadow-md";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-sm font-semibold text-white/80 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white";
 
 const painCards = [
-  ["机会来了，不敢出手", "不知道现在是不是最好的时机。", Target],
-  ["决定很多，还是没把握", "信息太乱，越分析越不确定。", Compass],
-  ["想布局未来，看不清风险", "事业、财运、合作与方向，都需要先判断节奏。", ShieldCheck]
+  ["机会来了，不敢出手", "不知道现在是不是最好的时机，缺乏明确的节奏指引。", Target],
+  ["决定很多，还是没把握", "信息杂乱越分析越迷茫，关键时刻缺乏权威诊断。", Compass],
+  ["想布局未来，看不清风险", "事业、财运、合作与方位，都需要提前预判隐患。", ShieldCheck]
 ] as const;
 
 const methodCards = [
-  ["AI即时分析", "快速整理问题、趋势与行动建议。", Bot],
-  ["大师深度诊断", "结合命理、风水与实战经验判断关键节点。", Gem],
-  ["双引擎服务", "AI先给方向，大师再做判断，更快、更稳、更落地。", Orbit]
+  ["AI 即时秒级推演", "24/7 全天候秒级整理问题结构、命运趋势与行动宜忌。", Bot],
+  ["大师深度战略诊断", "结合数十载命理实战经验，在关键节点提供定盘星结论。", Gem],
+  ["双引擎落地服务", "AI 快速破局整理方向，大师精准打定决心，更快更稳。", Orbit]
 ] as const;
 
 const services = [
-  ["今日运势", "快速了解今日事业、财运、感情与行动方向。", "立即体验", CalendarDays],
-  ["AI深度报告", "生成个人趋势、优势、风险与未来建议。", "生成报告", FileText],
-  ["风水布局建议", "针对家居、办公室、店铺提供布局建议。", "查看方案", Compass],
-  ["大师一对一咨询", "由易玺大师提供深度判断与行动方案。", "预约咨询", MessageCircle]
+  ["今日运势", "快速了解今日事业、财运、感情与最佳行动方位。", "立即体验", CalendarDays],
+  ["AI 深度报告", "生成个人八字/紫微趋势、优势、隐患与未来建议。", "生成报告", FileText],
+  ["风水布局建议", "针对家居、办公室、店铺提供定制五行布局方案。", "查看方案", Compass],
+  ["大师一对一咨询", "由易玺大师提供高阶深度诊断与商业行动决策。", "预约咨询", MessageCircle]
 ] as const;
 
 const businessAdvantages = [
-  ["AI辅助接待", "自动完成初步测算与问题整理。", Bot],
-  ["标准化产品输出", "报告、咨询、布局建议可复制交付。", PackageCheck],
-  ["大师IP背书", "借助易玺大师方法论提升信任。", BadgeCheck],
-  ["可复制创业模式", "适合顾问、代理、内容创业者与门店。", Network]
+  ["AI 智能前置接待", "自动完成初步测算、命盘拆解与问题结构整理。", Bot],
+  ["标准化产品交付", "报告、咨询、风水布局方案可复制、高保真交付。", PackageCheck],
+  ["实战大师 IP 背书", "借助易玺大师多年实战品牌提升信任转化率。", BadgeCheck],
+  ["可复制创业模式", "适合顾问、代理商、内容创业者与线下门店转型。", Network]
 ] as const;
 
 const packages = [
-  ["AI深度报告", "适合想了解事业、财运、感情与未来趋势的人。", "生成报告", "点数制", ["趋势分析", "风险提醒", "行动建议"]],
-  ["大师咨询", "适合正在面对关键决定，需要深度判断的人。", "预约大师", "预约制", ["深度判断", "命理风水结合", "定制方案"]],
-  ["创业合作", "适合想进入AI风水命理服务市场的人。", "申请合作", "合作制", ["平台系统", "AI工具", "合作支持"]]
+  ["AI 深度报告", "适合想全方位看清个人事业、财运、感情与未来趋势的人。", "生成报告", "点数制", ["八字/紫微大运趋势分析", "五行盈缺与风险预警", "定制月度行动指南"]],
+  ["大师深度咨询", "适合正在面对重大决策，需要权威大师定盘点拨的人。", "预约大师", "预约制", ["易玺大师 1 对 1 诊断", "命理 + 空间风水双重研判", "商业/人生定制解决方案"]],
+  ["事业合伙人", "适合想进入 AI 赋能的风水命理蓝海市场的创业者。", "申请合作", "合作制", ["全套 AI 命理 SaaS 平台", "标准化服务交付工具", "大师 IP 赋能与团队支持"]]
 ] as const;
 
 const peopleImages = {
@@ -80,13 +84,14 @@ function SectionIntro({
 }) {
   return (
     <div className="max-w-3xl">
-      <p className={`text-sm font-semibold uppercase tracking-[0.18em] ${inverted ? "text-[#C79A54]" : "text-[#C79A54]"}`}>
-        {eyebrow}
-      </p>
-      <h2 className={`mt-3 text-4xl font-semibold leading-tight md:text-6xl ${inverted ? "text-white" : "text-[#063F4A]"}`}>
+      <div className="flex items-center gap-2">
+        <span className="h-px w-8 bg-gradient-to-r from-[#C79A54] to-transparent" />
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C79A54] sm:text-sm">{eyebrow}</p>
+      </div>
+      <h2 className={`mt-3 font-serif text-3xl font-bold leading-tight sm:text-5xl md:text-6xl ${inverted ? "text-white" : "gold-gradient-text"}`}>
         {title}
       </h2>
-      {desc ? <p className={`mt-5 text-lg leading-8 ${inverted ? "text-white/68" : "text-[#102F38]/68"}`}>{desc}</p> : null}
+      {desc ? <p className={`mt-4 text-base leading-8 sm:text-lg ${inverted ? "text-white/70" : "text-white/65"}`}>{desc}</p> : null}
     </div>
   );
 }
@@ -103,60 +108,81 @@ function IconCard({
   dark?: boolean;
 }) {
   return (
-    <article
-      className={`rounded-3xl border p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg ${
-        dark ? "border-white/10 bg-white/8 text-white" : "border-[#063F4A]/10 bg-white text-[#102F38]"
-      }`}
-    >
-      <span className={`grid size-12 place-items-center rounded-2xl ${dark ? "bg-[#C79A54]/16 text-[#C79A54]" : "bg-[#DDEFF2] text-[#063F4A]"}`}>
+    <article className="glass-panel glass-panel-interactive p-7 sm:p-8">
+      <span className="grid size-13 place-items-center rounded-2xl border border-[#C79A54]/30 bg-gradient-to-br from-[#C79A54]/20 to-transparent text-[#C79A54] shadow-[0_0_15px_rgba(199,154,84,0.15)]">
         <Icon className="size-6" />
       </span>
-      <h3 className="mt-5 text-xl font-semibold">{title}</h3>
-      <p className={`mt-3 text-sm leading-6 ${dark ? "text-white/62" : "text-[#102F38]/62"}`}>{desc}</p>
+      <h3 className="mt-6 font-serif text-xl font-bold text-white sm:text-2xl">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-white/60">{desc}</p>
     </article>
   );
 }
 
 function HeroPhoneMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[370px]">
-      <div className="absolute inset-x-10 top-10 h-[86%] rounded-[3rem] bg-[#C79A54]/20 blur-3xl" />
-      <div className="relative rounded-[2.6rem] border border-[#C79A54]/35 bg-[#063F4A] p-3 shadow-[0_28px_90px_rgba(6,63,74,0.35)]">
-        <div className="rounded-[2rem] bg-[#F5FAFA] p-4">
-          <div className="mx-auto mb-5 h-1.5 w-20 rounded-full bg-[#063F4A]/12" />
-          <div className="rounded-3xl bg-[#063F4A] p-5 text-white">
+    <div className="relative mx-auto w-full max-w-[380px]">
+      {/* Glow aura */}
+      <div className="absolute -inset-4 rounded-[3.5rem] bg-gradient-to-tr from-[#C79A54]/30 via-transparent to-[#1495A0]/25 blur-3xl opacity-70" />
+      
+      {/* Outer Phone Shell */}
+      <div className="relative rounded-[2.8rem] border border-[#C79A54]/40 bg-[#080A0C] p-3.5 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_0_40px_rgba(199,154,84,0.15)]">
+        <div className="overflow-hidden rounded-[2.2rem] border border-white/10 bg-[#0D1012] p-5">
+          {/* Dynamic Speaker Notch */}
+          <div className="mx-auto mb-5 flex items-center justify-between">
+            <span className="text-[10px] font-mono tracking-widest text-[#04c9db]">AI ENGINE ACTIVE</span>
+            <div className="h-1.5 w-16 rounded-full bg-white/15" />
+            <span className="size-2 rounded-full bg-[#04c9db] shadow-[0_0_10px_#04c9db] animate-ping" />
+          </div>
+
+          {/* Energy Score Main Dial Card */}
+          <div className="glass-panel-gold p-6 text-white">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">今日能量评分</p>
-                <p className="mt-2 text-7xl font-semibold leading-none">89</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#E8D4A8]">今日个人能量指数</p>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="font-serif text-6xl font-black leading-none gold-gradient-text">89</span>
+                  <span className="text-xs font-semibold text-[#04c9db]">/ 100</span>
+                </div>
               </div>
-              <span className="grid size-14 place-items-center rounded-2xl bg-[#C79A54]/15 text-[#C79A54]">
-                <Sparkles className="size-7" />
+              <span className="grid size-12 place-items-center rounded-2xl border border-[#04c9db]/40 bg-[#04c9db]/15 text-[#04c9db] shadow-[0_0_18px_rgba(4,201,219,0.35)]">
+                <Sparkles className="size-6 animate-pulse" />
               </span>
             </div>
+
+            {/* Dimension Indicators */}
             <div className="mt-6 grid grid-cols-3 gap-2">
               {[
-                ["事业", "91"],
-                ["财运", "82"],
-                ["感情", "76"]
-              ].map(([label, score]) => (
-                <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-3 text-center">
-                  <p className="text-xs text-white/48">{label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#C79A54]">{score}</p>
+                ["事业格局", "91", "木旺"],
+                ["财帛吉凶", "82", "金生"],
+                ["姻缘磁场", "76", "水和"]
+              ].map(([label, score, tag]) => (
+                <div key={label} className="rounded-xl border border-white/10 bg-black/40 p-2.5 text-center backdrop-blur">
+                  <p className="text-[10px] text-white/50">{label}</p>
+                  <p className="mt-0.5 font-serif text-lg font-bold text-[#E8D4A8]">{score}</p>
+                  <span className="mt-1 inline-block rounded border border-[#04c9db]/30 bg-[#04c9db]/15 px-1.5 py-0.5 text-[9px] font-bold text-[#04c9db]">
+                    {tag}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="mt-4 rounded-3xl border border-[#C79A54]/30 bg-[#C79A54]/10 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">今日建议</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#102F38]">
-              适合整理方向、规划资源、重新判断下一步行动。
+
+          {/* Recommendation Teaser */}
+          <div className="mt-4 rounded-2xl border border-[#04c9db]/30 bg-[#04c9db]/10 p-4 backdrop-blur-md">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#04c9db]">
+              <Zap className="size-4 text-[#04c9db]" />
+              今日关键提示
+            </div>
+            <p className="mt-1.5 text-xs font-medium leading-5 text-white/80">
+              辰时（07-09）吉星高照，适合推进合作谈判与财务梳理；避免冲动情绪。
             </p>
           </div>
+
+          {/* Check List */}
           <div className="mt-4 grid gap-2">
-            {["AI 24/7 即时分析", "易玺大师实战背书", "个人 / 企业 / 创业适用"].map((item) => (
-              <div key={item} className="flex items-center gap-2 rounded-2xl bg-white px-3 py-2 text-sm font-semibold text-[#063F4A]">
-                <CheckCircle2 className="size-4 text-[#C79A54]" />
+            {["AI 24/7 秒级大运推演", "易玺大师 1 对 1 定盘背书", "企业决策 / 个人命理全适用"].map((item) => (
+              <div key={item} className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/4 px-3.5 py-2.5 text-xs font-semibold text-white/85">
+                <CheckCircle2 className="size-4 shrink-0 text-[#04c9db]" />
                 {item}
               </div>
             ))}
@@ -169,20 +195,20 @@ function HeroPhoneMockup() {
 
 function HumanTrustRow() {
   return (
-    <div className="mt-7 flex flex-wrap items-center gap-4">
+    <div className="mt-9 flex flex-wrap items-center gap-4 border-t border-white/10 pt-7">
       <div className="flex -space-x-3">
         {[peopleImages.clientA, peopleImages.founder, peopleImages.clientB, peopleImages.clientC].map((src, index) => (
           <img
             key={src}
             src={src}
-            alt={`用户头像 ${index + 1}`}
-            className="size-12 rounded-full border-2 border-white object-cover shadow-sm"
+            alt={`顾问用户 ${index + 1}`}
+            className="size-11 rounded-full border-2 border-[#C79A54]/60 object-cover shadow-lg"
           />
         ))}
       </div>
       <div>
-        <p className="text-sm font-semibold text-[#063F4A]">真实咨询场景，更像一位随身顾问</p>
-        <p className="mt-1 text-sm text-[#102F38]/60">适合个人测算、企业决策与顾问型创业使用</p>
+        <p className="text-sm font-semibold text-white">真实实战咨询场景 · 随身 AI 命理决策顾问</p>
+        <p className="mt-0.5 text-xs text-white/50">已服务 50,000+ 用户看清人生与商业决断节奏</p>
       </div>
     </div>
   );
@@ -190,24 +216,30 @@ function HumanTrustRow() {
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#DDEFF2] px-5 py-20 md:py-24">
+    <section className="relative overflow-hidden metaphysics-bg px-5 py-20 sm:py-28 lg:py-32">
+      {/* Ambient background decoration */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-28 top-10 size-[620px] rounded-full border border-[#C79A54]/30 opacity-30" />
-        <div className="absolute right-12 top-36 size-[380px] rounded-full border border-[#C79A54]/30 opacity-30" />
-        <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(115deg,rgba(255,255,255,0.92),rgba(221,239,242,0.68),rgba(6,63,74,0.12))]" />
+        <div className="absolute -right-32 top-10 size-[680px] rounded-full border border-[#C79A54]/20 bg-[#C79A54]/5 blur-3xl" />
+        <div className="absolute -left-20 bottom-10 size-[480px] rounded-full border border-[#04c9db]/20 bg-[#04c9db]/5 blur-3xl" />
       </div>
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
-          <span className="inline-flex rounded-full border border-[#C79A54]/35 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54] shadow-sm">
-            AI Feng Shui Master
+          <span className="cyan-glow-badge inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.2em]">
+            <Sparkles className="size-3.5 text-[#04c9db]" />
+            AI FENG SHUI MASTER PLATFORM
           </span>
-          <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.05] text-[#063F4A] md:text-7xl">
-            AI风水命理平台，帮你看清方向
+
+          <h1 className="mt-6 font-serif text-4xl font-black leading-[1.1] text-white sm:text-6xl lg:text-7xl">
+            AI 风水命理平台 <br />
+            <span className="gold-gradient-text">帮你看清方向与运势节奏</span>
           </h1>
-          <p className="mt-6 max-w-3xl text-xl font-semibold leading-9 text-[#102F38] md:text-2xl">
-            结合 AI 快速分析与易玺大师专业判断，为你的事业、财运、感情与人生布局，提供更清晰、更实战的行动建议。
+
+          <p className="mt-6 max-w-2xl text-base leading-8 text-white/75 sm:text-xl">
+            结合 AI 秒级数据推演与易玺大师实战专业经验，为你的事业、财运、感情与人生布局，提供更精准、更深度的行动指南。
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
+
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link href="/dashboard" className={ctaPrimary}>
               免费测算 <ArrowRight className="size-4" />
             </Link>
@@ -218,16 +250,19 @@ function HeroSection() {
               创业合作
             </Link>
           </div>
-          <div className="mt-9 grid max-w-3xl gap-3 sm:grid-cols-3">
-            {["AI 24/7 即时分析", "易玺大师实战背书", "个人 / 企业 / 创业适用"].map((item) => (
-              <div key={item} className="flex items-center gap-2 rounded-full border border-[#C79A54]/25 bg-white/80 px-4 py-3 text-sm font-semibold text-[#063F4A] shadow-sm">
+
+          <div className="mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
+            {["AI 24/7 秒级分析", "易玺大师实战背书", "个人 / 企业 / 创业适用"].map((item) => (
+              <div key={item} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-xs font-semibold text-white/90 backdrop-blur-md">
                 <BadgeCheck className="size-4 shrink-0 text-[#C79A54]" />
                 {item}
               </div>
             ))}
           </div>
+
           <HumanTrustRow />
         </div>
+
         <HeroPhoneMockup />
       </div>
     </section>
@@ -236,14 +271,15 @@ function HeroSection() {
 
 function PainSection() {
   return (
-    <section className="bg-[#F5FAFA] px-5 py-20">
+    <section className="relative border-t border-white/10 bg-[#080A0C] px-5 py-24">
       <div className="mx-auto max-w-7xl">
         <SectionIntro
           eyebrow="WHY NOW"
-          title="不是你不努力，而是方向、时间、布局没对上"
-          desc="很多时候，真正影响结果的，不只是能力，而是你是否在正确的时间，做了正确的决定。"
+          title="不是你不努力，而是方向、时机与布局没看清"
+          desc="很多时候，真正影响结果的，不只是能力，而是你是否在正确的时间，做出正确的选择与布局。"
         />
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {painCards.map(([title, desc, Icon]) => (
             <IconCard key={title} icon={Icon} title={title} desc={desc} />
           ))}
@@ -255,23 +291,29 @@ function PainSection() {
 
 function CoreSolutionSection() {
   return (
-    <section className="bg-white px-5 py-20">
+    <section className="relative border-t border-white/10 bg-[#0A0D0F] px-5 py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
           <SectionIntro
-            eyebrow="AI + MASTER METHOD"
-            title="AI提升效率，大师决定深度"
-            desc="AI 负责快速分析与整理方向，易玺大师负责判断关键节点、风险与真正可执行的策略。"
+            eyebrow="DUAL-ENGINE METHODOLOGY"
+            title="AI 提升效率，大师决定深度"
+            desc="AI 负责快速整理问题结构与大运趋势，易玺大师负责在关键节点把脉定盘，给出真正可落地的闭环策略。"
           />
-          <div className="overflow-hidden rounded-[2rem] border border-[#063F4A]/10 bg-[#F5FAFA] shadow-sm">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-[#C79A54]/30 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
             <img
               src={peopleImages.consultation}
               alt="AI 风水命理咨询场景"
-              className="h-72 w-full object-cover"
+              className="h-80 w-full object-cover sm:h-96"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080A0C] via-transparent to-transparent opacity-90" />
+            <div className="absolute bottom-6 inset-x-6 rounded-2xl border border-white/15 bg-black/60 p-5 backdrop-blur-md">
+              <p className="text-xs font-bold tracking-widest text-[#C79A54]">AI + MASTER CONSULTATION</p>
+              <p className="mt-1.5 font-serif text-lg font-bold text-white">秒级整理 · 专家定盘 · 实战指导</p>
+            </div>
           </div>
         </div>
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {methodCards.map(([title, desc, Icon]) => (
             <IconCard key={title} icon={Icon} title={title} desc={desc} />
           ))}
@@ -283,21 +325,26 @@ function CoreSolutionSection() {
 
 function ServicesSection() {
   return (
-    <section id="services" className="bg-[#DDEFF2] px-5 py-20">
+    <section id="services" className="relative border-t border-white/10 bg-[#080A0C] px-5 py-24">
       <div className="mx-auto max-w-7xl">
         <SectionIntro
           eyebrow="OUR SERVICES"
-          title="你现在就可以开始的服务"
-          desc="从快速测算到深度咨询，从个人方向到企业布局，选择适合你当前阶段的服务。"
+          title="你现在即可体验的核心服务"
+          desc="从快速秒测到深度报告，从个人八字到企业风水布局，满足不同阶段决策需求。"
         />
-        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {services.map(([title, desc, cta, Icon]) => (
-            <article key={title} className="rounded-[2rem] border border-[#063F4A]/10 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
-              <Icon className="size-7 text-[#C79A54]" />
-              <h3 className="mt-5 text-2xl font-semibold text-[#063F4A]">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#102F38]/64">{desc}</p>
-              <Link href="/dashboard" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#1495A0]">
-                {cta} <ArrowRight className="size-4" />
+            <article key={title} className="group glass-panel glass-panel-interactive flex flex-col justify-between p-7">
+              <div>
+                <span className="grid size-12 place-items-center rounded-xl border border-[#C79A54]/30 bg-[#C79A54]/10 text-[#C79A54] transition group-hover:scale-105">
+                  <Icon className="size-6" />
+                </span>
+                <h3 className="mt-6 font-serif text-2xl font-bold text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/60">{desc}</p>
+              </div>
+              <Link href="/dashboard" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#E8D4A8] transition group-hover:text-[#FFF0D0]">
+                {cta} <ChevronRight className="size-4 transition group-hover:translate-x-1" />
               </Link>
             </article>
           ))}
@@ -309,38 +356,45 @@ function ServicesSection() {
 
 function MasterSection() {
   return (
-    <section id="master" className="bg-white px-5 py-20">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#063F4A]/10 bg-[#F5FAFA] p-8">
-          <div className="absolute right-8 top-8 rounded-full bg-[#C79A54]/15 px-4 py-2 text-xs font-semibold text-[#C79A54]">
-            MASTER PROFILE
-          </div>
-          <div className="relative min-h-[520px] overflow-hidden rounded-[1.5rem] bg-white">
+    <section id="master" className="relative border-t border-white/10 bg-[#050607] px-5 py-24">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-[#C79A54]/35 bg-[#0D1012] p-4 shadow-[0_0_50px_rgba(199,154,84,0.15)]">
+          <div className="relative min-h-[480px] overflow-hidden rounded-[2rem] bg-black">
             <img
               src={peopleImages.advisor}
               alt="易玺大师"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover opacity-90"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,rgba(6,63,74,0.88))]" />
-            <div className="absolute inset-x-6 bottom-6 rounded-3xl border border-white/20 bg-white/12 p-5 text-white backdrop-blur">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Master Consultation</p>
-              <p className="mt-2 text-2xl font-semibold">易玺大师</p>
-              <p className="mt-2 text-sm leading-6 text-white/72">实战派风水命理顾问，结合命理、风水与现实决策给出行动判断。</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050607] via-transparent to-transparent" />
+            <div className="absolute bottom-6 inset-x-6 rounded-2xl border border-[#C79A54]/30 bg-[#080A0C]/85 p-5 backdrop-blur-md">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C79A54]">CHIEF CONSULTANT</span>
+              <h3 className="mt-1 font-serif text-2xl font-bold text-white">易玺大师</h3>
+              <p className="mt-1.5 text-xs leading-5 text-white/70">
+                实战派风水命理顾问，专注于把传统八字/紫微/风水与现实商业决策高效融合。
+              </p>
             </div>
           </div>
         </div>
+
         <div>
           <SectionIntro
             eyebrow="MASTER PROFILE"
             title="易玺大师｜实战派风水命理顾问"
-            desc="专注企业风水、个人命理与布局策略，擅长把命理、风水与现实决策结合，帮助用户看清趋势、规避风险、找准行动节奏。"
+            desc="专注企业商业风水、个人命理研判与空间布局策略，擅长看清大运趋势、规避财务与风险隐患、找准真正行动节奏。"
           />
-          <div className="mt-7 flex flex-wrap gap-2">
-            {["紫微斗数判断趋势", "风水布局优化环境", "战略视角给出建议", "企业 / 个人 / 创业适用"].map((item) => (
-              <span key={item} className="rounded-full border border-[#C79A54]/25 bg-[#DDEFF2] px-4 py-2 text-sm font-semibold text-[#063F4A]">
+
+          <div className="mt-8 flex flex-wrap gap-2.5">
+            {["紫微斗数判断大运", "风水布局优化磁场", "商业战略视角建议", "企业 / 个人 / 创业适用"].map((item) => (
+              <span key={item} className="rounded-full border border-[#C79A54]/30 bg-[#C79A54]/10 px-4 py-2 text-xs font-semibold text-[#E8D4A8]">
                 {item}
               </span>
             ))}
+          </div>
+
+          <div className="mt-10">
+            <Link href="/dashboard" className={ctaPrimary}>
+              预约大师深度咨询 <ArrowRight className="size-4" />
+            </Link>
           </div>
         </div>
       </div>
@@ -350,52 +404,29 @@ function MasterSection() {
 
 function BusinessSection() {
   return (
-    <section id="business" className="relative overflow-hidden bg-[#063F4A] px-5 py-24 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(199,154,84,0.24),transparent_32%),linear-gradient(120deg,rgba(20,149,160,0.18),transparent_38%)]" />
+    <section id="business" className="relative border-t border-white/10 bg-[#080A0C] px-5 py-24 text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(199,154,84,0.15),transparent_40%)]" />
+
       <div className="relative mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end">
           <SectionIntro
-            eyebrow="AI FENG SHUI BUSINESS"
-            title="不只是算命服务，更是AI赋能的风水创业平台"
-            desc="适合想进入风水命理行业、打造个人品牌、开展线上咨询服务的人。"
+            eyebrow="AI FENG SHUI BUSINESS PLATFORM"
+            title="不只是测算服务，更是 AI 赋能的风水创业平台"
+            desc="适合想进入风水命理蓝海市场、打造个人 IP 顾问品牌、开展线上咨询业务的创业者。"
             inverted
           />
+
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <Link href="/dashboard" className={ctaPrimary}>
               申请了解创业合作 <ArrowRight className="size-4" />
             </Link>
-            <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/15">
-              查看平台模式
-            </Link>
           </div>
         </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {businessAdvantages.map(([title, desc, Icon]) => (
             <IconCard key={title} icon={Icon} title={title} desc={desc} dark />
           ))}
-        </div>
-        <div className="mt-8 overflow-hidden rounded-[2rem] border border-white/10 bg-white/8 shadow-[0_26px_80px_rgba(0,0,0,0.25)]">
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
-            <img
-              src={peopleImages.consultation}
-              alt="AI 风水创业平台咨询团队"
-              className="h-72 w-full object-cover lg:h-full"
-            />
-            <div className="p-8 lg:p-10">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C79A54]">REAL SERVICE FLOW</p>
-              <h3 className="mt-3 text-3xl font-semibold leading-tight">从线上测算，到真人咨询，再到产品成交</h3>
-              <p className="mt-4 text-sm leading-7 text-white/64">
-                平台不是只有页面和报告，而是把顾问、客户、内容、课程与代理服务串成可落地的服务流程。
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {["客户接待", "报告交付", "咨询预约", "创业转化"].map((item) => (
-                  <span key={item} className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-white/82">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -404,36 +435,55 @@ function BusinessSection() {
 
 function PackageSection() {
   return (
-    <section className="bg-[#DDEFF2] px-5 py-20">
+    <section className="relative border-t border-white/10 bg-[#050607] px-5 py-24">
       <div className="mx-auto max-w-7xl">
         <SectionIntro eyebrow="START NOW" title="从一次测算开始，看清你的下一步" />
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+
+        <div className="mt-12 grid gap-8 lg:grid-cols-3">
           {packages.map(([title, desc, cta, price, items], index) => (
             <article
               key={title}
-              className={`rounded-[2rem] border p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl ${
-                index === 1 ? "border-[#C79A54] bg-[#063F4A] text-white" : "border-[#063F4A]/10 bg-white text-[#102F38]"
+              className={`relative flex flex-col justify-between rounded-[2.5rem] p-8 sm:p-9 transition ${
+                index === 1
+                  ? "glass-panel-gold border-[#C79A54] shadow-[0_0_40px_rgba(199,154,84,0.2)]"
+                  : "glass-panel"
               }`}
             >
-              <p className={index === 1 ? "text-sm font-semibold text-[#C79A54]" : "text-sm font-semibold text-[#C79A54]"}>{price}</p>
-              <h3 className="mt-3 text-2xl font-semibold">{title}</h3>
-              <p className={index === 1 ? "mt-3 text-sm leading-6 text-white/62" : "mt-3 text-sm leading-6 text-[#102F38]/62"}>{desc}</p>
-              <div className="mt-5 space-y-2">
-                {items.map((item) => (
-                  <p key={item} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={index === 1 ? "size-4 text-[#C79A54]" : "size-4 text-[#063F4A]"} />
-                    {item}
-                  </p>
-                ))}
+              {index === 1 ? (
+                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full border border-[#C79A54] bg-[#C79A54] px-4 py-1 text-[11px] font-bold tracking-widest text-[#050607]">
+                  MOST POPULAR / 热门推荐
+                </span>
+              ) : null}
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C79A54]">{price}</p>
+                <h3 className="mt-3 font-serif text-3xl font-bold text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/60">{desc}</p>
+
+                <div className="mt-7 space-y-3 border-t border-white/10 pt-6">
+                  {items.map((item) => (
+                    <p key={item} className="flex items-center gap-2.5 text-xs font-medium text-white/80">
+                      <CheckCircle2 className="size-4 shrink-0 text-[#C79A54]" />
+                      {item}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <Link href="/dashboard" className={index === 1 ? "mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#C79A54] px-5 py-3 text-sm font-semibold text-[#063F4A]" : "mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white"}>
+
+              <Link
+                href="/dashboard"
+                className={`mt-9 w-full ${index === 1 ? ctaPrimary : ctaDark}`}
+              >
                 {cta} <ArrowRight className="size-4" />
               </Link>
             </article>
           ))}
         </div>
-        <div className="mt-10 rounded-[2rem] bg-[#063F4A] px-6 py-8 text-center text-white shadow-[0_20px_60px_rgba(6,63,74,0.2)]">
-          <p className="text-lg font-semibold md:text-2xl">AI 给你速度，大师给你深度，平台给你机会。</p>
+
+        <div className="mt-12 glass-panel-gold px-8 py-10 text-center">
+          <p className="font-serif text-xl font-bold text-white sm:text-3xl">
+            AI 给你速度，大师给你深度，平台给你机会。
+          </p>
         </div>
       </div>
     </section>
@@ -443,7 +493,7 @@ function PackageSection() {
 export default function HomePage() {
   return (
     <AppShell>
-      <main className="overflow-hidden bg-white">
+      <main className="overflow-hidden bg-[#050607]">
         <HeroSection />
         <PainSection />
         <CoreSolutionSection />
