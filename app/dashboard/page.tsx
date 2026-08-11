@@ -3761,53 +3761,88 @@ function DashboardAppTopBar({
   pointBalance: number;
   onOpenModule: (module: DashboardModule) => void;
 }) {
-  const displayName = memberProfile.name && memberProfile.name !== "未填写" ? memberProfile.name : "会员";
+  const displayName = memberProfile.name && memberProfile.name !== "未填写" ? memberProfile.name : "尊贵会员";
 
   return (
-    <section className="mb-4 md:hidden">
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#C79A54]/35 bg-gradient-to-br from-[#063F4A] via-[#063F4A] to-[#102F38] p-4 text-white shadow-[0_24px_62px_rgba(6,63,74,0.28)]">
-        <span className="pointer-events-none absolute -right-16 -top-16 size-36 rounded-full border border-[#C79A54]/18" />
-        <span className="pointer-events-none absolute -bottom-20 left-8 size-40 rounded-full bg-[#1495A0]/12 blur-2xl" />
-        <div className="relative flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-[#C79A54]/40 bg-white/10 text-lg font-semibold text-[#C79A54]">
+    <section className="mb-6">
+      <div className="glass-panel-gold relative overflow-hidden p-5 sm:p-7 text-white shadow-[0_24px_70px_rgba(0,0,0,0.6),0_0_30px_rgba(199,154,84,0.15)]">
+        {/* Background ambient lighting */}
+        <span className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[#C79A54]/25 bg-[#C79A54]/10 blur-2xl" />
+        <span className="pointer-events-none absolute -bottom-20 left-8 size-44 rounded-full bg-[#04c9db]/15 blur-2xl" />
+
+        <div className="relative grid items-center gap-6 lg:grid-cols-[1fr_1.1fr_0.9fr]">
+          {/* Column 1: Member Profile Snapshot */}
+          <div className="flex items-center gap-4">
+            <span className="relative grid size-14 shrink-0 place-items-center rounded-2xl border border-[#C79A54]/50 bg-gradient-to-br from-[#13171A] to-[#080A0C] text-2xl font-bold text-[#E8D4A8] shadow-[0_0_20px_rgba(199,154,84,0.3)]">
               风
+              <span className="absolute -bottom-1 -right-1 size-3 rounded-full border-2 border-[#050607] bg-[#04c9db] shadow-[0_0_8px_#04c9db]" />
             </span>
             <div className="min-w-0">
-              <p className="truncate text-lg font-semibold">你好，{displayName}</p>
-              <p className="truncate text-xs text-white/58">{currentPlan.name} · 今日先看方向再行动</p>
+              <div className="flex items-center gap-2">
+                <h1 className="truncate text-xl font-serif font-bold text-white sm:text-2xl">你好，{displayName}</h1>
+                <span className="rounded-full border border-[#C79A54]/40 bg-[#C79A54]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#E8D4A8]">
+                  {currentPlan.name}
+                </span>
+              </div>
+              <p className="mt-1 truncate text-xs font-medium text-white/60">
+                {memberProfile.gender || "未设置"} · {memberProfile.birthDate || "补充生日解锁精测"}
+              </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => onOpenModule("wallet")}
-            className="shrink-0 rounded-2xl border border-white/12 bg-white/10 px-3 py-2 text-right"
-          >
-            <p className="text-[11px] text-white/45">点数</p>
-            <p className="text-sm font-semibold text-[#C79A54]">{pointBalance.toLocaleString("en-US")}</p>
-          </button>
-        </div>
 
-        <div className="relative mt-4 grid grid-cols-3 gap-2">
-          {[
-            { label: "问 AI", icon: Bot, module: "ai" as DashboardModule },
-            { label: "生成报告", icon: FileText, module: "wallet" as DashboardModule },
-            { label: "符印", icon: Sparkles, module: "sigil" as DashboardModule }
-          ].map((item) => {
-            const Icon = item.icon;
+          {/* Column 2: PRIMARY CORE METRIC - Today's Energy Score */}
+          <div className="rounded-2xl border border-white/10 bg-black/40 p-3.5 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8D4A8]">今日个人运势总分</p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="font-serif text-4xl font-black leading-none gold-gradient-text">89</span>
+                  <span className="text-xs font-bold text-[#04c9db]">/ 100 稳中有进</span>
+                </div>
+              </div>
+              <span className="cyan-glow-badge grid size-10 place-items-center rounded-xl">
+                <Sparkles className="size-5 text-[#04c9db] animate-pulse" />
+              </span>
+            </div>
+            <div className="mt-2.5 grid grid-cols-3 gap-1.5 text-center">
+              {[
+                ["事业", "91", "宜合作"],
+                ["财运", "82", "宜守财"],
+                ["感情", "76", "宜倾听"]
+              ].map(([lbl, val, tag]) => (
+                <div key={lbl} className="rounded-lg bg-white/5 p-1.5">
+                  <p className="text-[9px] text-white/50">{lbl}</p>
+                  <p className="font-serif text-xs font-bold text-[#E8D4A8]">{val}</p>
+                  <p className="text-[9px] font-bold text-[#04c9db]">{tag}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            return (
+          {/* Column 3: Credits Balance & Actions */}
+          <div className="flex flex-col items-stretch justify-between gap-2.5 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+            <div className="text-left sm:text-right">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-white/50">可用点数余额</p>
+              <p className="font-serif text-3xl font-black gold-gradient-text">{pointBalance.toLocaleString("en-US")} <span className="text-xs font-sans text-[#E8D4A8]">点</span></p>
+            </div>
+
+            <div className="flex gap-2">
               <button
-                key={item.label}
                 type="button"
-                onClick={() => onOpenModule(item.module)}
-                className="rounded-2xl border border-white/12 bg-white/10 px-2 py-3 text-center text-xs font-semibold text-white transition active:scale-[0.98]"
+                onClick={() => onOpenModule("wallet")}
+                className="btn-gold flex-1 px-4 py-2.5 text-xs font-bold shadow-[0_0_15px_rgba(199,154,84,0.3)] sm:flex-initial"
               >
-                <Icon className="mx-auto mb-1.5 size-4 text-[#C79A54]" />
-                {item.label}
+                <Coins className="size-4" /> 充值点数
               </button>
-            );
-          })}
+              <button
+                type="button"
+                onClick={() => onOpenModule("ai")}
+                className="btn-obsidian px-4 py-2.5 text-xs font-bold sm:flex-initial"
+              >
+                <Bot className="size-4 text-[#04c9db]" /> 问 AI
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -3895,32 +3930,40 @@ function ModuleCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex h-full flex-col rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(6,63,74,0.12)] ${
+      className={`group flex h-full flex-col rounded-2xl border p-4.5 text-left transition duration-300 hover:-translate-y-1 ${
         active
-          ? "border-[#C79A54]/70 bg-gradient-to-br from-[#063F4A] to-[#022B33] text-white shadow-[0_20px_50px_rgba(6,63,74,0.24)]"
-          : "border-[#CFE2E5] bg-white/92 text-ink shadow-[0_12px_32px_rgba(6,63,74,0.08)] hover:border-[#C79A54]/55"
+          ? "border-[#C79A54] bg-[#0D1012] text-white shadow-[0_0_25px_rgba(199,154,84,0.25)] ring-1 ring-[#C79A54]/50"
+          : "border-white/10 bg-[#080A0C]/80 text-white/80 backdrop-blur-md hover:border-[#C79A54]/40 hover:bg-[#0D1012] hover:text-white"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <span
-          className={`grid size-10 place-items-center rounded-2xl ${
-            active ? "bg-white/12 text-[#C79A54]" : locked ? "bg-[#F5FAFA] text-ink/35" : "bg-[#DDEFF2] text-[#063F4A]"
+          className={`grid size-11 place-items-center rounded-xl transition ${
+            active
+              ? "border border-[#C79A54]/50 bg-[#C79A54]/20 text-[#E8D4A8]"
+              : locked
+              ? "border border-white/5 bg-white/5 text-white/30"
+              : "border border-[#04c9db]/30 bg-[#04c9db]/10 text-[#04c9db]"
           }`}
         >
           {locked ? <LockKeyhole className="size-5" /> : <Icon className="size-5" />}
         </span>
         <span
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-            active ? "bg-[#C79A54] text-[#063F4A]" : "bg-[#F5FAFA] text-ink/55"
+          className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+            active
+              ? "bg-[#C79A54] text-[#050607]"
+              : locked
+              ? "bg-white/10 text-white/40"
+              : "border border-white/10 bg-white/5 text-[#E8D4A8]"
           }`}
         >
           {locked ? lockLabel : module.metric}
         </span>
       </div>
-      <h3 className="mt-4 font-semibold leading-tight">{module.title}</h3>
-      <p className={`mt-1 text-xs ${active ? "text-white/62" : "text-ink/48"}`}>{module.desc}</p>
-      <div className={`mt-auto flex items-center gap-1 pt-3 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#063F4A]"}`}>
-        {locked ? "购买创业配套后开放" : "打开"} <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
+      <h3 className="mt-4 font-serif text-base font-bold leading-tight">{module.title}</h3>
+      <p className={`mt-1.5 text-xs leading-5 ${active ? "text-white/70" : "text-white/50"}`}>{module.desc}</p>
+      <div className={`mt-auto flex items-center gap-1 pt-3 text-xs font-semibold ${active ? "text-[#C79A54]" : "text-[#04c9db]"}`}>
+        {locked ? "购买创业配套后开放" : "点击打开"} <ChevronRight className="size-3.5 transition group-hover:translate-x-1" />
       </div>
     </button>
   );
