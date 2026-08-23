@@ -202,39 +202,27 @@ const dashboardCategories: {
   modules: DashboardModule[];
 }[] = [
   {
-    id: "today",
-    title: "今日",
-    desc: "每日运势、符印、日历与收藏",
-    modules: ["fortune", "sigil", "calendar", "growth", "vault"]
+    id: "ai",
+    title: "🔮 AI 占算与问卦",
+    desc: "九运三数起卦、AI命理师、64卦一字解卦与符印",
+    modules: ["divination", "ai", "hexagram64", "sigil"]
   },
   {
-    id: "ai",
-    title: "AI 问答",
-    desc: "命理师、问卦、一字与符印",
-    modules: ["ai", "divination", "hexagram64", "sigil"]
+    id: "today",
+    title: "☀️ 今日运势指南",
+    desc: "每日89分运势大盘、14天日历、穿衣与吉方",
+    modules: ["fortune", "calendar", "growth", "vault"]
   },
   {
     id: "reports",
-    title: "报告",
-    desc: "按需求生成专业命理报告",
-    modules: ["wallet"]
-  },
-  {
-    id: "wallet",
-    title: "钱包",
-    desc: "点数、消费、充值与邀请",
-    modules: ["wallet", "invite"]
-  },
-  {
-    id: "profile",
-    title: "我的",
-    desc: "资料、命盘、课程与商城",
-    modules: ["profile", "shop", "courses"]
+    title: "📄 报告与开运商城",
+    desc: "按需求生成专业八字/紫微报告、开运饰品、课程",
+    modules: ["wallet", "shop", "courses", "profile"]
   },
   {
     id: "partner",
-    title: "创业中心",
-    desc: "团队、佣金与创业经营",
+    title: "💼 资产与团队",
+    desc: "点数充值、邀请好友提成、团队结构树与创业中心",
     modules: ["invite", "team", "partner"]
   }
 ];
@@ -242,12 +230,12 @@ const dashboardCategories: {
 type DashboardModuleConfig = (typeof modules)[number];
 type DashboardCategoryConfig = (typeof dashboardCategories)[number];
 
-const memberDashboardCategories = dashboardCategories.slice(0, 5) as DashboardCategoryConfig[];
-const partnerDashboardCategory = dashboardCategories[5]!;
+const memberDashboardCategories = dashboardCategories.slice(0, 3) as DashboardCategoryConfig[];
+const partnerDashboardCategory = dashboardCategories[3]!;
 
 const defaultModuleByCategory: Record<DashboardCategory, DashboardModule> = {
+  ai: "divination",
   today: "fortune",
-  ai: "ai",
   reports: "wallet",
   wallet: "wallet",
   profile: "profile",
@@ -3837,12 +3825,42 @@ function DashboardAppTopBar({
               </button>
               <button
                 type="button"
-                onClick={() => onOpenModule("ai")}
-                className="btn-obsidian px-4 py-2.5 text-xs font-bold sm:flex-initial"
+                onClick={() => onOpenModule("divination")}
+                className="btn-obsidian px-4 py-2.5 text-xs font-bold sm:flex-initial border-[#04c9db]/40 text-white hover:border-[#04c9db]"
               >
-                <Bot className="size-4 text-[#04c9db]" /> 问 AI
+                <Sparkles className="size-4 text-[#04c9db]" /> 立即问卦
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Divination-First Quick Launch Banner */}
+        <div className="mt-5 border-t border-white/10 pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#E8D4A8]">
+              <Sparkles className="size-4 text-[#04c9db] animate-pulse" />
+              <span>🔮 灵验解惑 · 快速起卦问答 (点击选择常见问题)：</span>
+            </div>
+            <span className="text-[11px] font-medium text-white/50">输入 3 个数字即刻解卦</span>
+          </div>
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-soft">
+            {[
+              { label: "💼 我最近事业适合变动吗？" },
+              { label: "💰 最近财运哪里要注意？" },
+              { label: "💖 感情关系该怎么处理？" },
+              { label: "🧭 今天适合谈合作吗？" }
+            ].map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => {
+                  onOpenModule("divination");
+                }}
+                className="shrink-0 rounded-full border border-[#04c9db]/35 bg-[#04c9db]/12 px-3.5 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md transition hover:border-[#04c9db] hover:bg-[#04c9db]/25 active:scale-95 shadow-[0_0_12px_rgba(4,201,219,0.15)]"
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -11566,8 +11584,8 @@ function CourseModule() {
 export default function DashboardPage() {
   const router = useRouter();
   const moduleContentRef = useRef<HTMLElement | null>(null);
-  const [activeModule, setActiveModule] = useState<DashboardModule>("fortune");
-  const [activeCategory, setActiveCategory] = useState<DashboardCategory>("today");
+  const [activeModule, setActiveModule] = useState<DashboardModule>("divination");
+  const [activeCategory, setActiveCategory] = useState<DashboardCategory>("ai");
   const [currentTier, setCurrentTier] = useState<MembershipTier>("free");
   const [pointBalance, setPointBalance] = useState(0);
   const [memberProfile, setMemberProfile] = useState<MemberProfile>(emptyMemberProfile);
