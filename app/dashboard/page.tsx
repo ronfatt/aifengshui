@@ -354,8 +354,8 @@ const membershipTiers: {
     price: "RM0",
     positioning: "情绪晴雨表",
     aiMode: "低算力 · 静态短句库",
-    dataDepth: "注册赠 200 点",
-    features: ["200 点起始额度", "今日财运/事业/人缘星级", "一句话宜忌", "每日打卡", "基础收藏"],
+    dataDepth: "注册赠 50 点",
+    features: ["50 点起始体验额度", "今日财运/事业/人缘星级", "一句话宜忌", "每日打卡", "基础收藏"],
     locked: ["每周运势", "AI 深度解析", "流月/流年战略"]
   },
   {
@@ -364,8 +364,8 @@ const membershipTiers: {
     price: "RM29/月",
     positioning: "紫微 + 梅花战术指南",
     aiMode: "中算力 · 紫微矩阵 + 梅花象意",
-    dataDepth: "每月 7,000 点 + 每日/每周 AI 解读",
-    features: ["每月 7,000 点", "每日/每周运势", "紫微 + 梅花双引擎", "幸运色与贵人方", "谈判时辰", "报告中心"],
+    dataDepth: "每月 1,200 点 + 每日/每周 AI 解读",
+    features: ["每月 1,200 点", "每日/每周运势", "紫微 + 梅花双引擎", "幸运色与贵人方", "谈判时辰", "报告中心"],
     locked: ["流月/流年", "战略顾问问答", "商业策略报告"]
   },
   {
@@ -374,8 +374,8 @@ const membershipTiers: {
     price: "RM49/月",
     positioning: "紫微 + 梅花私人顾问",
     aiMode: "高算力 · 紫微/梅花 + 本命/流年/流月/流日",
-    dataDepth: "每月 15,000 点 + 全周期趋势",
-    features: ["每月 15,000 点", "流月/流年趋势", "梅花易数即时决策", "战略顾问 AI 对话", "化解与布局建议", "商业五行策略", "高级报告额度"]
+    dataDepth: "每月 3,000 点 + 全周期趋势",
+    features: ["每月 3,000 点", "流月/流年趋势", "梅花易数即时决策", "战略顾问 AI 对话", "化解与布局建议", "商业五行策略", "高级报告额度"]
   }
 ];
 
@@ -963,11 +963,11 @@ type ReportSubjectProfile = {
   calendarType: "Gregorian" | "Lunar";
 };
 
-const baziReportCost = 380;
-const meihuaReportCost = 260;
-const ziweiReportCost = 420;
-const numerologyReportCost = 220;
-const integratedReportCost = 680;
+const baziReportCost = 580;
+const meihuaReportCost = 380;
+const ziweiReportCost = 680;
+const numerologyReportCost = 320;
+const integratedReportCost = 980;
 const baziDisclaimer =
   "This report is based on traditional metaphysics and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
 const meihuaDisclaimer =
@@ -1122,7 +1122,7 @@ const reportStorageKey = "ai-fengshui-saved-reports";
 const reportProfileStorageKey = "ai-fengshui-report-subject-profiles";
 const sigilStorageKey = "ai-fengshui-sigil-vault";
 const recentModulesStorageKey = "ai-fengshui-recent-modules";
-const sigilCost = 88;
+const sigilCost = 128;
 const divinationStorageKey = "ai-fengshui-jiuyun-divinations";
 const divinationCheckInKey = "ai-fengshui-jiuyun-checkins";
 const divinationCost = 36;

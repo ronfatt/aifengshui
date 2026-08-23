@@ -499,9 +499,12 @@ function profileToAdminUser(profile: AdminProfilePayload): AdminUserRecord {
 }
 
 const creditPackageSeed = [
-  { name: "Free 注册额度", price: "RM0", points: 200, bonus: 0, status: "Active" },
-  { name: "RM29 AI 会员额度", price: "RM29", points: 7000, bonus: 0, status: "Active" },
-  { name: "RM49 高阶会员额度", price: "RM49", points: 15000, bonus: 0, status: "Active" }
+  { name: "Free 注册体验", price: "RM0", points: 50, bonus: 0, status: "Active" },
+  { name: "RM19 快速加油包", price: "RM19", points: 800, bonus: 0, status: "Active" },
+  { name: "RM29 进阶会员额度", price: "RM29", points: 1200, bonus: 0, status: "Active" },
+  { name: "RM39 热门充值包", price: "RM39", points: 2000, bonus: 0, status: "Active" },
+  { name: "RM49 高阶会员额度", price: "RM49", points: 3000, bonus: 0, status: "Active" },
+  { name: "RM79 尊享超值包", price: "RM79", points: 4500, bonus: 0, status: "Active" }
 ];
 
 const aiFeatureSeed = [
