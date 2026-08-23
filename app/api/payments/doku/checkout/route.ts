@@ -33,19 +33,19 @@ const checkoutProducts: Record<string, CheckoutProduct> = {
     productId: "subscription_tactical",
     orderType: "subscription",
     amountCents: 2900,
-    creditAmount: 7000,
+    creditAmount: 1200,
     membershipTier: "tactical",
     detail: "AI Feng Shui Master - Tactical Membership",
-    description: "进阶会员版 RM29 / 月，含 7,000 点"
+    description: "进阶会员版 RM29 / 月，含 1,200 点"
   },
   subscription_strategic: {
     productId: "subscription_strategic",
     orderType: "subscription",
     amountCents: 4900,
-    creditAmount: 15000,
+    creditAmount: 3000,
     membershipTier: "strategic",
     detail: "AI Feng Shui Master - Strategic Membership",
-    description: "高阶战略版 RM49 / 月，含 15,000 点"
+    description: "高阶战略版 RM49 / 月，含 3,000 点"
   },
   package_startup_8888: {
     productId: "package_startup_8888",

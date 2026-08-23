@@ -386,9 +386,9 @@ function pointsForTier(tier: string) {
   if (tier.includes("38,000")) return 38000;
   if (tier.includes("16,800")) return 16800;
   if (tier.includes("9,800")) return 9800;
-  if (tier.includes("RM49")) return 15000;
-  if (tier.includes("RM29")) return 7000;
-  return 200;
+  if (tier.includes("RM49")) return 3000;
+  if (tier.includes("RM29")) return 1200;
+  return 50;
 }
 
 function packageValueForTier(tier: string) {
