@@ -145,10 +145,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="relative pb-20 sm:pb-0">{children}</main>
+      <main className="relative pb-28 sm:pb-0">{children}</main>
 
-      {/* Responsive Mobile Bottom Navigation Bar (<640px Viewports) - Single Row 5 Items with Center Round Button */}
-      <div className="fixed bottom-0 inset-x-0 z-50 border-t border-white/10 bg-[#080A0C]/95 px-2 py-1.5 backdrop-blur-2xl sm:hidden">
+      {/* Responsive Mobile Bottom Navigation Bar (<640px Viewports) - Safe Area Aware 5-Item Layout */}
+      <div className="fixed bottom-0 inset-x-0 z-50 border-t border-white/10 bg-[#080A0C]/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur-2xl sm:hidden shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
         <div className="grid grid-cols-5 items-end justify-items-center">
           {(() => {
             const HomeIcon = navItems[0].icon;
@@ -162,7 +162,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {/* 1. 首页 */}
                 <Link
                   href="/"
-                  className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition ${
+                  className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition active:scale-95 ${
                     pathname === "/" ? "text-[#E8D4A8]" : "text-white/55 active:text-white"
                   }`}
                 >
@@ -173,7 +173,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {/* 2. 大师咨询 */}
                 <Link
                   href="/#master"
-                  className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition ${
+                  className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition active:scale-95 ${
                     pathname.includes("master") ? "text-[#E8D4A8]" : "text-white/55 active:text-white"
                   }`}
                 >
@@ -182,14 +182,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Link>
 
                 {/* 3. CENTER HIGHLIGHTED ROUND BUTTON - 会员中心 / AI 测算 */}
-                <div className="relative -top-5 flex flex-col items-center justify-center">
+                <div className="relative -top-6 flex flex-col items-center justify-center">
                   <Link
                     href={!isLoggedIn ? "/auth" : "/dashboard"}
-                    className="group relative flex size-14 items-center justify-center rounded-full border-2 border-[#050607] bg-gradient-to-tr from-[#E8D4A8] via-[#C79A54] to-[#04c9db] shadow-[0_0_25px_rgba(4,201,219,0.55)] transition active:scale-95"
+                    className="group relative flex size-14 items-center justify-center rounded-full border-2 border-[#050607] bg-gradient-to-tr from-[#E8D4A8] via-[#C79A54] to-[#04c9db] shadow-[0_0_28px_rgba(4,201,219,0.65)] transition active:scale-90"
                     title="AI 命理测算"
                   >
                     <DashboardIcon className="size-6 text-[#050607] transition group-hover:scale-110" />
-                    <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full border-2 border-[#050607] bg-[#04c9db] shadow-[0_0_8px_#04c9db]" />
+                    <span className="absolute -right-0.5 -top-0.5 size-3.5 rounded-full border-2 border-[#050607] bg-[#04c9db] shadow-[0_0_10px_#04c9db] animate-pulse" />
                   </Link>
                   <span className="mt-0.5 text-[10px] font-bold text-[#04c9db] tracking-wider">AI 测算</span>
                 </div>
@@ -197,7 +197,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {/* 4. 创业平台 */}
                 <Link
                   href="/#business"
-                  className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition ${
+                  className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition active:scale-95 ${
                     pathname.includes("business") ? "text-[#E8D4A8]" : "text-white/55 active:text-white"
                   }`}
                 >
@@ -210,7 +210,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-white/55 active:text-[#E8D4A8]"
+                    className="flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-white/55 transition active:scale-95 active:text-[#E8D4A8]"
                   >
                     <LogOut className="size-5 text-[#C79A54]" />
                     <span className="text-[10px] font-medium">登出</span>
@@ -218,7 +218,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 ) : (
                   <Link
                     href="/auth"
-                    className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition ${
+                    className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 transition active:scale-95 ${
                       pathname === "/auth" ? "text-[#E8D4A8]" : "text-white/55 active:text-white"
                     }`}
                   >

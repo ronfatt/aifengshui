@@ -22,13 +22,13 @@ import {
 import { AppShell } from "@/components/shell";
 
 const ctaPrimary =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#E8D4A8] via-[#C79A54] to-[#997233] px-7 py-4 text-sm font-semibold text-[#050607] shadow-[0_12px_32px_rgba(199,154,84,0.3)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
+  "inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#E8D4A8] via-[#C79A54] to-[#997233] px-7 py-4 text-sm font-semibold text-[#050607] shadow-[0_12px_32px_rgba(199,154,84,0.3)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 min-h-[48px] w-full sm:w-auto";
 
 const ctaDark =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-[#C79A54]/40 bg-[#0D1012] px-7 py-4 text-sm font-semibold text-[#E8D4A8] shadow-[0_12px_32px_rgba(0,0,0,0.5)] transition hover:-translate-y-0.5 hover:border-[#C79A54] hover:bg-[#1A1F24] hover:text-white";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-[#C79A54]/40 bg-[#0D1012] px-7 py-4 text-sm font-semibold text-[#E8D4A8] shadow-[0_12px_32px_rgba(0,0,0,0.5)] transition hover:-translate-y-0.5 hover:border-[#C79A54] hover:bg-[#1A1F24] hover:text-white min-h-[48px] w-full sm:w-auto";
 
 const ctaGhost =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-sm font-semibold text-white/80 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-sm font-semibold text-white/80 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white min-h-[48px] w-full sm:w-auto";
 
 const painCards = [
   ["机会来了，不敢出手", "不知道现在是不是最好的时机，缺乏明确的节奏指引。", Target],
@@ -120,7 +120,7 @@ function IconCard({
 
 function HeroPhoneMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[380px]">
+    <div className="relative mx-auto w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[380px]">
       {/* Glow aura */}
       <div className="absolute -inset-4 rounded-[3.5rem] bg-gradient-to-tr from-[#C79A54]/30 via-transparent to-[#1495A0]/25 blur-3xl opacity-70" />
       

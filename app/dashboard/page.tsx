@@ -11954,28 +11954,22 @@ export default function DashboardPage() {
                 <StatusPill>{visibleModules.length} 个入口</StatusPill>
               </div>
 
-              <div
-                className={[
-                  "-mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-soft",
-                  "sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0",
-                  moduleGridClass
-                ].join(" ")}
-              >
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
                 {visibleModules.map((module) => {
-                const partnerLocked = module.id === "partner" && !hasPartnerAccess;
+                  const partnerLocked = module.id === "partner" && !hasPartnerAccess;
 
-                return (
-                  <div key={module.id} className="min-w-[210px] sm:min-w-0 sm:h-full">
-                    <ModuleCard
-                      module={module}
-                      active={module.id === activeModule}
-                      locked={partnerLocked}
-                      lockLabel="创业配套"
-                      onClick={() => openModule(module.id)}
-                    />
-                  </div>
-                );
-              })}
+                  return (
+                    <div key={module.id} className="h-full w-full">
+                      <ModuleCard
+                        module={module}
+                        active={module.id === activeModule}
+                        locked={partnerLocked}
+                        lockLabel="创业配套"
+                        onClick={() => openModule(module.id)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>
