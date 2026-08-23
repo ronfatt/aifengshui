@@ -963,11 +963,11 @@ type ReportSubjectProfile = {
   calendarType: "Gregorian" | "Lunar";
 };
 
-const baziReportCost = 580;
-const meihuaReportCost = 380;
-const ziweiReportCost = 680;
-const numerologyReportCost = 320;
-const integratedReportCost = 980;
+const numerologyReportCost = 480;
+const meihuaReportCost = 580;
+const baziReportCost = 880;
+const ziweiReportCost = 1080;
+const integratedReportCost = 1580;
 const baziDisclaimer =
   "This report is based on traditional metaphysics and is for cultural reference, self-reflection, and personal planning only. It is not financial, legal, medical, or professional advice.";
 const meihuaDisclaimer =
@@ -8490,7 +8490,7 @@ function WalletAndReports({
 
     if (points < baziReportCost) {
       setBaziActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${baziReportCost} 点。`);
-      setReportMessage("点数不足，八字命理完整报告需要 380 点。请先充值点数后再生成。");
+      setReportMessage(`点数不足，八字命理完整报告需要 ${baziReportCost} 点。请先充值点数后再生成。`);
       return;
     }
 
@@ -8566,7 +8566,7 @@ function WalletAndReports({
 
     if (points < meihuaReportCost) {
       setMeihuaActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${meihuaReportCost} 点。`);
-      setReportMessage("点数不足，梅花易数完整报告需要 260 点。请先充值点数后再生成。");
+      setReportMessage(`点数不足，梅花易数完整报告需要 ${meihuaReportCost} 点。请先充值点数后再生成。`);
       return;
     }
 
@@ -8632,7 +8632,7 @@ function WalletAndReports({
 
     if (points < ziweiReportCost) {
       setZiweiActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${ziweiReportCost} 点。`);
-      setReportMessage("点数不足，紫微斗数命盘报告需要 420 点。请先充值点数后再生成。");
+      setReportMessage(`点数不足，紫微斗数命盘报告需要 ${ziweiReportCost} 点。请先充值点数后再生成。`);
       return;
     }
 
@@ -8702,7 +8702,7 @@ function WalletAndReports({
 
     if (points < numerologyReportCost) {
       setNumerologyActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${numerologyReportCost} 点。`);
-      setReportMessage("点数不足，数字命理完整报告需要 220 点。请先充值点数后再生成。");
+      setReportMessage(`点数不足，数字命理完整报告需要 ${numerologyReportCost} 点。请先充值点数后再生成。`);
       return;
     }
 
@@ -8817,7 +8817,7 @@ function WalletAndReports({
 
     if (points < integratedReportCost) {
       setIntegratedActionMessage(`点数不足：当前 ${points.toLocaleString("en-US")} 点，需要 ${integratedReportCost} 点。`);
-      setReportMessage("点数不足，综合命理决策报告需要 680 点。请先充值点数后再生成。");
+      setReportMessage(`点数不足，综合命理决策报告需要 ${integratedReportCost} 点。请先充值点数后再生成。`);
       return;
     }
 
