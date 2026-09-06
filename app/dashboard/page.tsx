@@ -5449,7 +5449,7 @@ function TodayFortune({
           </div>
           {aiFortune ? (
             <div className="mt-4 rounded bg-white/8 p-4">
-              <p className="text-xs text-white/70 font-medium">OpenAI · {aiFortune.model}{aiFortune.fallbackUsed ? " · fallback" : ""}</p>
+              <p className="text-xs text-white/70 font-medium">AI 算力引擎 · {aiFortune.model}{aiFortune.fallbackUsed ? " · fallback" : ""}</p>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white/78">{aiFortune.reading}</p>
               {currentTier === "free" ? <p className="mt-3 text-xs leading-5 text-[#E8D4A8]">{matrix.upgradeHint}</p> : null}
             </div>
@@ -10307,7 +10307,7 @@ function SigilModule({
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Sigil Studio</p>
             <h2 className="mt-2 text-2xl font-semibold">符印生成器</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
-              输入一个正向意图，系统会生成一枚专属金色符印，并由 OpenAI 解释符号意义、激活方式与行动锚点。
+              输入一个正向意图，系统会生成一枚专属金色符印，并由 AI 解释符号意义、激活方式与行动锚点。
             </p>
           </div>
           <StatusPill>生成一次 {sigilCost} 点</StatusPill>
@@ -10352,7 +10352,7 @@ function SigilModule({
             disabled={isGenerating}
             className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
           >
-            {isGenerating ? "OpenAI 正在解读符印..." : `消耗 ${sigilCost} 点生成 AI 符印`} <Sparkles className="size-4" />
+            {isGenerating ? "AI 正在解读符印..." : `消耗 ${sigilCost} 点生成 AI 符印`} <Sparkles className="size-4" />
           </button>
           <span className="text-sm text-[#334155] font-medium">当前点数：{points.toLocaleString("en-US")} 点</span>
         </div>
@@ -10624,7 +10624,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">64 Hexagram One Word</p>
               <h2 className="mt-2 text-2xl font-semibold">64卦一字</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-[#334155] font-medium">
-                根据当下日期、时间与随机抽取的一个卦，先建立卦象底盘，再交由 OpenAI 生成关键字、神谕断语、线索与行动策略。
+                根据当下日期、时间与随机抽取的一个卦，先建立卦象底盘，再交由 AI 生成关键字、神谕断语、线索与行动策略。
               </p>
             </div>
             <StatusPill>低点数入口</StatusPill>
@@ -10681,10 +10681,10 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             disabled={isGenerating}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded bg-[#063F4A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#052F38] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
           >
-            {isGenerating ? "OpenAI 正在解字..." : `消耗 ${selectedMode.cost} 点生成 AI ${selectedMode.title}`} <Sparkles className="size-4" />
+            {isGenerating ? "AI 正在解字..." : `消耗 ${selectedMode.cost} 点生成 AI ${selectedMode.title}`} <Sparkles className="size-4" />
           </button>
           <p className="mt-2 text-xs leading-5 text-[#64748B] font-medium">
-            今日一字每日只生成一次；问事与深度解字会调用 OpenAI 做更完整的线索、时机、风险与行动拆解。
+            今日一字每日只生成一次；问事与深度解字会调用 AI 做更完整的线索、时机、风险与行动拆解。
           </p>
           {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#7A1F16]">{error}</p> : null}
         </div>
@@ -11076,7 +11076,7 @@ function DivinationModule({
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Jiu Yun Oracle</p>
               <h2 className="mt-2 text-2xl font-semibold">九运智慧问卦</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-[#334155] font-medium">
-                随机报出 3 个数字，系统结合当前时辰起卦，再由 OpenAI 按体用生克、三阶段、类象线索与五行通关输出解读。
+                随机报出 3 个数字，系统结合当前时辰起卦，再由 AI 按体用生克、三阶段、类象线索与五行通关输出解读。
               </p>
             </div>
             <StatusPill>问卦一次 {divinationCost} 点</StatusPill>
@@ -11126,7 +11126,7 @@ function DivinationModule({
               disabled={isGenerating}
               className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
             >
-              {isGenerating ? "OpenAI 正在解卦..." : `消耗 ${divinationCost} 点开始 AI 问卦`} <Flame className="size-4" />
+              {isGenerating ? "AI 正在解卦..." : `消耗 ${divinationCost} 点开始 AI 问卦`} <Flame className="size-4" />
             </button>
             <span className="text-sm text-[#334155] font-medium">当前点数：{points.toLocaleString("en-US")} 点</span>
           </div>

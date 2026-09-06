@@ -584,7 +584,7 @@ const poolTiers = [
 const ceoCashSnapshot = [
   { label: "今日实收现金", value: "RM13,682", note: "已入账 / 不含待审转账" },
   { label: "本月销售额", value: "RM340,980", note: "50 人测试：订阅、报告、课程、产品、配套" },
-  { label: "AI 成本", value: "RM1,420", note: "本月 OpenAI 估算" },
+  { label: "AI 成本", value: "RM1,420", note: "本月 AI 算力估算" },
   { label: "Pool Share 总池", value: "RM16,980.10", note: "5% 合资格净业绩，待月结审批" }
 ] as const;
 
@@ -943,7 +943,7 @@ function AccountingExportModule() {
     { Code: "4400", Account: "AI Reports Revenue", Type: "Revenue", Usage: "AI 报告收入" },
     { Code: "4500", Account: "Agent Package Revenue", Type: "Revenue", Usage: "创业配套收入" },
     { Code: "5000", Account: "Cost of Goods Sold", Type: "Expense", Usage: "产品销售成本" },
-    { Code: "5100", Account: "AI API Cost", Type: "Expense", Usage: "OpenAI / Gemini API 成本" },
+    { Code: "5100", Account: "AI API Cost", Type: "Expense", Usage: "AI 算力 API 成本" },
     { Code: "5200", Account: "Commission Expense", Type: "Expense", Usage: "Cash Wallet 现金佣金成本" },
     { Code: "5250", Account: "PV Reward Expense", Type: "Expense", Usage: "PV Wallet 产品积分奖励成本" },
     { Code: "5300", Account: "Partner Pool Expense", Type: "Expense", Usage: "业绩共享池成本" },
