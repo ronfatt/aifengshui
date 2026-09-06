@@ -11200,15 +11200,15 @@ function DivinationModule({
           <div>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Panoramic Decision</p>
-                <h3 className="mt-2 text-2xl font-semibold">三数起卦结果</h3>
-                <p className="mt-2 text-sm text-ink/55">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">Panoramic Decision</p>
+                <h3 className="mt-2 text-2xl font-bold text-[#0F172A]">三数起卦结果</h3>
+                <p className="mt-2 text-xs font-medium text-[#334155]">
                   数字 {selectedReading.numbers.join(" / ")} · {selectedReading.hourBranch}时 · 动爻 {selectedReading.movingLine}
                 </p>
               </div>
-              <div className="rounded bg-[#063F4A] px-4 py-3 text-right text-white">
-                <p className="text-xs text-white/48">今日决策指数</p>
-                <p className="text-3xl font-semibold text-[#C79A54]">{selectedReading.score}</p>
+              <div className="rounded-xl bg-[#063F4A] px-4 py-3 text-right text-white shadow-xs">
+                <p className="text-xs font-medium text-white/70">今日决策指数</p>
+                <p className="text-3xl font-serif font-bold text-[#E8D4A8]">{selectedReading.score}</p>
               </div>
             </div>
 
@@ -11219,18 +11219,18 @@ function DivinationModule({
                 ["变卦", selectedReading.changingHexagram],
                 ["体用关系", `${selectedReading.bodyUseRelation || "体用待判"} · 需${selectedReading.passElement}通关`]
               ].map(([label, value]) => (
-                <div key={label} className="rounded border border-black/10 bg-rice p-4">
-                  <p className="text-xs text-ink/45">{label}</p>
-                  <p className="mt-2 font-semibold text-[#063F4A]">{value}</p>
+                <div key={label} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
+                  <p className="text-xs font-bold text-[#64748B]">{label}</p>
+                  <p className="mt-2 text-sm font-bold text-[#0F172A]">{value}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#FDF8EA] p-4">
+            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FDF8EA] p-4.5 shadow-xs">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Energy Board</p>
-                  <h4 className="mt-1 text-xl font-semibold text-[#063F4A]">三阶段吉凶能量看板</h4>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#C79A54]">Energy Board</p>
+                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">三阶段吉凶能量看板</h4>
                 </div>
                 <StatusPill>本卦 · 互卦 · 变卦</StatusPill>
               </div>
@@ -11240,18 +11240,18 @@ function DivinationModule({
                   { stage: "过程（互卦）", status: "参考", value: Math.max(30, selectedReading.score - 15), note: selectedReading.process },
                   { stage: "结果（变卦）", status: "参考", value: Math.max(30, selectedReading.score - 8), note: selectedReading.outcome }
                 ]).map((stage) => (
-                  <div key={stage.stage} className="rounded border border-black/10 bg-white p-4">
+                  <div key={stage.stage} className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-[#063F4A]">{stage.stage}</p>
-                        <p className="mt-1 text-xs font-semibold text-[#C79A54]">{stage.status}</p>
+                        <p className="text-sm font-bold text-[#0F172A]">{stage.stage}</p>
+                        <p className="mt-1 text-xs font-bold text-[#C79A54]">{stage.status}</p>
                       </div>
-                      <span className="rounded bg-[#DDEFF2] px-2 py-1 text-sm font-semibold text-[#063F4A]">{stage.value}%</span>
+                      <span className="rounded-md border border-[#063F4A]/20 bg-[#DDEFF2] px-2.5 py-1 text-sm font-bold text-[#063F4A]">{stage.value}%</span>
                     </div>
-                    <div className="mt-3 h-2 rounded-full bg-[#DDEFF2]">
+                    <div className="mt-3 h-2 rounded-full bg-slate-100">
                       <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${stage.value}%` }} />
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-ink/62">{stage.note}</p>
+                    <p className="mt-3 text-xs leading-6 font-semibold text-[#1E293B]">{stage.note}</p>
                   </div>
                 ))}
               </div>
@@ -11263,70 +11263,70 @@ function DivinationModule({
                 ["演变推演", selectedReading.process],
                 ["最终走向", selectedReading.outcome]
               ].map(([title, content]) => (
-                <div key={title} className="rounded border border-black/10 bg-white p-4 shadow-sm">
-                  <p className="font-semibold">{title}</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">{content}</p>
+                <div key={title} className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                  <p className="font-bold text-[#0F172A] text-base">{title}</p>
+                  <p className="mt-2 text-xs leading-6 font-semibold text-[#1E293B]">{content}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#FFFDF7] p-4">
+            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FFFDF7] p-4.5 shadow-xs">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Body-Use Clue Engine</p>
-                  <h4 className="mt-1 text-xl font-semibold text-[#063F4A]">体用生克 × 象意提取</h4>
-                  <p className="mt-1 text-sm leading-6 text-ink/55">先判定生克吉凶，再决定从用卦提取助力、风险、消耗、目标或合作线索。</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#C79A54]">Body-Use Clue Engine</p>
+                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">体用生克 × 象意提取</h4>
+                  <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">先判定生克吉凶，再决定从用卦提取助力、风险、消耗、目标或合作线索。</p>
                 </div>
                 <StatusPill>金钥匙类象</StatusPill>
               </div>
               <div className="mt-4 grid gap-3 lg:grid-cols-3">
                 {(selectedReading.relationClues || []).map((item) => (
-                  <div key={`${item.stage}-${item.useTrigram}`} className="rounded border border-black/10 bg-white p-4 shadow-sm">
+                  <div key={`${item.stage}-${item.useTrigram}`} className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-[#063F4A]">{item.stage}</p>
-                        <p className="mt-1 text-xs text-ink/45">{item.useTrigram}</p>
+                        <p className="text-sm font-bold text-[#0F172A]">{item.stage}</p>
+                        <p className="mt-1 text-xs font-semibold text-[#64748B]">{item.useTrigram}</p>
                       </div>
-                      <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.relation}</span>
+                      <span className="rounded-md border border-[#063F4A]/20 bg-[#DDEFF2] px-2.5 py-1 text-xs font-bold text-[#063F4A]">{item.relation}</span>
                     </div>
-                    <p className="mt-3 rounded bg-[#F5FAFA] p-3 text-sm font-semibold leading-6 text-[#063F4A]">{item.extraction}</p>
-                    <p className="mt-3 text-sm leading-6 text-ink/62">{item.insight}</p>
+                    <p className="mt-3 rounded-lg border border-[#063F4A]/15 bg-[#F8FAFC] p-3 text-xs font-bold leading-6 text-[#063F4A]">{item.extraction}</p>
+                    <p className="mt-3 text-xs leading-6 font-semibold text-[#1E293B]">{item.insight}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
+            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FFF8E8] p-4.5 shadow-xs">
               <div className="flex items-center gap-2">
                 <Sparkles className="size-5 text-[#C79A54]" />
-                <p className="font-semibold text-[#C79A54]">今日战略心法</p>
+                <p className="font-bold text-[#7A1F16] text-base">今日战略心法</p>
               </div>
-              <p className="mt-2 text-sm leading-6 text-ink/70">{selectedReading.mindset}</p>
+              <p className="mt-2 text-xs leading-6 font-bold text-[#0F172A]">{selectedReading.mindset}</p>
             </div>
 
-            <div className="mt-5 rounded border border-black/10 bg-white p-4 shadow-sm">
+            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
-                  <h4 className="mt-1 text-xl font-semibold">核心时空线索</h4>
-                  <p className="mt-1 text-sm text-ink/55">这些不是直接答案，而是让你对照现实生活的“密码锁”。</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
+                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">核心时空线索</h4>
+                  <p className="mt-1 text-xs font-medium text-[#334155]">这些不是直接答案，而是让你对照现实生活的“密码锁”。</p>
                 </div>
                 <StatusPill>万物类象</StatusPill>
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {(selectedReading.clues || createDivinationClues([selectedReading.bodyTrigram, selectedReading.useTrigram])).map((clue) => (
-                  <div key={clue.trigram} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
+                  <div key={clue.trigram} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="font-semibold text-[#063F4A]">{clue.trigram}卦 · {clue.title}</p>
-                      <span className="text-xl">{trigrams.find((trigram) => trigram.name === clue.trigram)?.symbol}</span>
+                      <p className="font-bold text-[#0F172A]">{clue.trigram}卦 · {clue.title}</p>
+                      <span className="text-xl font-bold text-[#7A1F16]">{trigrams.find((trigram) => trigram.name === clue.trigram)?.symbol}</span>
                     </div>
-                    <div className="mt-3 grid gap-2 text-sm leading-6 text-ink/62">
-                      <p><span className="font-semibold text-ink">人物：</span>{clue.people}</p>
-                      <p><span className="font-semibold text-ink">行为：</span>{clue.behavior}</p>
-                      <p><span className="font-semibold text-ink">空间：</span>{clue.space}</p>
-                      <p><span className="font-semibold text-ink">身心提醒：</span>{clue.bodyHint}</p>
+                    <div className="mt-3 grid gap-2 text-xs leading-6 font-semibold text-[#1E293B]">
+                      <p><span className="font-bold text-[#0F172A]">人物：</span>{clue.people}</p>
+                      <p><span className="font-bold text-[#0F172A]">行为：</span>{clue.behavior}</p>
+                      <p><span className="font-bold text-[#0F172A]">空间：</span>{clue.space}</p>
+                      <p><span className="font-bold text-[#7A1F16]">身心提醒：</span>{clue.bodyHint}</p>
                     </div>
-                    <p className="mt-3 rounded bg-white p-3 text-sm font-semibold leading-6 text-[#063F4A]">{clue.prompt}</p>
+                    <p className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs font-bold leading-6 text-[#063F4A]">{clue.prompt}</p>
                   </div>
                 ))}
               </div>
