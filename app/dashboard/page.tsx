@@ -5652,7 +5652,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
               value={draftGoodNote}
               onChange={(event) => setDraftGoodNote(event.target.value)}
               rows={5}
-              className="mt-4 w-full rounded border border-[#C79A54]/35 bg-white px-4 py-3 text-sm leading-6 text-[#102F38] outline-none transition focus:border-[#1495A0] focus:ring-2 focus:ring-[#1495A0]/20"
+              className="mt-4 w-full rounded border border-[#C79A54]/35 bg-white px-4 py-3 text-sm leading-6 text-[#102F38] outline-none transition focus:border-[#1495A0] focus:ring-2 focus:ring-[#1495A0]/20 text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
               placeholder="写下今天遇到的好事：例如收到好消息、客户回复、身体变轻松、贵人提醒、完成一个小目标..."
             />
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
@@ -5874,7 +5874,7 @@ function DestinyProfileModule({
                 <input
                   value={draftProfile.name}
                   onChange={(event) => setDraftProfile((current) => ({ ...current, name: event.target.value }))}
-                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                 />
               </label>
               <label className="text-sm font-semibold text-white/75">
@@ -5895,7 +5895,7 @@ function DestinyProfileModule({
                   type="date"
                   value={draftProfile.birthDate}
                   onChange={(event) => setDraftProfile((current) => ({ ...current, birthDate: event.target.value }))}
-                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                 />
               </label>
               <label className="text-sm font-semibold text-white/75">
@@ -5904,7 +5904,7 @@ function DestinyProfileModule({
                   type="time"
                   value={draftProfile.birthTime}
                   onChange={(event) => setDraftProfile((current) => ({ ...current, birthTime: event.target.value }))}
-                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                 />
               </label>
               <label className="text-sm font-semibold text-white/75">
@@ -5912,7 +5912,7 @@ function DestinyProfileModule({
                 <input
                   value={draftProfile.email}
                   disabled
-                  className="mt-2 w-full rounded border border-white/20 bg-white/75 px-3 py-3 text-[#102F38] outline-none"
+                  className="mt-2 w-full rounded border border-white/20 bg-white/75 px-3 py-3 text-[#102F38] outline-none text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                 />
               </label>
               <label className="text-sm font-semibold text-white/75">
@@ -5921,7 +5921,7 @@ function DestinyProfileModule({
                   value={draftProfile.phone}
                   onChange={(event) => setDraftProfile((current) => ({ ...current, phone: event.target.value }))}
                   placeholder="选填"
-                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                  className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                 />
               </label>
             </div>
@@ -5930,7 +5930,7 @@ function DestinyProfileModule({
               <input
                 value={draftProfile.region}
                 onChange={(event) => setDraftProfile((current) => ({ ...current, region: event.target.value }))}
-                className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54]"
+                className="mt-2 w-full rounded border border-white/20 bg-white px-3 py-3 text-[#102F38] outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
               />
             </label>
             <div className="flex flex-wrap items-center gap-3">
@@ -9087,7 +9087,7 @@ function WalletAndReports({
                   </div>
                   <label className="text-sm font-semibold">
                     姓名
-                    <input value={integratedInput.fullName} onChange={(event) => setIntegratedInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input value={integratedInput.fullName} onChange={(event) => setIntegratedInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <label className="text-sm font-semibold">
                     性别
@@ -9099,18 +9099,18 @@ function WalletAndReports({
                   </label>
                   <label className="text-sm font-semibold">
                     出生日期（公历）
-                    <input type="date" value={integratedInput.birthDate} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input type="date" value={integratedInput.birthDate} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <label className="text-sm font-semibold">
                     出生时间
-                    <input type="time" value={integratedInput.birthTime} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input type="time" value={integratedInput.birthTime} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <div className="rounded border border-[#C79A54]/25 bg-white/75 p-3 text-sm font-semibold text-[#063F4A] md:col-span-2">
                     系统自动换算：农历 {getAutoLunarDate(integratedInput.birthDate, integratedInput.birthTime, integratedInput.calendarType)}
                   </div>
                   <label className="text-sm font-semibold md:col-span-2">
                     出生地点
-                    <input value={integratedInput.birthLocation} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input value={integratedInput.birthLocation} onChange={(event) => setIntegratedInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <label className="text-sm font-semibold">
                     输入历法
@@ -9148,15 +9148,15 @@ function WalletAndReports({
                   </label>
                   <label className="text-sm font-semibold">
                     起卦时间
-                    <input type="datetime-local" value={integratedInput.divinationDateTime} onChange={(event) => setIntegratedInput((current) => ({ ...current, divinationDateTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input type="datetime-local" value={integratedInput.divinationDateTime} onChange={(event) => setIntegratedInput((current) => ({ ...current, divinationDateTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <label className="text-sm font-semibold">
                     三个数字（可选）
-                    <input value={integratedInput.manualNumbers} onChange={(event) => setIntegratedInput((current) => ({ ...current, manualNumbers: event.target.value }))} placeholder="例如 8, 6, 3" className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <input value={integratedInput.manualNumbers} onChange={(event) => setIntegratedInput((current) => ({ ...current, manualNumbers: event.target.value }))} placeholder="例如 8, 6, 3" className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                   <label className="text-sm font-semibold md:col-span-2">
                     具体问题 / 决策场景
-                    <textarea value={integratedInput.specificQuestion} onChange={(event) => setIntegratedInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} placeholder="例如：我是否应该在三个月内扩大团队？" className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                    <textarea value={integratedInput.specificQuestion} onChange={(event) => setIntegratedInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} placeholder="例如：我是否应该在三个月内扩大团队？" className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                   </label>
                 </div>
                 ) : null}
@@ -9226,7 +9226,7 @@ function WalletAndReports({
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <label className="text-sm font-semibold">
                   姓名
-                  <input value={baziInput.fullName} onChange={(event) => setBaziInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={baziInput.fullName} onChange={(event) => setBaziInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   性别
@@ -9238,15 +9238,15 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   出生日期
-                  <input type="date" value={baziInput.birthDate} onChange={(event) => setBaziInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="date" value={baziInput.birthDate} onChange={(event) => setBaziInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   出生时间
-                  <input type="time" value={baziInput.birthTime} onChange={(event) => setBaziInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="time" value={baziInput.birthTime} onChange={(event) => setBaziInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold md:col-span-2">
                   出生地点
-                  <input value={baziInput.birthLocation} onChange={(event) => setBaziInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={baziInput.birthLocation} onChange={(event) => setBaziInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   历法
@@ -9291,7 +9291,7 @@ function WalletAndReports({
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <label className="text-sm font-semibold">
                   姓名
-                  <input value={meihuaInput.fullName} onChange={(event) => setMeihuaInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={meihuaInput.fullName} onChange={(event) => setMeihuaInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   性别
@@ -9303,15 +9303,15 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   出生日期
-                  <input type="date" value={meihuaInput.birthDate} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="date" value={meihuaInput.birthDate} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   出生时间
-                  <input type="time" value={meihuaInput.birthTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="time" value={meihuaInput.birthTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold md:col-span-2">
                   出生地点
-                  <input value={meihuaInput.birthLocation} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={meihuaInput.birthLocation} onChange={(event) => setMeihuaInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   问题类别
@@ -9327,7 +9327,7 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   起卦时间
-                  <input type="datetime-local" value={meihuaInput.divinationDateTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, divinationDateTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="datetime-local" value={meihuaInput.divinationDateTime} onChange={(event) => setMeihuaInput((current) => ({ ...current, divinationDateTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   起卦模式
@@ -9338,11 +9338,11 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   手动数字
-                  <input value={meihuaInput.manualNumbers} onChange={(event) => setMeihuaInput((current) => ({ ...current, manualNumbers: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={meihuaInput.manualNumbers} onChange={(event) => setMeihuaInput((current) => ({ ...current, manualNumbers: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold md:col-span-2">
                   具体问题
-                  <textarea value={meihuaInput.specificQuestion} onChange={(event) => setMeihuaInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <textarea value={meihuaInput.specificQuestion} onChange={(event) => setMeihuaInput((current) => ({ ...current, specificQuestion: event.target.value }))} rows={3} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
               </div>
               <button type="button" onClick={handleGenerateMeihuaReport} disabled={isGeneratingMeihua} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded bg-[#7A1F16] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5f170f] disabled:cursor-wait disabled:bg-[#7A1F16]/60">
@@ -9364,7 +9364,7 @@ function WalletAndReports({
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <label className="text-sm font-semibold">
                   姓名
-                  <input value={ziweiInput.fullName} onChange={(event) => setZiweiInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={ziweiInput.fullName} onChange={(event) => setZiweiInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   性别
@@ -9376,15 +9376,15 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   出生日期
-                  <input type="date" value={ziweiInput.birthDate} onChange={(event) => setZiweiInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="date" value={ziweiInput.birthDate} onChange={(event) => setZiweiInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   出生时间
-                  <input type="time" value={ziweiInput.birthTime} onChange={(event) => setZiweiInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="time" value={ziweiInput.birthTime} onChange={(event) => setZiweiInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold md:col-span-2">
                   出生地点
-                  <input value={ziweiInput.birthLocation} onChange={(event) => setZiweiInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={ziweiInput.birthLocation} onChange={(event) => setZiweiInput((current) => ({ ...current, birthLocation: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   历法
@@ -9424,7 +9424,7 @@ function WalletAndReports({
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <label className="text-sm font-semibold">
                   姓名
-                  <input value={numerologyInput.fullName} onChange={(event) => setNumerologyInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input value={numerologyInput.fullName} onChange={(event) => setNumerologyInput((current) => ({ ...current, fullName: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   性别
@@ -9436,11 +9436,11 @@ function WalletAndReports({
                 </label>
                 <label className="text-sm font-semibold">
                   出生日期
-                  <input type="date" value={numerologyInput.birthDate} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="date" value={numerologyInput.birthDate} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthDate: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold">
                   出生时间（选填）
-                  <input type="time" value={numerologyInput.birthTime} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-black/10 bg-white px-3 py-2 outline-none focus:border-[#C79A54]" />
+                  <input type="time" value={numerologyInput.birthTime} onChange={(event) => setNumerologyInput((current) => ({ ...current, birthTime: event.target.value }))} className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 outline-none focus:border-[#C79A54] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium" />
                 </label>
                 <label className="text-sm font-semibold md:col-span-2">
                   重点方向
@@ -10321,7 +10321,7 @@ function SigilModule({
             id="sigil-intent"
             value={intent}
             onChange={(event) => setIntent(event.target.value)}
-            className="mt-2 min-h-28 w-full rounded border border-black/10 bg-rice px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
+            className="mt-2 min-h-28 w-full rounded border border-slate-300 bg-rice px-4 py-3 text-sm outline-none focus:border-[#063F4A] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
             placeholder="例如：I AM EARNING STEADY MONEY EVERY WEEK"
           />
           <div
@@ -10670,7 +10670,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             <textarea
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
-              className="mt-2 min-h-24 w-full rounded border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#1495A0]"
+              className="mt-2 min-h-24 w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#1495A0] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
               placeholder={mode === "daily" ? "今日一字可留空；也可以写下你今天最在意的一件事。" : "例如：我现在适合换工作吗？这个合作要不要推进？"}
             />
           </label>
@@ -11089,7 +11089,7 @@ function DivinationModule({
                 <input
                   value={value}
                   onChange={(event) => updateNumber(index, event.target.value)}
-                  className="mt-2 h-14 w-full rounded border border-black/10 bg-rice text-center text-2xl font-semibold text-[#063F4A] outline-none focus:border-[#C79A54]"
+                  className="mt-2 h-14 w-full rounded border border-slate-300 bg-rice text-center text-2xl font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
                   inputMode="numeric"
                   placeholder={`${index + 1}`}
                 />
@@ -11104,7 +11104,7 @@ function DivinationModule({
                 type="date"
                 value={divinationDate}
                 onChange={(event) => setDivinationDate(event.target.value)}
-                className="mt-2 h-12 w-full rounded border border-black/10 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54]"
+                className="mt-2 h-12 w-full rounded border border-slate-300 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
               />
             </label>
             <label className="block">
@@ -11113,7 +11113,7 @@ function DivinationModule({
                 type="time"
                 value={divinationTime}
                 onChange={(event) => setDivinationTime(event.target.value)}
-                className="mt-2 h-12 w-full rounded border border-black/10 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54]"
+                className="mt-2 h-12 w-full rounded border border-slate-300 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
               />
             </label>
           </div>
@@ -11439,7 +11439,7 @@ function DivinationModule({
                 <textarea
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
-                  className="mt-3 min-h-24 w-full rounded border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A]"
+                  className="mt-3 min-h-24 w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
                   placeholder="完成布局后写下感应，例如：今天谈合作更顺，思路比较清楚。"
                 />
                 <button
