@@ -2520,11 +2520,11 @@ function HexagramLines({ lines }: { lines: number[] }) {
       {lines.map((solid, index) => (
         <div key={`${solid}-${index}`} className="flex justify-center gap-3">
           {solid ? (
-            <span className="h-2 w-36 rounded bg-[#102F38]" />
+            <span className="h-2 w-36 rounded bg-[#102F38] text-[#0F172A] font-bold" />
           ) : (
             <>
-              <span className="h-2 w-16 rounded bg-[#102F38]" />
-              <span className="h-2 w-16 rounded bg-[#102F38]" />
+              <span className="h-2 w-16 rounded bg-[#102F38] text-[#0F172A] font-bold" />
+              <span className="h-2 w-16 rounded bg-[#102F38] text-[#0F172A] font-bold" />
             </>
           )}
         </div>
@@ -3659,7 +3659,7 @@ function MemberOnboardingGuide({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">First Visit Guide</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">第一次使用，从这 4 步开始</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">第一次使用，从这 4 步开始</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
             不需要一次看完所有功能。先建立资料、看今日、问一个问题，再生成一份报告。
           </p>
@@ -3756,20 +3756,20 @@ function DashboardAppTopBar({
     <section className="mb-6">
       <div className="glass-panel-gold relative overflow-hidden p-5 sm:p-7 text-white shadow-[0_24px_70px_rgba(0,0,0,0.6),0_0_30px_rgba(199,154,84,0.15)]">
         {/* Background ambient lighting */}
-        <span className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[#C79A54]/25 bg-[#C79A54]/10 blur-2xl" />
-        <span className="pointer-events-none absolute -bottom-20 left-8 size-44 rounded-full bg-[#04c9db]/15 blur-2xl" />
+        <span className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[#C79A54]/25 bg-[#C79A54]/10 blur-2xl text-[#0F172A] font-bold" />
+        <span className="pointer-events-none absolute -bottom-20 left-8 size-44 rounded-full bg-[#04c9db]/15 blur-2xl text-[#0F172A] font-bold" />
 
         <div className="relative grid items-center gap-6 lg:grid-cols-[1fr_1.1fr_0.9fr]">
           {/* Column 1: Member Profile Snapshot */}
           <div className="flex items-center gap-4">
-            <span className="relative grid size-14 shrink-0 place-items-center rounded-2xl border border-[#C79A54]/50 bg-gradient-to-br from-[#13171A] to-[#080A0C] text-2xl font-bold text-[#E8D4A8] shadow-[0_0_20px_rgba(199,154,84,0.3)]">
+            <span className="relative grid size-14 shrink-0 place-items-center rounded-2xl border border-[#C79A54]/50 bg-gradient-to-br from-[#13171A] to-[#080A0C] text-2xl font-bold text-[#E8D4A8] shadow-[0_0_20px_rgba(199,154,84,0.3)] text-[#0F172A] font-bold">
               风
-              <span className="absolute -bottom-1 -right-1 size-3 rounded-full border-2 border-[#050607] bg-[#04c9db] shadow-[0_0_8px_#04c9db]" />
+              <span className="absolute -bottom-1 -right-1 size-3 rounded-full border-2 border-[#050607] bg-[#04c9db] shadow-[0_0_8px_#04c9db] text-[#0F172A] font-bold" />
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h1 className="truncate text-xl font-serif font-bold text-white sm:text-2xl">你好，{displayName}</h1>
-                <span className="rounded-full border border-[#C79A54]/40 bg-[#C79A54]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#E8D4A8]">
+                <span className="rounded-full border border-[#C79A54]/40 bg-[#C79A54]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#E8D4A8] text-[#0F172A] font-bold">
                   {currentPlan.name}
                 </span>
               </div>
@@ -3783,13 +3783,13 @@ function DashboardAppTopBar({
           <div className="rounded-2xl border border-white/10 bg-black/40 p-3.5 backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8D4A8]">今日个人运势总分</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8D4A8] text-[#0F172A] font-bold">今日个人运势总分</p>
                 <div className="mt-1 flex items-baseline gap-1.5">
-                  <span className="font-serif text-4xl font-black leading-none gold-gradient-text">89</span>
+                  <span className="font-serif text-4xl font-black leading-none gold-gradient-text text-[#0F172A] font-bold">89</span>
                   <span className="text-xs font-bold text-[#04c9db]">/ 100 稳中有进</span>
                 </div>
               </div>
-              <span className="cyan-glow-badge grid size-10 place-items-center rounded-xl">
+              <span className="cyan-glow-badge grid size-10 place-items-center rounded-xl text-[#0F172A] font-bold">
                 <Sparkles className="size-5 text-[#04c9db] animate-pulse" />
               </span>
             </div>
@@ -3802,7 +3802,7 @@ function DashboardAppTopBar({
                 <div key={lbl} className="rounded-lg bg-white/5 p-1.5">
                   <p className="text-[9px] text-white/85 font-medium">{lbl}</p>
                   <p className="font-serif text-xs font-bold text-[#E8D4A8]">{val}</p>
-                  <p className="text-[9px] font-bold text-[#04c9db]">{tag}</p>
+                  <p className="text-[9px] font-bold text-[#04c9db] text-[#0F172A] font-bold">{tag}</p>
                 </div>
               ))}
             </div>
@@ -3812,7 +3812,7 @@ function DashboardAppTopBar({
           <div className="flex flex-col items-stretch justify-between gap-2.5 sm:flex-row sm:items-center lg:flex-col lg:items-end">
             <div className="text-left sm:text-right">
               <p className="text-[10px] font-bold uppercase tracking-wider text-white/85 font-medium">可用点数余额</p>
-              <p className="font-serif text-3xl font-black gold-gradient-text">{pointBalance.toLocaleString("en-US")} <span className="text-xs font-sans text-[#E8D4A8]">点</span></p>
+              <p className="font-serif text-3xl font-black gold-gradient-text text-[#0F172A] font-bold">{pointBalance.toLocaleString("en-US")} <span className="text-xs font-sans text-[#E8D4A8]">点</span></p>
             </div>
 
             <div className="flex gap-2">
@@ -3909,11 +3909,11 @@ function ProfileCompletionAlert({
   return (
     <section className="mb-4 rounded-2xl border border-[#C79A54]/35 bg-[#FFF8E8] p-4 shadow-sm md:rounded md:p-5">
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#C79A54]/18 text-[#7A1F16]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#C79A54]/18 text-[#7A1F16] text-[#0F172A] font-bold">
           <UserRound className="size-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-[#063F4A]">先补完整个人命理资料</p>
+          <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">先补完整个人命理资料</p>
           <p className="mt-1 text-sm leading-6 text-[#334155] font-medium">
             还缺：{missingItems.join("、") || "基础资料"}。资料越完整，AI、每日运势和报告越像专属判断。
           </p>
@@ -4003,10 +4003,10 @@ function EmptyStateCard({
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-[#C79A54]/45 bg-gradient-to-br from-white to-[#F5FAFA] p-5 text-center shadow-[0_14px_34px_rgba(6,63,74,0.06)]">
-      <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[#DDEFF2] text-[#063F4A]">
+      <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[#DDEFF2] text-[#063F4A] text-[#0F172A] font-bold">
         <Icon className="size-5" />
       </span>
-      <h3 className="mt-4 font-semibold text-[#063F4A]">{title}</h3>
+      <h3 className="mt-4 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{title}</h3>
       <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#334155] font-medium">{desc}</p>
       {action && onAction ? (
         <button
@@ -4031,7 +4031,7 @@ function ScoreRing({ score, label, desc }: { score: number; label: string; desc:
         style={{ background: `conic-gradient(#C79A54 ${score * 3.6}deg, rgba(255,255,255,0.1) 0deg)` }}
       >
         <div className="grid size-32 place-items-center rounded-full border border-[#E8D4A8]/40 bg-[#080A0C] text-center shadow-inner">
-          <span className="font-serif text-5xl font-black gold-gradient-text">{score}</span>
+          <span className="font-serif text-5xl font-black gold-gradient-text text-[#0F172A] font-bold">{score}</span>
           <span className="-mt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85 font-medium">{label}</span>
         </div>
       </div>
@@ -4076,7 +4076,7 @@ function RecentUsePanel({
               className="glass-panel glass-panel-interactive flex min-w-[148px] flex-col justify-between border-white/10 bg-[#080A0C] p-4 text-left hover:border-[#C79A54]/50 md:min-w-0"
             >
               <div>
-                <span className="grid size-10 place-items-center rounded-xl border border-[#04c9db]/30 bg-[#04c9db]/15 text-[#04c9db]">
+                <span className="grid size-10 place-items-center rounded-xl border border-[#04c9db]/30 bg-[#04c9db]/15 text-[#04c9db] text-[#0F172A] font-bold">
                   <Icon className="size-5" />
                 </span>
                 <p className="mt-3 font-serif text-sm font-bold text-white">{module.title}</p>
@@ -4132,7 +4132,7 @@ function TodayActionCenter({
               {fortuneScores.map(([label, score, note]) => (
                 <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
                   <p className="text-xs text-white/60">{label}</p>
-                  <p className="mt-1 font-serif text-2xl font-bold gold-gradient-text">{score}</p>
+                  <p className="mt-1 font-serif text-2xl font-bold gold-gradient-text text-[#0F172A] font-bold">{score}</p>
                   <p className="mt-1 text-xs font-semibold text-[#04c9db]">{note}</p>
                 </div>
               ))}
@@ -4254,7 +4254,7 @@ function OnboardingPanel({ onOpenModule }: { onOpenModule: (module: DashboardMod
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/85 font-medium">New Member Path</p>
-            <h2 className="mt-2 text-2xl font-semibold">新手 4 步引导</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">新手 4 步引导</h2>
             <p className="mt-2 text-sm leading-6 text-white/65">
               让新会员知道先做什么，避免进入 Dashboard 后不知道怎么开始。
             </p>
@@ -4292,7 +4292,7 @@ function OnboardingPanel({ onOpenModule }: { onOpenModule: (module: DashboardMod
                   </span>
                   <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">Step {index + 1}</span>
                 </div>
-                <h3 className="mt-4 font-semibold">{step.title}</h3>
+                <h3 className="mt-4 font-semibold text-[#0F172A] font-bold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">{step.desc}</p>
                 <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-[#063F4A]">
                   {step.action} <ChevronRight className="size-4" />
@@ -4333,12 +4333,12 @@ function TodayRecommendedActions({ onOpenModule }: { onOpenModule: (module: Dash
               className="group rounded border border-black/10 bg-rice p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:shadow-sm"
             >
               <div className="flex items-start justify-between gap-3">
-                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] text-[#063F4A]">
+                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] text-[#063F4A] text-[#0F172A] font-bold">
                   <Icon className="size-5" />
                 </span>
                 <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{action.tag}</span>
               </div>
-              <h3 className="mt-4 font-semibold">{action.title}</h3>
+              <h3 className="mt-4 font-semibold text-[#0F172A] font-bold">{action.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">{action.desc}</p>
               <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-[#063F4A]">
                 立即查看 <ChevronRight className="size-4 transition group-hover:translate-x-0.5" />
@@ -4397,7 +4397,7 @@ function MoodCheckInPanel({ onOpenModule }: { onOpenModule: (module: DashboardMo
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/85 font-medium">基于状态推荐</p>
-            <h3 className="mt-2 text-2xl font-semibold">从“{selectedMood.label}”开始问 AI</h3>
+            <h3 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">从“{selectedMood.label}”开始问 AI</h3>
             <p className="mt-3 text-sm leading-6 text-white/70">{selectedMood.prompt}</p>
           </div>
           <Bot className="size-8 text-[#C79A54]" />
@@ -4526,7 +4526,7 @@ function TodayAssistantPanel({
                   <span className={done ? "grid size-7 shrink-0 place-items-center rounded-lg bg-[#C79A54] text-xs font-bold text-[#050607]" : "grid size-7 shrink-0 place-items-center rounded-lg bg-[#063F4A] text-xs font-bold text-white"}>
                     {done ? <CheckCircle2 className="size-4" /> : index + 1}
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <span className="min-w-0 flex-1 text-[#0F172A] font-bold">
                     <span className="block text-sm font-bold text-[#0F172A]">{step.title}</span>
                     <span className="block text-xs font-medium text-[#334155] leading-5">{done ? "已完成，可再次查看" : step.desc}</span>
                   </span>
@@ -4549,10 +4549,10 @@ function TodayAssistantPanel({
                   onClick={() => onOpenModule(action.module)}
                   className="group flex items-center gap-3 rounded border border-white/10 bg-white/8 p-3 text-left transition hover:border-[#C79A54]/60"
                 >
-                  <span className="grid size-9 shrink-0 place-items-center rounded bg-white/10 text-[#C79A54]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded bg-white/10 text-[#C79A54] text-[#0F172A] font-bold">
                     <Icon className="size-5" />
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <span className="min-w-0 flex-1 text-[#0F172A] font-bold">
                     <span className="block text-sm font-semibold">{action.title}</span>
                     <span className="block truncate text-xs text-white/85 font-medium">{action.desc}</span>
                   </span>
@@ -4591,7 +4591,7 @@ function AccountSummaryBar({
           {primaryStats.map((stat) => (
             <article key={stat.label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
               <p className="text-xs font-medium text-[#64748B] font-medium">{stat.label}</p>
-              <p className="mt-2 text-2xl font-semibold text-[#063F4A]">{stat.value}</p>
+              <p className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{stat.value}</p>
               <p className="mt-1 text-xs font-semibold text-[#1495A0]">{stat.change}</p>
             </article>
           ))}
@@ -4616,8 +4616,8 @@ function AccountSummaryBar({
       <div className="mt-3 grid gap-2 md:grid-cols-4">
         {walletQuickRows.map(([label, value]) => (
           <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] px-3 py-2 text-sm">
-            <span className="text-[#64748B] font-medium">{label}</span>
-            <span className="ml-2 font-semibold text-[#063F4A]">{value === "pointBalance" ? `${pointBalance.toLocaleString("en-US")} 点` : value}</span>
+            <span className="text-[#64748B] font-medium text-[#0F172A] font-bold">{label}</span>
+            <span className="ml-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{value === "pointBalance" ? `${pointBalance.toLocaleString("en-US")} 点` : value}</span>
           </div>
         ))}
       </div>
@@ -4635,7 +4635,7 @@ function AiQuestionStarter({ onSelectPrompt }: { onSelectPrompt: (prompt: string
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">AI Master</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">你今天想问什么？</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">你今天想问什么？</h2>
           <p className="mt-2 text-sm text-[#334155] font-medium">像 ChatGPT 一样直接问，不懂命理也能开始。</p>
         </div>
         <button
@@ -4654,7 +4654,7 @@ function AiQuestionStarter({ onSelectPrompt }: { onSelectPrompt: (prompt: string
             onClick={() => onSelectPrompt(prompt.title, prompt.module)}
             className="group rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60 hover:bg-white hover:shadow-sm"
           >
-            <p className="font-semibold text-[#063F4A]">{prompt.title}</p>
+            <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{prompt.title}</p>
             <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">{prompt.desc}</p>
             <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#1495A0]">
               开始分析 <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" />
@@ -4672,7 +4672,7 @@ function ReportDemandPanel({ onSelectReport }: { onSelectReport: (preset: Report
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Report Center</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">你想解决哪一类问题？</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">你想解决哪一类问题？</h2>
           <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">先选需求，不需要先懂八字、紫微、梅花或数字命理。</p>
         </div>
         <StatusPill>四术合参 · 自动保存</StatusPill>
@@ -4704,7 +4704,7 @@ function ProfileOverviewPanel({ memberProfile, onOpenProfile }: { memberProfile:
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">My Destiny File</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">我的资料与命盘</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">我的资料与命盘</h2>
           <p className="mt-2 text-sm text-[#334155] font-medium">AI、每日运势和报告都会读取这份基础资料。</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -4727,20 +4727,20 @@ function ProfileOverviewPanel({ memberProfile, onOpenProfile }: { memberProfile:
         ].map(([label, value]) => (
           <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
             <p className="text-xs text-[#64748B] font-medium">{label}</p>
-            <p className="mt-1 truncate font-semibold text-[#063F4A]">{value}</p>
+            <p className="mt-1 truncate font-semibold text-[#063F4A] text-[#0F172A] font-bold">{value}</p>
           </div>
         ))}
       </div>
       {expanded ? (
         <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
-            <p className="font-semibold text-[#063F4A]">五行状态</p>
+            <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">五行状态</p>
             <div className="mt-3 grid gap-3">
               {fiveElementProfile.map(([element, score, desc]) => (
                 <div key={element}>
                   <div className="flex justify-between text-sm">
-                    <span className="font-semibold">{element}</span>
-                    <span className="text-[#063F4A]">{score}/100</span>
+                    <span className="font-semibold text-[#0F172A] font-bold">{element}</span>
+                    <span className="text-[#063F4A] text-[#0F172A] font-bold">{score}/100</span>
                   </div>
                   <div className="mt-1 h-2 rounded-full bg-white">
                     <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${score}%` }} />
@@ -4751,7 +4751,7 @@ function ProfileOverviewPanel({ memberProfile, onOpenProfile }: { memberProfile:
             </div>
           </div>
           <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
-            <p className="font-semibold text-[#063F4A]">十二宫简表</p>
+            <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">十二宫简表</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-3">
               {palaceExplanations.slice(0, 12).map((palace) => (
                 <button key={palace.name} type="button" onClick={onOpenProfile} className="rounded bg-white px-3 py-2 text-left text-sm font-semibold text-[#063F4A]">
@@ -4978,7 +4978,7 @@ function PublicDailyAlmanacPanel({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Public Almanac</p>
-            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">大众每日通胜</h2>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl text-[#0F172A] font-bold">大众每日通胜</h2>
             <p className="mt-2 text-sm leading-6 text-[#F8F1DF]/72">
               {almanac.dateLabel} · {almanac.lunarDate} · {almanac.yearPillar}年 {almanac.monthPillar}月 {almanac.dayPillar}日 · {almanac.chong}
             </p>
@@ -5070,7 +5070,7 @@ function PublicDailyAlmanacPanel({
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F16]">{item.title}</p>
-                  <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{item.direction}</p>
+                  <p className="mt-2 text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{item.direction}</p>
                 </div>
                 <div className="grid size-20 place-items-center rounded-full border border-[#C79A54]/45 bg-[#F8F1DF] text-3xl font-semibold text-[#7A1F16]">
                   {item.direction.slice(-1)}
@@ -5095,7 +5095,7 @@ function PublicDailyAlmanacPanel({
             <div className="mt-2 grid gap-2">
               {almanac.timeWindows.map((item) => (
                 <div key={item.label} className="flex items-start justify-between gap-3 text-xs">
-                  <span className="font-bold text-[#0F172A]">{item.label} · {item.time}</span>
+                  <span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">{item.label} · {item.time}</span>
                   <span className={`rounded px-2 py-0.5 font-semibold ${toneClass(item.tone)}`}>{toneLabel(item.tone)}</span>
                 </div>
               ))}
@@ -5118,7 +5118,7 @@ function PublicDailyAlmanacPanel({
                   <p className="font-bold text-[#0F172A] text-sm">{item.level}</p>
                   <div className="flex gap-1.5">
                     {item.swatches.map((swatch) => (
-                      <span key={swatch} className="size-5 rounded-full border border-black/20 shadow-xs" style={{ backgroundColor: swatch }} />
+                      <span key={swatch} className="size-5 rounded-full border border-black/20 shadow-xs text-[#0F172A] font-bold" style={{ backgroundColor: swatch }} />
                     ))}
                   </div>
                 </div>
@@ -5150,10 +5150,10 @@ function PublicDailyAlmanacPanel({
                   <p className="mt-1 text-xs font-bold text-[#7A1F16]">{item.chong}</p>
                   <p className="mt-2 text-xs font-bold text-[#0F172A]">宜：{item.yi.slice(0, 2).join("、")}</p>
                   <div className="mt-3 grid gap-2 border-t border-[#C79A54]/30 pt-3 text-xs leading-5">
-                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">个人：</span>{advice.personalLine}</p>
-                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">风水：</span>{advice.fengshuiLine}</p>
-                    <p className="text-[#334155] font-medium"><span className="font-bold text-[#0F172A]">时机：</span>{advice.timingLine}</p>
-                    <p className="text-[#7A1F16] font-medium"><span className="font-bold text-[#7A1F16]">提醒：</span>{advice.cautionLine}</p>
+                    <p className="text-[#334155] font-medium text-[#0F172A] font-bold"><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">个人：</span>{advice.personalLine}</p>
+                    <p className="text-[#334155] font-medium text-[#0F172A] font-bold"><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">风水：</span>{advice.fengshuiLine}</p>
+                    <p className="text-[#334155] font-medium text-[#0F172A] font-bold"><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">时机：</span>{advice.timingLine}</p>
+                    <p className="text-[#7A1F16] font-medium text-[#0F172A] font-bold"><span className="font-bold text-[#7A1F16] text-[#0F172A] font-bold">提醒：</span>{advice.cautionLine}</p>
                   </div>
                 </div>
               );
@@ -5161,7 +5161,7 @@ function PublicDailyAlmanacPanel({
             {!sevenDayUnlocked ? (
               <div className="rounded border border-dashed border-[#C79A54]/45 bg-[#FFFDF7] p-3 md:col-span-2 xl:col-span-2">
                 <LockKeyhole className="size-5 text-[#C79A54]" />
-                <p className="mt-2 font-semibold text-[#063F4A]">解锁完整 7 天预报</p>
+                <p className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">解锁完整 7 天预报</p>
                 <p className="mt-1 text-sm leading-6 text-[#334155] font-medium">包含每日财位、喜神、相冲、宜忌和行动窗口，适合提前规划一周。</p>
                 <button
                   type="button"
@@ -5205,12 +5205,12 @@ function PublicDailyAlmanacPanel({
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    {item.isClash ? <span className="rounded bg-[#7A1F16]/10 px-2 py-0.5 text-[11px] font-semibold text-[#7A1F16]">今日相冲</span> : null}
-                    {item.isNoble ? <span className="rounded bg-[#C79A54]/18 px-2 py-0.5 text-[11px] font-semibold text-[#063F4A]">贵人生肖</span> : null}
+                    {item.isClash ? <span className="rounded bg-[#7A1F16]/10 px-2 py-0.5 text-[11px] font-semibold text-[#7A1F16] text-[#0F172A] font-bold">今日相冲</span> : null}
+                    {item.isNoble ? <span className="rounded bg-[#C79A54]/18 px-2 py-0.5 text-[11px] font-semibold text-[#063F4A] text-[#0F172A] font-bold">贵人生肖</span> : null}
                   </div>
                   <p className="mt-2 text-sm font-bold text-[#0F172A]">{item.headline}</p>
                   <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">{item.advice}</p>
-                  <p className="mt-2 text-[11px] font-bold text-[#0F172A]">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
+                  <p className="mt-2 text-[11px] font-bold text-[#0F172A] text-[#0F172A] font-bold">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
@@ -5230,12 +5230,12 @@ function PublicDailyAlmanacPanel({
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#063F4A] text-lg font-bold text-white">{item.stem}</span>
                     <div className="min-w-0">
-                      <p className="font-bold text-[#0F172A]">{item.stem}{item.element} · 今日主星：{item.tenGod}</p>
+                      <p className="font-bold text-[#0F172A] text-[#0F172A] font-bold">{item.stem}{item.element} · 今日主星：{item.tenGod}</p>
                       <p className="text-xs font-bold text-[#C79A54]">{item.headline} · {item.score}/100</p>
                     </div>
                   </div>
                   <p className="mt-2.5 text-xs leading-6 font-medium text-[#334155]">{item.advice}</p>
-                  <p className="mt-2 text-[11px] font-bold text-[#0F172A]">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
+                  <p className="mt-2 text-[11px] font-bold text-[#0F172A] text-[#0F172A] font-bold">色：{item.luckyColor} · 方：{item.luckyDirection}</p>
                 </div>
               ))}
             </div>
@@ -5350,7 +5350,7 @@ function TodayFortune({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-white/85 font-medium">每日紫微气象站 · {matrix.dateLabel}</p>
-            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">{matrix.headline}</h2>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl text-[#0F172A] font-bold">{matrix.headline}</h2>
             <p className="mt-2 text-xs text-white/70 font-medium">
               {memberProfile.name} · {memberProfile.birthDate} · {memberProfile.birthTimeLabel} · {memberProfile.gender} · {matrix.lunarDate}
             </p>
@@ -5361,14 +5361,14 @@ function TodayFortune({
           <div className="rounded border border-[#C79A54]/35 bg-[#C79A54]/12 p-4">
             <p className="text-xs text-white/85 font-medium">今日评分</p>
             <div className="mt-2 flex items-end gap-2">
-              <span className="text-5xl font-semibold leading-none text-[#C79A54]">{matrix.overall}</span>
+              <span className="text-5xl font-semibold leading-none text-[#C79A54] text-[#0F172A] font-bold">{matrix.overall}</span>
               <span className="pb-1 text-sm text-white/85 font-medium">/100</span>
             </div>
             <p className="mt-3 text-xs text-white/62">{matrix.weather.description}</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4 sm:hidden">
             <p className="text-xs text-white/85 font-medium">今日天气</p>
-            <p className="mt-2 text-2xl text-[#C79A54]">{matrix.weather.label}</p>
+            <p className="mt-2 text-2xl text-[#C79A54] text-[#0F172A] font-bold">{matrix.weather.label}</p>
             <p className="mt-2 text-xs text-white/85 font-medium">宜：{matrix.yi.slice(0, 2).join("、")}；忌：{matrix.ji.join("、")}。</p>
           </div>
           <div className="rounded border border-white/12 bg-white/8 p-4">
@@ -5377,7 +5377,7 @@ function TodayFortune({
                 <div key={item.key}>
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span className="font-semibold text-white">{item.label}</span>
-                    <span className="text-[#C79A54]">{item.score}/100</span>
+                    <span className="text-[#C79A54] text-[#0F172A] font-bold">{item.score}/100</span>
                   </div>
                   <div className="mt-2 h-2 rounded-full bg-white/12">
                     <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${item.score}%` }} />
@@ -5397,7 +5397,7 @@ function TodayFortune({
           ].map(([label, value]) => (
             <div key={label} className="rounded border border-white/12 bg-white/8 p-4">
               <p className="text-xs text-white/85 font-medium">{label}</p>
-              <p className="mt-2 font-semibold">{value}</p>
+              <p className="mt-2 font-semibold text-[#0F172A] font-bold">{value}</p>
             </div>
           ))}
         </div>
@@ -5405,14 +5405,14 @@ function TodayFortune({
           <div className="rounded bg-white/8 p-3">
             <Palette className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
-              <span className="size-4 rounded-full bg-[#1495A0]" />
+              <span className="size-4 rounded-full bg-[#1495A0] text-[#0F172A] font-bold" />
               <p className="text-sm">幸运色：{matrix.luckyColor}</p>
             </div>
           </div>
           <div className="rounded bg-white/8 p-3">
             <TrendingUp className="size-4 text-[#C79A54]" />
             <div className="mt-2 flex items-center gap-2">
-              <span className="grid size-6 place-items-center rounded-full border border-[#C79A54]/45 text-[10px] text-[#C79A54]">{matrix.nobleDirection.slice(0, 1)}</span>
+              <span className="grid size-6 place-items-center rounded-full border border-[#C79A54]/45 text-[10px] text-[#C79A54] text-[#0F172A] font-bold">{matrix.nobleDirection.slice(0, 1)}</span>
               <p className="text-sm">贵人方：{matrix.nobleDirection}</p>
             </div>
           </div>
@@ -5484,9 +5484,9 @@ function TodayFortune({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#64748B]">连续签到</p>
-              <p className="mt-2 text-4xl font-bold text-[#0F172A]">7 天</p>
+              <p className="mt-2 text-4xl font-bold text-[#0F172A] text-[#0F172A] font-bold">7 天</p>
             </div>
-            <span className="grid size-11 place-items-center rounded-xl bg-[#C79A54]/15 text-[#C79A54]">
+            <span className="grid size-11 place-items-center rounded-xl bg-[#C79A54]/15 text-[#C79A54] text-[#0F172A] font-bold">
               <Sparkles className="size-5" />
             </span>
           </div>
@@ -5591,7 +5591,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Fortune Calendar</p>
-            <h2 className="mt-2 text-2xl font-semibold">14 天运势日历</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">14 天运势日历</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
               点击日期打开记事本，记录当天遇见的好事、贵人、灵感和小进展。
             </p>
@@ -5625,7 +5625,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
                 </span>
               ) : null}
               <div className="mt-4 flex items-end gap-1">
-                <span className="text-3xl font-semibold text-[#063F4A]">{item.score}</span>
+                <span className="text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{item.score}</span>
                 <span className="pb-1 text-xs text-[#64748B] font-medium">/100</span>
               </div>
               <div className="mt-3 h-2 rounded-full bg-white">
@@ -5672,7 +5672,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
       <div className="grid gap-5">
         <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
           <CalendarDays className="size-8 text-[#C79A54]" />
-          <h3 className="mt-4 text-2xl font-semibold">最佳行动窗口</h3>
+          <h3 className="mt-4 text-2xl font-semibold text-[#0F172A] font-bold">最佳行动窗口</h3>
           <div className="mt-5 grid gap-3">
             {[
               [bestDays[0]?.date || "--", `${bestDays[0]?.tag || "宜推进"}，适合优先安排关键事项`],
@@ -5717,7 +5717,7 @@ function FortuneCalendarModule({ currentTier }: { currentTier: MembershipTier })
             ].map(([label, value]) => (
               <div key={label} className="rounded border border-black/10 bg-rice p-3 opacity-70">
                 <p className="text-xs text-[#64748B] font-medium">{label}</p>
-                <p className="mt-1 font-semibold blur-[2px]">{value}</p>
+                <p className="mt-1 font-semibold blur-[2px] text-[#0F172A] font-bold">{value}</p>
               </div>
             ))}
           </div>
@@ -5849,7 +5849,7 @@ function DestinyProfileModule({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-white/85 font-medium">Personal Destiny Profile</p>
-            <h2 className="mt-2 text-3xl font-semibold">{memberProfile.name} 的个人命盘</h2>
+            <h2 className="mt-2 text-3xl font-semibold text-[#0F172A] font-bold">{memberProfile.name} 的个人命盘</h2>
             <p className="mt-3 max-w-xl text-sm leading-6 text-white/65">
               会员注册后必须填写基础资料。今日运势、AI 风水命理师和报告中心都会读取这份档案来做命理分析。
             </p>
@@ -5968,7 +5968,7 @@ function DestinyProfileModule({
             ].map(([label, value]) => (
               <div key={label} className="rounded border border-white/12 bg-white/8 p-3">
                 <p className="text-xs text-white/70 font-medium">{label}</p>
-                <p className="mt-1 font-semibold">{value}</p>
+                <p className="mt-1 font-semibold text-[#0F172A] font-bold">{value}</p>
               </div>
             ))}
           </div>
@@ -5991,7 +5991,7 @@ function DestinyProfileModule({
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h3 className="text-2xl font-semibold">五行强弱</h3>
+            <h3 className="text-2xl font-semibold text-[#0F172A] font-bold">五行强弱</h3>
             <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">用简单图形让用户快速理解自己的状态与建议。</p>
           </div>
           <StatusPill>Plus 专属</StatusPill>
@@ -6002,10 +6002,10 @@ function DestinyProfileModule({
             <div key={element} className="rounded border border-black/10 bg-rice p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-semibold">{element} · {score}/100</p>
+                  <p className="font-semibold text-[#0F172A] font-bold">{element} · {score}/100</p>
                   <p className="mt-1 text-sm text-[#334155] font-medium">{note}</p>
                 </div>
-                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] font-semibold text-[#063F4A]">
+                <span className="grid size-10 place-items-center rounded bg-[#DDEFF2] font-semibold text-[#063F4A] text-[#0F172A] font-bold">
                   {element}
                 </span>
               </div>
@@ -6026,7 +6026,7 @@ function DestinyProfileModule({
 
         <div className="mt-5 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center justify-between gap-3">
-            <h4 className="font-semibold">十二宫数据桶</h4>
+            <h4 className="font-semibold text-[#0F172A] font-bold">十二宫数据桶</h4>
             <span className="rounded bg-white px-2 py-1 text-xs text-[#334155] font-medium">点击看解释</span>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -6053,7 +6053,7 @@ function DestinyProfileModule({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Ziwei Palace</p>
-                <h3 className="mt-2 text-3xl font-semibold text-[#063F4A]">{selectedPalace.name}</h3>
+                <h3 className="mt-2 text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{selectedPalace.name}</h3>
               </div>
               <button
                 type="button"
@@ -6110,7 +6110,7 @@ function GrowthPlaybookModule() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Daily Growth Loop</p>
-            <h2 className="mt-2 text-2xl font-semibold">每日任务与奖励</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">每日任务与奖励</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
               让用户每天有事可做、有奖励可拿、有理由回来。现在先做前端交互，后续接点数系统。
             </p>
@@ -6136,9 +6136,9 @@ function GrowthPlaybookModule() {
                 <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded ${isDone ? "bg-[#063F4A] text-white" : "bg-white text-[#64748B] font-medium"}`}>
                   <CheckCircle2 className="size-4" />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center justify-between gap-3">
-                    <span className="font-semibold">{task.title}</span>
+                <span className="min-w-0 flex-1 text-[#0F172A] font-bold">
+                  <span className="flex items-center justify-between gap-3 text-[#0F172A] font-bold">
+                    <span className="font-semibold text-[#0F172A] font-bold">{task.title}</span>
                     <span className="shrink-0 rounded bg-white px-2 py-1 text-xs font-semibold text-[#063F4A]">{task.reward}</span>
                   </span>
                   <span className="mt-1 block text-sm leading-6 text-[#334155] font-medium">{task.desc}</span>
@@ -6150,7 +6150,7 @@ function GrowthPlaybookModule() {
 
         <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="font-semibold text-[#063F4A]">距离 Pro 升级</p>
+            <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">距离 Pro 升级</p>
             <span className="text-sm font-semibold">72%</span>
           </div>
           <div className="mt-3 h-2 rounded-full bg-white">
@@ -6165,13 +6165,13 @@ function GrowthPlaybookModule() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-sm text-white/85 font-medium">今日分享卡</p>
-              <h3 className="mt-1 text-2xl font-semibold">我的事业评分 91</h3>
+              <h3 className="mt-1 text-2xl font-semibold text-[#0F172A] font-bold">我的事业评分 91</h3>
             </div>
             <Share2 className="size-8 text-[#C79A54]" />
           </div>
           <div className="mt-6 rounded border border-[#C79A54]/35 bg-[#C79A54]/10 p-5 text-center">
             <p className="text-sm text-white/60">今日运势</p>
-            <p className="mt-2 text-6xl font-semibold text-[#C79A54]">89</p>
+            <p className="mt-2 text-6xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">89</p>
             <p className="mt-3 text-xl font-semibold">稳中有进，先整理后扩张</p>
             <p className="mt-4 text-sm leading-6 text-white/65">幸运色：青绿 · 贵人方：东南 · 今日宜：复盘</p>
           </div>
@@ -6212,7 +6212,7 @@ function FavoritesVaultModule() {
     <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-5 text-white shadow-soft">
         <BookmarkCheck className="size-9 text-[#C79A54]" />
-        <h2 className="mt-4 text-3xl font-semibold">我的收藏夹</h2>
+        <h2 className="mt-4 text-3xl font-semibold text-[#0F172A] font-bold">我的收藏夹</h2>
         <p className="mt-3 text-sm leading-6 text-white/68">
           把 AI 回复、报告、运势日历、产品、课程和行动建议集中保存，形成用户自己的命理决策库。
         </p>
@@ -6225,7 +6225,7 @@ function FavoritesVaultModule() {
           ].map(([label, value]) => (
             <div key={label} className="rounded border border-white/12 bg-white/8 p-3">
               <p className="text-xs text-white/70 font-medium">{label}</p>
-              <p className="mt-1 text-2xl font-semibold">{value}</p>
+              <p className="mt-1 text-2xl font-semibold text-[#0F172A] font-bold">{value}</p>
             </div>
           ))}
         </div>
@@ -6234,7 +6234,7 @@ function FavoritesVaultModule() {
       <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-2xl font-semibold">灵感与行动库</h3>
+            <h3 className="text-2xl font-semibold text-[#0F172A] font-bold">灵感与行动库</h3>
             <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">后续接数据库后，用户收藏的 AI 回复和报告会永久保存。</p>
           </div>
           <StatusPill>{filteredItems.length} 项</StatusPill>
@@ -6262,7 +6262,7 @@ function FavoritesVaultModule() {
                 <span className="rounded bg-[#C79A54]/15 px-2 py-1 text-xs font-semibold text-[#063F4A]">{item.type}</span>
                 <BookmarkCheck className="size-4 text-[#C79A54]" />
               </div>
-              <h4 className="mt-4 font-semibold">{item.title}</h4>
+              <h4 className="mt-4 font-semibold text-[#0F172A] font-bold">{item.title}</h4>
               <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">{item.desc}</p>
               <button className="mt-4 text-sm font-semibold text-[#063F4A]">打开查看</button>
             </div>
@@ -6320,7 +6320,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
       <section className="overflow-hidden rounded-[1.75rem] border border-[#C79A54]/28 bg-[#0B1020] p-4 text-white shadow-[0_28px_80px_rgba(6,63,74,0.24)] sm:p-6">
         <div className="mb-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#C79A54]">Bazi Destiny Console</p>
-          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl">八字论命系统</h3>
+          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl text-[#0F172A] font-bold">八字论命系统</h3>
           <p className="mt-2 text-xs tracking-[0.28em] text-white/70 font-medium">天干地支 · 五行能量 · 大运流程 · AI 命盘推演</p>
         </div>
 
@@ -6383,8 +6383,8 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
                   <p className="text-sm font-semibold text-[#C79A54]">{pillar.label}</p>
                   <div className="mt-3 rounded-lg border border-white/8 bg-black/20 px-3 py-4">
                     <p className="text-xs text-white/70 font-medium">{pillar.tenGods.split(" ")[0] || "十神"}</p>
-                    <p className="mt-1 text-5xl font-semibold text-[#F7E7A6]">{pillar.stem}</p>
-                    <p className="mt-1 text-5xl font-semibold text-[#9ED8DF]">{pillar.branch}</p>
+                    <p className="mt-1 text-5xl font-semibold text-[#F7E7A6] text-[#0F172A] font-bold">{pillar.stem}</p>
+                    <p className="mt-1 text-5xl font-semibold text-[#9ED8DF] text-[#0F172A] font-bold">{pillar.branch}</p>
                   </div>
                   <p className="mt-3 text-xs leading-5 text-white/70 font-medium">{pillar.hiddenStems} · {pillar.naYin}</p>
                 </div>
@@ -6400,8 +6400,8 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
                     return (
                       <div key={`console-${item.element}`} className="grid grid-cols-[32px_1fr_38px] items-center gap-3 text-xs">
                         <span className="font-semibold text-white/72">{item.element}</span>
-                        <span className="h-3 rounded-full bg-black/40">
-                          <span className="block h-full rounded-full" style={{ width: `${Math.max(item.value, 5)}%`, backgroundColor: palette[index % palette.length] }} />
+                        <span className="h-3 rounded-full bg-black/40 text-[#0F172A] font-bold">
+                          <span className="block h-full rounded-full text-[#0F172A] font-bold" style={{ width: `${Math.max(item.value, 5)}%`, backgroundColor: palette[index % palette.length] }} />
                         </span>
                         <span className="text-right text-white/70 font-medium">{item.value}%</span>
                       </div>
@@ -6417,7 +6417,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
                     <div key={`console-luck-${row.join("-")}`} className={`min-w-[118px] rounded-lg border px-3 py-3 text-center lg:min-w-0 ${index === 4 ? "border-[#C79A54] bg-[#C79A54]/12" : "border-white/10 bg-black/20"}`}>
                       <p className="text-[11px] text-white/70 font-medium">{row[0]}</p>
                       <p className="mt-2 text-lg font-semibold text-white">{row[2]}{row[3]}</p>
-                      <p className="mt-1 text-[10px] text-[#C79A54]">{row[1]}</p>
+                      <p className="mt-1 text-[10px] text-[#C79A54] text-[#0F172A] font-bold">{row[1]}</p>
                     </div>
                   ))}
                 </div>
@@ -6437,8 +6437,8 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
             {pillars.map((pillar) => (
               <div key={pillar.label} className="overflow-hidden rounded border border-[#C79A54]/35 bg-white">
                 <p className="bg-[#F5FAFA] py-2 text-sm font-semibold">{pillar.label}</p>
-                <p className="py-3 text-5xl font-semibold text-[#C79A54]">{pillar.stem}</p>
-                <p className="py-3 text-5xl font-semibold text-[#7A1F16]">{pillar.branch}</p>
+                <p className="py-3 text-5xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{pillar.stem}</p>
+                <p className="py-3 text-5xl font-semibold text-[#7A1F16] text-[#0F172A] font-bold">{pillar.branch}</p>
                 <div className="border-t border-[#C79A54]/25 px-2 py-3 text-xs leading-5 text-[#1E293B] font-semibold">
                   <p>藏干：{pillar.hiddenStems}</p>
                   <p>十神：{pillar.tenGods}</p>
@@ -6462,17 +6462,17 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
             <div className="grid place-items-center">
               <div className="grid size-40 place-items-center rounded-full shadow-inner" style={pieStyle}>
                 <div className="grid size-24 place-items-center rounded-full bg-[#fffaf0] text-center">
-                  <p className="text-3xl font-semibold text-[#063F4A]">82</p>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#64748B] font-medium">Score</p>
+                  <p className="text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">82</p>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#64748B] font-medium text-[#0F172A] font-bold">Score</p>
                 </div>
               </div>
             </div>
             <div className="grid gap-2">
               {elements.map((item) => (
                 <div key={item.element} className="grid grid-cols-[36px_1fr_42px] items-center gap-3 text-sm">
-                  <span className="font-semibold">{item.element}</span>
-                  <span className="h-3 rounded-full bg-[#DDEFF2]">
-                    <span className="block h-full rounded-full bg-[#C79A54]" style={{ width: `${Math.max(item.value, 4)}%` }} />
+                  <span className="font-semibold text-[#0F172A] font-bold">{item.element}</span>
+                  <span className="h-3 rounded-full bg-[#DDEFF2] text-[#0F172A] font-bold">
+                    <span className="block h-full rounded-full bg-[#C79A54] text-[#0F172A] font-bold" style={{ width: `${Math.max(item.value, 4)}%` }} />
                   </span>
                   <span className="text-right text-[#334155] font-medium">{item.value}%</span>
                 </div>
@@ -6500,7 +6500,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
           ["六、落地提醒", "适合把命理结果转为行动清单：现金流表、合约边界、复盘制度、健康节律。命理只作文化参考，不构成专业建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#7A1F16]">{title}</h4>
+            <h4 className="font-semibold text-[#7A1F16] text-[#0F172A] font-bold">{title}</h4>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -6552,7 +6552,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{score}</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">{label}</p>
               </div>
             ))}
@@ -6568,7 +6568,7 @@ function BaziReportPanel({ report, memberProfile }: { report: SavedReport; membe
               ["提升建议", "建立现金流表、合作边界、复盘制度；先稳住结构，再扩大规模。"]
             ].map(([label, content]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                 <p className="mt-1 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
               </div>
             ))}
@@ -6604,12 +6604,12 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
       <section className="overflow-hidden rounded border border-[#C79A54]/40 bg-[#102F38] text-white">
         <div className="grid gap-5 p-5 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">一、核心数字计算</h4>
+            <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38] text-[#0F172A] font-bold">一、核心数字计算</h4>
             <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
               {coreNumbers.map(([label, value, hint]) => (
                 <div key={label} className="rounded border border-white/15 bg-white/8 p-3">
                   <p className="text-xs text-white/85 font-medium">{label}</p>
-                  <p className="mt-1 text-4xl font-semibold text-[#E8D4A8]">{value}</p>
+                  <p className="mt-1 text-4xl font-semibold text-[#E8D4A8] text-[#0F172A] font-bold">{value}</p>
                   <p className="mt-1 text-xs text-white/60">{hint}</p>
                 </div>
               ))}
@@ -6620,7 +6620,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
             <div className="mt-5 grid grid-cols-3 gap-2">
               {energyRows.map((row) => (
                 <div key={row.number} className="grid aspect-square place-items-center rounded border border-white/15 bg-[#0A0A0A]/25 text-center">
-                  <span className="text-3xl font-semibold text-[#C79A54]">{row.number}</span>
+                  <span className="text-3xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{row.number}</span>
                   <span className="text-xs text-white/85 font-medium">{row.count} 次</span>
                 </div>
               ))}
@@ -6640,10 +6640,10 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
             return (
               <article key={label} className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold text-[#102F38]">{label}</p>
+                  <p className="font-semibold text-[#102F38] text-[#0F172A] font-bold">{label}</p>
                   <span className="grid size-10 place-items-center rounded-full bg-[#C79A54] font-semibold text-white">{value}</span>
                 </div>
-                <p className="mt-3 font-semibold text-[#3B1B66]">{meaning.title}</p>
+                <p className="mt-3 font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{meaning.title}</p>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">优势：{meaning.strength}。挑战：{meaning.weakness}。课题：{meaning.lesson}。</p>
               </article>
             );
@@ -6656,7 +6656,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
         <div className="mt-4 grid gap-3">
           {energyRows.map((row) => (
             <div key={row.number} className="grid gap-3 rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 md:grid-cols-[60px_1fr_90px] md:items-center">
-              <p className="text-2xl font-semibold text-[#3B1B66]">{row.number}</p>
+              <p className="text-2xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{row.number}</p>
               <div>
                 <div className="h-3 overflow-hidden rounded-full bg-white">
                   <div className="h-full rounded-full bg-gradient-to-r from-[#3B1B66] via-[#1495A0] to-[#C79A54]" style={{ width: `${row.strength}%` }} />
@@ -6676,8 +6676,8 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
           ["六、灵魂渴望分析", core.soulUrge, "内在动力来自真实感与意义感。越能把选择和价值观对齐，行动越稳定。"]
         ].map(([title, value, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#3B1B66]">{title}</h4>
-            <p className="mt-3 text-5xl font-semibold text-[#C79A54]">{value}</p>
+            <h4 className="font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{title}</h4>
+            <p className="mt-3 text-5xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{value}</p>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -6691,7 +6691,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
           ["健康 / 生活", "注意睡眠、压力节奏与固定运动。本项为生活提醒，不是医疗建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#102F38]">{title}</h4>
+            <h4 className="font-semibold text-[#102F38] text-[#0F172A] font-bold">{title}</h4>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -6750,7 +6750,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-                <p className="text-3xl font-semibold text-[#3B1B66]">{score}</p>
+                <p className="text-3xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{score}</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">{label}</p>
                 <p className="mt-1 text-xs tracking-widest text-[#C79A54]">★★★★★</p>
               </div>
@@ -6769,7 +6769,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
               ["合作对象", `生命路径 ${core.destiny}、${core.maturity} 或 ${reduceNumerologyNumber(core.lifePath + 2)} 的伙伴`]
             ].map(([label, content]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                <p className="font-semibold text-[#102F38]">{label}</p>
+                <p className="font-semibold text-[#102F38] text-[#0F172A] font-bold">{label}</p>
                 <p className="mt-1 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
               </div>
             ))}
@@ -6786,7 +6786,7 @@ function NumerologyReportPanel({ report }: { report: SavedReport }) {
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {normalizedReportContent(report).sections.map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-              <p className="font-semibold text-[#3B1B66]">{section.title}</p>
+              <p className="font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{section.title}</p>
               <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{section.content}</p>
             </div>
           ))}
@@ -6844,7 +6844,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         <div className="grid gap-6 p-5 md:p-7 xl:grid-cols-[0.95fr_1.25fr]">
           <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Four Method Command Center</p>
-            <h4 className="mt-4 text-3xl font-semibold leading-tight text-[#F7E7A6]">综合命理合参决策盘</h4>
+            <h4 className="mt-4 text-3xl font-semibold leading-tight text-[#F7E7A6] text-[#0F172A] font-bold">综合命理合参决策盘</h4>
             <p className="mt-3 text-sm leading-7 text-white/66">
               以命格底盘、宫位阶段、当下问事与个人节奏交叉判断，把复杂命理浓缩成风险、机会和行动路线。
             </p>
@@ -6864,7 +6864,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C79A54]">Integrated Score</p>
                 <div className="mx-auto mt-5 grid size-40 place-items-center rounded-full border-[10px] border-[#C79A54] bg-[#111827] shadow-[0_0_40px_rgba(199,154,84,.28)]">
                   <div>
-                    <p className="text-5xl font-semibold text-[#F7E7A6]">{integratedScore}</p>
+                    <p className="text-5xl font-semibold text-[#F7E7A6] text-[#0F172A] font-bold">{integratedScore}</p>
                     <p className="mt-1 text-xs tracking-[0.22em] text-white/70 font-medium">TOTAL</p>
                   </div>
                 </div>
@@ -6894,7 +6894,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
               <div className="mt-4 grid gap-3 md:grid-cols-3">
                 {routePlan.map(([period, title, content]) => (
                   <div key={period} className="rounded-xl border border-white/10 bg-white/[0.05] p-4">
-                    <p className="text-2xl font-semibold text-[#F7E7A6]">{period}</p>
+                    <p className="text-2xl font-semibold text-[#F7E7A6] text-[#0F172A] font-bold">{period}</p>
                     <p className="mt-2 font-semibold text-white">{title}</p>
                     <p className="mt-2 text-xs leading-5 text-white/85 font-medium">{content}</p>
                   </div>
@@ -6909,7 +6909,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
         <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">Integrated Metaphysics Engine</p>
-            <h4 className="mt-3 text-3xl font-semibold">个人命理综合分析</h4>
+            <h4 className="mt-3 text-3xl font-semibold text-[#0F172A] font-bold">个人命理综合分析</h4>
             <p className="mt-3 text-sm leading-6 text-white/70">
               本报告把多套命理推演融成一份可执行的个人分析，重点拆解性格底层、当前阶段、关键问题、风险处理、通关方法与行动建议。
             </p>
@@ -6936,7 +6936,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
             {systemMatrix.map(([label, value, desc]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <p className="font-semibold text-[#063F4A]">{label}</p>
+                  <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                   <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{value}</span>
                 </div>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{desc}</p>
@@ -6951,7 +6951,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
             {destinyChecklist.map(([label, desc], index) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#C79A54]">Step {index + 1}</p>
-                <p className="mt-2 font-semibold text-[#063F4A]">{label}</p>
+                <p className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{desc}</p>
               </div>
             ))}
@@ -6971,7 +6971,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           <div className="mt-4 grid gap-3">
             {wealthRadar.map(([label, value, desc]) => (
               <div key={label} className="grid gap-2 rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 sm:grid-cols-[96px_1fr_42px] sm:items-center">
-                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                 <div>
                   <div className="h-2 overflow-hidden rounded-full bg-white">
                     <div className="h-full rounded-full bg-[#C79A54]" style={{ width: `${value}%` }} />
@@ -6991,7 +6991,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
               {timingBoard.map(([label, window, desc]) => (
                 <div key={label} className="rounded border border-[#C79A54]/20 bg-[#fffaf0] p-3">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold text-[#063F4A]">{label}</p>
+                    <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                     <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{window}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{desc}</p>
@@ -7005,7 +7005,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
             <div className="mt-4 grid gap-3">
               {peopleGuide.map(([label, desc]) => (
                 <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                  <p className="font-semibold text-[#063F4A]">{label}</p>
+                  <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                   <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{desc}</p>
                 </div>
               ))}
@@ -7024,7 +7024,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           ["八、产品仪式", "结合九运香、水晶、五行饰品、办公室布局或课程咨询，给出克制建议。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#063F4A]">{title}</h4>
+            <h4 className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{title}</h4>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -7037,7 +7037,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{score}</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">{label}</p>
               </div>
             ))}
@@ -7045,11 +7045,11 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
           </div>
           {actionGroups.length > 0 ? (
             <div className="rounded border border-[#C79A54]/40 bg-white/85 p-4">
-              <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38]">十、行动清单</h4>
+              <h4 className="rounded bg-[#C79A54] px-4 py-2 font-semibold text-[#102F38] text-[#0F172A] font-bold">十、行动清单</h4>
               <div className="mt-4 grid gap-3">
                 {actionGroups.map(([label, items]) => (
                   <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                    <p className="font-semibold text-[#063F4A]">{label}</p>
+                    <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                     <ul className="mt-2 grid gap-1 text-sm leading-6 text-[#1E293B] font-semibold">
                       {items.slice(0, 4).map((item) => (
                         <li key={item}>• {item}</li>
@@ -7075,7 +7075,7 @@ function IntegratedReportPanel({ report }: { report: SavedReport }) {
                       <p key={`${section.title}-${index}`} className="text-sm leading-7 text-[#1E293B] font-semibold">
                         {match ? (
                           <>
-                            <span className="font-semibold text-[#7A1F16]">{match[1]}</span>
+                            <span className="font-semibold text-[#7A1F16] text-[#0F172A] font-bold">{match[1]}</span>
                             {match[2]}
                           </>
                         ) : (
@@ -7159,11 +7159,11 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
           <p className="text-base font-semibold text-[#3B1B66]">{row.palace}</p>
           <p className="mt-1 text-xs font-semibold text-[#C79A54]">{row.age}</p>
         </div>
-        <span className="rounded bg-[#3B1B66]/8 px-2 py-1 text-[11px] font-semibold text-[#3B1B66]">{row.transform}</span>
+        <span className="rounded bg-[#3B1B66]/8 px-2 py-1 text-[11px] font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{row.transform}</span>
       </div>
       <p className="mt-3 text-lg font-semibold leading-6 text-[#7A1F16]">{row.stars}</p>
       <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">辅曜：{row.minor}</p>
-      {row.flying?.length ? <p className="mt-2 text-[11px] leading-5 text-[#3B1B66]/70">飞化：{row.flying.slice(0, 4).join(" · ")}</p> : null}
+      {row.flying?.length ? <p className="mt-2 text-[11px] leading-5 text-[#3B1B66]/70 text-[#0F172A] font-bold">飞化：{row.flying.slice(0, 4).join(" · ")}</p> : null}
       <p className="mt-2 text-xs leading-5 text-[#1E293B] font-semibold">{row.summary}</p>
     </div>
   );
@@ -7173,7 +7173,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
       <section className="overflow-hidden rounded-[1.75rem] border border-[#C79A54]/28 bg-[#0B1020] p-4 text-white shadow-[0_28px_80px_rgba(59,27,102,0.24)] sm:p-6">
         <div className="mb-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[#C79A54]">Zi Wei Destiny Console</p>
-          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl">紫微斗数命盘系统</h3>
+          <h3 className="mt-2 text-3xl font-semibold tracking-wide text-[#F7E7A6] sm:text-4xl text-[#0F172A] font-bold">紫微斗数命盘系统</h3>
           <p className="mt-2 text-xs tracking-[0.28em] text-white/70 font-medium">十二宫位 · 大限流年 · 四化飞星 · AI 命盘推演</p>
         </div>
 
@@ -7271,7 +7271,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
                   <div key={`ziwei-console-luck-${row.join("-")}`} className={`min-w-[122px] rounded-lg border px-3 py-3 text-center lg:min-w-0 ${index === 2 ? "border-[#C79A54] bg-[#C79A54]/12" : "border-white/10 bg-black/20"}`}>
                     <p className="text-[11px] text-white/70 font-medium">{row[0]}</p>
                     <p className="mt-2 text-sm font-semibold text-white">{row[1]}</p>
-                    <p className="mt-1 line-clamp-1 text-[10px] text-[#C79A54]">{row[2]}</p>
+                    <p className="mt-1 line-clamp-1 text-[10px] text-[#C79A54] text-[#0F172A] font-bold">{row[2]}</p>
                   </div>
                 ))}
               </div>
@@ -7295,16 +7295,16 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
                 ["紫微落宫", chart?.ziweiBranch ? `${chart.ziweiBranch}宫` : "待校准"],
                 ["重点", input ? ziweiFocusLabels[input.focus] : "综合命盘"]
               ].map(([label, value]) => (
-                <p key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                  <span className="text-[#334155] font-medium">{label}</span>
-                  <span className="ml-2 font-semibold text-[#3B1B66]">{value}</span>
+                <p key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-[#0F172A] font-bold">
+                  <span className="text-[#334155] font-medium text-[#0F172A] font-bold">{label}</span>
+                  <span className="ml-2 font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{value}</span>
                 </p>
               ))}
             </div>
           </div>
           <div className="grid place-items-center rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-5 text-center">
-            <p className="text-7xl text-[#3B1B66]">✦</p>
-            <p className="mt-3 text-2xl font-semibold text-[#3B1B66]">紫微星曜 · 洞悉天命</p>
+            <p className="text-7xl text-[#3B1B66] text-[#0F172A] font-bold">✦</p>
+            <p className="mt-3 text-2xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">紫微星曜 · 洞悉天命</p>
             <p className="mt-2 max-w-md text-sm leading-6 text-[#1E293B] font-semibold">以十二宫为人生数据桶，读取命宫、身宫、官禄、财帛、夫妻与流年触发，转化为可执行的人生规划。</p>
           </div>
         </div>
@@ -7324,14 +7324,14 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
             <div className="grid min-h-72 place-items-center border border-[#C79A54]/25 bg-gradient-to-br from-white via-[#FBF7EE] to-[#EFE6FF] p-5 text-center md:col-span-2 md:row-span-2">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Zi Wei Core</p>
-                <h5 className="mt-3 text-2xl font-semibold text-[#3B1B66]">{input?.fullName || reportSubjectName(report)}</h5>
+                <h5 className="mt-3 text-2xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{input?.fullName || reportSubjectName(report)}</h5>
                 <div className="mx-auto mt-4 grid max-w-md gap-2 text-sm text-[#1E293B] font-semibold sm:grid-cols-2">
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">命宫：{chart?.mainPalaceBranch ? `${chart.mainPalaceBranch}宫` : calendar?.mingGong || "待排盘"}</span>
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">身宫：{chart?.bodyPalaceBranch ? `${chart.bodyPalaceBranch}宫` : calendar?.shenGong || "待排盘"}</span>
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">日主：{calendar?.dayMaster || "待排盘"}</span>
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">生肖：{calendar?.zodiac || "待排盘"}</span>
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">五行局：{chart?.fiveElementName || "待校准"}</span>
-                  <span className="rounded border border-[#C79A54]/20 bg-white p-2">重点：{input ? ziweiFocusLabels[input.focus] : "综合命盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">命宫：{chart?.mainPalaceBranch ? `${chart.mainPalaceBranch}宫` : calendar?.mingGong || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">身宫：{chart?.bodyPalaceBranch ? `${chart.bodyPalaceBranch}宫` : calendar?.shenGong || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">日主：{calendar?.dayMaster || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">生肖：{calendar?.zodiac || "待排盘"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">五行局：{chart?.fiveElementName || "待校准"}</span>
+                  <span className="rounded border border-[#C79A54]/20 bg-white p-2 text-[#0F172A] font-bold">重点：{input ? ziweiFocusLabels[input.focus] : "综合命盘"}</span>
                 </div>
                 <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-[#1E293B] font-semibold">
                   十二宫以命宫为主轴，交叉读取官禄、财帛、夫妻、疾厄与福德宫。中心信息用于校准个人格局，外围宫位用于判断人生领域的强弱与流年触发点。
@@ -7384,7 +7384,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
           <div className="grid gap-5 bg-[#3B1B66] p-5 text-white lg:grid-cols-[1fr_0.8fr]">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#C79A54]">Zi Wei Strategy Report</p>
-              <h4 className="mt-3 text-3xl font-semibold">四、AI 逐宫策略解读</h4>
+              <h4 className="mt-3 text-3xl font-semibold text-[#0F172A] font-bold">四、AI 逐宫策略解读</h4>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">
                 以下 10 节根据本盘十二宫、星曜、四化与大限节奏整理，采用“盘面依据 → 白话判断 → 风险警示 → 行动清单”的正式报告结构。
               </p>
@@ -7406,7 +7406,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Core Reading</p>
-                  <h5 className="mt-2 text-2xl font-semibold text-[#3B1B66]">{structuredSections[0].title}</h5>
+                  <h5 className="mt-2 text-2xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{structuredSections[0].title}</h5>
                 </div>
                 <span className="rounded-full border border-[#C79A54]/40 bg-white px-4 py-2 text-xs font-semibold text-[#3B1B66]">命盘主轴</span>
               </div>
@@ -7448,7 +7448,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
           ["使用提醒", "紫微报告适合做长期规划和自我觉察；重大投资、医疗、法律事项仍应咨询对应专业人士。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#3B1B66]">{title}</h4>
+            <h4 className="font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{title}</h4>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -7500,7 +7500,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-                <p className="text-3xl font-semibold text-[#3B1B66]">{score}</p>
+                <p className="text-3xl font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{score}</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">{label}</p>
               </div>
             ))}
@@ -7520,7 +7520,7 @@ function ZiweiReportPanel({ report }: { report: SavedReport }) {
               ["风水建议", "办公桌后方宜稳，文件区分明，财务资料不可杂乱。"]
             ].map(([label, content]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                <p className="font-semibold text-[#3B1B66]">{label}</p>
+                <p className="font-semibold text-[#3B1B66] text-[#0F172A] font-bold">{label}</p>
                 <p className="mt-1 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
               </div>
             ))}
@@ -7552,12 +7552,12 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
             </div>
           </div>
           <div className="rounded border border-[#C79A54]/25 bg-[#F5FAFA] p-4 text-center">
-            <p className="text-6xl text-[#063F4A]">☯</p>
+            <p className="text-6xl text-[#063F4A] text-[#0F172A] font-bold">☯</p>
             <p className="mt-3 text-lg font-semibold text-[#7A1F16]">本卦：天地否 · 变卦：地山谦</p>
             <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">上卦乾，下卦坤，动爻上六。先闭塞后转谦，宜以柔化刚，等待时机。</p>
           </div>
           <div className="rounded border border-[#C79A54]/25 bg-white p-4">
-            <p className="font-semibold text-[#063F4A]">占问事项</p>
+            <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">占问事项</p>
             <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{question}</p>
           </div>
         </div>
@@ -7568,8 +7568,8 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
           <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">二、本卦 · 当前局势</h4>
           <HexagramLines lines={getMeihuaHexagramLines("main")} />
           <div className="grid gap-2 text-sm md:grid-cols-2">
-            <p className="rounded bg-[#F5FAFA] p-3">上卦：乾（金）</p>
-            <p className="rounded bg-[#F5FAFA] p-3">下卦：坤（土）</p>
+            <p className="rounded bg-[#F5FAFA] p-3 text-[#0F172A] font-bold">上卦：乾（金）</p>
+            <p className="rounded bg-[#F5FAFA] p-3 text-[#0F172A] font-bold">下卦：坤（土）</p>
           </div>
           <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">天地否象，主上下不交、沟通未通。当前宜先守住节奏，厘清事实和资源，不宜急于硬推。</p>
         </article>
@@ -7577,8 +7577,8 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
           <h4 className="rounded bg-[#7A1F16] px-4 py-2 font-semibold text-white">三、变卦 · 未来趋势</h4>
           <HexagramLines lines={getMeihuaHexagramLines("change")} />
           <div className="grid gap-2 text-sm md:grid-cols-2">
-            <p className="rounded bg-[#F5FAFA] p-3">上卦：坤（土）</p>
-            <p className="rounded bg-[#F5FAFA] p-3">下卦：艮（土）</p>
+            <p className="rounded bg-[#F5FAFA] p-3 text-[#0F172A] font-bold">上卦：坤（土）</p>
+            <p className="rounded bg-[#F5FAFA] p-3 text-[#0F172A] font-bold">下卦：艮（土）</p>
           </div>
           <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">地山谦象，未来靠降低姿态、稳住承诺、逐步推进而得转机。越急越堵，越稳越通。</p>
         </article>
@@ -7592,7 +7592,7 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
           ["七、时机预测", "短线宜先整理，3-7 天内适合沟通确认，15-30 天内可进入下一步执行窗口。"]
         ].map(([title, content]) => (
           <article key={title} className="rounded border border-[#C79A54]/35 bg-white/85 p-4">
-            <h4 className="font-semibold text-[#7A1F16]">{title}</h4>
+            <h4 className="font-semibold text-[#7A1F16] text-[#0F172A] font-bold">{title}</h4>
             <p className="mt-3 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
           </article>
         ))}
@@ -7603,7 +7603,7 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {normalizedReportContent(report).sections.map((section) => (
             <div key={section.title} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-4">
-              <p className="font-semibold text-[#063F4A]">{section.title}</p>
+              <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{section.title}</p>
               <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{section.content}</p>
             </div>
           ))}
@@ -7616,7 +7616,7 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
           <div className="mt-4 grid grid-cols-2 gap-3">
             {scoreRows.map(([label, score]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3 text-center">
-                <p className="text-3xl font-semibold text-[#063F4A]">{score}</p>
+                <p className="text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{score}</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">{label}</p>
               </div>
             ))}
@@ -7634,7 +7634,7 @@ function MeihuaReportPanel({ report }: { report: SavedReport }) {
               ["暂时避免", "冲动签约、夜间决策、口头承诺过多。"]
             ].map(([label, content]) => (
               <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                <p className="font-semibold text-[#063F4A]">{label}</p>
+                <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                 <p className="mt-1 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
               </div>
             ))}
@@ -7722,7 +7722,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
           <header className="grid gap-5 border-b-2 border-[#C79A54]/45 pb-5 md:grid-cols-[0.72fr_1.15fr_0.78fr] md:items-center">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#C79A54]">AI Feng Shui Master</p>
-              <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A]">{finalName}</h1>
+              <h1 className="mt-3 text-5xl font-semibold leading-tight text-[#063F4A] text-[#0F172A] font-bold">{finalName}</h1>
               <p className="mt-3 text-sm leading-6 text-[#334155] font-medium">专业命理合参 · 趋势判断 · 行动建议</p>
             </div>
             <div className="text-sm leading-7">
@@ -7737,8 +7737,8 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
               </div>
             </div>
             <div className="rounded border border-[#C79A54]/25 bg-white/70 p-4 text-sm leading-6">
-              <p className="font-semibold text-[#063F4A]">命理格言</p>
-              <p className="mt-2 text-[#1E293B] font-semibold">命由天定，运由己造。知命而乐，修身而行，趋吉避凶，福慧双修。</p>
+              <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">命理格言</p>
+              <p className="mt-2 text-[#1E293B] font-semibold text-[#0F172A] font-bold">命由天定，运由己造。知命而乐，修身而行，趋吉避凶，福慧双修。</p>
             </div>
           </header>
 
@@ -7763,7 +7763,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
                 {professionalMetrics.map(([label, score]) => (
                   <div key={label} className="rounded border border-white/10 bg-white/8 p-3">
                     <p className="text-xs text-white/85 font-medium">{label}</p>
-                    <p className="mt-1 text-2xl font-semibold text-[#E8D4A8]">{score}</p>
+                    <p className="mt-1 text-2xl font-semibold text-[#E8D4A8] text-[#0F172A] font-bold">{score}</p>
                   </div>
                 ))}
               </div>
@@ -7810,7 +7810,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
               {sevenDayPlan.map(([day, title, content]) => (
                 <div key={day} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{day}</p>
-                  <p className="mt-2 font-semibold text-[#063F4A]">{title}</p>
+                  <p className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{title}</p>
                   <p className="mt-2 text-xs leading-5 text-[#1E293B] font-semibold">{content}</p>
                 </div>
               ))}
@@ -7827,7 +7827,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
                 {riskRadar.map(([label, level, content]) => (
                   <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="font-semibold text-[#063F4A]">{label}</p>
+                      <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{label}</p>
                       <span className="rounded bg-[#fff4d6] px-2 py-1 text-xs font-semibold text-[#7A1F16]">风险 {level}</span>
                     </div>
                     <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{content}</p>
@@ -7856,7 +7856,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
             <div className="mt-4 grid gap-3 md:grid-cols-5">
               {solutionStack.map(([label, content]) => (
                 <div key={label} className="rounded border border-[#C79A54]/20 bg-[#F5FAFA] p-3">
-                  <p className="font-semibold text-[#7A1F16]">{label}</p>
+                  <p className="font-semibold text-[#7A1F16] text-[#0F172A] font-bold">{label}</p>
                   <p className="mt-2 text-xs leading-5 text-[#1E293B] font-semibold">{content}</p>
                 </div>
               ))}
@@ -7875,7 +7875,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
             <div className="grid gap-5 p-5 md:grid-cols-[0.85fr_1.15fr] md:p-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Next Step</p>
-                <h3 className="mt-3 text-2xl font-semibold">报告不是终点，而是下一步成交入口</h3>
+                <h3 className="mt-3 text-2xl font-semibold text-[#0F172A] font-bold">报告不是终点，而是下一步成交入口</h3>
                 <p className="mt-3 text-sm leading-6 text-white/66">
                   根据这份报告的风险、机会和行动路线，可继续生成更具体的开运方案、预约大师判断，或选择适合的产品与课程。
                 </p>
@@ -7893,7 +7893,7 @@ function FullReportView({ report, memberProfile, onClose }: { report: SavedRepor
                     onClick={title.includes("下载") ? () => downloadReportJpg(report, memberProfile) : undefined}
                     className={`rounded-xl border border-white/10 p-4 text-left shadow-sm transition hover:-translate-y-0.5 ${tone}`}
                   >
-                    <p className="font-semibold">{title}</p>
+                    <p className="font-semibold text-[#0F172A] font-bold">{title}</p>
                     <p className="mt-2 text-xs leading-5 opacity-75">{desc}</p>
                   </button>
                 ))}
@@ -7921,8 +7921,8 @@ function CreditPreview({ points, cost, message }: { points: number; cost: number
 
   return (
     <div className="mt-3 grid gap-2 rounded border border-[#C79A54]/25 bg-white px-3 py-3 text-xs leading-5 md:grid-cols-3">
-      <span className="font-semibold text-[#063F4A]">当前：{points.toLocaleString("en-US")} 点</span>
-      <span className="font-semibold text-[#7A1F16]">本次扣点：{cost.toLocaleString("en-US")} 点</span>
+      <span className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">当前：{points.toLocaleString("en-US")} 点</span>
+      <span className="font-semibold text-[#7A1F16] text-[#0F172A] font-bold">本次扣点：{cost.toLocaleString("en-US")} 点</span>
       <span className={enough ? "font-semibold text-[#063F4A]" : "font-semibold text-[#7A1F16]"}>
         生成后：{Math.max(points - cost, 0).toLocaleString("en-US")} 点
       </span>
@@ -8892,7 +8892,7 @@ function WalletAndReports({
                 <Coins className="size-4 text-[#C79A54]" />
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#063F4A]">Credit Balance</p>
               </div>
-              <p className="mt-2 text-3xl font-semibold text-[#063F4A]">{points.toLocaleString("en-US")} 点</p>
+              <p className="mt-2 text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{points.toLocaleString("en-US")} 点</p>
                 <p className="mt-1 text-xs text-[#334155] font-medium">点数只用于平台功能，不可提现。</p>
               </div>
             <div className="rounded border border-black/10 bg-[#F5FAFA] p-4">
@@ -8918,7 +8918,7 @@ function WalletAndReports({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">AI Report Center</p>
-            <h2 className="mt-2 text-2xl font-semibold">专业报告生成</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">专业报告生成</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
               先选择你要解决的问题，系统会以综合命理合参生成可保存、可下载、可回看的高级报告。
             </p>
@@ -8993,7 +8993,7 @@ function WalletAndReports({
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="font-semibold">{item.title}</p>
+                        <p className="font-semibold text-[#0F172A] font-bold">{item.title}</p>
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${active ? "bg-[#C79A54] text-[#102F38]" : "bg-[#F5FAFA] text-[#1E293B] font-semibold"}`}>{item.cost}</span>
                       </div>
                       <p className={`mt-2 text-sm leading-6 ${active ? "text-white/70" : "text-[#334155] font-medium"}`}>{item.desc}</p>
@@ -9042,7 +9042,7 @@ function WalletAndReports({
                 <div className="mt-3 grid gap-2 rounded border border-black/10 bg-[#F5FAFA] p-3 md:grid-cols-[1fr_auto] md:items-end">
                   <label className="text-sm font-semibold">
                     常用资料档案
-                    <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-[#64748B] font-medium">
+                    <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-[#64748B] font-medium text-[#0F172A] font-bold">
                       已保存 {savedSubjectProfiles.length} 组
                     </span>
                     <select
@@ -9179,7 +9179,7 @@ function WalletAndReports({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Optional</p>
-                    <h3 className="mt-1 font-semibold text-[#063F4A]">更多专业单项报告</h3>
+                    <h3 className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">更多专业单项报告</h3>
                     <p className="mt-1 text-xs leading-5 text-[#334155] font-medium">需要单独看八字、紫微、梅花或数字命理时再展开。</p>
                   </div>
                   <ChevronRight className="size-4 text-ink/35" />
@@ -9202,7 +9202,7 @@ function WalletAndReports({
                       className={active ? "rounded border border-[#C79A54] bg-[#102F38] p-4 text-left text-white" : "rounded border border-black/10 bg-[#F5FAFA] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/60"}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="font-semibold">{item.title}</p>
+                        <p className="font-semibold text-[#0F172A] font-bold">{item.title}</p>
                         <span className={active ? "rounded-full bg-[#C79A54] px-3 py-1 text-xs font-semibold text-[#102F38]" : "rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#1E293B] font-semibold"}>{item.cost} 点</span>
                       </div>
                       <p className={active ? "mt-2 text-sm leading-6 text-white/65" : "mt-2 text-sm leading-6 text-[#334155] font-medium"}>{item.desc}</p>
@@ -9465,7 +9465,7 @@ function WalletAndReports({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">More Reports</p>
-                    <h3 className="mt-1 font-semibold text-[#063F4A]">其他主题报告</h3>
+                    <h3 className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">其他主题报告</h3>
                     <p className="mt-1 text-xs leading-5 text-[#334155] font-medium">财运、事业、合盘、流年等主题报告收纳在这里，避免页面过长。</p>
                   </div>
                   <ChevronRight className="size-4 text-ink/35" />
@@ -9496,7 +9496,7 @@ function WalletAndReports({
                         {locked ? (currentTier === "free" ? "升级解锁" : "战略版") : report.tag}
                       </span>
                     </div>
-                    <p className="mt-4 font-semibold">{report.title}</p>
+                    <p className="mt-4 font-semibold text-[#0F172A] font-bold">{report.title}</p>
                     <p className="mt-2 text-sm text-[#334155] font-medium">
                       {locked ? (currentTier === "free" ? "Free 仅可预览每日摘要" : "RM49 解锁流月/流年战略") : `消耗 ${report.points} 点`}
                     </p>
@@ -9513,7 +9513,7 @@ function WalletAndReports({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Reward Wallets</p>
-                  <h3 className="mt-1 font-semibold text-[#063F4A]">奖励钱包</h3>
+                  <h3 className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">奖励钱包</h3>
                   <p className="mt-1 text-xs leading-5 text-[#334155] font-medium">AI 点数用于平台功能；奖励制度独立拆分为现金、PV 产品积分和 Pool Share。</p>
                 </div>
                 <span className="rounded bg-[#DDEFF2] px-2.5 py-1 text-xs font-semibold text-[#063F4A]">
@@ -9543,10 +9543,10 @@ function WalletAndReports({
                 ].map((wallet) => (
                   <div key={wallet.name} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="font-semibold text-[#063F4A]">{wallet.name}</p>
+                      <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{wallet.name}</p>
                       <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{wallet.access}</span>
                     </div>
-                    <p className="mt-3 text-2xl font-semibold text-[#063F4A]">{wallet.value}</p>
+                    <p className="mt-3 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">{wallet.value}</p>
                     <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">{wallet.desc}</p>
                   </div>
                 ))}
@@ -9557,7 +9557,7 @@ function WalletAndReports({
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Archive className="size-4 text-[#063F4A]" />
-                  <h3 className="font-semibold">报告下载历史</h3>
+                  <h3 className="font-semibold text-[#0F172A] font-bold">报告下载历史</h3>
                 </div>
                 <span className="rounded bg-white px-2.5 py-1 text-xs text-[#334155] font-medium">{savedReports.length} 份</span>
               </div>
@@ -9623,7 +9623,7 @@ function WalletAndReports({
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <WalletCards className="size-4 text-[#063F4A]" />
-                  <h3 className="font-semibold">点数流水</h3>
+                  <h3 className="font-semibold text-[#0F172A] font-bold">点数流水</h3>
                 </div>
                 <span className="rounded bg-[#F5FAFA] px-2.5 py-1 text-xs text-[#334155] font-medium">{creditHistory.length} 笔</span>
               </div>
@@ -9672,7 +9672,7 @@ function WalletAndReports({
                 <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
                   <div className="bg-[#102F38] p-5 text-white">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Premium Report Preview</p>
-                    <h3 className="mt-3 text-3xl font-semibold leading-tight">{selectedReport.title}</h3>
+                    <h3 className="mt-3 text-3xl font-semibold leading-tight text-[#0F172A] font-bold">{selectedReport.title}</h3>
                     <div className="mt-4 grid gap-2 rounded border border-white/10 bg-white/8 p-3 text-sm text-white/70 sm:grid-cols-2">
                       <span>对象：{reportSubjectName(selectedReport)}</span>
                       <span>时间：{selectedReport.createdAt}</span>
@@ -9689,7 +9689,7 @@ function WalletAndReports({
                     ].map(([label, value]) => (
                       <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-3">
                         <p className="text-xs text-[#64748B] font-medium">{label}</p>
-                        <p className="mt-1 font-semibold text-[#063F4A]">{value}</p>
+                        <p className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{value}</p>
                       </div>
                     ))}
                   </div>
@@ -9736,7 +9736,7 @@ function WalletAndReports({
                 <div className="mt-5 grid gap-3">
                   {selectedReportContent.sections.map((section) => (
                     <div key={section.title} className="rounded border border-black/10 bg-rice p-4">
-                      <p className="font-semibold">{section.title}</p>
+                      <p className="font-semibold text-[#0F172A] font-bold">{section.title}</p>
                       <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{section.content}</p>
                     </div>
                   ))}
@@ -9753,7 +9753,7 @@ function WalletAndReports({
               <div className="overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
                 <div className="bg-[#102F38] p-6 text-white">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C79A54]">Sample Preview</p>
-                  <h3 className="mt-3 text-3xl font-semibold leading-tight">高级命理报告预览</h3>
+                  <h3 className="mt-3 text-3xl font-semibold leading-tight text-[#0F172A] font-bold">高级命理报告预览</h3>
                   <p className="mt-3 max-w-lg text-sm leading-6 text-white/65">生成后会在这里显示完整报告封面、核心洞察、行动建议与下载入口。</p>
                 </div>
                 <div className="grid gap-3 p-5 sm:grid-cols-3">
@@ -9764,7 +9764,7 @@ function WalletAndReports({
                   ].map(([step, title, desc]) => (
                     <div key={step} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
                       <p className="text-xs font-semibold text-[#C79A54]">{step}</p>
-                      <p className="mt-2 font-semibold text-[#063F4A]">{title}</p>
+                      <p className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{title}</p>
                       <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">{desc}</p>
                     </div>
                   ))}
@@ -9890,13 +9890,13 @@ function InviteFriendsModule({
     <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
       <div className="rounded border border-black/10 bg-[#063F4A] p-6 text-white shadow-soft">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Referral Center</p>
-        <h2 className="mt-3 text-3xl font-semibold">邀请好友注册</h2>
+        <h2 className="mt-3 text-3xl font-semibold text-[#0F172A] font-bold">邀请好友注册</h2>
         <p className="mt-3 text-sm leading-7 text-white/68">
           分享你的专属推荐链接，好友完成注册后，你和好友各获得 30 PV 产品积分。推荐关系用于后续团队、奖励和订单归属。
         </p>
         <div className="mt-6 rounded border border-white/10 bg-white/8 p-4">
           <p className="text-xs text-white/70 font-medium">我的推荐码</p>
-          <p className="mt-2 text-3xl font-semibold tracking-[0.12em] text-[#C79A54]">{referralCode}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-[0.12em] text-[#C79A54] text-[#0F172A] font-bold">{referralCode}</p>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <button type="button" onClick={copyInviteLink} className="rounded bg-[#C79A54] px-4 py-3 font-semibold text-[#063F4A]">
@@ -9916,7 +9916,7 @@ function InviteFriendsModule({
       </div>
 
       <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
-        <h3 className="text-2xl font-semibold text-[#063F4A]">推荐归属</h3>
+        <h3 className="text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">推荐归属</h3>
         <div className="mt-5 grid gap-3">
           {[
             ["推荐链接", inviteLink],
@@ -9926,7 +9926,7 @@ function InviteFriendsModule({
           ].map(([label, value]) => (
             <div key={label} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
               <p className="text-xs text-[#64748B] font-medium">{label}</p>
-              <p className="mt-2 break-all font-semibold text-[#063F4A]">{value}</p>
+              <p className="mt-2 break-all font-semibold text-[#063F4A] text-[#0F172A] font-bold">{value}</p>
             </div>
           ))}
         </div>
@@ -9940,7 +9940,7 @@ function InviteFriendsModule({
             ["Pool Share Wallet", "代理配套", "只给代理配套会员，按公司合资格业绩 5% 月结分池。"]
           ].map(([name, access, desc]) => (
             <div key={name} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
-              <p className="font-semibold text-[#063F4A]">{name}</p>
+              <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{name}</p>
               <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#C79A54]">{access}</p>
               <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">{desc}</p>
             </div>
@@ -9967,7 +9967,7 @@ function PartnerCommandCenter({
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Partner Command</p>
-              <h2 className="mt-3 text-3xl font-semibold">创业会员经营中心</h2>
+              <h2 className="mt-3 text-3xl font-semibold text-[#0F172A] font-bold">创业会员经营中心</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
                 适合已经开始带团队的创业配套会员，每天看转化、跟进、Pool Share 与团队健康度。
               </p>
@@ -10006,13 +10006,13 @@ function PartnerCommandCenter({
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Pool Share</p>
-              <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">业绩共享池总金额</h3>
+              <h3 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">业绩共享池总金额</h3>
             </div>
             <StatusPill>合资格</StatusPill>
           </div>
           <div className="mt-5 rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-6">
             <p className="text-sm text-[#334155] font-medium">本月总分享金额</p>
-            <p className="mt-3 text-5xl font-semibold tracking-tight text-[#063F4A]">RM0</p>
+            <p className="mt-3 text-5xl font-semibold tracking-tight text-[#063F4A] text-[#0F172A] font-bold">RM0</p>
             <p className="mt-3 text-sm text-[#334155] font-medium">状态：待月结确认</p>
           </div>
           <p className="mt-4 rounded bg-[#C79A54]/10 p-3 text-xs leading-5 text-[#334155] font-medium">
@@ -10024,7 +10024,7 @@ function PartnerCommandCenter({
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-2xl font-semibold text-[#063F4A]">创业配套分布</h3>
+            <h3 className="text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">创业配套分布</h3>
             <StatusPill>{totalPartnerMembers} 位</StatusPill>
           </div>
           <div className="mt-5 grid gap-3">
@@ -10035,10 +10035,10 @@ function PartnerCommandCenter({
                 <div key={name} className="rounded border border-black/10 bg-rice p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-[#063F4A]">{name}</p>
+                      <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{name}</p>
                       <p className="mt-1 text-sm text-[#334155] font-medium">{action}</p>
                     </div>
-                    <span className="text-2xl font-semibold text-[#C79A54]">{count}</span>
+                    <span className="text-2xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{count}</span>
                   </div>
                   <div className="mt-3 h-2 rounded-full bg-white">
                     <div className="h-2 rounded-full bg-[#1495A0]" style={{ width: `${percentage}%` }} />
@@ -10051,7 +10051,7 @@ function PartnerCommandCenter({
 
         <div className="rounded border border-black/10 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h3 className="text-2xl font-semibold text-[#063F4A]">今日跟进任务</h3>
+            <h3 className="text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">今日跟进任务</h3>
             <button
               type="button"
               onClick={() => onOpenModule("team")}
@@ -10077,7 +10077,7 @@ function PartnerCommandCenter({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Conversion Board</p>
-            <h3 className="mt-2 text-2xl font-semibold text-[#063F4A]">团队分层与下一步动作</h3>
+            <h3 className="mt-2 text-2xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">团队分层与下一步动作</h3>
           </div>
           <StatusPill>优先跟进</StatusPill>
         </div>
@@ -10086,7 +10086,7 @@ function PartnerCommandCenter({
             <div key={segment} className="rounded border border-black/10 bg-[#F5FAFA] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-[#063F4A]">{segment}</p>
+                  <p className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{segment}</p>
                   <p className="mt-2 text-sm text-[#334155] font-medium">{action}</p>
                 </div>
                 <span className="rounded bg-white px-2.5 py-1 text-sm font-semibold text-[#063F4A]">{count}</span>
@@ -10305,7 +10305,7 @@ function SigilModule({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Sigil Studio</p>
-            <h2 className="mt-2 text-2xl font-semibold">符印生成器</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">符印生成器</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#334155] font-medium">
               输入一个正向意图，系统会生成一枚专属金色符印，并由 AI 解释符号意义、激活方式与行动锚点。
             </p>
@@ -10329,7 +10329,7 @@ function SigilModule({
               intentGuidance.ok ? "border-[#063F4A]/20 bg-[#DDEFF2] text-[#063F4A]" : "border-[#C79A54]/45 bg-[#C79A54]/10 text-[#1E293B] font-semibold"
             }`}
           >
-            <p className="font-semibold">{intentGuidance.ok ? "意图检查通过" : "意图需要改写"}</p>
+            <p className="font-semibold text-[#0F172A] font-bold">{intentGuidance.ok ? "意图检查通过" : "意图需要改写"}</p>
             <p className="mt-1 text-xs leading-5">{intentGuidance.message}</p>
             {!intentGuidance.ok ? (
               <button
@@ -10360,7 +10360,7 @@ function SigilModule({
         <div className="mt-6 rounded border border-black/10 bg-[#F5FAFA] p-4">
           <div className="flex items-center gap-2">
             <Archive className="size-4 text-[#063F4A]" />
-            <h3 className="font-semibold">符印档案</h3>
+            <h3 className="font-semibold text-[#0F172A] font-bold">符印档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {artifacts.length ? (
@@ -10402,7 +10402,7 @@ function SigilModule({
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-sm text-[#64748B] font-medium">Generated Sigil</p>
-                <h3 className="mt-2 text-2xl font-semibold">{selectedArtifact.title}</h3>
+                <h3 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">{selectedArtifact.title}</h3>
               </div>
               <button
                 type="button"
@@ -10431,7 +10431,7 @@ function SigilModule({
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               <div className="rounded border border-[#063F4A]/15 bg-[#F5FAFA] p-4 md:col-span-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">AI Symbol Reading</p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">AI 符印解读</h4>
+                <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">AI 符印解读</h4>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">
                   {selectedArtifact.symbolMeaning ||
                     "生成后，系统会把符印解释为一个可执行的心理锚点，帮助用户把抽象意图落实到每天的行动。"}
@@ -10622,7 +10622,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">64 Hexagram One Word</p>
-              <h2 className="mt-2 text-2xl font-semibold">64卦一字</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">64卦一字</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-[#334155] font-medium">
                 根据当下日期、时间与随机抽取的一个卦，先建立卦象底盘，再交由 AI 生成关键字、神谕断语、线索与行动策略。
               </p>
@@ -10645,7 +10645,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                   <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-[#C79A54]">{item.cost} 点</span>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-[#334155] font-medium">{item.desc}</p>
-                <p className="mt-3 inline-flex rounded bg-[#DDEFF2] px-2 py-1 text-[11px] font-semibold text-[#063F4A]">{item.badge}</p>
+                <p className="mt-3 inline-flex rounded bg-[#DDEFF2] px-2 py-1 text-[11px] font-semibold text-[#063F4A] text-[#0F172A] font-bold">{item.badge}</p>
               </button>
             ))}
           </div>
@@ -10653,15 +10653,15 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
           <div className="mt-5 grid gap-3 rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4 sm:grid-cols-3">
             <div>
               <p className="text-xs text-[#64748B] font-medium">当前日期</p>
-              <p className="mt-1 font-semibold text-[#063F4A]">{new Date().toLocaleDateString("zh-MY")}</p>
+              <p className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{new Date().toLocaleDateString("zh-MY")}</p>
             </div>
             <div>
               <p className="text-xs text-[#64748B] font-medium">当前时间</p>
-              <p className="mt-1 font-semibold text-[#063F4A]">{new Date().toLocaleTimeString("zh-MY", { hour: "2-digit", minute: "2-digit" })}</p>
+              <p className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{new Date().toLocaleTimeString("zh-MY", { hour: "2-digit", minute: "2-digit" })}</p>
             </div>
             <div>
               <p className="text-xs text-[#64748B] font-medium">当前点数</p>
-              <p className="mt-1 font-semibold text-[#063F4A]">{points.toLocaleString("en-US")} 点</p>
+              <p className="mt-1 font-semibold text-[#063F4A] text-[#0F172A] font-bold">{points.toLocaleString("en-US")} 点</p>
             </div>
           </div>
 
@@ -10692,7 +10692,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
         <div className="rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <Archive className="size-4 text-[#063F4A]" />
-            <h3 className="font-semibold">一字档案</h3>
+            <h3 className="font-semibold text-[#0F172A] font-bold">一字档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {readings.length ? (
@@ -10749,7 +10749,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-semibold">{selectedReading.hexagramTitle || selectedReading.hexagram}</h3>
+                  <h3 className="text-2xl font-semibold text-[#0F172A] font-bold">{selectedReading.hexagramTitle || selectedReading.hexagram}</h3>
                   <p className="mt-3 text-sm leading-6 text-white/72">{selectedReading.explanation}</p>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {[
@@ -10771,14 +10771,14 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4 md:col-span-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Oracle</p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">神谕断语</h4>
+                <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">神谕断语</h4>
                 <p className="mt-2 text-sm leading-7 text-[#1E293B] font-semibold">{selectedReading.oracle || selectedReading.action}</p>
               </div>
               <div className="rounded border border-[#C79A54]/25 bg-[#fffaf0] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#C79A54]">
                   {selectedReading.mode === "daily" ? "Theme" : selectedReading.mode === "question" ? "Verdict" : "Strategic View"}
                 </p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">
+                <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">
                   {selectedReading.mode === "daily" ? "此刻主题" : selectedReading.mode === "question" ? "问事判断" : "深度总断"}
                 </h4>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">{selectedReading.verdict || selectedReading.theme}</p>
@@ -10787,7 +10787,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">
                   {selectedReading.mode === "daily" ? "Clue" : "Risk"}
                 </p>
-                <h4 className="mt-2 font-semibold text-[#063F4A]">
+                <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">
                   {selectedReading.mode === "daily" ? "宇宙显化线索" : "核心卡点"}
                 </h4>
                 <p className="mt-2 text-sm leading-6 text-[#1E293B] font-semibold">
@@ -10799,7 +10799,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
               {selectedReading.mode === "question" ? (
                 <div className="rounded border border-[#1495A0]/20 bg-[#EAF7F7] p-4 md:col-span-2">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Question Reading</p>
-                  <h4 className="mt-2 font-semibold text-[#063F4A]">问事一字判断表</h4>
+                  <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">问事一字判断表</h4>
                   <div className="mt-3 grid gap-3 sm:grid-cols-4">
                     {[
                       ["结论", selectedReading.verdict || "先看条件，再做决定。"],
@@ -10818,7 +10818,7 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
               {selectedReading.mode === "deep" ? (
                 <div className="rounded border border-[#1495A0]/20 bg-[#EAF7F7] p-4 md:col-span-2">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#1495A0]">Deep Reading</p>
-                  <h4 className="mt-2 font-semibold text-[#063F4A]">深度解字策略图</h4>
+                  <h4 className="mt-2 font-semibold text-[#063F4A] text-[#0F172A] font-bold">深度解字策略图</h4>
                   <div className="mt-3 grid gap-3 sm:grid-cols-3">
                     {[
                       ["阶段判断", selectedReading.timing || "3 天观察，7 天验证，30 天决定。"],
@@ -11074,7 +11074,7 @@ function DivinationModule({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Jiu Yun Oracle</p>
-              <h2 className="mt-2 text-2xl font-semibold">九运智慧问卦</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">九运智慧问卦</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-[#334155] font-medium">
                 随机报出 3 个数字，系统结合当前时辰起卦，再由 AI 按体用生克、三阶段、类象线索与五行通关输出解读。
               </p>
@@ -11137,7 +11137,7 @@ function DivinationModule({
         <div className="rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <Archive className="size-4 text-[#063F4A]" />
-            <h3 className="font-semibold">问卦档案</h3>
+            <h3 className="font-semibold text-[#0F172A] font-bold">问卦档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {readings.length ? (
@@ -11151,7 +11151,7 @@ function DivinationModule({
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="font-semibold">{reading.originalHexagram}</span>
+                    <span className="font-semibold text-[#0F172A] font-bold">{reading.originalHexagram}</span>
                     <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.score}</span>
                   </div>
                   <p className="mt-1 text-xs text-[#64748B] font-medium">{reading.createdAt} · {reading.hourBranch}时 · 动爻 {reading.movingLine}</p>
@@ -11175,7 +11175,7 @@ function DivinationModule({
         <div className="rounded border border-[#C79A54]/30 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <Coins className="size-4 text-[#C79A54]" />
-            <h3 className="font-semibold">福报积分兑换</h3>
+            <h3 className="font-semibold text-[#0F172A] font-bold">福报积分兑换</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {divinationExchangeRewards.map(([cost, reward]) => (
@@ -11201,14 +11201,14 @@ function DivinationModule({
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">Panoramic Decision</p>
-                <h3 className="mt-2 text-2xl font-bold text-[#0F172A]">三数起卦结果</h3>
+                <h3 className="mt-2 text-2xl font-bold text-[#0F172A] text-[#0F172A] font-bold">三数起卦结果</h3>
                 <p className="mt-2 text-xs font-medium text-[#334155]">
                   数字 {selectedReading.numbers.join(" / ")} · {selectedReading.hourBranch}时 · 动爻 {selectedReading.movingLine}
                 </p>
               </div>
               <div className="rounded-xl bg-[#063F4A] px-4 py-3 text-right text-white shadow-xs">
                 <p className="text-xs font-medium text-white/70">今日决策指数</p>
-                <p className="text-3xl font-serif font-bold text-[#E8D4A8]">{selectedReading.score}</p>
+                <p className="text-3xl font-serif font-bold text-[#E8D4A8] text-[#0F172A] font-bold">{selectedReading.score}</p>
               </div>
             </div>
 
@@ -11317,14 +11317,14 @@ function DivinationModule({
                 {(selectedReading.clues || createDivinationClues([selectedReading.bodyTrigram, selectedReading.useTrigram])).map((clue) => (
                   <div key={clue.trigram} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="font-bold text-[#0F172A]">{clue.trigram}卦 · {clue.title}</p>
+                      <p className="font-bold text-[#0F172A] text-[#0F172A] font-bold">{clue.trigram}卦 · {clue.title}</p>
                       <span className="text-xl font-bold text-[#7A1F16]">{trigrams.find((trigram) => trigram.name === clue.trigram)?.symbol}</span>
                     </div>
                     <div className="mt-3 grid gap-2 text-xs leading-6 font-semibold text-[#1E293B]">
-                      <p><span className="font-bold text-[#0F172A]">人物：</span>{clue.people}</p>
-                      <p><span className="font-bold text-[#0F172A]">行为：</span>{clue.behavior}</p>
-                      <p><span className="font-bold text-[#0F172A]">空间：</span>{clue.space}</p>
-                      <p><span className="font-bold text-[#7A1F16]">身心提醒：</span>{clue.bodyHint}</p>
+                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">人物：</span>{clue.people}</p>
+                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">行为：</span>{clue.behavior}</p>
+                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">空间：</span>{clue.space}</p>
+                      <p><span className="font-bold text-[#7A1F16] text-[#0F172A] font-bold">身心提醒：</span>{clue.bodyHint}</p>
                     </div>
                     <p className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs font-bold leading-6 text-[#063F4A]">{clue.prompt}</p>
                   </div>
@@ -11336,7 +11336,7 @@ function DivinationModule({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-[#C79A54]">五行通关闭环</p>
-                  <h4 className="mt-2 text-2xl font-semibold">需用「{selectedReading.passElement}」通关</h4>
+                  <h4 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">需用「{selectedReading.passElement}」通关</h4>
                 </div>
                 <StatusPill>天时 · 地利 · 物用 · 人和</StatusPill>
               </div>
@@ -11367,7 +11367,7 @@ function DivinationModule({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Share Card</p>
-                    <h4 className="mt-1 font-semibold">九运开运分享图预览</h4>
+                    <h4 className="mt-1 font-semibold text-[#0F172A] font-bold">九运开运分享图预览</h4>
                   </div>
                   <Share2 className="size-5 text-[#C79A54]" />
                 </div>
@@ -11376,11 +11376,11 @@ function DivinationModule({
                     <p className="text-xs text-[#C79A54]">AI Feng Shui Master</p>
                     <div className="mt-4 flex items-center justify-between">
                       <div>
-                        <p className="text-4xl font-semibold text-[#C79A54]">{selectedReading.score}</p>
+                        <p className="text-4xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{selectedReading.score}</p>
                         <p className="text-xs text-white/85 font-medium">今日决策指数</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl">{selectedReading.bodyTrigram.symbol}</p>
+                        <p className="text-3xl text-[#0F172A] font-bold">{selectedReading.bodyTrigram.symbol}</p>
                         <p className="text-sm text-white/70">{selectedReading.originalHexagram}</p>
                       </div>
                     </div>
@@ -11404,7 +11404,7 @@ function DivinationModule({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Commerce Loop</p>
-                    <h4 className="mt-1 font-semibold">通关物件推荐</h4>
+                    <h4 className="mt-1 font-semibold text-[#0F172A] font-bold">通关物件推荐</h4>
                   </div>
                   <StatusPill>{selectedReading.passElement}元素</StatusPill>
                 </div>
@@ -11418,7 +11418,7 @@ function DivinationModule({
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="font-semibold">{product.title}</p>
+                          <p className="font-semibold text-[#0F172A] font-bold">{product.title}</p>
                           <p className="mt-1 text-sm leading-6 text-[#334155] font-medium">{product.desc}</p>
                         </div>
                         <span className="rounded bg-white px-2 py-1 text-sm font-semibold text-[#063F4A]">{product.price}</span>
@@ -11434,7 +11434,7 @@ function DivinationModule({
               <div className="rounded border border-black/10 bg-rice p-4">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="size-5 text-[#063F4A]" />
-                  <h4 className="font-semibold">开运日记打卡</h4>
+                  <h4 className="font-semibold text-[#0F172A] font-bold">开运日记打卡</h4>
                 </div>
                 <textarea
                   value={note}
@@ -11454,7 +11454,7 @@ function DivinationModule({
               <div className="rounded border border-black/10 bg-white p-4">
                 <div className="flex items-center gap-2">
                   <Share2 className="size-5 text-[#C79A54]" />
-                  <h4 className="font-semibold">社交见证闭环</h4>
+                  <h4 className="font-semibold text-[#0F172A] font-bold">社交见证闭环</h4>
                 </div>
                 <div className="mt-3 grid gap-2 text-sm text-[#1E293B] font-semibold">
                   <p>1. 完成五行布局后拍照。</p>
@@ -11467,7 +11467,7 @@ function DivinationModule({
 
             {checkIns.length ? (
               <div className="mt-5 rounded border border-black/10 bg-white p-4">
-                <h4 className="font-semibold">最近见证</h4>
+                <h4 className="font-semibold text-[#0F172A] font-bold">最近见证</h4>
                 <div className="mt-3 grid gap-2">
                   {checkIns.map((checkIn) => (
                     <div key={checkIn.id} className="rounded border border-black/10 bg-rice p-3">
@@ -11525,9 +11525,9 @@ function ProductModule() {
             />
             <div className="p-4">
               <p className="text-xs font-medium text-[#1495A0]">{product.category}</p>
-              <h3 className="mt-2 min-h-10 font-semibold leading-5">{product.name}</h3>
+              <h3 className="mt-2 min-h-10 font-semibold leading-5 text-[#0F172A] font-bold">{product.name}</h3>
               <div className="mt-3 flex items-center justify-between gap-2 text-sm">
-                <span className="font-semibold text-[#063F4A]">{product.price}</span>
+                <span className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{product.price}</span>
                 <span className="rounded bg-[#F5FAFA] px-2 py-1 text-xs text-[#334155] font-medium">{product.points}</span>
               </div>
               <p className="mt-3 text-xs font-semibold text-[#334155] font-medium transition group-hover:text-[#063F4A]">
@@ -11565,9 +11565,9 @@ function CourseModule() {
             />
             <div className="p-4">
               <p className="text-xs font-medium text-[#1495A0]">{course.category}</p>
-              <h3 className="mt-2 min-h-10 font-semibold leading-5">{course.name}</h3>
+              <h3 className="mt-2 min-h-10 font-semibold leading-5 text-[#0F172A] font-bold">{course.name}</h3>
               <div className="mt-3 flex items-center justify-between gap-2 text-sm">
-                <span className="font-semibold text-[#063F4A]">{course.price}</span>
+                <span className="font-semibold text-[#063F4A] text-[#0F172A] font-bold">{course.price}</span>
                 <span className="rounded bg-[#F5FAFA] px-2 py-1 text-xs text-[#334155] font-medium">{course.reward}</span>
               </div>
               <p className="mt-3 text-xs font-semibold text-[#334155] font-medium transition group-hover:text-[#063F4A]">
@@ -11878,8 +11878,8 @@ export default function DashboardPage() {
         <main className="premium-dashboard-bg min-h-screen px-5 py-16">
           <div className="premium-card mx-auto max-w-3xl p-8 text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C79A54]">Member Access</p>
-            <h1 className="mt-3 text-3xl font-semibold text-[#063F4A]">正在确认会员登录状态</h1>
-            <p className="mt-3 text-[#1E293B] font-semibold">如果尚未登录，系统会自动带你回到登录页面。</p>
+            <h1 className="mt-3 text-3xl font-semibold text-[#063F4A] text-[#0F172A] font-bold">正在确认会员登录状态</h1>
+            <p className="mt-3 text-[#1E293B] font-semibold text-[#0F172A] font-bold">如果尚未登录，系统会自动带你回到登录页面。</p>
           </div>
         </main>
       </AppShell>
