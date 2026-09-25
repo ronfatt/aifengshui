@@ -86,10 +86,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
             <span>
               <span className="block text-sm font-semibold leading-tight gold-gradient-text tracking-wide">
-                AI Feng Shui Master
+                AI 东方智慧决策系统
               </span>
               <span className="block text-[11px] font-medium text-white/50 tracking-wider">
-                AI 命理决策系统
+                AI Eastern Wisdom Decision System
               </span>
             </span>
           </Link>

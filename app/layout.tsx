@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Feng Shui Master",
-  description: "结合 AI 分析与易玺大师判断的风水命理服务与创业平台"
+  title: "AI 东方智慧决策系统 | AI Eastern Wisdom Decision System",
+  description: "结合 AI 东方智慧与易易大师判断的决策服务与创业平台"
 };
 
 export default function RootLayout({

@@ -190,7 +190,7 @@ function buildPrompt(reading: Record<string, unknown>, numbers: string[], userQu
   });
 
   return `
-你是「AI Feng Shui Master 东方人生与商业决策智能系统」的 AI 决策引擎。
+你是「AI 东方智慧决策系统 (AI Eastern Wisdom Decision System)」的 AI 决策引擎。
 你的任务不是单纯断吉凶，而是根据「问 → 卦 → 势 → 体 → 证 → 险 → 策 → 局 → 验」9层内核，给出高可执行度的人生与商业决策策略。
 
 用户自然语言提问/决策主题：${userQuestion || "通用决策起卦"}
@@ -358,7 +358,7 @@ export async function POST(request: Request) {
       max_output_tokens: 4200,
       ...getResponseReasoningOptions(model),
       instructions:
-        "你是 AI Feng Shui Master 东方人生与商业决策智能系统的决策引擎。你遵循「问→卦→势→体→证→险→策→局→验」内核，严密结合东方术数与现实证据进行决策推演。你只输出严格 JSON。",
+        "你是 AI 东方智慧决策系统 (AI Eastern Wisdom Decision System) 的决策引擎。你遵循「问→卦→势→体→证→险→策→局→验」内核，严密结合东方术数与现实证据进行决策推演。你只输出严格 JSON。",
       input: buildPrompt(reading, numbers, userQuestion, safeString(body.selectedDate))
     });
 

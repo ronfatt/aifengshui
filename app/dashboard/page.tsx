@@ -147,8 +147,8 @@ const modules: {
   },
   {
     id: "divination",
-    title: "九运问卦",
-    desc: "三数起卦",
+    title: "九运策局",
+    desc: "人生与商业决策引擎",
     metric: "36 点",
     icon: Flame
   },
@@ -218,8 +218,8 @@ const dashboardCategories: {
 }[] = [
   {
     id: "ai",
-    title: "🔮 AI 占算与问卦",
-    desc: "九运三数起卦、AI命理师、64卦一字解卦与符印",
+    title: "🔮 AI 东方智慧与策局",
+    desc: "九运策局 (人生与商业决策引擎)、AI命理师、64卦一字解卦与符印",
     modules: ["divination", "ai", "hexagram64", "sigil"]
   },
   {
@@ -475,7 +475,7 @@ const creditSourceLabels: Record<string, string> = {
   general_report_generation: "综合报告",
   hexagram64: "64卦一字",
   integrated_destiny_report: "综合命理报告",
-  jiuyun_oracle: "九运问卦",
+  jiuyun_oracle: "九运策局",
   meihua_divination_report: "梅花报告",
   member_reward: "会员奖励",
   member_usage: "会员功能",
@@ -11273,8 +11273,8 @@ function DivinationModule({
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">AI Feng Shui Decision Intelligence</p>
-              <h2 className="mt-1 text-2xl font-bold text-[#0F172A]">九运东方人生与商业决策智能系统</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">AI Eastern Wisdom Decision System</p>
+              <h2 className="mt-1 text-2xl font-bold text-[#0F172A]">九运策局 (人生与商业决策引擎)</h2>
               <p className="mt-2 text-xs leading-6 font-semibold text-[#334155]">
                 问 → 卦 → 势 → 体 → 证 → 险 → 策 → 局 → 验：融合易学象意、双轨证据链与 5D 战略风水。
               </p>

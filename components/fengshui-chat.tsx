@@ -300,7 +300,7 @@ export function FengshuiChat({
       <div className="border-b border-[#DDEEF2] bg-gradient-to-br from-[#F5FAFA] via-white to-[#E8D4A8]/20 p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">AI Feng Shui Master</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C79A54]">AI Eastern Wisdom Decision System</p>
             <h2 className="mt-2 text-2xl font-semibold text-[#063F4A]">AI 风水命理师</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
               事业、财运、感情、合作与重大决策前，先做一次命理判断。系统会给你趋势、风险、时机和下一步行动。
