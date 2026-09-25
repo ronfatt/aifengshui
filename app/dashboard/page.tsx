@@ -5,13 +5,21 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
+  Activity,
+  AlertCircle,
+  AlertTriangle,
+  ArrowRight,
+  Ban,
   BookmarkCheck,
   BookOpenCheck,
   Bot,
   CalendarDays,
   CheckCircle2,
+  CheckSquare,
   ChevronRight,
+  Clock,
   Coins,
+  Compass,
   CreditCard,
   Download,
   Eye,
@@ -19,19 +27,26 @@ import {
   Flame,
   Gift,
   HeartPulse,
+  HelpCircle,
+  Layers,
   LayoutGrid,
   LockKeyhole,
   Network,
   Palette,
+  Scale,
   Search,
   Share2,
+  ShieldAlert,
   ShoppingBag,
+  Sliders,
   Sparkles,
+  Target,
   TrendingUp,
   Trophy,
   UserRound,
   WalletCards,
   X,
+  Zap,
   type LucideIcon
 } from "lucide-react";
 import { CeremonialLoader } from "@/components/ceremonial-loader";
@@ -1304,6 +1319,7 @@ type DivinationReading = {
   numbers: [number, number, number];
   hourBranch: string;
   createdAt: string;
+  userQuestion?: string;
   originalHexagram: string;
   mutualHexagram: string;
   changingHexagram: string;
@@ -1347,6 +1363,69 @@ type DivinationReading = {
     object: string;
     action: string;
     mantra: string;
+  };
+  executiveBrief?: {
+    theme: string;
+    rootQuestion: string;
+    momentum: string;
+    strategicDirection: string;
+    maxOpportunity: string;
+    maxRisk: string;
+    keyUnknown: string;
+    immediateStep: string;
+  };
+  decisionIntake?: {
+    facts: string[];
+    interpretations: string[];
+    emotions: string[];
+    goal: string;
+    unknowns: string[];
+  };
+  evidenceEngine?: {
+    strong: string[];
+    medium: string[];
+    weak: string[];
+    contradictions: string[];
+  };
+  decisionMatrix?: {
+    option: string;
+    targetFit: string;
+    return: string;
+    risk: string;
+    cost: string;
+    reversibility: string;
+    hexagramSignal: string;
+    evidenceSupport: string;
+  }[];
+  actionBoard?: {
+    immediate72h: string[];
+    observe7_14d: string[];
+    stopDoing: string[];
+  };
+  fiveInterventions?: {
+    timing: string;
+    place: string;
+    people: string;
+    objects: string;
+    action: string;
+  };
+  devilsAdvocate?: {
+    strongestCounterargument: string;
+    possibleBiases: string[];
+    missingEvidence: string[];
+    worstCasePlanB: string;
+  };
+  triggers?: {
+    green: string[];
+    yellow: string[];
+    orange: string[];
+    red: string[];
+  };
+  timeline?: {
+    immediate72h: string;
+    shortTerm14d: string;
+    mediumTerm30d: string;
+    turningPoint: string;
   };
 };
 
@@ -3167,6 +3246,81 @@ function createDivinationReading(rawNumbers: [string, string, string], selectedD
       object: ritual.object,
       action: ritual.action,
       mantra: `我以${passElement}通关，先看清，再行动。`
+    },
+    executiveBrief: {
+      theme: "商业与人生决策",
+      rootQuestion: "核心决策推演与资源配置",
+      momentum: originalRelation.score >= 60 ? "主动态势" : "谨慎推进",
+      strategicDirection: `先稳固本卦${bodyTrigram.name}体卦优势，用${passElement}能量化解中段阻力`,
+      maxOpportunity: "把握关键合作关系与贵人动向",
+      maxRisk: "避免凭感觉过度承诺或遗漏关键契约条款",
+      keyUnknown: "对方实际履约能力与时间节点",
+      immediateStep: "今天内完成一次书面规则或账目核对"
+    },
+    decisionIntake: {
+      facts: ["用户已提交起卦问题与决策要点"],
+      interpretations: ["对过程中的不可控因素存有疑虑"],
+      emotions: ["渴望求得清晰明确的行动抓手"],
+      goal: "控制风险，最大化决策成效与资源收益",
+      unknowns: ["关键时间点与对方真实履约态度"]
+    },
+    evidenceEngine: {
+      strong: ["已确定的时间与起卦参数"],
+      medium: ["当前行业与人际互动迹象"],
+      weak: ["对结果的主观情绪猜测"],
+      contradictions: ["卦象推演与现实证据基本吻合"]
+    },
+    decisionMatrix: [
+      {
+        option: "方案 A：主动推进 / 把握主导",
+        targetFit: "高",
+        return: "收益显现，节奏加快",
+        risk: "初期投入与沟通成本较大",
+        cost: "中等时间精力",
+        reversibility: "中",
+        hexagramSignal: `本卦${originalRelation.label}，主导权在我方`,
+        evidenceSupport: "现实条件具备，适合启动"
+      },
+      {
+        option: "方案 B：条件式等待 / 先补资料",
+        targetFit: "中",
+        return: "风险受控，稳妥过渡",
+        risk: "错失第一波最佳进场时机",
+        cost: "较低",
+        reversibility: "高",
+        hexagramSignal: `互卦${mutualRelation.label}，中段需补足细节`,
+        evidenceSupport: "资料尚缺时推荐优先采用"
+      }
+    ],
+    actionBoard: {
+      immediate72h: ["核对核心条款与书面凭证", "完成第一阶段方向锁定"],
+      observe7_14d: ["观察对方履约动向与外界信号"],
+      stopDoing: ["停止不必要的口头承诺", "避免凭情绪追加投入"]
+    },
+    fiveInterventions: {
+      timing: `${hourBranch}时起 1 个时辰内最佳`,
+      place: `${ritual.direction}方位明亮有序的空间`,
+      people: "求教合规专业人士或关键贵人",
+      objects: `使用${ritual.color}系工具或${ritual.object}`,
+      action: ritual.action
+    },
+    devilsAdvocate: {
+      strongestCounterargument: "如果当前的核心假设前提不成立，最可能卡在何处？",
+      possibleBiases: ["警惕沉没成本心理", "避免过度解读有利信号"],
+      missingEvidence: ["缺乏第三方的客观书面证明"],
+      worstCasePlanB: "设定止损线：若两周内未达黄灯条件则启动 Plan B"
+    },
+    triggers: {
+      green: ["绿灯：对方书面确认，条件满足，全力推进"],
+      yellow: ["黄灯：进度推迟，需要求书面补全或再次核实"],
+      orange: ["橙灯：对方失联或改口，暂停后续资源追加"],
+      red: ["红灯：触及底线红线，立即启动止损程序"]
+    },
+    timeline: {
+      immediate72h: "0-72小时：完成第一步核验与书面规则确定",
+      shortTerm14d: "7-14天：观察过程夹层动向与关键指标变化",
+      mediumTerm30d: "30天：节点复盘，评估是否继续深化或转场",
+      turningPoint: "若出现红灯信号，随时启动退出或转场程序"
     }
   };
 }
@@ -10888,6 +11042,27 @@ function Hexagram64Module({ points, onSpendPoints }: { points: number; onSpendPo
   );
 }
 
+const domainPresets = [
+  { id: "商业", label: "商业决策", icon: "💼", desc: "应收账款 / 合作 / 投资 / 签约 / 客户 / 招聘", defaultQ: "这项商业合作或投资项目前景如何？对方履约能力与潜在风险怎么看？" },
+  { id: "事业", label: "事业发展", icon: "🚀", desc: "求职 / 转职 / 升职 / 加薪 / 创业 / 职场关系", defaultQ: "目前面临职业转型或岗位调整，下一步应该主动出击还是稳健观望？" },
+  { id: "财富", label: "财富理财", icon: "💰", desc: "收入提升 / 现金流 / 储蓄 / 借贷 / 买房", defaultQ: "关于这项资金规划或资产处置，如何控制下行风险并最大化收益？" },
+  { id: "感情", label: "感情择偶", icon: "💖", desc: "脱单 / 择偶 / 阶段进阶 / 矛盾化解 / 离合决策", defaultQ: "在这段感情互动中，双方未来发展走向如何？如何建立良性沟通？" },
+  { id: "家庭", label: "家庭房产", icon: "🏠", desc: "亲子教育 / 长辈健康 / 房产居住 / 成员分工", defaultQ: "家庭近期面临重大安排或居住调整，如何理顺风水与家庭气场？" },
+  { id: "学业", label: "学业进修", icon: "📚", desc: "考试 / 升学 / 选专业 / 技能突破 / 留学", defaultQ: "近期考试或专业进修目标能否顺利达成？如何提升学习效率与考运？" },
+  { id: "健康", label: "健康调理", icon: "🌿", desc: "身心能量 / 作息调理 / 压力疏导 / 习惯建立", defaultQ: "感觉近期精力有所分散或压力积累，如何通过空间与行为调整状态？" },
+  { id: "情绪", label: "情绪疏导", icon: "🧘", desc: "焦虑疏解 / 决定困境 / 止损心境 / 内聚力", defaultQ: "面对当前混乱情绪与犹豫困境，如何恢复内心笃定并理清优先事项？" },
+  { id: "重大选择", label: "AB选择", icon: "🧭", desc: "A/B 方案对比 / 抉择抉择 / 止损线制定", defaultQ: "目前有两个不同选项需要决策，对比两者在风险、收益与卦象上的表现。" }
+];
+
+const dashboardTabs = [
+  { id: 0, label: "📌 AI 决策简报", icon: FileText, desc: "全景概览" },
+  { id: 1, label: "🔍 双轨推演", icon: Compass, desc: "术数与证据" },
+  { id: 2, label: "⚖️ 决策矩阵", icon: Scale, desc: "AB 方案比对" },
+  { id: 3, label: "☯️ 5D 战略风水", icon: Sparkles, desc: "天/地/人/物/事" },
+  { id: 4, label: "🚦 行动与触发", icon: Target, desc: "72h与信号灯" },
+  { id: 5, label: "⚔️ 反方与复盘", icon: ShieldAlert, desc: "魔鬼代言人" }
+];
+
 function DivinationModule({
   points,
   onSpendPoints,
@@ -10900,10 +11075,14 @@ function DivinationModule({
   onOpenModule: (module: DashboardModule) => void;
 }) {
   const [numbers, setNumbers] = useState<[string, string, string]>(["3", "8", "9"]);
+  const [rawQuestion, setRawQuestion] = useState("");
+  const [domainPrimary, setDomainPrimary] = useState("商业");
+  const [domainSecondary, setDomainSecondary] = useState("");
   const [divinationDate, setDivinationDate] = useState("");
   const [divinationTime, setDivinationTime] = useState("");
   const [readings, setReadings] = useState<DivinationReading[]>([]);
   const [selectedReading, setSelectedReading] = useState<DivinationReading | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
   const [checkIns, setCheckIns] = useState<DivinationCheckIn[]>([]);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
@@ -10918,7 +11097,10 @@ function DivinationModule({
       try {
         const parsed = JSON.parse(storedReadings) as DivinationReading[];
         setReadings(parsed);
-        setSelectedReading(parsed[0] || null);
+        if (parsed.length > 0) {
+          setSelectedReading(parsed[0]);
+          if (parsed[0].userQuestion) setRawQuestion(parsed[0].userQuestion);
+        }
       } catch {
         window.localStorage.removeItem(divinationStorageKey);
       }
@@ -10939,15 +11121,18 @@ function DivinationModule({
     setNumbers(next);
   }
 
+  function handleSelectDomain(domainId: string) {
+    setDomainPrimary(domainId);
+    const preset = domainPresets.find((d) => d.id === domainId);
+    if (preset && !rawQuestion.trim()) {
+      setRawQuestion(preset.defaultQ);
+    }
+  }
+
   async function getDivinationAccessToken() {
     const supabase = createBrowserSupabaseClient();
-
     if (!supabase) return "";
-
-    const {
-      data: { session }
-    } = await supabase.auth.getSession();
-
+    const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token || "";
   }
 
@@ -10960,7 +11145,7 @@ function DivinationModule({
     }
 
     if (points < divinationCost) {
-      setError(`点数不足，九运问卦需要 ${divinationCost} 点。`);
+      setError(`点数不足，九运决策分析需要 ${divinationCost} 点。`);
       return;
     }
 
@@ -10973,7 +11158,7 @@ function DivinationModule({
       const accessToken = await getDivinationAccessToken();
 
       if (!accessToken) {
-        setError("请先登录会员账号，再进行 AI 九运问卦。");
+        setError("请先登录会员账号，再进行 AI 九运决策分析。");
         return;
       }
 
@@ -10984,6 +11169,9 @@ function DivinationModule({
           Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
+          userQuestion: rawQuestion.trim() || undefined,
+          domainPrimary,
+          domainSecondary,
           numbers,
           selectedDate: selectedDate.toISOString(),
           reading: baseReading
@@ -10996,7 +11184,7 @@ function DivinationModule({
       };
 
       if (!response.ok || !data.reading) {
-        setError(data.error || "AI 九运问卦暂时无法生成，请稍后再试。本次未扣点。");
+        setError(data.error || "AI 决策引擎暂时无法响应，请稍后再试。本次未扣点。");
         return;
       }
 
@@ -11007,6 +11195,7 @@ function DivinationModule({
         numbers: baseReading.numbers,
         hourBranch: baseReading.hourBranch,
         createdAt: baseReading.createdAt,
+        userQuestion: rawQuestion.trim() || baseReading.userQuestion,
         originalHexagram: baseReading.originalHexagram,
         mutualHexagram: baseReading.mutualHexagram,
         changingHexagram: baseReading.changingHexagram,
@@ -11018,21 +11207,31 @@ function DivinationModule({
         relationClues: data.reading.relationClues?.length ? data.reading.relationClues : baseReading.relationClues,
         clues: data.reading.clues?.length ? data.reading.clues : baseReading.clues,
         actionPlan: data.reading.actionPlan || baseReading.actionPlan,
-        score: typeof data.reading.score === "number" ? data.reading.score : baseReading.score
+        score: typeof data.reading.score === "number" ? data.reading.score : baseReading.score,
+        executiveBrief: data.reading.executiveBrief || baseReading.executiveBrief,
+        decisionIntake: data.reading.decisionIntake || baseReading.decisionIntake,
+        evidenceEngine: data.reading.evidenceEngine || baseReading.evidenceEngine,
+        decisionMatrix: data.reading.decisionMatrix || baseReading.decisionMatrix,
+        actionBoard: data.reading.actionBoard || baseReading.actionBoard,
+        fiveInterventions: data.reading.fiveInterventions || baseReading.fiveInterventions,
+        devilsAdvocate: data.reading.devilsAdvocate || baseReading.devilsAdvocate,
+        triggers: data.reading.triggers || baseReading.triggers,
+        timeline: data.reading.timeline || baseReading.timeline
       };
 
-      if (!onSpendPoints(divinationCost, "jiuyun_divination", "AI 九运智慧问卦")) {
-        setError("已取消问卦，未扣点。");
+      if (!onSpendPoints(divinationCost, "jiuyun_divination", "AI 东方人生与商业决策分析")) {
+        setError("已取消起卦分析，未扣点。");
         return;
       }
 
       const nextReadings = [reading, ...readings].slice(0, 8);
       setReadings(nextReadings);
       setSelectedReading(reading);
+      setActiveTab(0);
       setError("");
       window.localStorage.setItem(divinationStorageKey, JSON.stringify(nextReadings));
     } catch {
-      setError("AI 九运问卦载入失败，请检查网络或稍后再试。本次未扣点。");
+      setError("AI 决策引擎连接超时，请检查网络后再试。本次未扣点。");
     } finally {
       setIsGenerating(false);
     }
@@ -11040,7 +11239,7 @@ function DivinationModule({
 
   function handleCheckIn() {
     if (!selectedReading || !note.trim()) {
-      setError("请先选择问卦结果，并写下今日打卡反馈。");
+      setError("请先选择决策记录，并写下今日复盘或行动感应。");
       return;
     }
 
@@ -11063,81 +11262,129 @@ function DivinationModule({
     setCheckIns(nextCheckIns);
     setNote("");
     setError("");
-    onEarnPoints(reward, "divination_checkin_reward", "九运问卦每日打卡奖励");
+    onEarnPoints(reward, "divination_checkin_reward", "九运决策每日复盘打卡奖励");
     window.localStorage.setItem(divinationCheckInKey, JSON.stringify(nextCheckIns));
   }
 
   return (
-    <section className="grid gap-5 xl:grid-cols-[0.84fr_1.16fr]">
+    <section className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+      {/* LEFT COLUMN: Problem Intake & Control Console */}
       <div className="grid gap-5">
-        <div className="rounded border border-black/10 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Jiu Yun Oracle</p>
-              <h2 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">九运智慧问卦</h2>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-[#334155] font-medium">
-                随机报出 3 个数字，系统结合当前时辰起卦，再由 AI 按体用生克、三阶段、类象线索与五行通关输出解读。
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">AI Feng Shui Decision Intelligence</p>
+              <h2 className="mt-1 text-2xl font-bold text-[#0F172A]">九运东方人生与商业决策智能系统</h2>
+              <p className="mt-2 text-xs leading-6 font-semibold text-[#334155]">
+                问 → 卦 → 势 → 体 → 证 → 险 → 策 → 局 → 验：融合易学象意、双轨证据链与 5D 战略风水。
               </p>
             </div>
-            <StatusPill>问卦一次 {divinationCost} 点</StatusPill>
+            <StatusPill>分析一次 {divinationCost} 点</StatusPill>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3">
-            {numbers.map((value, index) => (
-              <label key={index} className="block">
-                <span className="text-xs font-semibold text-[#64748B] font-medium">数字 {index + 1}</span>
-                <input
-                  value={value}
-                  onChange={(event) => updateNumber(index, event.target.value)}
-                  className="mt-2 h-14 w-full rounded border border-slate-300 bg-rice text-center text-2xl font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
-                  inputMode="numeric"
-                  placeholder={`${index + 1}`}
-                />
-              </label>
-            ))}
+          {/* Natural Language Question Input */}
+          <div className="mt-4">
+            <label className="block">
+              <span className="text-xs font-bold text-[#0F172A]">1. 你现在想解决什么问题？（自然语言输入）</span>
+              <textarea
+                value={rawQuestion}
+                onChange={(e) => setRawQuestion(e.target.value)}
+                rows={3}
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-[#0F172A] outline-none focus:border-[#C79A54] focus:ring-1 focus:ring-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
+                placeholder="请详细描述您当前面临的决策困境，例如：要不要在这个月签下某笔合作合同？或是如何处理目前的项目资金风险？"
+              />
+            </label>
+          </div>
+
+          {/* 9 Domain Presets */}
+          <div className="mt-4">
+            <span className="text-xs font-bold text-[#0F172A]">2. 选择决策领域 (Domain Model)</span>
+            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-3">
+              {domainPresets.map((preset) => {
+                const isActive = domainPrimary === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => handleSelectDomain(preset.id)}
+                    className={`flex flex-col items-start justify-between rounded-lg border p-2.5 text-left transition ${
+                      isActive
+                        ? "border-[#063F4A] bg-[#F5FAFA] text-[#063F4A] shadow-xs"
+                        : "border-slate-200 bg-white text-[#1E293B] hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-base">{preset.icon}</span>
+                      <span className="text-xs font-bold">{preset.label}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Divination Numbers & Date/Time */}
+          <div className="mt-5">
+            <span className="text-xs font-bold text-[#0F172A]">3. 三数起卦（神意灵感抽爻）</span>
+            <div className="mt-2 grid grid-cols-3 gap-3">
+              {numbers.map((value, index) => (
+                <label key={index} className="block">
+                  <span className="text-[11px] font-semibold text-[#64748B]">数字 {index + 1}</span>
+                  <input
+                    value={value}
+                    onChange={(event) => updateNumber(index, event.target.value)}
+                    className="mt-1 h-12 w-full rounded-lg border border-slate-300 bg-[#F8FAFC] text-center text-xl font-bold text-[#063F4A] outline-none focus:border-[#C79A54]"
+                    inputMode="numeric"
+                    placeholder={`${index + 1}`}
+                  />
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="text-xs font-semibold text-[#64748B] font-medium">起卦日期（可选）</span>
+              <span className="text-[11px] font-semibold text-[#64748B]">起卦日期（可选）</span>
               <input
                 type="date"
                 value={divinationDate}
                 onChange={(event) => setDivinationDate(event.target.value)}
-                className="mt-2 h-12 w-full rounded border border-slate-300 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
+                className="mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-xs font-semibold text-[#0F172A] outline-none focus:border-[#C79A54]"
               />
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-[#64748B] font-medium">起卦时间（可选）</span>
+              <span className="text-[11px] font-semibold text-[#64748B]">起卦时间（可选）</span>
               <input
                 type="time"
                 value={divinationTime}
                 onChange={(event) => setDivinationTime(event.target.value)}
-                className="mt-2 h-12 w-full rounded border border-slate-300 bg-rice px-3 text-sm font-semibold text-[#063F4A] outline-none focus:border-[#C79A54] placeholder:text-[#64748B] placeholder:font-medium"
+                className="mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-xs font-semibold text-[#0F172A] outline-none focus:border-[#C79A54]"
               />
             </label>
           </div>
-          <p className="mt-2 text-xs leading-5 text-[#64748B] font-medium">不填写时，系统会自动使用当前日期与当前时间起卦。</p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          {/* Action Trigger Button */}
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={handleGenerateReading}
               disabled={isGenerating}
-              className="inline-flex items-center gap-2 rounded bg-[#1495A0] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0F7F88] disabled:cursor-not-allowed disabled:bg-[#8CA3A7]"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#063F4A] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#042C34] disabled:cursor-not-allowed disabled:bg-slate-300"
             >
-              {isGenerating ? "AI 正在解卦..." : `消耗 ${divinationCost} 点开始 AI 问卦`} <Flame className="size-4" />
+              {isGenerating ? "AI 决策引擎计算中..." : `确认问题并起卦 (消耗 ${divinationCost} 点)`}
+              <Flame className="size-4 text-[#C79A54]" />
             </button>
-            <span className="text-sm text-[#334155] font-medium">当前点数：{points.toLocaleString("en-US")} 点</span>
+            <span className="text-xs font-bold text-[#475569]">当前可用：{points.toLocaleString("en-US")} 点</span>
           </div>
 
-          {error ? <p className="mt-3 rounded bg-[#E8D4A8] p-3 text-sm text-[#1495A0]">{error}</p> : null}
+          {error ? <p className="mt-3 rounded-lg bg-[#FEE2E2] p-3 text-xs font-bold text-[#991B1B]">{error}</p> : null}
         </div>
 
-        <div className="rounded border border-black/10 bg-[#F5FAFA] p-4 shadow-sm">
+        {/* History Readings Archive */}
+        <div className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
           <div className="flex items-center gap-2">
             <Archive className="size-4 text-[#063F4A]" />
-            <h3 className="font-semibold text-[#0F172A] font-bold">问卦档案</h3>
+            <h3 className="font-bold text-[#0F172A] text-sm">历史决策推演档案</h3>
           </div>
           <div className="mt-3 grid gap-2">
             {readings.length ? (
@@ -11145,357 +11392,579 @@ function DivinationModule({
                 <button
                   key={reading.id}
                   type="button"
-                  onClick={() => setSelectedReading(reading)}
-                  className={`rounded border p-3 text-left transition ${
-                    selectedReading?.id === reading.id ? "border-[#C79A54] bg-white" : "border-black/10 bg-white/70"
+                  onClick={() => {
+                    setSelectedReading(reading);
+                    if (reading.userQuestion) setRawQuestion(reading.userQuestion);
+                  }}
+                  className={`rounded-lg border p-3 text-left transition ${
+                    selectedReading?.id === reading.id ? "border-[#C79A54] bg-white shadow-xs" : "border-slate-200 bg-white/80 hover:bg-white"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="font-semibold text-[#0F172A] font-bold">{reading.originalHexagram}</span>
-                    <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">{reading.score}</span>
+                    <span className="font-bold text-[#0F172A] text-sm">{reading.originalHexagram}</span>
+                    <span className="rounded bg-[#DDEFF2] px-2 py-0.5 text-xs font-bold text-[#063F4A]">{reading.score} 分</span>
                   </div>
-                  <p className="mt-1 text-xs text-[#64748B] font-medium">{reading.createdAt} · {reading.hourBranch}时 · 动爻 {reading.movingLine}</p>
+                  {reading.userQuestion ? (
+                    <p className="mt-1 line-clamp-1 text-xs font-semibold text-[#334155]">“{reading.userQuestion}”</p>
+                  ) : null}
+                  <p className="mt-1 text-[11px] font-semibold text-[#64748B]">
+                    {reading.createdAt} · {reading.hourBranch}时 · 动爻 {reading.movingLine}
+                  </p>
                 </button>
               ))
             ) : (
               <EmptyStateCard
                 icon={Flame}
-                title="还没有问卦记录"
-                desc="输入三个随机数字，系统会结合起卦时间生成本卦、互卦、变卦与通关建议。"
-                action="使用 1 / 4 / 7"
+                title="暂无决策记录"
+                desc="在上方选择领域并描述问题，输入 3 个数字即可开始全景决策分析。"
+                action="快速填入测试数字"
                 onAction={() => {
-                  setNumbers(["1", "4", "7"]);
+                  setNumbers(["3", "8", "9"]);
                   setError("");
                 }}
               />
             )}
           </div>
         </div>
-
-        <div className="rounded border border-[#C79A54]/30 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Coins className="size-4 text-[#C79A54]" />
-            <h3 className="font-semibold text-[#0F172A] font-bold">福报积分兑换</h3>
-          </div>
-          <div className="mt-3 grid gap-2">
-            {divinationExchangeRewards.map(([cost, reward]) => (
-              <div key={reward} className="flex items-center justify-between gap-3 rounded border border-black/10 bg-rice p-3">
-                <span className="text-sm font-semibold text-[#063F4A]">{cost}</span>
-                <span className="text-sm text-[#1E293B] font-semibold">{reward}</span>
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => onOpenModule("wallet")}
-            className="mt-3 w-full rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
-          >
-            去报告中心兑换
-          </button>
-        </div>
       </div>
 
-      <div className="rounded border border-[#C79A54]/30 bg-white p-5 shadow-sm">
+      {/* RIGHT COLUMN: 6-Screen Decision Dashboard */}
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         {selectedReading ? (
           <div>
-            <div className="flex flex-wrap items-start justify-between gap-3">
+            {/* Dashboard Header Bar */}
+            <div className="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-slate-100">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">Panoramic Decision</p>
-                <h3 className="mt-2 text-2xl font-bold text-[#0F172A] text-[#0F172A] font-bold">三数起卦结果</h3>
-                <p className="mt-2 text-xs font-medium text-[#334155]">
-                  数字 {selectedReading.numbers.join(" / ")} · {selectedReading.hourBranch}时 · 动爻 {selectedReading.movingLine}
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">6-Screen Panoramic Dashboard</p>
+                <h3 className="mt-1 text-2xl font-bold text-[#0F172A]">东方全景决策看板</h3>
+                <p className="mt-1 text-xs font-semibold text-[#334155]">
+                  卦象：<span className="font-bold text-[#0F172A]">{selectedReading.originalHexagram}</span> · 数字 {selectedReading.numbers.join(" / ")} · {selectedReading.hourBranch}时 · 动爻 {selectedReading.movingLine}
                 </p>
               </div>
-              <div className="rounded-xl bg-[#063F4A] px-4 py-3 text-right text-white shadow-xs">
-                <p className="text-xs font-medium text-white/70">今日决策指数</p>
-                <p className="text-3xl font-serif font-bold text-[#E8D4A8] text-[#0F172A] font-bold">{selectedReading.score}</p>
+              <div className="rounded-xl bg-[#063F4A] px-4 py-2.5 text-right text-white shadow-xs">
+                <p className="text-[11px] font-bold text-white/70">决策指数</p>
+                <p className="text-2xl font-bold text-[#E8D4A8]">{selectedReading.score} <span className="text-xs font-normal text-white/80">/ 100</span></p>
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-4">
-              {[
-                ["本卦", selectedReading.originalHexagram],
-                ["互卦", selectedReading.mutualHexagram],
-                ["变卦", selectedReading.changingHexagram],
-                ["体用关系", `${selectedReading.bodyUseRelation || "体用待判"} · 需${selectedReading.passElement}通关`]
-              ].map(([label, value]) => (
-                <div key={label} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
-                  <p className="text-xs font-bold text-[#64748B]">{label}</p>
-                  <p className="mt-2 text-sm font-bold text-[#0F172A]">{value}</p>
-                </div>
-              ))}
+            {/* Navigation Tabs Header */}
+            <div className="mt-4 flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
+              {dashboardTabs.map((tab) => {
+                const IconComp = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition ${
+                      isActive
+                        ? "bg-[#063F4A] text-white shadow-xs"
+                        : "bg-slate-100 text-[#334155] hover:bg-slate-200"
+                    }`}
+                  >
+                    <IconComp className="size-3.5" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FDF8EA] p-4.5 shadow-xs">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#C79A54]">Energy Board</p>
-                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">三阶段吉凶能量看板</h4>
-                </div>
-                <StatusPill>本卦 · 互卦 · 变卦</StatusPill>
-              </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                {(selectedReading.energyBoard || [
-                  { stage: "当下（本卦）", status: "参考", value: selectedReading.score, note: selectedReading.situation },
-                  { stage: "过程（互卦）", status: "参考", value: Math.max(30, selectedReading.score - 15), note: selectedReading.process },
-                  { stage: "结果（变卦）", status: "参考", value: Math.max(30, selectedReading.score - 8), note: selectedReading.outcome }
-                ]).map((stage) => (
-                  <div key={stage.stage} className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-bold text-[#0F172A]">{stage.stage}</p>
-                        <p className="mt-1 text-xs font-bold text-[#C79A54]">{stage.status}</p>
+            {/* SCREEN TAB CONTENTS */}
+            <div className="mt-5">
+              {/* SCREEN 0: Executive Brief */}
+              {activeTab === 0 ? (
+                <div className="grid gap-5">
+                  {/* Problem Intake Summary Card */}
+                  {selectedReading.userQuestion ? (
+                    <div className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
+                      <p className="text-xs font-bold text-[#063F4A]">当前决策提问</p>
+                      <p className="mt-1.5 text-sm font-bold text-[#0F172A]">“{selectedReading.userQuestion}”</p>
+                    </div>
+                  ) : null}
+
+                  {/* Core Brief Highlights */}
+                  <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+                      <div className="flex items-center gap-1.5 text-[#063F4A]">
+                        <Target className="size-4" />
+                        <p className="text-xs font-bold">战略方向</p>
                       </div>
-                      <span className="rounded-md border border-[#063F4A]/20 bg-[#DDEFF2] px-2.5 py-1 text-sm font-bold text-[#063F4A]">{stage.value}%</span>
+                      <p className="mt-2 text-xs font-bold leading-6 text-[#0F172A]">
+                        {selectedReading.executiveBrief?.strategicDirection || selectedReading.mindset}
+                      </p>
                     </div>
-                    <div className="mt-3 h-2 rounded-full bg-slate-100">
-                      <div className="h-2 rounded-full bg-[#C79A54]" style={{ width: `${stage.value}%` }} />
-                    </div>
-                    <p className="mt-3 text-xs leading-6 font-semibold text-[#1E293B]">{stage.note}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-              {[
-                ["现状定位", selectedReading.situation],
-                ["演变推演", selectedReading.process],
-                ["最终走向", selectedReading.outcome]
-              ].map(([title, content]) => (
-                <div key={title} className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
-                  <p className="font-bold text-[#0F172A] text-base">{title}</p>
-                  <p className="mt-2 text-xs leading-6 font-semibold text-[#1E293B]">{content}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FFFDF7] p-4.5 shadow-xs">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#C79A54]">Body-Use Clue Engine</p>
-                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">体用生克 × 象意提取</h4>
-                  <p className="mt-1 text-xs leading-6 font-medium text-[#334155]">先判定生克吉凶，再决定从用卦提取助力、风险、消耗、目标或合作线索。</p>
-                </div>
-                <StatusPill>金钥匙类象</StatusPill>
-              </div>
-              <div className="mt-4 grid gap-3 lg:grid-cols-3">
-                {(selectedReading.relationClues || []).map((item) => (
-                  <div key={`${item.stage}-${item.useTrigram}`} className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-bold text-[#0F172A]">{item.stage}</p>
-                        <p className="mt-1 text-xs font-semibold text-[#64748B]">{item.useTrigram}</p>
+                    <div className="rounded-xl border border-slate-200 bg-[#F5FAFA] p-4 shadow-xs">
+                      <div className="flex items-center gap-1.5 text-[#063F4A]">
+                        <TrendingUp className="size-4" />
+                        <p className="text-xs font-bold">最大机会</p>
                       </div>
-                      <span className="rounded-md border border-[#063F4A]/20 bg-[#DDEFF2] px-2.5 py-1 text-xs font-bold text-[#063F4A]">{item.relation}</span>
+                      <p className="mt-2 text-xs font-bold leading-6 text-[#063F4A]">
+                        {selectedReading.executiveBrief?.maxOpportunity || "把握关键合作关系与贵人动向"}
+                      </p>
                     </div>
-                    <p className="mt-3 rounded-lg border border-[#063F4A]/15 bg-[#F8FAFC] p-3 text-xs font-bold leading-6 text-[#063F4A]">{item.extraction}</p>
-                    <p className="mt-3 text-xs leading-6 font-semibold text-[#1E293B]">{item.insight}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-5 rounded-xl border border-[#C79A54]/50 bg-[#FFF8E8] p-4.5 shadow-xs">
-              <div className="flex items-center gap-2">
-                <Sparkles className="size-5 text-[#C79A54]" />
-                <p className="font-bold text-[#7A1F16] text-base">今日战略心法</p>
-              </div>
-              <p className="mt-2 text-xs leading-6 font-bold text-[#0F172A]">{selectedReading.mindset}</p>
-            </div>
-
-            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#063F4A]">Clue</p>
-                  <h4 className="mt-1 text-xl font-bold text-[#0F172A]">核心时空线索</h4>
-                  <p className="mt-1 text-xs font-medium text-[#334155]">这些不是直接答案，而是让你对照现实生活的“密码锁”。</p>
-                </div>
-                <StatusPill>万物类象</StatusPill>
-              </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-2">
-                {(selectedReading.clues || createDivinationClues([selectedReading.bodyTrigram, selectedReading.useTrigram])).map((clue) => (
-                  <div key={clue.trigram} className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-xs">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-bold text-[#0F172A] text-[#0F172A] font-bold">{clue.trigram}卦 · {clue.title}</p>
-                      <span className="text-xl font-bold text-[#7A1F16]">{trigrams.find((trigram) => trigram.name === clue.trigram)?.symbol}</span>
-                    </div>
-                    <div className="mt-3 grid gap-2 text-xs leading-6 font-semibold text-[#1E293B]">
-                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">人物：</span>{clue.people}</p>
-                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">行为：</span>{clue.behavior}</p>
-                      <p><span className="font-bold text-[#0F172A] text-[#0F172A] font-bold">空间：</span>{clue.space}</p>
-                      <p><span className="font-bold text-[#7A1F16] text-[#0F172A] font-bold">身心提醒：</span>{clue.bodyHint}</p>
-                    </div>
-                    <p className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs font-bold leading-6 text-[#063F4A]">{clue.prompt}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5 rounded bg-[#063F4A] p-5 text-white">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-[#C79A54]">五行通关闭环</p>
-                  <h4 className="mt-2 text-2xl font-semibold text-[#0F172A] font-bold">需用「{selectedReading.passElement}」通关</h4>
-                </div>
-                <StatusPill>天时 · 地利 · 物用 · 人和</StatusPill>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {[
-                  ["天时", selectedReading.actionPlan.timing],
-                  ["地利", selectedReading.actionPlan.direction],
-                  ["颜色", selectedReading.actionPlan.color],
-                  ["通关物件", selectedReading.actionPlan.object]
-                ].map(([label, value]) => (
-                  <div key={label} className="rounded bg-white/8 p-3">
-                    <p className="text-xs text-white/70 font-medium">{label}</p>
-                    <p className="mt-1 text-sm font-semibold text-white">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 rounded bg-white/8 p-4">
-                <p className="text-xs text-white/70 font-medium">动态行为</p>
-                <p className="mt-2 text-sm leading-6 text-white/78">{selectedReading.actionPlan.action}</p>
-                <p className="mt-3 rounded bg-[#C79A54]/15 px-3 py-2 text-sm font-semibold text-[#C79A54]">
-                  {selectedReading.actionPlan.mantra}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
-              <div className="rounded border border-[#C79A54]/35 bg-[#F5FAFA] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Share Card</p>
-                    <h4 className="mt-1 font-semibold text-[#0F172A] font-bold">九运开运分享图预览</h4>
-                  </div>
-                  <Share2 className="size-5 text-[#C79A54]" />
-                </div>
-                <div className="mt-4 overflow-hidden rounded border border-[#C79A54]/35 bg-white shadow-sm">
-                  <div className="bg-[#063F4A] p-5 text-white">
-                    <p className="text-xs text-[#C79A54]">AI Feng Shui Master</p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div>
-                        <p className="text-4xl font-semibold text-[#C79A54] text-[#0F172A] font-bold">{selectedReading.score}</p>
-                        <p className="text-xs text-white/85 font-medium">今日决策指数</p>
+                    <div className="rounded-xl border border-slate-200 bg-[#FFF5F5] p-4 shadow-xs">
+                      <div className="flex items-center gap-1.5 text-[#991B1B]">
+                        <AlertTriangle className="size-4" />
+                        <p className="text-xs font-bold">最大风险</p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-3xl text-[#0F172A] font-bold">{selectedReading.bodyTrigram.symbol}</p>
-                        <p className="text-sm text-white/70">{selectedReading.originalHexagram}</p>
-                      </div>
+                      <p className="mt-2 text-xs font-bold leading-6 text-[#991B1B]">
+                        {selectedReading.executiveBrief?.maxRisk || "避免凭感觉过度承诺或遗漏契约条款"}
+                      </p>
                     </div>
-                    <p className="mt-4 rounded bg-white/8 p-3 text-sm leading-6 text-white/78">
-                      {selectedReading.actionPlan.mantra}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-[1fr_auto] items-center gap-3 p-4">
-                    <div>
-                      <p className="text-xs font-semibold text-[#063F4A]">#{selectedReading.passElement}通关 #九运智慧 #易玺老师</p>
-                      <p className="mt-1 text-xs text-[#64748B] font-medium">分享后回传截图，可获得福报点数。</p>
-                    </div>
-                    <div className="grid size-14 place-items-center rounded bg-[#F5FAFA] text-[10px] font-semibold text-[#64748B] font-medium">
-                      QR
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <div className="rounded border border-black/10 bg-white p-4 shadow-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#063F4A]">Commerce Loop</p>
-                    <h4 className="mt-1 font-semibold text-[#0F172A] font-bold">通关物件推荐</h4>
+                    <div className="rounded-xl border border-slate-200 bg-[#FFFDF7] p-4 shadow-xs">
+                      <div className="flex items-center gap-1.5 text-[#C79A54]">
+                        <HelpCircle className="size-4" />
+                        <p className="text-xs font-bold">核心未知数</p>
+                      </div>
+                      <p className="mt-2 text-xs font-bold leading-6 text-[#0F172A]">
+                        {selectedReading.executiveBrief?.keyUnknown || "对方实际履约能力与时间节点"}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200 bg-[#F0FDF4] p-4 shadow-xs lg:col-span-2">
+                      <div className="flex items-center gap-1.5 text-[#166534]">
+                        <Zap className="size-4" />
+                        <p className="text-xs font-bold">72 小时第一步行动</p>
+                      </div>
+                      <p className="mt-2 text-xs font-bold leading-6 text-[#166534]">
+                        {selectedReading.executiveBrief?.immediateStep || selectedReading.actionPlan.action}
+                      </p>
+                    </div>
                   </div>
-                  <StatusPill>{selectedReading.passElement}元素</StatusPill>
-                </div>
-                <div className="mt-4 grid gap-3">
-                  {activeProducts.map((product) => (
-                    <button
-                      key={product.title}
-                      type="button"
-                      onClick={() => onOpenModule("shop")}
-                      className="group rounded border border-black/10 bg-rice p-3 text-left transition hover:-translate-y-0.5 hover:border-[#C79A54]/50 hover:shadow-sm"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold text-[#0F172A] font-bold">{product.title}</p>
-                          <p className="mt-1 text-sm leading-6 text-[#334155] font-medium">{product.desc}</p>
+
+                  {/* Problem Intake Parsing (问关) */}
+                  {selectedReading.decisionIntake ? (
+                    <div className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4.5 shadow-xs">
+                      <h4 className="text-sm font-bold text-[#0F172A]">事实与主观解构 (Intake Parser)</h4>
+                      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-lg bg-white p-3 border border-slate-200">
+                          <span className="text-[11px] font-bold text-[#063F4A]">📌 客观事实 (Facts)</span>
+                          <ul className="mt-1.5 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                            {selectedReading.decisionIntake.facts.map((f, i) => (
+                              <li key={i}>{f}</li>
+                            ))}
+                          </ul>
                         </div>
-                        <span className="rounded bg-white px-2 py-1 text-sm font-semibold text-[#063F4A]">{product.price}</span>
+                        <div className="rounded-lg bg-white p-3 border border-slate-200">
+                          <span className="text-[11px] font-bold text-[#C79A54]">💭 主观推测 (Interpretations)</span>
+                          <ul className="mt-1.5 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                            {selectedReading.decisionIntake.interpretations.map((item, i) => (
+                              <li key={i}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-lg bg-white p-3 border border-slate-200">
+                          <span className="text-[11px] font-bold text-[#991B1B]">❤️ 情绪状态 (Emotions)</span>
+                          <ul className="mt-1.5 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                            {selectedReading.decisionIntake.emotions.map((item, i) => (
+                              <li key={i}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-lg bg-white p-3 border border-slate-200">
+                          <span className="text-[11px] font-bold text-[#166534]">🎯 核心目标 (Goal)</span>
+                          <p className="mt-1.5 text-xs font-bold text-[#1E293B]">{selectedReading.decisionIntake.goal}</p>
+                        </div>
                       </div>
-                      <p className="mt-3 text-xs font-semibold text-[#063F4A]">去商城查看</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_0.8fr]">
-              <div className="rounded border border-black/10 bg-rice p-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="size-5 text-[#063F4A]" />
-                  <h4 className="font-semibold text-[#0F172A] font-bold">开运日记打卡</h4>
-                </div>
-                <textarea
-                  value={note}
-                  onChange={(event) => setNote(event.target.value)}
-                  className="mt-3 min-h-24 w-full rounded border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-[#063F4A] text-[#0F172A] font-semibold placeholder:text-[#64748B] placeholder:font-medium"
-                  placeholder="完成布局后写下感应，例如：今天谈合作更顺，思路比较清楚。"
-                />
-                <button
-                  type="button"
-                  onClick={handleCheckIn}
-                  className="mt-3 inline-flex items-center gap-2 rounded bg-[#063F4A] px-4 py-2.5 text-sm font-semibold text-white"
-                >
-                  提交打卡并获得积分 <Coins className="size-4" />
-                </button>
-              </div>
-
-              <div className="rounded border border-black/10 bg-white p-4">
-                <div className="flex items-center gap-2">
-                  <Share2 className="size-5 text-[#C79A54]" />
-                  <h4 className="font-semibold text-[#0F172A] font-bold">社交见证闭环</h4>
-                </div>
-                <div className="mt-3 grid gap-2 text-sm text-[#1E293B] font-semibold">
-                  <p>1. 完成五行布局后拍照。</p>
-                  <p>2. 次日填写见证反馈。</p>
-                  <p>3. 系统后续可生成分享图与二维码。</p>
-                  <p>4. 审核通过后发放福报点数。</p>
-                </div>
-              </div>
-            </div>
-
-            {checkIns.length ? (
-              <div className="mt-5 rounded border border-black/10 bg-white p-4">
-                <h4 className="font-semibold text-[#0F172A] font-bold">最近见证</h4>
-                <div className="mt-3 grid gap-2">
-                  {checkIns.map((checkIn) => (
-                    <div key={checkIn.id} className="rounded border border-black/10 bg-rice p-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-semibold">{checkIn.readingTitle}</p>
-                        <span className="rounded bg-[#DDEFF2] px-2 py-1 text-xs font-semibold text-[#063F4A]">
-                          +{checkIn.reward} 点 · {checkIn.status}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#334155] font-medium">{checkIn.note}</p>
                     </div>
-                  ))}
+                  ) : null}
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+
+              {/* SCREEN 1: Metaphysics & Evidence Dual-Track */}
+              {activeTab === 1 ? (
+                <div className="grid gap-5">
+                  {/* Track 1: Metaphysics */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#063F4A]">Track 1</span>
+                        <h4 className="text-base font-bold text-[#0F172A]">东方术数局势推演</h4>
+                      </div>
+                      <StatusPill>三数成卦 · 体用生克</StatusPill>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 md:grid-cols-3">
+                      {[
+                        ["本卦 (当下)", selectedReading.originalHexagram, selectedReading.situation],
+                        ["互卦 (过程)", selectedReading.mutualHexagram, selectedReading.process],
+                        ["变卦 (结果)", selectedReading.changingHexagram, selectedReading.outcome]
+                      ].map(([stageLabel, hexName, content]) => (
+                        <div key={stageLabel} className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-3.5">
+                          <span className="text-xs font-bold text-[#063F4A]">{stageLabel}</span>
+                          <p className="mt-1 text-base font-bold text-[#0F172A]">{hexName}</p>
+                          <p className="mt-2 text-xs font-semibold leading-5 text-[#334155]">{content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Track 2: Real Evidence Engine */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#C79A54]">Track 2</span>
+                        <h4 className="text-base font-bold text-[#0F172A]">现实证据交叉验证 (Evidence Engine)</h4>
+                      </div>
+                      <StatusPill>双轨对冲验证</StatusPill>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-lg border border-slate-200 bg-[#F5FAFA] p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">🥇 强证据 (Confirmed Facts)</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                          {(selectedReading.evidenceEngine?.strong || ["具有客观书面凭证", "时间与关键数据明确"]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-[#FFFDF7] p-3.5">
+                        <span className="text-xs font-bold text-[#C79A54]">🥈 中度证据 (Indicators)</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                          {(selectedReading.evidenceEngine?.medium || ["当前社交与互动迹象", "行业普遍表现"]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3.5">
+                        <span className="text-xs font-bold text-[#475569]">🥉 弱证据 / 假设 (Suppositions)</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                          {(selectedReading.evidenceEngine?.weak || ["个人主观直觉与情绪猜想"]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-red-200 bg-[#FFF5F5] p-3.5">
+                        <span className="text-xs font-bold text-[#991B1B]">🚨 逻辑矛盾点 (Contradictions)</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#991B1B]">
+                          {(selectedReading.evidenceEngine?.contradictions || ["凭口头承诺预估收益", "未确认对方履约资金"]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* SCREEN 2: Decision Matrix & Strategies */}
+              {activeTab === 2 ? (
+                <div className="grid gap-5">
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <h4 className="text-base font-bold text-[#0F172A]">AB 方案比对决策矩阵 (Decision Matrix)</h4>
+                    <p className="mt-1 text-xs font-semibold text-[#334155]">对比不同行动路径的期望收益、试错成本与卦象匹配度。</p>
+
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-slate-200 bg-[#F8FAFC] text-[#063F4A]">
+                            <th className="p-3 font-bold">方案 Option</th>
+                            <th className="p-3 font-bold">目标匹配</th>
+                            <th className="p-3 font-bold">预期收益</th>
+                            <th className="p-3 font-bold">潜在风险</th>
+                            <th className="p-3 font-bold">投入成本</th>
+                            <th className="p-3 font-bold">可逆性</th>
+                            <th className="p-3 font-bold">卦象信号</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 font-semibold text-[#1E293B]">
+                          {(selectedReading.decisionMatrix || [
+                            {
+                              option: "方案 A：积极推进",
+                              targetFit: "高",
+                              return: "直接见效，收益上限高",
+                              risk: "需要大量初期资金与时间",
+                              cost: "中高",
+                              reversibility: "中",
+                              hexagramSignal: `本卦${selectedReading.bodyUseRelation || "生合"}`
+                            },
+                            {
+                              option: "方案 B：稳健观望",
+                              targetFit: "中",
+                              return: "保持现金流，控风险",
+                              risk: "可能错失第一波市场节点",
+                              cost: "低",
+                              reversibility: "高",
+                              hexagramSignal: `互卦${selectedReading.mutualHexagram}`
+                            }
+                          ]).map((row, idx) => (
+                            <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"}>
+                              <td className="p-3 font-bold text-[#0F172A]">{row.option}</td>
+                              <td className="p-3 text-[#063F4A]">{row.targetFit}</td>
+                              <td className="p-3">{row.return}</td>
+                              <td className="p-3 text-[#991B1B]">{row.risk}</td>
+                              <td className="p-3">{row.cost}</td>
+                              <td className="p-3">{row.reversibility}</td>
+                              <td className="p-3 font-bold text-[#C79A54]">{row.hexagramSignal}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Strategic Mindset */}
+                  <div className="rounded-xl border border-[#C79A54]/40 bg-[#FFFDF7] p-4.5 shadow-xs">
+                    <div className="flex items-center gap-2 text-[#C79A54]">
+                      <Sparkles className="size-5" />
+                      <h4 className="text-sm font-bold text-[#0F172A]">今日决策心法</h4>
+                    </div>
+                    <p className="mt-2 text-xs font-bold leading-6 text-[#0F172A]">{selectedReading.mindset}</p>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* SCREEN 3: 5D Strategic Wind-Shui Engine */}
+              {activeTab === 3 ? (
+                <div className="grid gap-5">
+                  <div className="rounded-xl border border-[#063F4A]/20 bg-[#F5FAFA] p-4.5 shadow-xs">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#063F4A]">Action Wind-Shui Engine</span>
+                        <h4 className="text-lg font-bold text-[#0F172A]">5D 战略风水介入闭环</h4>
+                        <p className="mt-1 text-xs font-semibold text-[#334155]">将风水从“单纯摆物”升级为“天时+地利+人和+物用+事为”的综合动作。</p>
+                      </div>
+                      <StatusPill>需用「{selectedReading.passElement}」通关</StatusPill>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="rounded-lg border border-slate-200 bg-white p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">⏰ 1. 天时 (Timing)</span>
+                        <p className="mt-2 text-xs font-bold text-[#0F172A]">
+                          {selectedReading.fiveInterventions?.timing || selectedReading.actionPlan.timing}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-white p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">📍 2. 地利 (Place/Space)</span>
+                        <p className="mt-2 text-xs font-bold text-[#0F172A]">
+                          {selectedReading.fiveInterventions?.place || selectedReading.actionPlan.direction}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-white p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">🤝 3. 人和 (People)</span>
+                        <p className="mt-2 text-xs font-bold text-[#0F172A]">
+                          {selectedReading.fiveInterventions?.people || "求教专业合规人士或关键贵人"}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-white p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">🔮 4. 物用 (Objects/Tools)</span>
+                        <p className="mt-2 text-xs font-bold text-[#0F172A]">
+                          {selectedReading.fiveInterventions?.objects || selectedReading.actionPlan.object}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-white p-3.5 sm:col-span-2 lg:col-span-2">
+                        <span className="text-xs font-bold text-[#063F4A]">⚡ 5. 事为 (Management Action)</span>
+                        <p className="mt-2 text-xs font-bold text-[#0F172A]">
+                          {selectedReading.fiveInterventions?.action || selectedReading.actionPlan.action}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Commerce Product Recommendation */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-bold text-[#0F172A]">推荐通关物理介入介质 ({selectedReading.passElement}元素)</h4>
+                      <button
+                        type="button"
+                        onClick={() => onOpenModule("shop")}
+                        className="text-xs font-bold text-[#063F4A] hover:underline"
+                      >
+                        去商城查看全部 →
+                      </button>
+                    </div>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {activeProducts.map((p) => (
+                        <div key={p.title} className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-[#0F172A]">{p.title}</span>
+                            <span className="text-xs font-bold text-[#063F4A]">{p.price}</span>
+                          </div>
+                          <p className="mt-1 text-[11px] font-semibold text-[#64748B]">{p.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* SCREEN 4: Action Board & Trigger System */}
+              {activeTab === 4 ? (
+                <div className="grid gap-5">
+                  {/* Action Board */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <h4 className="text-base font-bold text-[#0F172A]">Action Board (行动分类)</h4>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      <div className="rounded-lg border border-slate-200 bg-[#F0FDF4] p-3.5">
+                        <span className="text-xs font-bold text-[#166534]">⚡ 72 小时内必做</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#166534]">
+                          {(selectedReading.actionBoard?.immediate72h || ["核对合同关键条款", "与核心当事人面对面确认"]).map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-[#F5FAFA] p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">👁️ 7-14 天观察清单</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#063F4A]">
+                          {(selectedReading.actionBoard?.observe7_14d || ["观察对方实际打款速度", "跟踪市场反馈数据"]).map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-red-200 bg-[#FFF5F5] p-3.5">
+                        <span className="text-xs font-bold text-[#991B1B]">🛑 绝对禁止 (Stop Doing)</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#991B1B]">
+                          {(selectedReading.actionBoard?.stopDoing || ["停止不必要的口头承诺", "避免凭情绪追加追加预算"]).map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4-Color Trigger System */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <h4 className="text-base font-bold text-[#0F172A]">四色信号灯触发机制 (Trigger Engine)</h4>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-lg border border-emerald-300 bg-[#ECFDF5] p-3.5">
+                        <div className="flex items-center gap-1.5 text-[#047857]">
+                          <CheckCircle2 className="size-4" />
+                          <span className="text-xs font-bold">🟢 绿灯信号 (全面推进)</span>
+                        </div>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#047857]">
+                          {(selectedReading.triggers?.green || ["首期资金或履约定金到位", "双方签署正式法务合同"]).map((t, i) => (
+                            <li key={i}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-amber-300 bg-[#FFFBEB] p-3.5">
+                        <div className="flex items-center gap-1.5 text-[#B45309]">
+                          <AlertCircle className="size-4" />
+                          <span className="text-xs font-bold">🟡 黄灯信号 (减速观察)</span>
+                        </div>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#B45309]">
+                          {(selectedReading.triggers?.yellow || ["对方拖延回复超过 48 小时", "提出额外补充条件"]).map((t, i) => (
+                            <li key={i}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-orange-300 bg-[#FFF7ED] p-3.5">
+                        <div className="flex items-center gap-1.5 text-[#C2410C]">
+                          <AlertTriangle className="size-4" />
+                          <span className="text-xs font-bold">🟠 橙灯信号 (启动 Plan B)</span>
+                        </div>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#C2410C]">
+                          {(selectedReading.triggers?.orange || ["关键团队成员出现异动", "外部法规政策产生调整"]).map((t, i) => (
+                            <li key={i}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-red-300 bg-[#FEF2F2] p-3.5">
+                        <div className="flex items-center gap-1.5 text-[#B91C1C]">
+                          <Ban className="size-4" />
+                          <span className="text-xs font-bold">🔴 红灯信号 (坚决止损)</span>
+                        </div>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#B91C1C]">
+                          {(selectedReading.triggers?.red || ["出现实质违约或账目严重不符", "核心止损底线被突破"]).map((t, i) => (
+                            <li key={i}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* SCREEN 5: Devil's Advocate & Review */}
+              {activeTab === 5 ? (
+                <div className="grid gap-5">
+                  {/* Devil's Advocate */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <div className="flex items-center gap-2 text-[#991B1B]">
+                      <ShieldAlert className="size-5" />
+                      <h4 className="text-base font-bold text-[#0F172A]">魔鬼代言人 (Devil's Advocate Engine)</h4>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-lg border border-red-200 bg-[#FFF5F5] p-3.5 sm:col-span-2">
+                        <span className="text-xs font-bold text-[#991B1B]">🥊 最强反方论点 (Strongest Counterargument)</span>
+                        <p className="mt-1.5 text-xs font-bold text-[#991B1B]">
+                          {selectedReading.devilsAdvocate?.strongestCounterargument || "如果市场大环境出现不可抗力调整，现有盈利预期将大幅打折。"}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-3.5">
+                        <span className="text-xs font-bold text-[#063F4A]">🧠 需警惕的认知偏误</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                          {(selectedReading.devilsAdvocate?.possibleBiases || ["沉没成本偏误", "过度乐观假设"]).map((b, i) => (
+                            <li key={i}>{b}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-3.5">
+                        <span className="text-xs font-bold text-[#C79A54]">🧩 缺失的关键证据</span>
+                        <ul className="mt-2 list-disc pl-4 text-xs font-semibold text-[#1E293B]">
+                          {(selectedReading.devilsAdvocate?.missingEvidence || ["对方近 6 个月真实现金流", "第三方评估报告"]).map((e, i) => (
+                            <li key={i}>{e}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Daily Check-in & Review */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-4.5 shadow-xs">
+                    <h4 className="text-sm font-bold text-[#0F172A]">每日开运与决策打卡复盘</h4>
+                    <textarea
+                      value={note}
+                      onChange={(event) => setNote(event.target.value)}
+                      className="mt-3 min-h-20 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-[#0F172A] outline-none focus:border-[#063F4A] placeholder:text-[#64748B]"
+                      placeholder="写下今日行动后的真实感应或进展，例如：今天依照指示核对了账目，确实发现了细节问题。"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCheckIn}
+                      className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#063F4A] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#042C34]"
+                    >
+                      提交复盘并领取积分 (+18 点) <Coins className="size-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
         ) : (
           <EmptyStateCard
             icon={Flame}
-            title="等待三数起卦"
-            desc="输入三个随机数字后，系统会结合当前时辰生成局势、阻力、结果与五行通关行动。"
+            title="等待决策提问起卦"
+            desc="请在左侧输入您想解决的决策问题，选择领域并提交抽爻，系统将生成全景决策看板。"
           />
         )}
       </div>
+
       <CeremonialLoader
         isOpen={isGenerating}
-        title="正在起卦演测九运天机..."
-        subtitle="结合您输入的三个数字与此时此刻时空场进行命理抽爻"
+        title="AI 决策引擎正在演测九运天机..."
+        subtitle="正在解构事实证据、体用卦象与 5D 战略闭环"
       />
     </section>
   );
